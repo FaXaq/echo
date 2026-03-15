@@ -1,5 +1,5 @@
 import type { KyselyDB } from "@echo/db";
-import type { AudioClipRepoPort, AudioClip } from "@echo/app";
+import type { AudioClipRepoPort, AudioClip, FileType } from "@echo/app";
 
 export const makeAudioClipRepo = ({
   db,
@@ -9,8 +9,21 @@ export const makeAudioClipRepo = ({
   list: async ({ trackId }) => {
     const rows = await db
       .selectFrom("audioClip")
-      .selectAll()
-      .where("trackId", "=", trackId)
+      .innerJoin("file", "file.id", "audioClip.fileId")
+      .select([
+        "audioClip.id",
+        "audioClip.trackId",
+        "audioClip.fileId",
+        "audioClip.durationMs",
+        "audioClip.startMeasure",
+        "audioClip.createdAt",
+        "file.storageKey",
+        "file.filename",
+        "file.type",
+        "file.organizationId",
+        "file.createdAt as fileCreatedAt",
+      ])
+      .where("audioClip.trackId", "=", trackId)
       .execute();
     return rows.map(toAudioClip);
   },
@@ -19,34 +32,102 @@ export const makeAudioClipRepo = ({
     const rows = await db
       .selectFrom("audioClip")
       .innerJoin("track", "track.id", "audioClip.trackId")
-      .selectAll("audioClip")
+      .innerJoin("file", "file.id", "audioClip.fileId")
+      .select([
+        "audioClip.id",
+        "audioClip.trackId",
+        "audioClip.fileId",
+        "audioClip.durationMs",
+        "audioClip.startMeasure",
+        "audioClip.createdAt",
+        "file.storageKey",
+        "file.filename",
+        "file.type",
+        "file.organizationId",
+        "file.createdAt as fileCreatedAt",
+      ])
       .where("track.songId", "=", songId)
       .execute();
     return rows.map(toAudioClip);
   },
 
-  create: async ({ id, trackId, filename, storageKey, durationMs, startMeasure }) => {
+  findById: async ({ clipId }) => {
     const row = await db
+      .selectFrom("audioClip")
+      .innerJoin("file", "file.id", "audioClip.fileId")
+      .select([
+        "audioClip.id",
+        "audioClip.trackId",
+        "audioClip.fileId",
+        "audioClip.durationMs",
+        "audioClip.startMeasure",
+        "audioClip.createdAt",
+        "file.storageKey",
+        "file.filename",
+        "file.type",
+        "file.organizationId",
+        "file.createdAt as fileCreatedAt",
+      ])
+      .where("audioClip.id", "=", clipId)
+      .executeTakeFirst();
+    return row ? toAudioClip(row) : null;
+  },
+
+  create: async ({ id, trackId, fileId, durationMs, startMeasure }) => {
+    await db
       .insertInto("audioClip")
       .values({
         id,
         trackId,
-        filename,
-        storageKey,
+        fileId,
         durationMs: durationMs ?? null,
         startMeasure,
       })
-      .returningAll()
+      .execute();
+    const row = await db
+      .selectFrom("audioClip")
+      .innerJoin("file", "file.id", "audioClip.fileId")
+      .select([
+        "audioClip.id",
+        "audioClip.trackId",
+        "audioClip.fileId",
+        "audioClip.durationMs",
+        "audioClip.startMeasure",
+        "audioClip.createdAt",
+        "file.storageKey",
+        "file.filename",
+        "file.type",
+        "file.organizationId",
+        "file.createdAt as fileCreatedAt",
+      ])
+      .where("audioClip.id", "=", id)
       .executeTakeFirstOrThrow();
     return toAudioClip(row);
   },
 
   updatePosition: async ({ clipId, startMeasure }) => {
-    const row = await db
+    await db
       .updateTable("audioClip")
       .set({ startMeasure })
       .where("id", "=", clipId)
-      .returningAll()
+      .execute();
+    const row = await db
+      .selectFrom("audioClip")
+      .innerJoin("file", "file.id", "audioClip.fileId")
+      .select([
+        "audioClip.id",
+        "audioClip.trackId",
+        "audioClip.fileId",
+        "audioClip.durationMs",
+        "audioClip.startMeasure",
+        "audioClip.createdAt",
+        "file.storageKey",
+        "file.filename",
+        "file.type",
+        "file.organizationId",
+        "file.createdAt as fileCreatedAt",
+      ])
+      .where("audioClip.id", "=", clipId)
       .executeTakeFirstOrThrow();
     return toAudioClip(row);
   },
@@ -59,17 +140,28 @@ export const makeAudioClipRepo = ({
 function toAudioClip(row: {
   id: string;
   trackId: string;
-  filename: string;
-  storageKey: string;
+  fileId: string;
   durationMs: number | null;
   startMeasure: number;
   createdAt: Date;
+  storageKey: string;
+  filename: string;
+  type: string;
+  organizationId: string;
+  fileCreatedAt: Date;
 }): AudioClip {
   return {
     id: row.id,
     trackId: row.trackId,
-    filename: row.filename,
-    storageKey: row.storageKey,
+    fileId: row.fileId,
+    file: {
+      id: row.fileId,
+      storageKey: row.storageKey,
+      filename: row.filename,
+      type: row.type as FileType,
+      organizationId: row.organizationId,
+      createdAt: row.fileCreatedAt,
+    },
     durationMs: row.durationMs,
     startMeasure: row.startMeasure,
     createdAt: row.createdAt,

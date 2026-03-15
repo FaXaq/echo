@@ -25,8 +25,15 @@ const mockClips = [
   {
     id: "clip-1",
     trackId: "track-1",
-    filename: "drums.mp3",
-    storageKey: "audio-clips/clip-1/drums.mp3",
+    fileId: "file-1",
+    file: {
+      id: "file-1",
+      filename: "drums.mp3",
+      storageKey: "org-1/audio-clips/file-1-drums.mp3",
+      type: "audio" as const,
+      organizationId: "org-1",
+      createdAt: now,
+    },
     durationMs: 4000 as number | null,
     startMeasure: 1,
     createdAt: now,

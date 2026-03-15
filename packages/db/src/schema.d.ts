@@ -30,11 +30,19 @@ export interface Account {
 export interface AudioClip {
   createdAt: Generated<Timestamp>;
   durationMs: number | null;
-  filename: string;
+  fileId: string;
   id: string;
   startMeasure: Generated<number>;
-  storageKey: string;
   trackId: string;
+}
+
+export interface File {
+  createdAt: Generated<Timestamp>;
+  filename: string;
+  id: string;
+  organizationId: string;
+  storageKey: string;
+  type: string;
 }
 
 export interface Invitation {
@@ -131,6 +139,7 @@ export interface Verification {
 export interface DB {
   account: Account;
   audioClip: AudioClip;
+  file: File;
   invitation: Invitation;
   member: Member;
   organization: Organization;

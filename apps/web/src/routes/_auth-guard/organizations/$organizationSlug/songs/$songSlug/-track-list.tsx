@@ -13,6 +13,7 @@ interface TrackListProps {
   tracks: Track[];
   clips: AudioClip[];
   songId: string;
+  organizationId: string;
   onTrackDeleted: (trackId: string) => void;
   onVolumeChanged: (trackId: string, volume: number) => void;
   onClipUploaded: (clip: AudioClip) => void;
@@ -29,6 +30,22 @@ interface TrackRowProps {
   onDeleteClip: (clip: AudioClip) => void;
   isTrackDeleting: boolean;
   isClipDeleting: boolean;
+}
+
+function getAudioDurationMs(file: File): Promise<number | undefined> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const audio = new Audio();
+    audio.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      resolve(Number.isFinite(audio.duration) ? Math.round(audio.duration * 1000) : undefined);
+    };
+    audio.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(undefined);
+    };
+    audio.src = url;
+  });
 }
 
 function TrackRow({
@@ -86,7 +103,7 @@ function TrackRow({
         {clips.map((clip) => (
           <div key={clip.id} className="flex items-center gap-1">
             <span className="text-xs text-muted-foreground truncate max-w-24">
-              {clip.filename}
+              {clip.file.filename}
             </span>
             <Button
               variant="ghost"
@@ -116,18 +133,15 @@ export function TrackList({
   tracks,
   clips,
   songId: _songId,
+  organizationId,
   onTrackDeleted,
   onVolumeChanged,
   onClipUploaded,
   onClipDeleted,
 }: TrackListProps) {
   const { t } = useTranslation("songs");
-  const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(
-    new Map(),
-  );
 
   const deleteTrack = trpc.organization.track.delete.useMutation();
-  const updateVolume = trpc.organization.track.updateVolume.useMutation();
   const getUploadUrl = trpc.organization.audioClip.getUploadUrl.useMutation();
   const registerClip = trpc.organization.audioClip.register.useMutation();
   const deleteClip = trpc.organization.audioClip.delete.useMutation();
@@ -135,18 +149,8 @@ export function TrackList({
   const handleVolumeChange = useCallback(
     (trackId: string, volume: number) => {
       onVolumeChanged(trackId, volume);
-
-      const existing = debounceTimers.current.get(trackId);
-      if (existing) clearTimeout(existing);
-
-      const timer = setTimeout(() => {
-        updateVolume.mutate({ trackId, volume });
-        debounceTimers.current.delete(trackId);
-      }, 400);
-
-      debounceTimers.current.set(trackId, timer);
     },
-    [onVolumeChanged, updateVolume],
+    [onVolumeChanged],
   );
 
   const handleDeleteTrack = useCallback(
@@ -163,9 +167,12 @@ export function TrackList({
     async (trackId: string, file: File) => {
       const contentType = file.type || "audio/mpeg";
 
+      const durationMs = await getAudioDurationMs(file);
+
       const { storageKey, uploadUrl } = await getUploadUrl.mutateAsync({
         filename: file.name,
         contentType,
+        organizationId,
       });
 
       await fetch(uploadUrl, {
@@ -178,18 +185,20 @@ export function TrackList({
         trackId,
         filename: file.name,
         storageKey,
+        organizationId,
         startMeasure: 1,
+        durationMs,
       });
 
       onClipUploaded(clip);
     },
-    [getUploadUrl, registerClip, onClipUploaded],
+    [getUploadUrl, registerClip, onClipUploaded, organizationId],
   );
 
   const handleDeleteClip = useCallback(
     (clip: AudioClip) => {
       deleteClip.mutate(
-        { clipId: clip.id, storageKey: clip.storageKey },
+        { clipId: clip.id },
         { onSuccess: () => onClipDeleted(clip.id) },
       );
     },

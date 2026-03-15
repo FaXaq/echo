@@ -6,5 +6,6 @@ export * from "./organization";
 export * from "./song";
 export * from "./track";
 export * from "./audio-clip";
+export * from "./file";
 export * from "./file-storage";
 export * from "./user-permission"

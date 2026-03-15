@@ -1,5 +1,4 @@
 import { useRef, useCallback } from "react";
-import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@echo/api/router";
@@ -12,15 +11,23 @@ const PIXELS_PER_MEASURE = 120;
 const TRACK_HEIGHT = 48;
 const RULER_HEIGHT = 32;
 const TOTAL_MEASURES = 32;
+const LEFT_PANEL_WIDTH = 200;
 
 interface TimelineProps {
   tracks: Track[];
   clips: AudioClip[];
+  bpm: number;
   onClipPositionChanged: (clip: AudioClip) => void;
+  onVolumeChanged: (trackId: string, volume: number) => void;
 }
 
-export function Timeline({ tracks, clips, onClipPositionChanged }: TimelineProps) {
-  const { t } = useTranslation("songs");
+export function Timeline({
+  tracks,
+  clips,
+  bpm,
+  onClipPositionChanged,
+  onVolumeChanged,
+}: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef<{
     clipId: string;
@@ -85,11 +92,36 @@ export function Timeline({ tracks, clips, onClipPositionChanged }: TimelineProps
   );
 
   const totalWidth = TOTAL_MEASURES * PIXELS_PER_MEASURE;
+  const secondsPerMeasure = (4 * 60) / bpm;
 
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <div className="overflow-x-auto" ref={containerRef}>
-        <div style={{ width: totalWidth, minWidth: "100%" }}>
+    <div className="border rounded-lg overflow-hidden flex flex-row">
+      {/* Left panel — fixed, no horizontal scroll */}
+      <div className="flex-shrink-0 border-r" style={{ width: LEFT_PANEL_WIDTH }}>
+        <div className="bg-muted border-b" style={{ height: RULER_HEIGHT }} />
+        {tracks.map((track) => (
+          <div
+            key={track.id}
+            className="border-b px-2 flex flex-col justify-center gap-0.5"
+            style={{ height: TRACK_HEIGHT }}
+          >
+            <span className="text-[10px] font-medium truncate">{track.name}</span>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={track.volume}
+              onChange={(e) => onVolumeChanged(track.id, Number(e.target.value))}
+              className="w-full"
+            />
+          </div>
+        ))}
+        {tracks.length === 0 && <div style={{ height: TRACK_HEIGHT }} />}
+      </div>
+
+      {/* Scrollable timeline */}
+      <div className="flex-1 overflow-x-auto min-w-0" ref={containerRef}>
+        <div style={{ width: totalWidth }}>
           {/* Ruler */}
           <div
             className="flex bg-muted border-b"
@@ -98,12 +130,10 @@ export function Timeline({ tracks, clips, onClipPositionChanged }: TimelineProps
             {Array.from({ length: TOTAL_MEASURES }, (_, i) => (
               <div
                 key={i}
-                className="border-r border-border flex items-center px-1 flex-shrink-0"
+                className="border-r border-border flex items-center px-1 shrink-0"
                 style={{ width: PIXELS_PER_MEASURE }}
               >
-                <span className="text-xs text-muted-foreground">
-                  {t("Measure")} {i + 1}
-                </span>
+                <span className="text-xs text-muted-foreground">{i + 1}</span>
               </div>
             ))}
           </div>
@@ -136,15 +166,15 @@ export function Timeline({ tracks, clips, onClipPositionChanged }: TimelineProps
                       width: Math.max(
                         PIXELS_PER_MEASURE,
                         clip.durationMs
-                          ? (clip.durationMs / 1000 / (4 * 60 / 120)) *
+                          ? (clip.durationMs / 1000 / secondsPerMeasure) *
                             PIXELS_PER_MEASURE
                           : PIXELS_PER_MEASURE,
                       ),
                     }}
                     onMouseDown={(e) => handleMouseDown(e, clip)}
-                    title={clip.filename}
+                    title={clip.file.filename}
                   >
-                    <span className="text-xs truncate">{clip.filename}</span>
+                    <span className="text-xs truncate">{clip.file.filename}</span>
                   </div>
                 ))}
               </div>
@@ -155,9 +185,7 @@ export function Timeline({ tracks, clips, onClipPositionChanged }: TimelineProps
             <div
               className="flex items-center justify-center text-muted-foreground text-sm"
               style={{ height: TRACK_HEIGHT }}
-            >
-              {t("Add track")}
-            </div>
+            />
           )}
         </div>
       </div>

@@ -29,9 +29,16 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const sourceNodesRef = useRef<AudioBufferSourceNode[]>([]);
+  const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
+
+  const bpm = song.bpm ?? DEFAULT_BPM;
+
+  const updateVolume = trpc.organization.track.updateVolume.useMutation();
 
   const getDownloadUrlsQuery = trpc.organization.audioClip.getDownloadUrls.useQuery(
-    { storageKeys: clips.map((c) => c.storageKey) },
+    { storageKeys: clips.map((c) => c.file.storageKey) },
     { enabled: clips.length > 0 },
   );
 
@@ -49,8 +56,18 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
       setTracks((prev) =>
         prev.map((t) => (t.id === trackId ? { ...t, volume } : t)),
       );
+
+      const existing = debounceTimers.current.get(trackId);
+      if (existing) clearTimeout(existing);
+
+      const timer = setTimeout(() => {
+        updateVolume.mutate({ trackId, volume });
+        debounceTimers.current.delete(trackId);
+      }, 400);
+
+      debounceTimers.current.set(trackId, timer);
     },
-    [],
+    [updateVolume],
   );
 
   const handleClipUploaded = useCallback((clip: AudioClip) => {
@@ -68,7 +85,6 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
   const handlePlay = async () => {
     if (isPlaying) return;
 
-    const bpm = song.bpm ?? DEFAULT_BPM;
     const secondsPerMeasure = (4 * 60) / bpm;
 
     const urlMap = new Map(
@@ -81,7 +97,7 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
 
     await Promise.all(
       clips.map(async (clip) => {
-        const url = urlMap.get(clip.storageKey);
+        const url = urlMap.get(clip.file.storageKey);
         if (!url) return;
 
         try {
@@ -146,6 +162,7 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
         tracks={tracks}
         clips={clips}
         songId={song.id}
+        organizationId={song.organizationId}
         onTrackDeleted={handleTrackDeleted}
         onVolumeChanged={handleVolumeChanged}
         onClipUploaded={handleClipUploaded}
@@ -157,7 +174,9 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
       <Timeline
         tracks={tracks}
         clips={clips}
+        bpm={bpm}
         onClipPositionChanged={handleClipPositionChanged}
+        onVolumeChanged={handleVolumeChanged}
       />
     </div>
   );

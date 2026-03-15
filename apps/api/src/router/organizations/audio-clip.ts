@@ -24,12 +24,14 @@ export const makeAudioClipRouter = () =>
         z.object({
           filename: z.string().min(1),
           contentType: z.string().min(1),
+          organizationId: z.string().min(1),
         }),
       )
       .mutation(async ({ input, ctx }) => {
         return makeGetUploadUrl({ fileStorage: ctx.fileStorage })({
           filename: input.filename,
           contentType: input.contentType,
+          organizationId: input.organizationId,
         });
       }),
 
@@ -39,15 +41,20 @@ export const makeAudioClipRouter = () =>
           trackId: z.string().min(1),
           filename: z.string().min(1),
           storageKey: z.string().min(1),
+          organizationId: z.string().min(1),
           startMeasure: z.number().positive(),
           durationMs: z.number().int().positive().optional(),
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeRegisterAudioClip({ audioClipRepo: ctx.audioClip })({
+        return makeRegisterAudioClip({
+          audioClipRepo: ctx.audioClip,
+          fileRepo: ctx.file,
+        })({
           trackId: input.trackId,
           filename: input.filename,
           storageKey: input.storageKey,
+          organizationId: input.organizationId,
           startMeasure: input.startMeasure,
           durationMs: input.durationMs,
         });
@@ -71,17 +78,13 @@ export const makeAudioClipRouter = () =>
       .input(
         z.object({
           clipId: z.string().min(1),
-          storageKey: z.string().min(1),
         }),
       )
       .mutation(async ({ input, ctx }) => {
         return makeDeleteAudioClip({
           audioClipRepo: ctx.audioClip,
           fileStorage: ctx.fileStorage,
-        })({
-          clipId: input.clipId,
-          storageKey: input.storageKey,
-        });
+        })({ clipId: input.clipId });
       }),
 
     getDownloadUrls: authedProcedure
