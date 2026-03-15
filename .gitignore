@@ -1,0 +1,35 @@
+node_modules/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# Environment — follows Vite convention for all apps
+# https://vite.dev/guide/env-and-mode#env-files
+# .env and .env.[mode] are committed (non-secret defaults)
+# .env.local and .env.[mode].local are gitignored (secrets)
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Storybook
+storybook-static/
+
+# Test
+coverage/
+
+# Logs
+*.log
+
+# Worktrees
+.worktrees/
+
+# Claude
+.claude/*.local.*
+
+# tanstack
+.tanstack

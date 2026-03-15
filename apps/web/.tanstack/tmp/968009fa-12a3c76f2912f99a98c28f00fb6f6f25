@@ -1,0 +1,16 @@
+import { authClient } from '@/lib/auth'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/organizations/$organizationSlug')({
+  beforeLoad: async ({ params }) => {
+    const { data: activeOrganization } = await authClient.organization.getFullOrganization({ query: { membersLimit: 0 } });
+    if (activeOrganization?.slug !== params.organizationSlug) {
+      throw redirect({ to: "/" })
+    }
+  },
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  return <div>Hello "/projects/$organizationSlug"!</div>
+}

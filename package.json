@@ -1,0 +1,37 @@
+{
+  "name": "echo",
+  "private": true,
+  "scripts": {
+    "services:start": "docker compose up -d",
+    "dev": "pnpm services:start && turbo dev",
+    "dev:apps": "pnpm services:start && turbo dev --filter=@echo/web --filter=@echo/api",
+    "build": "turbo build",
+    "test": "turbo test",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "dev:web": "turbo dev --filter=@echo/web",
+    "dev:api": "turbo dev --filter=@echo/api",
+    "build:web": "turbo build --filter=@echo/web",
+    "build:api": "turbo build --filter=@echo/api",
+    "test:web": "turbo test --filter=@echo/web",
+    "test:api": "turbo test --filter=@echo/api",
+    "storybook": "turbo storybook --filter=@echo/web",
+    "cli": "pnpm --filter @echo/cli execute --",
+    "db:migrate": "pnpm cli db migrate",
+    "db:migrate:down": "pnpm cli db migrate-down",
+    "create-admin": "pnpm --filter @echo/api create-admin",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.4.2",
+    "@commitlint/config-conventional": "^20.4.2",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  },
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=20"
+  }
+}

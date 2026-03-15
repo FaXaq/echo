@@ -1,0 +1,21 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { useNavigation } from '@/hooks/use-navigation'
+import React, { useEffect } from 'react'
+
+export const Route = createFileRoute('/organization/$organizationSlug/')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  const { organizationSlug } = Route.useParams()
+  const { orgOptions, setActiveOrganization } = useNavigation()
+
+  useEffect(() => {
+    const matchingOrg = orgOptions.find((org) => org.slug === organizationSlug)
+    if (matchingOrg) {
+      setActiveOrganization(matchingOrg)
+    }
+  }, [organizationSlug, orgOptions, setActiveOrganization])
+
+  return <div>Hello "/projects/organizationSlug/"!</div>
+}

@@ -1,0 +1,91 @@
+import { createFileRoute } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
+import { authClient } from "@/lib/auth"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/ui/table"
+import z from "zod"
+
+export const Route = createFileRoute("/organization/$organizationSlug/members")({
+  loaderDeps: ({ search: { offset, limit } }) => ({ offset, limit }),
+  loader: async ({ deps }) => {
+    const { data: activeOrganization } = await authClient.organization.getFullOrganization({
+      query: {
+        membersLimit: 0
+      }
+    });
+
+    if (!activeOrganization) return { activeOrganization, member: [] }
+
+    const { data } = await authClient.organization.listMembers({
+      query: {
+        organizationId: activeOrganization.id,
+        limit: deps.limit,
+        offset: deps.offset,
+        sortBy: "createdAt",
+      }
+    })
+    return { activeOrganization, members: data?.members ?? [], totalMembers: data?.total ?? 0 };
+  },
+  validateSearch: z.object({
+    limit: z.number().default(25),
+    offset: z.number().default(0)
+  }),
+  component: MembersPage,
+})
+
+function MembersPage() {
+  const { t } = useTranslation("members")
+  const { activeOrganization, members } = Route.useLoaderData();
+
+  if (!activeOrganization) return;
+
+  return (
+    <div className="p-6">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">{t("Members")}</h1>
+        <p className="text-muted-foreground">
+          {t("Manage members and invitations for your project")}
+        </p>
+      </div>
+
+      {/* Members List */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">{t("Members")}</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{t("Name")}</TableHead>
+              <TableHead>{t("Email")}</TableHead>
+              <TableHead>{t("Role")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {members.length > 0 ? (
+              members.map((member) => (
+                <TableRow key={member.id}>
+                  <TableCell>{member.user.name || "-"}</TableCell>
+                  <TableCell>{member.user.email || "-"}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="text-center py-8 text-muted-foreground"
+                >
+                  {t("No members yet")}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@echo/config",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "globals": "^17.3.0",
+    "typescript-eslint": "^8.56.0"
+  },
+  "devDependencies": {
+"@tsconfig/node24": "^24.0.4",
+    "@tsconfig/vite-react": "^7.0.2",
+    "vitest": "^4.0.18"
+  },
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tsconfig.node.json": "./tsconfig.node.json",
+    "./tsconfig.react.json": "./tsconfig.react.json",
+    "./vitest.shared": "./vitest.shared.ts",
+    "./eslint.base": "./eslint.base.js",
+    "./eslint.react": "./eslint.react.js"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "extends": "@echo/config/tsconfig.node.json",
+  "compilerOptions": {
+    "resolveJsonModule": true
+  },
+  "include": ["src", "locales/**/*.json"]
+}
