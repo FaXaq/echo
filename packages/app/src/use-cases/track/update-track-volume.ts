@@ -3,12 +3,12 @@ import { conflict } from "../../errors";
 
 export const makeUpdateTrackVolume =
   (deps: { trackRepo: TrackRepoPort }) =>
-  async (input: { trackId: string; volume: number }) => {
-    if (input.volume < 0 || input.volume > 100) {
-      throw conflict("Volume must be between 0 and 100");
+  async (input: { trackId: string; volumeDb: number }) => {
+    if (input.volumeDb < -60 || input.volumeDb > 6) {
+      throw conflict("Volume must be between -60 dB and +6 dB");
     }
     return deps.trackRepo.updateVolume({
       trackId: input.trackId,
-      volume: input.volume,
+      volumeDb: input.volumeDb,
     });
   };

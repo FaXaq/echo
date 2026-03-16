@@ -13,3 +13,6 @@ export * from "./use-cases/track/index";
 
 // AudioClip use cases
 export * from "./use-cases/audio-clip/index";
+
+// MidiClip use cases
+export * from "./use-cases/midi-clip/index";

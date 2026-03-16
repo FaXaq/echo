@@ -15,15 +15,42 @@ import type { AppRouter } from "@echo/api/router";
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type Track = RouterOutput["organization"]["track"]["list"][number];
 type AudioClip = RouterOutput["organization"]["audioClip"]["listBySong"][number];
+type MidiClip = RouterOutput["organization"]["midiClip"]["listBySong"][number];
 
 const PIXELS_PER_MEASURE = 120;
-const TRACK_HEIGHT = 48;
+const TRACK_HEIGHT = 64;
 const RULER_HEIGHT = 32;
 const MIN_MEASURES = 32;
 const BUFFER_MEASURES = 8;
 const LEFT_PANEL_WIDTH = 200;
-const SCROLL_THRESHOLD = 80; // px from container edge to start auto-scrolling
-const SCROLL_MAX_SPEED = 14; // px per animation frame
+const SCROLL_THRESHOLD = 80;
+const SCROLL_MAX_SPEED = 14;
+
+// General MIDI program names (128 presets)
+const GM_INSTRUMENT_NAMES = [
+  "Acoustic Grand Piano", "Bright Acoustic Piano", "Electric Grand Piano", "Honky-tonk Piano",
+  "Electric Piano 1", "Electric Piano 2", "Harpsichord", "Clavinet", "Celesta", "Glockenspiel",
+  "Music Box", "Vibraphone", "Marimba", "Xylophone", "Tubular Bells", "Dulcimer", "Drawbar Organ",
+  "Percussive Organ", "Rock Organ", "Church Organ", "Reed Organ", "Accordion", "Harmonica",
+  "Tango Accordion", "Acoustic Guitar (nylon)", "Acoustic Guitar (steel)", "Electric Guitar (jazz)",
+  "Electric Guitar (clean)", "Electric Guitar (muted)", "Overdriven Guitar", "Distortion Guitar",
+  "Guitar harmonics", "Acoustic Bass", "Electric Bass (finger)", "Electric Bass (pick)",
+  "Fretless Bass", "Slap Bass 1", "Slap Bass 2", "Synth Bass 1", "Synth Bass 2", "Violin", "Viola",
+  "Cello", "Contrabass", "Tremolo Strings", "Pizzicato Strings", "Orchestral Harp", "Timpani",
+  "String Ensemble 1", "String Ensemble 2", "SynthStrings 1", "SynthStrings 2", "Choir Aahs",
+  "Voice Oohs", "Synth Voice", "Orchestra Hit", "Trumpet", "Trombone", "Tuba", "Muted Trumpet",
+  "French Horn", "Brass Section", "SynthBrass 1", "SynthBrass 2", "Soprano Sax", "Alto Sax",
+  "Tenor Sax", "Baritone Sax", "Oboe", "English Horn", "Bassoon", "Clarinet", "Piccolo", "Flute",
+  "Recorder", "Pan Flute", "Blown Bottle", "Shakuhachi", "Whistle", "Ocarina", "Lead 1 (square)",
+  "Lead 2 (sawtooth)", "Lead 3 (calliope)", "Lead 4 (chiff)", "Lead 5 (charang)", "Lead 6 (voice)",
+  "Lead 7 (fifths)", "Lead 8 (bass + lead)", "Pad 1 (new age)", "Pad 2 (warm)", "Pad 3 (polysynth)",
+  "Pad 4 (choir)", "Pad 5 (bowed)", "Pad 6 (metallic)", "Pad 7 (halo)", "Pad 8 (sweep)",
+  "FX 1 (rain)", "FX 2 (soundtrack)", "FX 3 (crystal)", "FX 4 (atmosphere)", "FX 5 (brightness)",
+  "FX 6 (goblins)", "FX 7 (echoes)", "FX 8 (sci-fi)", "Sitar", "Banjo", "Shamisen", "Koto", "Kalimba",
+  "Bag pipe", "Fiddle", "Shanai", "Tinkle Bell", "Agogo", "Steel Drums", "Woodblock", "Taiko Drum",
+  "Melodic Tom", "Synth Drum", "Reverse Cymbal", "Guitar Fret Noise", "Breath Noise", "Seashore",
+  "Bird Tweet", "Telephone Ring", "Helicopter", "Applause", "Gunshot",
+];
 
 function getAudioDurationMs(file: File): Promise<number | undefined> {
   return new Promise((resolve) => {
@@ -48,6 +75,7 @@ function getAudioDurationMs(file: File): Promise<number | undefined> {
 interface TimelineProps {
   tracks: Track[];
   clips: AudioClip[];
+  midiClips: MidiClip[];
   bpm: number;
   playbackPosition: number;
   isPlaying: boolean;
@@ -55,10 +83,13 @@ interface TimelineProps {
   editingTrackId: string | null;
   downloadUrls: Map<string, string>;
   onClipPositionChanged: (clip: AudioClip) => void;
+  onMidiClipPositionChanged: (clip: MidiClip) => void;
   onVolumeChanged: (trackId: string, volume: number) => void;
   onTrackDeleted: (trackId: string) => void;
   onClipUploaded: (clip: AudioClip) => void;
+  onMidiClipUploaded: (clip: MidiClip) => void;
   onClipDeleted: (clipId: string) => void;
+  onMidiClipDeleted: (clipId: string) => void;
   onClipRenamed: (clipId: string, name: string) => void;
   onEditingTrackIdChange: (id: string | null) => void;
   onTrackRenamed: (trackId: string, name: string) => void;
@@ -72,6 +103,7 @@ function stripExtension(filename: string): string {
 export function Timeline({
   tracks,
   clips,
+  midiClips,
   bpm,
   playbackPosition,
   isPlaying,
@@ -79,10 +111,13 @@ export function Timeline({
   editingTrackId,
   downloadUrls,
   onClipPositionChanged,
+  onMidiClipPositionChanged,
   onVolumeChanged,
   onTrackDeleted,
   onClipUploaded,
+  onMidiClipUploaded,
   onClipDeleted,
+  onMidiClipDeleted,
   onClipRenamed,
   onEditingTrackIdChange,
   onTrackRenamed,
@@ -90,7 +125,13 @@ export function Timeline({
 }: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pendingStartMeasureRef = useRef<number>(1);
-  const draggingRef = useRef<{
+  const draggingAudioRef = useRef<{
+    clipId: string;
+    startX: number;
+    initialScrollLeft: number;
+    originalMeasure: number;
+  } | null>(null);
+  const draggingMidiRef = useRef<{
     clipId: string;
     startX: number;
     initialScrollLeft: number;
@@ -99,25 +140,29 @@ export function Timeline({
   const scrollAnimRef = useRef<number | null>(null);
   const scrollSpeedRef = useRef<number>(0);
   const currentMouseXRef = useRef<number>(0);
-  // One hidden file input ref per track, keyed by track id
   const fileInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
+  const midiInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
   const [editingClipId, setEditingClipId] = useState<string | null>(null);
 
-  const updatePosition = trpc.organization.audioClip.updatePosition.useMutation();
+  const updateAudioPosition = trpc.organization.audioClip.updatePosition.useMutation();
+  const updateMidiPosition = trpc.organization.midiClip.updatePosition.useMutation();
   const deleteTrack = trpc.organization.track.delete.useMutation();
   const renameTrack = trpc.organization.track.rename.useMutation();
   const renameClip = trpc.organization.audioClip.rename.useMutation();
   const getUploadUrl = trpc.organization.audioClip.getUploadUrl.useMutation();
   const registerClip = trpc.organization.audioClip.register.useMutation();
+  const registerMidiClip = trpc.organization.midiClip.register.useMutation();
   const deleteClip = trpc.organization.audioClip.delete.useMutation();
+  const deleteMidiClip = trpc.organization.midiClip.delete.useMutation();
+  const setInstrumentPreset = trpc.organization.track.setInstrumentPreset.useMutation();
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent, clip: AudioClip) => {
       e.preventDefault();
       if (!containerRef.current) return;
 
-      draggingRef.current = {
+      draggingAudioRef.current = {
         clipId: clip.id,
         startX: e.clientX,
         initialScrollLeft: containerRef.current.scrollLeft,
@@ -129,19 +174,18 @@ export function Timeline({
       const computeMeasure = (mouseX: number, scrollLeft: number) => {
         const dx =
           mouseX -
-          draggingRef.current!.startX +
+          draggingAudioRef.current!.startX +
           scrollLeft -
-          draggingRef.current!.initialScrollLeft;
+          draggingAudioRef.current!.initialScrollLeft;
         const newMeasure = Math.max(
           1,
-          draggingRef.current!.originalMeasure + dx / PIXELS_PER_MEASURE,
+          draggingAudioRef.current!.originalMeasure + dx / PIXELS_PER_MEASURE,
         );
         return Math.round(newMeasure * 4) / 4;
       };
 
-      // RAF loop: auto-scroll and update clip position while mouse is held near an edge
       const animate = () => {
-        if (draggingRef.current && containerRef.current && scrollSpeedRef.current !== 0) {
+        if (draggingAudioRef.current && containerRef.current && scrollSpeedRef.current !== 0) {
           containerRef.current.scrollLeft = Math.max(
             0,
             containerRef.current.scrollLeft + scrollSpeedRef.current,
@@ -157,58 +201,39 @@ export function Timeline({
       scrollAnimRef.current = requestAnimationFrame(animate);
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
-        if (!draggingRef.current || !containerRef.current) return;
-
+        if (!draggingAudioRef.current || !containerRef.current) return;
         currentMouseXRef.current = moveEvent.clientX;
-
-        // Update auto-scroll speed based on proximity to container edges
         const rect = containerRef.current.getBoundingClientRect();
         const distLeft = moveEvent.clientX - rect.left;
         const distRight = rect.right - moveEvent.clientX;
         if (distLeft < SCROLL_THRESHOLD) {
-          scrollSpeedRef.current =
-            -SCROLL_MAX_SPEED * (1 - distLeft / SCROLL_THRESHOLD);
+          scrollSpeedRef.current = -SCROLL_MAX_SPEED * (1 - distLeft / SCROLL_THRESHOLD);
         } else if (distRight < SCROLL_THRESHOLD) {
-          scrollSpeedRef.current =
-            SCROLL_MAX_SPEED * (1 - distRight / SCROLL_THRESHOLD);
+          scrollSpeedRef.current = SCROLL_MAX_SPEED * (1 - distRight / SCROLL_THRESHOLD);
         } else {
           scrollSpeedRef.current = 0;
         }
-
-        const snapped = computeMeasure(
-          moveEvent.clientX,
-          containerRef.current.scrollLeft,
-        );
+        const snapped = computeMeasure(moveEvent.clientX, containerRef.current.scrollLeft);
         onClipPositionChanged({ ...clip, startMeasure: snapped });
       };
 
       const handleMouseUp = (upEvent: MouseEvent) => {
-        if (!draggingRef.current || !containerRef.current) return;
-
+        if (!draggingAudioRef.current || !containerRef.current) return;
         scrollSpeedRef.current = 0;
         if (scrollAnimRef.current !== null) {
           cancelAnimationFrame(scrollAnimRef.current);
           scrollAnimRef.current = null;
         }
-
-        const snapped = computeMeasure(
-          upEvent.clientX,
-          containerRef.current.scrollLeft,
-        );
-
-        updatePosition.mutate(
+        const snapped = computeMeasure(upEvent.clientX, containerRef.current.scrollLeft);
+        updateAudioPosition.mutate(
           { clipId: clip.id, startMeasure: snapped },
           {
             onSuccess: (updated) => onClipPositionChanged(updated),
             onError: () =>
-              onClipPositionChanged({
-                ...clip,
-                startMeasure: draggingRef.current!.originalMeasure,
-              }),
+              onClipPositionChanged({ ...clip, startMeasure: draggingAudioRef.current!.originalMeasure }),
           },
         );
-
-        draggingRef.current = null;
+        draggingAudioRef.current = null;
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
       };
@@ -216,7 +241,60 @@ export function Timeline({
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     },
-    [onClipPositionChanged, updatePosition],
+    [onClipPositionChanged, updateAudioPosition],
+  );
+
+  const handleMidiMouseDown = useCallback(
+    (e: React.MouseEvent, clip: MidiClip) => {
+      e.preventDefault();
+      if (!containerRef.current) return;
+
+      draggingMidiRef.current = {
+        clipId: clip.id,
+        startX: e.clientX,
+        initialScrollLeft: containerRef.current.scrollLeft,
+        originalMeasure: clip.startMeasure,
+      };
+      currentMouseXRef.current = e.clientX;
+      scrollSpeedRef.current = 0;
+
+      const computeMeasure = (mouseX: number, scrollLeft: number) => {
+        const dx =
+          mouseX -
+          draggingMidiRef.current!.startX +
+          scrollLeft -
+          draggingMidiRef.current!.initialScrollLeft;
+        const newMeasure = Math.max(1, draggingMidiRef.current!.originalMeasure + dx / PIXELS_PER_MEASURE);
+        return Math.round(newMeasure * 4) / 4;
+      };
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        if (!draggingMidiRef.current || !containerRef.current) return;
+        currentMouseXRef.current = moveEvent.clientX;
+        const snapped = computeMeasure(moveEvent.clientX, containerRef.current.scrollLeft);
+        onMidiClipPositionChanged({ ...clip, startMeasure: snapped });
+      };
+
+      const handleMouseUp = (upEvent: MouseEvent) => {
+        if (!draggingMidiRef.current || !containerRef.current) return;
+        const snapped = computeMeasure(upEvent.clientX, containerRef.current.scrollLeft);
+        updateMidiPosition.mutate(
+          { clipId: clip.id, startMeasure: snapped },
+          {
+            onSuccess: (updated) => onMidiClipPositionChanged(updated),
+            onError: () =>
+              onMidiClipPositionChanged({ ...clip, startMeasure: draggingMidiRef.current!.originalMeasure }),
+          },
+        );
+        draggingMidiRef.current = null;
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    },
+    [onMidiClipPositionChanged, updateMidiPosition],
   );
 
   const handleUploadAudio = useCallback(
@@ -250,6 +328,47 @@ export function Timeline({
     [getUploadUrl, registerClip, onClipUploaded, organizationId],
   );
 
+  const handleUploadMidi = useCallback(
+    async (trackId: string, file: File, startMeasure: number) => {
+      const contentType = "audio/midi";
+
+      // Parse MIDI to get duration before uploading
+      let durationMs: number | undefined;
+      try {
+        const { Midi } = await import("@tonejs/midi");
+        const arrayBuffer = await file.arrayBuffer();
+        const midi = new Midi(arrayBuffer);
+        if (midi.duration > 0) durationMs = Math.round(midi.duration * 1000);
+      } catch {
+        // skip duration if parsing fails
+      }
+
+      const { storageKey, uploadUrl } = await getUploadUrl.mutateAsync({
+        filename: file.name,
+        contentType,
+        organizationId,
+      });
+
+      await fetch(uploadUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": contentType },
+      });
+
+      const clip = await registerMidiClip.mutateAsync({
+        trackId,
+        filename: file.name,
+        storageKey,
+        organizationId,
+        startMeasure,
+        durationMs,
+      });
+
+      onMidiClipUploaded(clip);
+    },
+    [getUploadUrl, registerMidiClip, onMidiClipUploaded, organizationId],
+  );
+
   const handleDeleteTrack = useCallback(
     (trackId: string) => {
       deleteTrack.mutate({ trackId }, { onSuccess: () => onTrackDeleted(trackId) });
@@ -262,6 +381,13 @@ export function Timeline({
       deleteClip.mutate({ clipId }, { onSuccess: () => onClipDeleted(clipId) });
     },
     [deleteClip, onClipDeleted],
+  );
+
+  const handleDeleteMidiClip = useCallback(
+    (clipId: string) => {
+      deleteMidiClip.mutate({ clipId }, { onSuccess: () => onMidiClipDeleted(clipId) });
+    },
+    [deleteMidiClip, onMidiClipDeleted],
   );
 
   const handleRenameCommit = useCallback(
@@ -278,17 +404,30 @@ export function Timeline({
     [renameTrack, onEditingTrackIdChange, onTrackRenamed],
   );
 
+  const handleInstrumentPresetChanged = useCallback(
+    (trackId: string, preset: number) => {
+      setInstrumentPreset.mutate({ trackId, preset });
+    },
+    [setInstrumentPreset],
+  );
+
   const secondsPerMeasure = (4 * 60) / bpm;
 
   const totalMeasures = useMemo(() => {
-    const lastClipEnd = clips.reduce((max, clip) => {
+    const lastAudioEnd = clips.reduce((max, clip) => {
       const durationMeasures = clip.durationMs
         ? clip.durationMs / 1000 / secondsPerMeasure
         : 1;
       return Math.max(max, clip.startMeasure + durationMeasures);
     }, 0);
-    return Math.max(MIN_MEASURES, Math.ceil(lastClipEnd) + BUFFER_MEASURES);
-  }, [clips, secondsPerMeasure]);
+    const lastMidiEnd = midiClips.reduce((max, clip) => {
+      const durationMeasures = clip.durationMs
+        ? clip.durationMs / 1000 / secondsPerMeasure
+        : 1;
+      return Math.max(max, clip.startMeasure + durationMeasures);
+    }, 0);
+    return Math.max(MIN_MEASURES, Math.ceil(Math.max(lastAudioEnd, lastMidiEnd)) + BUFFER_MEASURES);
+  }, [clips, midiClips, secondsPerMeasure]);
 
   const totalWidth = totalMeasures * PIXELS_PER_MEASURE;
 
@@ -298,45 +437,54 @@ export function Timeline({
       <div className="flex-shrink-0 border-r" style={{ width: LEFT_PANEL_WIDTH }}>
         <div className="bg-muted border-b" style={{ height: RULER_HEIGHT }} />
 
-        {tracks.map((track) => (
-          <ContextMenu key={track.id}>
-            <ContextMenuTrigger asChild>
-              <div
-                className="border-b px-2 flex flex-col justify-center gap-0.5"
-                style={{ height: TRACK_HEIGHT }}
-              >
-                <PhantomInput
-                  defaultValue={track.name}
-                  autoFocus={editingTrackId === track.id}
-                  onFocus={() => onEditingTrackIdChange(track.id)}
-                  onBlur={(e) => {
-                    onEditingTrackIdChange(null);
-                    handleRenameCommit(track.id, e.target.value, track.name);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") e.currentTarget.blur();
-                    if (e.key === "Escape") e.currentTarget.blur();
-                  }}
-                />
-                <Slider
-                  min={0}
-                  max={100}
-                  value={[track.volume]}
-                  onValueChange={([v]) => onVolumeChanged(track.id, v)}
-                  className="w-full [&_[data-slot=slider-track]]:h-1 [&_[data-slot=slider-thumb]]:size-2.5 [&_[data-slot=slider-thumb]]:rounded-sm"
-                />
-              </div>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-              <ContextMenuItem
-                className="text-destructive focus:text-destructive"
-                onSelect={() => handleDeleteTrack(track.id)}
-              >
-                Delete track
-              </ContextMenuItem>
-            </ContextMenuContent>
-          </ContextMenu>
-        ))}
+        {tracks.map((track) => {
+          const trackHasMidi = midiClips.some((c) => c.trackId === track.id);
+          return (
+            <ContextMenu key={track.id}>
+              <ContextMenuTrigger asChild>
+                <div
+                  className="border-b px-2 flex flex-col justify-center gap-0.5"
+                  style={{ height: TRACK_HEIGHT }}
+                >
+                  <PhantomInput
+                    defaultValue={track.name}
+                    autoFocus={editingTrackId === track.id}
+                    onFocus={() => onEditingTrackIdChange(track.id)}
+                    onBlur={(e) => {
+                      onEditingTrackIdChange(null);
+                      handleRenameCommit(track.id, e.target.value, track.name);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") e.currentTarget.blur();
+                      if (e.key === "Escape") e.currentTarget.blur();
+                    }}
+                  />
+                  <div className="flex items-center gap-1">
+                    <Slider
+                      min={-60}
+                      max={6}
+                      step={0.1}
+                      value={[track.volume]}
+                      onValueChange={([v]) => onVolumeChanged(track.id, v)}
+                      className="flex-1 [&_[data-slot=slider-track]]:h-1 [&_[data-slot=slider-thumb]]:size-2.5 [&_[data-slot=slider-thumb]]:rounded-sm"
+                    />
+                    <span className="text-xs text-muted-foreground w-14 text-right shrink-0">
+                      {track.volume.toFixed(1)} dB
+                    </span>
+                  </div>
+                </div>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem
+                  className="text-destructive focus:text-destructive"
+                  onSelect={() => handleDeleteTrack(track.id)}
+                >
+                  Delete track
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          );
+        })}
 
         {/* Add-track placeholder */}
         <div
@@ -376,7 +524,8 @@ export function Timeline({
 
           {/* Track lanes */}
           {tracks.map((track) => {
-            const trackClips = clips.filter((c) => c.trackId === track.id);
+            const trackAudioClips = clips.filter((c) => c.trackId === track.id);
+            const trackMidiClips = midiClips.filter((c) => c.trackId === track.id);
             return (
               <ContextMenu key={track.id}>
                 <ContextMenuTrigger asChild>
@@ -397,7 +546,7 @@ export function Timeline({
                       );
                     }}
                   >
-                    {/* Grid lines — quarter subdivisions + measure boundaries */}
+                    {/* Grid lines */}
                     {Array.from({ length: totalMeasures * 4 }, (_, i) => {
                       const isMeasure = (i + 1) % 4 === 0;
                       return (
@@ -407,15 +556,13 @@ export function Timeline({
                             "absolute top-0 bottom-0 border-r",
                             isMeasure ? "border-border/30" : "border-border/10",
                           )}
-                          style={{
-                            left: ((i + 1) * PIXELS_PER_MEASURE) / 4,
-                          }}
+                          style={{ left: ((i + 1) * PIXELS_PER_MEASURE) / 4 }}
                         />
                       );
                     })}
 
-                    {/* Clips */}
-                    {trackClips.map((clip) => (
+                    {/* Audio clips */}
+                    {trackAudioClips.map((clip) => (
                       <AudioClipView
                         key={clip.id}
                         clip={clip}
@@ -441,6 +588,18 @@ export function Timeline({
                         onDelete={() => handleDeleteClip(clip.id)}
                       />
                     ))}
+
+                    {/* MIDI clips */}
+                    {trackMidiClips.map((clip) => (
+                      <MidiClipView
+                        key={clip.id}
+                        clip={clip}
+                        downloadUrl={downloadUrls.get(clip.file.storageKey)}
+                        secondsPerMeasure={secondsPerMeasure}
+                        onMouseDown={handleMidiMouseDown}
+                        onDelete={() => handleDeleteMidiClip(clip.id)}
+                      />
+                    ))}
                   </div>
                 </ContextMenuTrigger>
                 <ContextMenuContent>
@@ -449,8 +608,13 @@ export function Timeline({
                   >
                     Upload audio
                   </ContextMenuItem>
+                  <ContextMenuItem
+                    onSelect={() => midiInputRefs.current.get(track.id)?.click()}
+                  >
+                    Upload MIDI
+                  </ContextMenuItem>
                 </ContextMenuContent>
-                {/* Hidden file input per track */}
+                {/* Hidden audio file input per track */}
                 <input
                   ref={(el) => {
                     if (el) fileInputRefs.current.set(track.id, el);
@@ -462,11 +626,23 @@ export function Timeline({
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file)
-                      handleUploadAudio(
-                        track.id,
-                        file,
-                        pendingStartMeasureRef.current,
-                      );
+                      handleUploadAudio(track.id, file, pendingStartMeasureRef.current);
+                    e.target.value = "";
+                  }}
+                />
+                {/* Hidden MIDI file input per track */}
+                <input
+                  ref={(el) => {
+                    if (el) midiInputRefs.current.set(track.id, el);
+                    else midiInputRefs.current.delete(track.id);
+                  }}
+                  type="file"
+                  accept=".mid,.midi,audio/midi"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file)
+                      handleUploadMidi(track.id, file, pendingStartMeasureRef.current);
                     e.target.value = "";
                   }}
                 />
@@ -565,6 +741,24 @@ function AudioClipView({
     };
   }, [downloadUrl]);
 
+  const handleExportClip = useCallback(() => {
+    if (!downloadUrl) return;
+    const ext = clip.file.filename.split(".").pop() ?? "mp3";
+    const clipName = clip.name ?? stripExtension(clip.file.filename);
+    fetch(downloadUrl)
+      .then((r) => r.blob())
+      .then((blob) => {
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = `${clipName}.${ext}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      });
+  }, [downloadUrl, clip]);
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -601,6 +795,105 @@ function AudioClipView({
               <span className="text-xs truncate">{displayName}</span>
             )}
           </div>
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onSelect={handleExportClip} disabled={!downloadUrl}>
+          Export clip
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="text-destructive focus:text-destructive"
+          onSelect={onDelete}
+        >
+          Delete clip
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+
+interface MidiClipViewProps {
+  clip: MidiClip;
+  downloadUrl?: string;
+  secondsPerMeasure: number;
+  onMouseDown: (e: React.MouseEvent, clip: MidiClip) => void;
+  onDelete: () => void;
+}
+
+function MidiClipView({ clip, downloadUrl, secondsPerMeasure, onMouseDown, onDelete }: MidiClipViewProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const displayName = clip.name ?? stripExtension(clip.file.filename);
+  const clipWidth = Math.max(
+    PIXELS_PER_MEASURE,
+    clip.durationMs
+      ? (clip.durationMs / 1000 / secondsPerMeasure) * PIXELS_PER_MEASURE
+      : PIXELS_PER_MEASURE,
+  );
+
+  useEffect(() => {
+    if (!downloadUrl || !canvasRef.current) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(downloadUrl);
+        const buf = await res.arrayBuffer();
+        const { Midi } = await import("@tonejs/midi");
+        const midi = new Midi(buf);
+        if (cancelled || !canvasRef.current) return;
+
+        const notes = midi.tracks.flatMap((t) => t.notes);
+        const totalDuration = midi.duration;
+        if (notes.length === 0 || totalDuration === 0) return;
+
+        const minPitch = Math.min(...notes.map((n) => n.midi));
+        const maxPitch = Math.max(...notes.map((n) => n.midi));
+        const pitchRange = Math.max(1, maxPitch - minPitch);
+
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(16,185,129,0.7)";
+
+        const noteH = Math.max(1, canvas.height / (pitchRange + 1));
+        for (const note of notes) {
+          const x = (note.time / totalDuration) * canvas.width;
+          const w = Math.max(1, (note.duration / totalDuration) * canvas.width);
+          const normalizedPitch =
+            minPitch === maxPitch ? 0.5 : (note.midi - minPitch) / pitchRange;
+          const y = canvas.height - normalizedPitch * canvas.height - noteH;
+          ctx.fillRect(x, y, w, noteH);
+        }
+      } catch {
+        // silent: clip shows without preview
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [downloadUrl]);
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div
+          className="absolute top-1 bottom-1 rounded bg-emerald-500/20 border border-emerald-500/40 cursor-grab active:cursor-grabbing overflow-hidden select-none flex items-center px-2"
+          style={{
+            left: (clip.startMeasure - 1) * PIXELS_PER_MEASURE,
+            width: clipWidth,
+          }}
+          onMouseDown={(e) => onMouseDown(e, clip)}
+          title={clip.file.filename}
+        >
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full"
+            width={clipWidth}
+            height={TRACK_HEIGHT - 8}
+          />
+          <span className="relative z-10 text-xs truncate text-emerald-700 dark:text-emerald-300">
+            ♩ {displayName}
+          </span>
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>

@@ -4,3 +4,4 @@
 export * from "./song/index";
 export * from "./track/index";
 export * from "./audio-clip/index";
+export * from "./midi-clip/index";

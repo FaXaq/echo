@@ -6,6 +6,7 @@ import {
   makeUpdateTrackVolume,
   makeDeleteTrack,
   makeRenameTrack,
+  makeSetTrackInstrumentPreset,
 } from "@echo/app";
 
 export const makeTrackRouter = () =>
@@ -23,7 +24,7 @@ export const makeTrackRouter = () =>
         z.object({
           songId: z.string().min(1),
           name: z.string().min(1, "Track name is required"),
-          volume: z.number().int().min(0).max(100).optional(),
+          volume: z.number().min(-60).max(6).optional(),
         }),
       )
       .mutation(async ({ input, ctx }) => {
@@ -38,14 +39,25 @@ export const makeTrackRouter = () =>
       .input(
         z.object({
           trackId: z.string().min(1),
-          volume: z.number().int().min(0).max(100),
+          volumeDb: z.number().min(-60).max(6),
         }),
       )
       .mutation(async ({ input, ctx }) => {
         return makeUpdateTrackVolume({ trackRepo: ctx.track })({
           trackId: input.trackId,
-          volume: input.volume,
+          volumeDb: input.volumeDb,
         });
+      }),
+
+    setInstrumentPreset: authedProcedure
+      .input(
+        z.object({
+          trackId: z.string().min(1),
+          preset: z.number().int().min(0).max(127).nullable(),
+        }),
+      )
+      .mutation(async ({ input, ctx }) => {
+        return makeSetTrackInstrumentPreset({ trackRepo: ctx.track })(input);
       }),
 
     delete: authedProcedure

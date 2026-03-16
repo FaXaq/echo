@@ -17,8 +17,8 @@ const mockSong = {
 };
 
 const mockTracks = [
-  { id: "track-1", songId: "song-1", name: "Drums", volume: 80, order: 1, createdAt: now, updatedAt: now },
-  { id: "track-2", songId: "song-1", name: "Bass", volume: 70, order: 2, createdAt: now, updatedAt: now },
+  { id: "track-1", songId: "song-1", name: "Drums", volume: 0, instrumentPreset: null as number | null, order: 1, createdAt: now, updatedAt: now },
+  { id: "track-2", songId: "song-1", name: "Bass", volume: -6, instrumentPreset: null as number | null, order: 2, createdAt: now, updatedAt: now },
 ];
 
 const mockClips = [
@@ -58,6 +58,7 @@ export const Empty: Story = {
     song: mockSong,
     initialTracks: [],
     initialClips: [],
+    initialMidiClips: [],
     bpm: 120,
   },
 };
@@ -67,6 +68,7 @@ export const WithTracksAndClips: Story = {
     song: mockSong,
     initialTracks: mockTracks,
     initialClips: mockClips,
+    initialMidiClips: [],
     bpm: 120,
   },
 };
@@ -76,6 +78,7 @@ export const SongWithoutBpm: Story = {
     song: { ...mockSong, bpm: null, key: null },
     initialTracks: mockTracks,
     initialClips: [],
+    initialMidiClips: [],
     bpm: 120,
   },
 };

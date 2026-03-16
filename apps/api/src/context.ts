@@ -12,6 +12,7 @@ import { makeEmailNotifierRepo } from "./adapters/email-notifier";
 import { makeSongRepo } from "./adapters/song";
 import { makeTrackRepo } from "./adapters/track";
 import { makeAudioClipRepo } from "./adapters/audio-clip";
+import { makeMidiClipRepo } from "./adapters/midi-clip";
 import { makeFileRepo } from "./adapters/file";
 import { makeFileStorageAdapter } from "./adapters/file-storage";
 import { makeOrganizationRepo } from "./adapters/organization";
@@ -37,6 +38,7 @@ export const makeCreateContext =
       const song = makeSongRepo({ db });
       const track = makeTrackRepo({ db });
       const audioClip = makeAudioClipRepo({ db });
+      const midiClip = makeMidiClipRepo({ db });
       const file = makeFileRepo({ db });
       const organization = makeOrganizationRepo({ headers });
       const userPermission = makeUserPermissionRepo({
@@ -63,6 +65,7 @@ export const makeCreateContext =
         song,
         track,
         audioClip,
+        midiClip,
         file,
         fileStorage,
         organization,

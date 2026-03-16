@@ -21,10 +21,20 @@ export const makeTrackRepo = ({ db }: { db: KyselyDB }): TrackRepoPort => ({
     return toTrack(row);
   },
 
-  updateVolume: async ({ trackId, volume }) => {
+  updateVolume: async ({ trackId, volumeDb }) => {
     const row = await db
       .updateTable("track")
-      .set({ volume, updatedAt: new Date() })
+      .set({ volume: volumeDb, updatedAt: new Date() })
+      .where("id", "=", trackId)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    return toTrack(row);
+  },
+
+  setInstrumentPreset: async ({ trackId, preset }) => {
+    const row = await db
+      .updateTable("track")
+      .set({ instrumentPreset: preset, updatedAt: new Date() })
       .where("id", "=", trackId)
       .returningAll()
       .executeTakeFirstOrThrow();
@@ -51,6 +61,7 @@ function toTrack(row: {
   songId: string;
   name: string;
   volume: number;
+  instrumentPreset: number | null;
   order: number;
   createdAt: Date;
   updatedAt: Date;
@@ -60,6 +71,7 @@ function toTrack(row: {
     songId: row.songId,
     name: row.name,
     volume: row.volume,
+    instrumentPreset: row.instrumentPreset ?? null,
     order: row.order,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,

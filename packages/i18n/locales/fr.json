@@ -147,7 +147,14 @@
     "Failed to upload clip": "Échec du téléchargement du clip",
     "Failed to update volume": "Échec de la mise à jour du volume",
     "Failed to delete track": "Échec de la suppression de la piste",
-    "Failed to delete clip": "Échec de la suppression du clip"
+    "Failed to delete clip": "Échec de la suppression du clip",
+    "Export song": "Exporter la chanson",
+    "Exporting…": "Exportation…",
+    "Export clip": "Exporter le clip",
+    "Upload MIDI": "Importer un fichier MIDI",
+    "Instrument": "Instrument",
+    "Add BPM": "Ajouter un BPM",
+    "Add key": "Ajouter une tonalité"
   },
 
   "emails": {

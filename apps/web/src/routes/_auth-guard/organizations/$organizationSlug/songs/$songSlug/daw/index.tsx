@@ -9,14 +9,17 @@ export const Route = createFileRoute(
   "/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/",
 )({
   loader: async ({ params }) => {
-    const [song, tracks, clips] = await Promise.all([
+    const [song, tracks, clips, midiClips] = await Promise.all([
       trpcLoader.organization.song.get.query({ songId: params.songSlug }),
       trpcLoader.organization.track.list.query({ songId: params.songSlug }),
       trpcLoader.organization.audioClip.listBySong.query({
         songId: params.songSlug,
       }),
+      trpcLoader.organization.midiClip.listBySong.query({
+        songId: params.songSlug,
+      }),
     ]);
-    return { song, tracks, clips };
+    return { song, tracks, clips, midiClips };
   },
   component: DawPage,
 });
@@ -25,7 +28,7 @@ const DEFAULT_BPM = 120;
 
 function DawPage() {
   const { t } = useTranslation("songs");
-  const { song, tracks, clips } = Route.useLoaderData();
+  const { song, tracks, clips, midiClips } = Route.useLoaderData();
   const [bpm, setBpm] = useState(song.bpm ?? DEFAULT_BPM);
   const [key, setKey] = useState(song.key ?? "");
 
@@ -60,7 +63,7 @@ function DawPage() {
           />
         </div>
       </div>
-      <Daw song={song} initialTracks={tracks} initialClips={clips} bpm={bpm} />
+      <Daw song={song} initialTracks={tracks} initialClips={clips} initialMidiClips={midiClips} bpm={bpm} />
     </div>
   );
 }

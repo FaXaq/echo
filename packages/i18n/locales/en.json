@@ -147,7 +147,14 @@
     "Failed to upload clip": "Failed to upload clip",
     "Failed to update volume": "Failed to update volume",
     "Failed to delete track": "Failed to delete track",
-    "Failed to delete clip": "Failed to delete clip"
+    "Failed to delete clip": "Failed to delete clip",
+    "Export song": "Export song",
+    "Exporting…": "Exporting…",
+    "Export clip": "Export clip",
+    "Upload MIDI": "Upload MIDI",
+    "Instrument": "Instrument",
+    "Add BPM": "Add BPM",
+    "Add key": "Add key"
   },
 
   "emails": {

@@ -8,4 +8,5 @@ export * from "./track";
 export * from "./audio-clip";
 export * from "./file";
 export * from "./file-storage";
-export * from "./user-permission"
+export * from "./user-permission";
+export * from "./midi-clip";

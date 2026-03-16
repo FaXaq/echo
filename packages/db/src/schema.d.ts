@@ -65,6 +65,16 @@ export interface Member {
   userId: string;
 }
 
+export interface MidiClip {
+  createdAt: Generated<Timestamp>;
+  durationMs: number | null;
+  fileId: string;
+  id: string;
+  name: string | null;
+  startMeasure: Generated<number>;
+  trackId: string;
+}
+
 export interface Organization {
   createdAt: Timestamp;
   createdBy: string | null;
@@ -104,6 +114,7 @@ export interface Song {
 export interface Track {
   createdAt: Generated<Timestamp>;
   id: string;
+  instrumentPreset: number | null;
   name: string;
   order: number;
   songId: string;
@@ -143,6 +154,7 @@ export interface DB {
   file: File;
   invitation: Invitation;
   member: Member;
+  midiClip: MidiClip;
   organization: Organization;
   session: Session;
   song: Song;

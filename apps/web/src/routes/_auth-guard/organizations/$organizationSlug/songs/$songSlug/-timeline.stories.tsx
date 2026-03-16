@@ -4,8 +4,8 @@ import { Timeline } from "./-timeline";
 const now = new Date().toISOString();
 
 const mockTracks = [
-  { id: "track-1", songId: "song-1", name: "Drums", volume: 80, order: 1, createdAt: now, updatedAt: now },
-  { id: "track-2", songId: "song-1", name: "Bass", volume: 70, order: 2, createdAt: now, updatedAt: now },
+  { id: "track-1", songId: "song-1", name: "Drums", volume: 0, instrumentPreset: null as number | null, order: 1, createdAt: now, updatedAt: now },
+  { id: "track-2", songId: "song-1", name: "Bass", volume: -6, instrumentPreset: null as number | null, order: 2, createdAt: now, updatedAt: now },
 ];
 
 const mockClips = [
@@ -64,11 +64,15 @@ const sharedArgs = {
   organizationId: "org-1",
   editingTrackId: null,
   downloadUrls: new Map<string, string>(),
+  midiClips: [],
   onClipPositionChanged: () => {},
+  onMidiClipPositionChanged: () => {},
   onVolumeChanged: () => {},
   onTrackDeleted: () => {},
   onClipUploaded: () => {},
+  onMidiClipUploaded: () => {},
   onClipDeleted: () => {},
+  onMidiClipDeleted: () => {},
   onClipRenamed: () => {},
   onEditingTrackIdChange: () => {},
   onTrackRenamed: () => {},

@@ -10,6 +10,7 @@ import type {
 import type { makeSongRepo } from "./adapters/song";
 import type { makeTrackRepo } from "./adapters/track";
 import type { makeAudioClipRepo } from "./adapters/audio-clip";
+import type { makeMidiClipRepo } from "./adapters/midi-clip";
 import type { makeFileRepo } from "./adapters/file";
 import type { makeOrganizationRepo } from "./adapters/organization";
 import type { makeUserPermissionRepo } from "./adapters/auth/user-permission";
@@ -30,6 +31,7 @@ export type Context = {
   song: ReturnType<typeof makeSongRepo>;
   track: ReturnType<typeof makeTrackRepo>;
   audioClip: ReturnType<typeof makeAudioClipRepo>;
+  midiClip: ReturnType<typeof makeMidiClipRepo>;
   file: ReturnType<typeof makeFileRepo>;
   fileStorage: FileStoragePort;
   organization: ReturnType<typeof makeOrganizationRepo>;

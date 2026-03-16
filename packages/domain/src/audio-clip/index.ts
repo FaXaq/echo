@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const fileTypeSchema = z.enum(["audio"]);
+export const fileTypeSchema = z.enum(["audio", "midi"]);
 export type FileType = z.infer<typeof fileTypeSchema>;
 
 export type AudioFileId = string;

@@ -9,7 +9,8 @@ export interface TrackRepoPort {
     volume: number;
     order: number;
   }) => Promise<Track>;
-  updateVolume: (input: { trackId: string; volume: number }) => Promise<Track>;
+  updateVolume: (input: { trackId: string; volumeDb: number }) => Promise<Track>;
+  setInstrumentPreset: (input: { trackId: string; preset: number | null }) => Promise<Track>;
   delete: (input: { trackId: string }) => Promise<void>;
   rename: (input: { trackId: string; name: string }) => Promise<Track>;
 }
