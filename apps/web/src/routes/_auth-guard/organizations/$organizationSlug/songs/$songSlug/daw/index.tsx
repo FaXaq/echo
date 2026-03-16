@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { trpcLoader, trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
 import { EditableBadge } from "@/ui/editable-badge";
-import { Daw } from "../-daw";
+import { Daw } from "./-daw";
 
 export const Route = createFileRoute(
   "/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/",
