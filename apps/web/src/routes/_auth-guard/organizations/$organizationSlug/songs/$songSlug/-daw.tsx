@@ -1,10 +1,8 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Trans } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/ui/button";
-import { TrackList } from "./-track-list";
-import { AddTrackForm } from "./-add-track-form";
 import { Timeline } from "./-timeline";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@echo/api/router";
@@ -18,33 +16,31 @@ interface DawProps {
   song: Song;
   initialTracks: Track[];
   initialClips: AudioClip[];
+  bpm: number;
 }
 
-const DEFAULT_BPM = 120;
-
-export function Daw({ song, initialTracks, initialClips }: DawProps) {
+export function Daw({ song, initialTracks, initialClips, bpm }: DawProps) {
   const { t } = useTranslation("songs");
   const [tracks, setTracks] = useState<Track[]>(initialTracks);
   const [clips, setClips] = useState<AudioClip[]>(initialClips);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackPosition, setPlaybackPosition] = useState(0);
+  const [editingTrackId, setEditingTrackId] = useState<string | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const sourceNodesRef = useRef<AudioBufferSourceNode[]>([]);
+  const playbackStartAudioTimeRef = useRef(0);
+  const animFrameRef = useRef<number | null>(null);
   const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(
     new Map(),
   );
 
-  const bpm = song.bpm ?? DEFAULT_BPM;
-
   const updateVolume = trpc.organization.track.updateVolume.useMutation();
+  const createTrack = trpc.organization.track.create.useMutation();
 
   const getDownloadUrlsQuery = trpc.organization.audioClip.getDownloadUrls.useQuery(
     { storageKeys: clips.map((c) => c.file.storageKey) },
     { enabled: clips.length > 0 },
   );
-
-  const handleTrackAdded = useCallback((track: Track) => {
-    setTracks((prev) => [...prev, track]);
-  }, []);
 
   const handleTrackDeleted = useCallback((trackId: string) => {
     setTracks((prev) => prev.filter((t) => t.id !== trackId));
@@ -81,6 +77,39 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
   const handleClipDeleted = useCallback((clipId: string) => {
     setClips((prev) => prev.filter((c) => c.id !== clipId));
   }, []);
+
+  const handleTrackRenamed = useCallback((trackId: string, name: string) => {
+    setTracks((prev) =>
+      prev.map((t) => (t.id === trackId ? { ...t, name } : t)),
+    );
+  }, []);
+
+  const handleClipRenamed = useCallback((clipId: string, name: string) => {
+    setClips((prev) =>
+      prev.map((c) => (c.id === clipId ? { ...c, name } : c)),
+    );
+  }, []);
+
+  const downloadUrlsMap = useMemo(
+    () =>
+      new Map(
+        (getDownloadUrlsQuery.data ?? []).map((e) => [e.key, e.url]),
+      ),
+    [getDownloadUrlsQuery.data],
+  );
+
+  const handleAddTrack = useCallback(() => {
+    const name = `Track ${tracks.length + 1}`;
+    createTrack.mutate(
+      { songId: song.id, name },
+      {
+        onSuccess: (track) => {
+          setTracks((prev) => [...prev, track]);
+          setEditingTrackId(track.id);
+        },
+      },
+    );
+  }, [createTrack, song.id, tracks.length]);
 
   const handlePlay = async () => {
     if (isPlaying) return;
@@ -125,9 +154,24 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
     );
 
     setIsPlaying(true);
+
+    playbackStartAudioTimeRef.current = ctx.currentTime;
+    const tick = () => {
+      if (!audioCtxRef.current) return;
+      const elapsed =
+        audioCtxRef.current.currentTime - playbackStartAudioTimeRef.current;
+      setPlaybackPosition(elapsed / secondsPerMeasure);
+      animFrameRef.current = requestAnimationFrame(tick);
+    };
+    animFrameRef.current = requestAnimationFrame(tick);
   };
 
   const handleStop = () => {
+    if (animFrameRef.current !== null) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    setPlaybackPosition(0);
     sourceNodesRef.current.forEach((node) => {
       try {
         node.stop();
@@ -158,25 +202,24 @@ export function Daw({ song, initialTracks, initialClips }: DawProps) {
         </div>
       </div>
 
-      <TrackList
-        tracks={tracks}
-        clips={clips}
-        songId={song.id}
-        organizationId={song.organizationId}
-        onTrackDeleted={handleTrackDeleted}
-        onVolumeChanged={handleVolumeChanged}
-        onClipUploaded={handleClipUploaded}
-        onClipDeleted={handleClipDeleted}
-      />
-
-      <AddTrackForm songId={song.id} onTrackAdded={handleTrackAdded} />
-
       <Timeline
         tracks={tracks}
         clips={clips}
         bpm={bpm}
+        playbackPosition={playbackPosition}
+        isPlaying={isPlaying}
+        organizationId={song.organizationId}
+        editingTrackId={editingTrackId}
+        downloadUrls={downloadUrlsMap}
         onClipPositionChanged={handleClipPositionChanged}
         onVolumeChanged={handleVolumeChanged}
+        onTrackDeleted={handleTrackDeleted}
+        onClipUploaded={handleClipUploaded}
+        onClipDeleted={handleClipDeleted}
+        onClipRenamed={handleClipRenamed}
+        onEditingTrackIdChange={setEditingTrackId}
+        onTrackRenamed={handleTrackRenamed}
+        onAddTrack={handleAddTrack}
       />
     </div>
   );

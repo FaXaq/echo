@@ -34,6 +34,16 @@ export const makeTrackRepo = ({ db }: { db: KyselyDB }): TrackRepoPort => ({
   delete: async ({ trackId }) => {
     await db.deleteFrom("track").where("id", "=", trackId).execute();
   },
+
+  rename: async ({ trackId, name }) => {
+    const row = await db
+      .updateTable("track")
+      .set({ name, updatedAt: new Date() })
+      .where("id", "=", trackId)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    return toTrack(row);
+  },
 });
 
 function toTrack(row: {

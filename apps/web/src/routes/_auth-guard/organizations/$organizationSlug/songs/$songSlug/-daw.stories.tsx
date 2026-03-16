@@ -26,6 +26,7 @@ const mockClips = [
     id: "clip-1",
     trackId: "track-1",
     fileId: "file-1",
+    name: null as string | null,
     file: {
       id: "file-1",
       filename: "drums.mp3",
@@ -57,6 +58,7 @@ export const Empty: Story = {
     song: mockSong,
     initialTracks: [],
     initialClips: [],
+    bpm: 120,
   },
 };
 
@@ -65,6 +67,7 @@ export const WithTracksAndClips: Story = {
     song: mockSong,
     initialTracks: mockTracks,
     initialClips: mockClips,
+    bpm: 120,
   },
 };
 
@@ -73,5 +76,6 @@ export const SongWithoutBpm: Story = {
     song: { ...mockSong, bpm: null, key: null },
     initialTracks: mockTracks,
     initialClips: [],
+    bpm: 120,
   },
 };

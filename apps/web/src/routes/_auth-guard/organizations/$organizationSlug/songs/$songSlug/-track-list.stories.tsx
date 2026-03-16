@@ -14,6 +14,7 @@ const mockClips = [
     id: "clip-1",
     trackId: "track-1",
     fileId: "file-1",
+    name: null as string | null,
     file: {
       id: "file-1",
       filename: "drums.mp3",

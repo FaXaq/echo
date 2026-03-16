@@ -13,6 +13,7 @@ const mockClips = [
     id: "clip-1",
     trackId: "track-1",
     fileId: "file-1",
+    name: null as string | null,
     file: {
       id: "file-1",
       filename: "drums.mp3",
@@ -29,6 +30,7 @@ const mockClips = [
     id: "clip-2",
     trackId: "track-2",
     fileId: "file-2",
+    name: null as string | null,
     file: {
       id: "file-2",
       filename: "bass.mp3",
@@ -55,32 +57,44 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const sharedArgs = {
+  bpm: 120,
+  playbackPosition: 0,
+  isPlaying: false,
+  organizationId: "org-1",
+  editingTrackId: null,
+  downloadUrls: new Map<string, string>(),
+  onClipPositionChanged: () => {},
+  onVolumeChanged: () => {},
+  onTrackDeleted: () => {},
+  onClipUploaded: () => {},
+  onClipDeleted: () => {},
+  onClipRenamed: () => {},
+  onEditingTrackIdChange: () => {},
+  onTrackRenamed: () => {},
+  onAddTrack: () => {},
+};
+
 export const Empty: Story = {
   args: {
+    ...sharedArgs,
     tracks: [],
     clips: [],
-    bpm: 120,
-    onClipPositionChanged: () => {},
-    onVolumeChanged: () => {},
   },
 };
 
 export const WithTracksAndClips: Story = {
   args: {
+    ...sharedArgs,
     tracks: mockTracks,
     clips: mockClips,
-    bpm: 120,
-    onClipPositionChanged: () => {},
-    onVolumeChanged: () => {},
   },
 };
 
 export const SingleTrack: Story = {
   args: {
+    ...sharedArgs,
     tracks: [mockTracks[0]],
     clips: [mockClips[0]],
-    bpm: 120,
-    onClipPositionChanged: () => {},
-    onVolumeChanged: () => {},
   },
 };

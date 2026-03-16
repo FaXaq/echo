@@ -16,6 +16,7 @@ export interface AudioClipRepoPort {
     startMeasure: number;
   }) => Promise<AudioClip>;
   delete: (input: { clipId: string }) => Promise<void>;
+  rename: (input: { clipId: string; name: string }) => Promise<AudioClip>;
 }
 
 export type { AudioClip };

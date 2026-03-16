@@ -32,6 +32,7 @@ export interface AudioClip {
   durationMs: number | null;
   fileId: string;
   id: string;
+  name: string | null;
   startMeasure: Generated<number>;
   trackId: string;
 }

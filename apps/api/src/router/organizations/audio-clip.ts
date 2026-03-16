@@ -7,6 +7,7 @@ import {
   makeUpdateAudioClipPosition,
   makeDeleteAudioClip,
   makeGetSignedUrls,
+  makeRenameAudioClip,
 } from "@echo/app";
 
 export const makeAudioClipRouter = () =>
@@ -93,5 +94,11 @@ export const makeAudioClipRouter = () =>
         return makeGetSignedUrls({ fileStorage: ctx.fileStorage })({
           storageKeys: input.storageKeys,
         });
+      }),
+
+    rename: authedProcedure
+      .input(z.object({ clipId: z.string().min(1), name: z.string().min(1) }))
+      .mutation(async ({ input, ctx }) => {
+        return makeRenameAudioClip({ audioClipRepo: ctx.audioClip })(input);
       }),
   });

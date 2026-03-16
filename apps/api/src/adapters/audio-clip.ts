@@ -14,6 +14,7 @@ export const makeAudioClipRepo = ({
         "audioClip.id",
         "audioClip.trackId",
         "audioClip.fileId",
+        "audioClip.name",
         "audioClip.durationMs",
         "audioClip.startMeasure",
         "audioClip.createdAt",
@@ -37,6 +38,7 @@ export const makeAudioClipRepo = ({
         "audioClip.id",
         "audioClip.trackId",
         "audioClip.fileId",
+        "audioClip.name",
         "audioClip.durationMs",
         "audioClip.startMeasure",
         "audioClip.createdAt",
@@ -59,6 +61,7 @@ export const makeAudioClipRepo = ({
         "audioClip.id",
         "audioClip.trackId",
         "audioClip.fileId",
+        "audioClip.name",
         "audioClip.durationMs",
         "audioClip.startMeasure",
         "audioClip.createdAt",
@@ -91,6 +94,7 @@ export const makeAudioClipRepo = ({
         "audioClip.id",
         "audioClip.trackId",
         "audioClip.fileId",
+        "audioClip.name",
         "audioClip.durationMs",
         "audioClip.startMeasure",
         "audioClip.createdAt",
@@ -118,6 +122,35 @@ export const makeAudioClipRepo = ({
         "audioClip.id",
         "audioClip.trackId",
         "audioClip.fileId",
+        "audioClip.name",
+        "audioClip.durationMs",
+        "audioClip.startMeasure",
+        "audioClip.createdAt",
+        "file.storageKey",
+        "file.filename",
+        "file.type",
+        "file.organizationId",
+        "file.createdAt as fileCreatedAt",
+      ])
+      .where("audioClip.id", "=", clipId)
+      .executeTakeFirstOrThrow();
+    return toAudioClip(row);
+  },
+
+  rename: async ({ clipId, name }) => {
+    await db
+      .updateTable("audioClip")
+      .set({ name })
+      .where("id", "=", clipId)
+      .execute();
+    const row = await db
+      .selectFrom("audioClip")
+      .innerJoin("file", "file.id", "audioClip.fileId")
+      .select([
+        "audioClip.id",
+        "audioClip.trackId",
+        "audioClip.fileId",
+        "audioClip.name",
         "audioClip.durationMs",
         "audioClip.startMeasure",
         "audioClip.createdAt",
@@ -141,6 +174,7 @@ function toAudioClip(row: {
   id: string;
   trackId: string;
   fileId: string;
+  name: string | null;
   durationMs: number | null;
   startMeasure: number;
   createdAt: Date;
@@ -154,6 +188,7 @@ function toAudioClip(row: {
     id: row.id,
     trackId: row.trackId,
     fileId: row.fileId,
+    name: row.name,
     file: {
       id: row.fileId,
       storageKey: row.storageKey,

@@ -28,6 +28,20 @@ export const makeSongRepo = ({ db }: { db: KyselyDB }): SongRepoPort => ({
       .executeTakeFirst();
     return row ? toSong(row) : null;
   },
+
+  update: async ({ songId, bpm, key }) => {
+    const row = await db
+      .updateTable("song")
+      .set({
+        ...(bpm !== undefined ? { bpm } : {}),
+        ...(key !== undefined ? { key } : {}),
+        updatedAt: new Date(),
+      })
+      .where("id", "=", songId)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    return toSong(row);
+  },
 });
 
 function toSong(row: {

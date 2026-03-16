@@ -11,6 +11,7 @@ export interface TrackRepoPort {
   }) => Promise<Track>;
   updateVolume: (input: { trackId: string; volume: number }) => Promise<Track>;
   delete: (input: { trackId: string }) => Promise<void>;
+  rename: (input: { trackId: string; name: string }) => Promise<Track>;
 }
 
 export type { Track };

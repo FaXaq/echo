@@ -5,6 +5,7 @@ import {
   makeCreateTrack,
   makeUpdateTrackVolume,
   makeDeleteTrack,
+  makeRenameTrack,
 } from "@echo/app";
 
 export const makeTrackRouter = () =>
@@ -53,5 +54,16 @@ export const makeTrackRouter = () =>
         return makeDeleteTrack({ trackRepo: ctx.track })({
           trackId: input.trackId,
         });
+      }),
+
+    rename: authedProcedure
+      .input(
+        z.object({
+          trackId: z.string().min(1),
+          name: z.string().min(1, "Track name is required"),
+        }),
+      )
+      .mutation(async ({ input, ctx }) => {
+        return makeRenameTrack({ trackRepo: ctx.track })(input);
       }),
   });

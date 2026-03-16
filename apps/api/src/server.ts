@@ -38,7 +38,7 @@ const loggerInstance = toFastifyLogger(
   }),
 );
 
-const server = Fastify({ loggerInstance });
+const server = Fastify({ loggerInstance, maxParamLength: 1000 });
 
 await server.register(cors, {
   origin: appConfig.auth.trustedOrigins ?? true,

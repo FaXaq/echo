@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
-import { makeListSongs, makeCreateSong, makeGetSong } from "@echo/app";
+import { makeListSongs, makeCreateSong, makeGetSong, makeUpdateSong } from "@echo/app";
 import { appErrorToTRPC } from "../../lib/errors";
 
 export const makeSongRouter = () =>
@@ -49,6 +49,22 @@ export const makeSongRouter = () =>
           return await makeGetSong({ songRepo: ctx.song })({
             songId: input.songId,
           });
+        } catch (e) {
+          throw appErrorToTRPC(e);
+        }
+      }),
+
+    update: authedProcedure
+      .input(
+        z.object({
+          songId: z.string().min(1),
+          bpm: z.number().int().positive().optional(),
+          key: z.string().nullable().optional(),
+        }),
+      )
+      .mutation(async ({ input, ctx }) => {
+        try {
+          return await makeUpdateSong({ songRepo: ctx.song })(input);
         } catch (e) {
           throw appErrorToTRPC(e);
         }
