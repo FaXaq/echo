@@ -100,6 +100,48 @@ function stripExtension(filename: string): string {
   return filename.replace(/\.[^.]+$/, "");
 }
 
+// T003: Detect file type from DataTransferItemList (during dragover — filename not yet available)
+function detectFileTypeFromItems(items: DataTransferItemList): "audio" | "midi" | null {
+  if (!items.length) return null;
+  const item = items[0];
+  if (item.kind !== "file") return null;
+  const mime = item.type.toLowerCase();
+  const entry = item.webkitGetAsEntry?.();
+  const name = (entry?.name ?? "").toLowerCase();
+  if (mime === "audio/midi" || mime === "audio/x-midi" || name.endsWith(".mid") || name.endsWith(".midi"))
+    return "midi";
+  if (mime.startsWith("audio/") || /\.(wav|mp3|ogg|flac|aac|m4a)$/.test(name))
+    return "audio";
+  return null;
+}
+
+// T003: Detect file type from a File object (during ondrop — full filename available)
+function detectFileTypeFromFile(file: File): "audio" | "midi" | null {
+  const mime = file.type.toLowerCase();
+  const name = file.name.toLowerCase();
+  if (mime === "audio/midi" || mime === "audio/x-midi" || name.endsWith(".mid") || name.endsWith(".midi"))
+    return "midi";
+  if (mime.startsWith("audio/") || /\.(wav|mp3|ogg|flac|aac|m4a)$/.test(name))
+    return "audio";
+  return null;
+}
+
+// T004: Compute ghost clip position from a drag event
+function computeGhostPosition(
+  e: React.DragEvent<HTMLDivElement>,
+  container: HTMLDivElement,
+  tracks: Track[],
+): { trackIndex: number; startMeasure: number } | null {
+  if (tracks.length === 0) return null;
+  const rect = container.getBoundingClientRect();
+  const pixelY = e.clientY - rect.top;
+  if (pixelY < RULER_HEIGHT) return null; // cursor over ruler — no valid track target
+  const pixelX = e.clientX - rect.left + container.scrollLeft;
+  const startMeasure = Math.max(1, Math.round((pixelX / PIXELS_PER_MEASURE) * 4) / 4);
+  const trackIndex = Math.max(0, Math.min(tracks.length - 1, Math.floor((pixelY - RULER_HEIGHT) / TRACK_HEIGHT)));
+  return { trackIndex, startMeasure };
+}
+
 export function Timeline({
   tracks,
   clips,
@@ -144,6 +186,17 @@ export function Timeline({
   const midiInputRefs = useRef<Map<string, HTMLInputElement>>(new Map());
 
   const [editingClipId, setEditingClipId] = useState<string | null>(null);
+
+  // T002: Drag & drop ghost state
+  type DragGhost = {
+    trackIndex: number;
+    startMeasure: number;
+    fileType: "audio" | "midi";
+    durationMs?: number;  // set after drop while upload is in progress
+    uploading?: boolean;
+  };
+  const [dragGhost, setDragGhost] = useState<DragGhost | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const updateAudioPosition = trpc.organization.audioClip.updatePosition.useMutation();
   const updateMidiPosition = trpc.organization.midiClip.updatePosition.useMutation();
@@ -404,12 +457,89 @@ export function Timeline({
     [renameTrack, onEditingTrackIdChange, onTrackRenamed],
   );
 
-  const handleInstrumentPresetChanged = useCallback(
-    (trackId: string, preset: number) => {
-      setInstrumentPreset.mutate({ trackId, preset });
+  // T005/T010: dragenter — activate drop zone indicator only (file parse happens in dragover)
+  const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const fileType = detectFileTypeFromItems(e.dataTransfer.items);
+    if (fileType) setIsDragActive(true);
+  }, []);
+
+  // T006/T011: dragover — update ghost position only (file content unavailable until drop)
+  const handleDragOver = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      if (!containerRef.current) return;
+      const fileType = detectFileTypeFromItems(e.dataTransfer.items);
+      if (!fileType) {
+        setDragGhost(null);
+        return;
+      }
+      setIsDragActive(true);
+      const pos = computeGhostPosition(e, containerRef.current, tracks);
+      // Preserve durationMs/uploading fields if ghost already exists (set after drop)
+      setDragGhost((prev) =>
+        pos ? { ...prev, ...pos, fileType } : null,
+      );
     },
-    [setInstrumentPreset],
+    [tracks],
   );
+
+  // T007: dragleave — only clear state when pointer actually leaves the container
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    if (!containerRef.current.contains(e.relatedTarget as Node)) {
+      setDragGhost(null);
+      setIsDragActive(false);
+    }
+  }, []);
+
+  // T008/T012/T015: drop — parse duration, keep ghost visible while uploading, clear when done
+  const handleDrop = useCallback(
+    async (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragActive(false);
+      if (!containerRef.current || tracks.length === 0) { setDragGhost(null); return; }
+      const file = e.dataTransfer.files[0];
+      if (!file) { setDragGhost(null); return; }
+      const fileType = detectFileTypeFromFile(file);
+      if (!fileType) { setDragGhost(null); return; }
+      const pos = computeGhostPosition(e, containerRef.current, tracks);
+      if (!pos || !tracks[pos.trackIndex]) { setDragGhost(null); return; }
+
+      // Parse duration now — file is accessible after drop
+      let durationMs: number | undefined;
+      if (fileType === "audio") {
+        durationMs = await getAudioDurationMs(file);
+      } else {
+        try {
+          const { Midi } = await import("@tonejs/midi");
+          const midi = new Midi(await file.arrayBuffer());
+          if (midi.duration > 0) durationMs = Math.round(midi.duration * 1000);
+        } catch { /* leave undefined */ }
+      }
+
+      // Update ghost with real dimensions; keep it visible as a loading indicator
+      setDragGhost({ ...pos, fileType, durationMs, uploading: true });
+
+      try {
+        const trackId = tracks[pos.trackIndex].id;
+        if (fileType === "audio") {
+          await handleUploadAudio(trackId, file, pos.startMeasure);
+        } else {
+          await handleUploadMidi(trackId, file, pos.startMeasure);
+        }
+      } finally {
+        setDragGhost(null);
+      }
+    },
+    [tracks, handleUploadAudio, handleUploadMidi],
+  );
+
+  // T017: dragend — clear ghost if drag is cancelled without a drop (e.g. Escape)
+  const handleDragEnd = useCallback(() => {
+    setDragGhost(null);
+    setIsDragActive(false);
+  }, []);
 
   const secondsPerMeasure = (4 * 60) / bpm;
 
@@ -496,8 +626,16 @@ export function Timeline({
         </div>
       </div>
 
-      {/* Scrollable timeline */}
-      <div className="flex-1 overflow-x-auto min-w-0" ref={containerRef}>
+      {/* Scrollable timeline — T014: ring when drop zone active; T005/T016: drag events only here, not on left panel */}
+      <div
+        className={cn("flex-1 overflow-x-auto min-w-0", isDragActive && "ring-2 ring-inset ring-primary/40")}
+        ref={containerRef}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onDragEnd={handleDragEnd}
+      >
         <div className="relative" style={{ width: totalWidth }}>
           {/* Ruler */}
           <div
@@ -656,6 +794,42 @@ export function Timeline({
               style={{ height: TRACK_HEIGHT }}
             />
           )}
+
+          {/* T009/T013: Ghost clip overlay — 2-measure default during drag, correct width after drop */}
+          {dragGhost && (() => {
+            const { durationMs, uploading } = dragGhost;
+            const ghostWidth = durationMs
+              ? Math.max(PIXELS_PER_MEASURE, (durationMs / 1000 / secondsPerMeasure) * PIXELS_PER_MEASURE)
+              : PIXELS_PER_MEASURE * 2;
+            const durationLabel = durationMs
+              ? durationMs >= 60_000
+                ? `${Math.floor(durationMs / 60_000)}m ${String(Math.floor((durationMs % 60_000) / 1000)).padStart(2, "0")}s`
+                : `${(durationMs / 1000).toFixed(1)}s`
+              : null;
+            return (
+              <div
+                className={cn(
+                  "absolute pointer-events-none border-2 rounded z-20 flex items-center px-1.5 overflow-hidden",
+                  uploading ? "border-solid opacity-70 animate-pulse" : "border-dashed opacity-60",
+                  dragGhost.fileType === "audio"
+                    ? "border-primary bg-primary/20"
+                    : "border-emerald-500 bg-emerald-500/20",
+                )}
+                style={{
+                  left: (dragGhost.startMeasure - 1) * PIXELS_PER_MEASURE,
+                  top: RULER_HEIGHT + dragGhost.trackIndex * TRACK_HEIGHT + 4,
+                  width: ghostWidth,
+                  height: TRACK_HEIGHT - 8,
+                }}
+              >
+                {durationLabel && (
+                  <span className="text-xs font-medium truncate leading-none">
+                    {durationLabel}
+                  </span>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Playback cursor */}
           <div
