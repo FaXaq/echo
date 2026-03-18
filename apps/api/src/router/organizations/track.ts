@@ -7,6 +7,7 @@ import {
   makeDeleteTrack,
   makeRenameTrack,
   makeSetTrackInstrumentPreset,
+  makeReorderTracks,
 } from "@echo/app";
 
 export const makeTrackRouter = () =>
@@ -77,5 +78,19 @@ export const makeTrackRouter = () =>
       )
       .mutation(async ({ input, ctx }) => {
         return makeRenameTrack({ trackRepo: ctx.track })(input);
+      }),
+
+    reorder: authedProcedure
+      .input(
+        z.object({
+          songId: z.string().min(1),
+          orderedTrackIds: z.array(z.string().min(1)),
+        }),
+      )
+      .mutation(async ({ input, ctx }) => {
+        return makeReorderTracks({ trackRepo: ctx.track })({
+          songId: input.songId,
+          orderedTrackIds: input.orderedTrackIds,
+        });
       }),
   });

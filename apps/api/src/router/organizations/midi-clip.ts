@@ -6,6 +6,7 @@ import {
   makeUpdateMidiClipPosition,
   makeRenameMidiClip,
   makeDeleteMidiClip,
+  makeDeleteManyMidiClips,
   makeGetSignedUrls,
 } from "@echo/app";
 
@@ -49,12 +50,17 @@ export const makeMidiClipRouter = () =>
         z.object({
           clipId: z.string().min(1),
           startMeasure: z.number().positive(),
+          trackId: z.string().optional(),
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeUpdateMidiClipPosition({ midiClipRepo: ctx.midiClip })({
+        return makeUpdateMidiClipPosition({
+          midiClipRepo: ctx.midiClip,
+          trackRepo: ctx.track,
+        })({
           clipId: input.clipId,
           startMeasure: input.startMeasure,
+          trackId: input.trackId,
         });
       }),
 
@@ -75,6 +81,14 @@ export const makeMidiClipRouter = () =>
       .query(async ({ input, ctx }) => {
         return makeGetSignedUrls({ fileStorage: ctx.fileStorage })({
           storageKeys: input.storageKeys,
+        });
+      }),
+
+    deleteMany: authedProcedure
+      .input(z.object({ clipIds: z.array(z.string().min(1)).min(1) }))
+      .mutation(async ({ input, ctx }) => {
+        return makeDeleteManyMidiClips({ midiClipRepo: ctx.midiClip })({
+          clipIds: input.clipIds,
         });
       }),
   });

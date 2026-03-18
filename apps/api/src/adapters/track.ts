@@ -12,6 +12,15 @@ export const makeTrackRepo = ({ db }: { db: KyselyDB }): TrackRepoPort => ({
     return rows.map(toTrack);
   },
 
+  findById: async ({ trackId }) => {
+    const row = await db
+      .selectFrom("track")
+      .selectAll()
+      .where("id", "=", trackId)
+      .executeTakeFirst();
+    return row ? toTrack(row) : null;
+  },
+
   create: async ({ id, songId, name, volume, order }) => {
     const row = await db
       .insertInto("track")
@@ -53,6 +62,18 @@ export const makeTrackRepo = ({ db }: { db: KyselyDB }): TrackRepoPort => ({
       .returningAll()
       .executeTakeFirstOrThrow();
     return toTrack(row);
+  },
+
+  reorder: async ({ orderedTrackIds }) => {
+    await db.transaction().execute(async (trx) => {
+      for (let i = 0; i < orderedTrackIds.length; i++) {
+        await trx
+          .updateTable("track")
+          .set({ order: i, updatedAt: new Date() })
+          .where("id", "=", orderedTrackIds[i])
+          .execute();
+      }
+    });
   },
 });
 

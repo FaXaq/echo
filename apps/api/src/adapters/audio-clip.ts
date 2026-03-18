@@ -109,10 +109,14 @@ export const makeAudioClipRepo = ({
     return toAudioClip(row);
   },
 
-  updatePosition: async ({ clipId, startMeasure }) => {
+  updatePosition: async ({ clipId, startMeasure, trackId }) => {
+    const updates: { startMeasure: number; trackId?: string } = { startMeasure };
+    if (trackId !== undefined) {
+      updates.trackId = trackId;
+    }
     await db
       .updateTable("audioClip")
-      .set({ startMeasure })
+      .set(updates)
       .where("id", "=", clipId)
       .execute();
     const row = await db
@@ -167,6 +171,18 @@ export const makeAudioClipRepo = ({
 
   delete: async ({ clipId }) => {
     await db.deleteFrom("audioClip").where("id", "=", clipId).execute();
+  },
+
+  deleteMany: async ({ clipIds }) => {
+    if (clipIds.length === 0) return [];
+    const rows = await db
+      .selectFrom("audioClip")
+      .innerJoin("file", "file.id", "audioClip.fileId")
+      .select(["file.storageKey"])
+      .where("audioClip.id", "in", clipIds)
+      .execute();
+    await db.deleteFrom("audioClip").where("id", "in", clipIds).execute();
+    return rows.map((r) => ({ storageKey: r.storageKey }));
   },
 });
 

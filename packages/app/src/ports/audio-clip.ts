@@ -14,8 +14,10 @@ export interface AudioClipRepoPort {
   updatePosition: (input: {
     clipId: string;
     startMeasure: number;
+    trackId?: string;
   }) => Promise<AudioClip>;
   delete: (input: { clipId: string }) => Promise<void>;
+  deleteMany: (input: { clipIds: string[] }) => Promise<{ storageKey: string }[]>;
   rename: (input: { clipId: string; name: string }) => Promise<AudioClip>;
 }
 

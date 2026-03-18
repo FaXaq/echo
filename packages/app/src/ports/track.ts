@@ -2,6 +2,7 @@ import type { Track } from "@echo/domain";
 
 export interface TrackRepoPort {
   list: (input: { songId: string }) => Promise<Track[]>;
+  findById: (input: { trackId: string }) => Promise<Track | null>;
   create: (input: {
     id: string;
     songId: string;
@@ -13,6 +14,7 @@ export interface TrackRepoPort {
   setInstrumentPreset: (input: { trackId: string; preset: number | null }) => Promise<Track>;
   delete: (input: { trackId: string }) => Promise<void>;
   rename: (input: { trackId: string; name: string }) => Promise<Track>;
+  reorder: (input: { orderedTrackIds: string[] }) => Promise<void>;
 }
 
 export type { Track };

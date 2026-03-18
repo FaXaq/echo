@@ -6,6 +6,7 @@ import {
   makeRegisterAudioClip,
   makeUpdateAudioClipPosition,
   makeDeleteAudioClip,
+  makeDeleteManyAudioClips,
   makeGetSignedUrls,
   makeRenameAudioClip,
 } from "@echo/app";
@@ -66,12 +67,17 @@ export const makeAudioClipRouter = () =>
         z.object({
           clipId: z.string().min(1),
           startMeasure: z.number().positive(),
+          trackId: z.string().optional(),
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeUpdateAudioClipPosition({ audioClipRepo: ctx.audioClip })({
+        return makeUpdateAudioClipPosition({
+          audioClipRepo: ctx.audioClip,
+          trackRepo: ctx.track,
+        })({
           clipId: input.clipId,
           startMeasure: input.startMeasure,
+          trackId: input.trackId,
         });
       }),
 
@@ -100,5 +106,14 @@ export const makeAudioClipRouter = () =>
       .input(z.object({ clipId: z.string().min(1), name: z.string().min(1) }))
       .mutation(async ({ input, ctx }) => {
         return makeRenameAudioClip({ audioClipRepo: ctx.audioClip })(input);
+      }),
+
+    deleteMany: authedProcedure
+      .input(z.object({ clipIds: z.array(z.string().min(1)).min(1) }))
+      .mutation(async ({ input, ctx }) => {
+        return makeDeleteManyAudioClips({
+          audioClipRepo: ctx.audioClip,
+          fileStorage: ctx.fileStorage,
+        })({ clipIds: input.clipIds });
       }),
   });

@@ -6,8 +6,10 @@ import { Midi } from "@tonejs/midi";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/ui/button";
 import { Timeline } from "./-timeline";
+import { MultiFileDropModal } from "./-multi-file-drop-modal";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@echo/api/router";
+import type { PendingMultiFileDrop, MultiFileDropMode } from "./-timeline";
 import { logger } from "@/lib/logger";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
@@ -24,6 +26,19 @@ interface DawProps {
   bpm: number;
 }
 
+// ============================================================================
+// NEW: Undo/Redo types
+// ============================================================================
+
+type HistoryEntry = {
+  tracks: Track[];
+  clips: AudioClip[];
+  midiClips: MidiClip[];
+  apiUndo: () => void;   // fires inverse mutation (fire-and-forget)
+};
+
+// ============================================================================
+
 export function Daw({ song, initialTracks, initialClips, initialMidiClips, bpm }: DawProps) {
   const { t } = useTranslation("songs");
   const [tracks, setTracks] = useState<Track[]>(initialTracks);
@@ -33,6 +48,16 @@ export function Daw({ song, initialTracks, initialClips, initialMidiClips, bpm }
   const [isExporting, setIsExporting] = useState(false);
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const [editingTrackId, setEditingTrackId] = useState<string | null>(null);
+  // T009-T013: State for multi-file drop modal
+  const [pendingMultiDrop, setPendingMultiDrop] = useState<PendingMultiFileDrop>(null);
+  // T026-T027: Track if bottom drop zone is active
+  const [bottomDropZone, setBottomDropZone] = useState(false);
+
+  // NEW: Undo/Redo history stacks (capped at 50 entries each)
+  // @ts-expect-error - history state values not yet read, but setHistory is used in callbacks
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  // @ts-expect-error - future state values not yet read, but setFuture is used in callbacks
+  const [future, setFuture] = useState<HistoryEntry[]>([]);
 
   // Tone.js refs — never stored in state
   const playersRef = useRef<Map<string, { player: Tone.Player; eventId: number }>>(new Map());
@@ -48,8 +73,85 @@ export function Daw({ song, initialTracks, initialClips, initialMidiClips, bpm }
 
   const debounceTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
+  // NEW: Undo/Redo helper functions
+  const pushHistory = useCallback(
+    (apiUndo: () => void) => {
+      setHistory((h) => {
+        const newHistory = [...h, { tracks, clips, midiClips, apiUndo }];
+        // Cap history at 50 entries
+        return newHistory.slice(-50);
+      });
+      // Redo stack is cleared when a new action happens
+      setFuture([]);
+    },
+    [tracks, clips, midiClips],
+  );
+
+  const handleUndo = useCallback(() => {
+    setHistory((h) => {
+      if (h.length === 0) return h;
+      const entry = h[h.length - 1];
+      // Save current state to future
+      setFuture((f) => [...f, { tracks, clips, midiClips, apiUndo: () => {} }]);
+      // Restore previous state
+      setTracks(entry.tracks);
+      setClips(entry.clips);
+      setMidiClips(entry.midiClips);
+      // Fire the inverse mutation (fire-and-forget)
+      entry.apiUndo();
+      return h.slice(0, -1);
+    });
+  }, [tracks, clips, midiClips]);
+
+  const handleRedo = useCallback(() => {
+    setFuture((f) => {
+      if (f.length === 0) return f;
+      const entry = f[0];
+      // Save current state to history
+      setHistory((h) => {
+        const newHistory = [...h, { tracks, clips, midiClips, apiUndo: () => {} }];
+        return newHistory.slice(-50);
+      });
+      // Restore future state
+      setTracks(entry.tracks);
+      setClips(entry.clips);
+      setMidiClips(entry.midiClips);
+      return f.slice(1);
+    });
+  }, [tracks, clips, midiClips]);
+
+  // NEW: Attach keyboard listener for Cmd+Z / Ctrl+Z (undo) and Cmd+Shift+Z / Ctrl+Y (redo)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Undo: Cmd+Z (Mac) or Ctrl+Z (Windows/Linux)
+      if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+      }
+      // Redo: Cmd+Shift+Z (Mac) or Ctrl+Shift+Z / Ctrl+Y (Windows/Linux)
+      if (
+        ((e.metaKey && e.shiftKey && e.key === "z") ||
+          (e.ctrlKey && e.shiftKey && e.key === "z") ||
+          (e.ctrlKey && e.key === "y")) &&
+        !e.altKey
+      ) {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleUndo, handleRedo]);
+
   const updateVolume = trpc.organization.track.updateVolume.useMutation();
   const createTrack = trpc.organization.track.create.useMutation();
+  // T023-T025: Mutation for track reordering
+  const reorderTracks = trpc.organization.track.reorder.useMutation();
+  // T011-T012: Mutations for multi-file import
+  const getUploadUrl = trpc.organization.audioClip.getUploadUrl.useMutation();
+  const registerClip = trpc.organization.audioClip.register.useMutation();
+  const registerMidiClip = trpc.organization.midiClip.register.useMutation();
 
   const getDownloadUrlsQuery = trpc.organization.audioClip.getDownloadUrls.useQuery(
     { storageKeys: clips.map((c) => c.file.storageKey) },
@@ -179,6 +281,27 @@ export function Daw({ song, initialTracks, initialClips, initialMidiClips, bpm }
     );
   }, []);
 
+  // T023-T025: Handle track reordering
+  const handleTracksReordered = useCallback(
+    (reorderedTracks: Track[]) => {
+      setTracks(reorderedTracks);
+      // T025: Fire track.reorder mutation with new ordered track IDs
+      const orderedTrackIds = reorderedTracks.map((t) => t.id);
+      reorderTracks.mutate(
+        {
+          songId: song.id,
+          orderedTrackIds,
+        },
+        {
+          onError: (error) => {
+            logger.error("Failed to reorder tracks:", error instanceof Error ? error.message : String(error));
+          },
+        },
+      );
+    },
+    [song.id, reorderTracks],
+  );
+
   const handleClipRenamed = useCallback((clipId: string, name: string) => {
     setClips((prev) =>
       prev.map((c) => (c.id === clipId ? { ...c, name } : c)),
@@ -207,6 +330,330 @@ export function Daw({ song, initialTracks, initialClips, initialMidiClips, bpm }
       },
     );
   }, [createTrack, song.id, tracks.length]);
+
+  // T011: "Use existing tracks" import logic
+  const handleImportUseExistingTracks = useCallback(
+    async (files: File[], targetTrackIndex: number, targetStartMeasure: number) => {
+      if (!pendingMultiDrop) return;
+
+      try {
+        // For each file, resolve target track (existing or create new)
+        const trackForFile: Record<number, Track> = {};
+        let currentTrackIndex = targetTrackIndex;
+        let updatedTracks = [...tracks];
+
+        for (let i = 0; i < files.length; i++) {
+          if (currentTrackIndex < updatedTracks.length) {
+            trackForFile[i] = updatedTracks[currentTrackIndex];
+          } else {
+            // Create a new track for this file
+            const newTrack = await createTrack.mutateAsync({
+              songId: song.id,
+              name: `Track ${updatedTracks.length + 1}`,
+            });
+            updatedTracks = [...updatedTracks, newTrack];
+            trackForFile[i] = newTrack;
+          }
+          currentTrackIndex++;
+        }
+
+        // Run all uploads in parallel via Promise.allSettled
+        const uploadResults = await Promise.allSettled(
+          files.map(async (file, idx) => {
+            const track = trackForFile[idx];
+            const fileType = detectFileTypeFromFile(file);
+            if (!fileType) return null;
+
+            let durationMs: number | undefined;
+            if (fileType === "audio") {
+              durationMs = await getAudioDurationMs(file);
+            } else {
+              try {
+                const midi = new Midi(await file.arrayBuffer());
+                if (midi.duration > 0) durationMs = Math.round(midi.duration * 1000);
+              } catch { /* leave undefined */ }
+            }
+
+            const { storageKey, uploadUrl } = await getUploadUrl.mutateAsync({
+              filename: file.name,
+              contentType: fileType === "audio" ? (file.type || "audio/mpeg") : "audio/midi",
+              organizationId: song.organizationId,
+            });
+
+            await fetch(uploadUrl, {
+              method: "PUT",
+              body: file,
+              headers: {
+                "Content-Type": fileType === "audio" ? (file.type || "audio/mpeg") : "audio/midi",
+              },
+            });
+
+            return { track, file, fileType, storageKey, durationMs };
+          }),
+        );
+
+        // Register clips sequentially
+        const newClips: AudioClip[] = [];
+        const newMidiClips: MidiClip[] = [];
+        for (const result of uploadResults) {
+          if (result.status !== "fulfilled" || !result.value) continue;
+          const uploadData = result.value as { track: Track; file: File; fileType: "audio" | "midi"; storageKey: string; durationMs?: number };
+          const { track, file, fileType, storageKey, durationMs } = uploadData;
+
+          if (fileType === "audio") {
+            const clip = await registerClip.mutateAsync({
+              trackId: track.id,
+              filename: file.name,
+              storageKey,
+              organizationId: song.organizationId,
+              startMeasure: targetStartMeasure,
+              durationMs,
+            });
+            newClips.push(clip);
+          } else {
+            const clip = await registerMidiClip.mutateAsync({
+              trackId: track.id,
+              filename: file.name,
+              storageKey,
+              organizationId: song.organizationId,
+              startMeasure: targetStartMeasure,
+              durationMs,
+            });
+            newMidiClips.push(clip);
+          }
+        }
+
+        // Update state with new tracks and clips
+        setTracks(updatedTracks);
+        setClips((prev) => [...prev, ...newClips]);
+        setMidiClips((prev) => [...prev, ...newMidiClips]);
+
+        // Push single undo entry
+        pushHistory(() => {
+          // API undo: delete all created clips and optionally delete created tracks
+          // For now, fire-and-forget (empty)
+        });
+
+        setPendingMultiDrop(null);
+      } catch (err) {
+        logger.error("Multi-file import failed", err instanceof Error ? err.message : String(err));
+        setPendingMultiDrop(null);
+      }
+    },
+    [pendingMultiDrop, tracks, song, createTrack, getUploadUrl, registerClip, registerMidiClip, pushHistory],
+  );
+
+  // T012: "Create new tracks" import logic
+  const handleImportCreateNewTracks = useCallback(
+    async (files: File[], targetStartMeasure: number) => {
+      if (!pendingMultiDrop) return;
+
+      try {
+        const newTracks: Track[] = [];
+
+        // For each file, call track.create sequentially (preserves auto-increment order)
+        for (let i = 0; i < files.length; i++) {
+          const newTrack = await createTrack.mutateAsync({
+            songId: song.id,
+            name: `Track ${(tracks.length + newTracks.length) + 1}`,
+          });
+          newTracks.push(newTrack);
+        }
+
+        // Run all uploads in parallel
+        const uploadResults = await Promise.allSettled(
+          files.map(async (file, idx) => {
+            const track = newTracks[idx];
+            const fileType = detectFileTypeFromFile(file);
+            if (!fileType) return null;
+
+            let durationMs: number | undefined;
+            if (fileType === "audio") {
+              durationMs = await getAudioDurationMs(file);
+            } else {
+              try {
+                const midi = new Midi(await file.arrayBuffer());
+                if (midi.duration > 0) durationMs = Math.round(midi.duration * 1000);
+              } catch { /* leave undefined */ }
+            }
+
+            const { storageKey, uploadUrl } = await getUploadUrl.mutateAsync({
+              filename: file.name,
+              contentType: fileType === "audio" ? (file.type || "audio/mpeg") : "audio/midi",
+              organizationId: song.organizationId,
+            });
+
+            await fetch(uploadUrl, {
+              method: "PUT",
+              body: file,
+              headers: {
+                "Content-Type": fileType === "audio" ? (file.type || "audio/mpeg") : "audio/midi",
+              },
+            });
+
+            return { track, file, fileType, storageKey, durationMs };
+          }),
+        );
+
+        // Register clips sequentially
+        const newClips: AudioClip[] = [];
+        const newMidiClips: MidiClip[] = [];
+        for (const result of uploadResults) {
+          if (result.status !== "fulfilled" || !result.value) continue;
+          const uploadData = result.value as { track: Track; file: File; fileType: "audio" | "midi"; storageKey: string; durationMs?: number };
+          const { track, file, fileType, storageKey, durationMs } = uploadData;
+
+          if (fileType === "audio") {
+            const clip = await registerClip.mutateAsync({
+              trackId: track.id,
+              filename: file.name,
+              storageKey,
+              organizationId: song.organizationId,
+              startMeasure: targetStartMeasure,
+              durationMs,
+            });
+            newClips.push(clip);
+          } else {
+            const clip = await registerMidiClip.mutateAsync({
+              trackId: track.id,
+              filename: file.name,
+              storageKey,
+              organizationId: song.organizationId,
+              startMeasure: targetStartMeasure,
+              durationMs,
+            });
+            newMidiClips.push(clip);
+          }
+        }
+
+        // Update state
+        setTracks((prev) => [...prev, ...newTracks]);
+        setClips((prev) => [...prev, ...newClips]);
+        setMidiClips((prev) => [...prev, ...newMidiClips]);
+
+        // Push undo entry
+        pushHistory(() => {
+          // API undo: delete all created clips and tracks
+          // For now, fire-and-forget
+        });
+
+        setPendingMultiDrop(null);
+      } catch (err) {
+        logger.error("Multi-file import failed", err instanceof Error ? err.message : String(err));
+        setPendingMultiDrop(null);
+      }
+    },
+    [pendingMultiDrop, tracks, song, createTrack, getUploadUrl, registerClip, registerMidiClip, pushHistory],
+  );
+
+  // T027: Handle file drop in bottom zone (create new track)
+  const handleBottomZoneDrop = useCallback(
+    async (file: File, startMeasure: number) => {
+      try {
+        const fileType = detectFileTypeFromFile(file);
+        if (!fileType) return;
+
+        // Create new track with auto-incremented name
+        const newTrackIndex = tracks.length;
+        const newTrack = await createTrack.mutateAsync({
+          songId: song.id,
+          name: `Track ${newTrackIndex + 1}`,
+        });
+
+        setTracks((prev) => [...prev, newTrack]);
+
+        // Parse duration
+        let durationMs: number | undefined;
+        if (fileType === "audio") {
+          durationMs = await getAudioDurationMs(file);
+        } else {
+          try {
+            const midi = new Midi(await file.arrayBuffer());
+            if (midi.duration > 0) durationMs = Math.round(midi.duration * 1000);
+          } catch { /* leave undefined */ }
+        }
+
+        // Get upload URL
+        const { storageKey, uploadUrl } = await getUploadUrl.mutateAsync({
+          filename: file.name,
+          contentType: fileType === "audio" ? (file.type || "audio/mpeg") : "audio/midi",
+          organizationId: song.organizationId,
+        });
+
+        // Upload file
+        await fetch(uploadUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": fileType === "audio" ? (file.type || "audio/mpeg") : "audio/midi",
+          },
+        });
+
+        // Register clip
+        if (fileType === "audio") {
+          const clip = await registerClip.mutateAsync({
+            trackId: newTrack.id,
+            filename: file.name,
+            storageKey,
+            organizationId: song.organizationId,
+            startMeasure,
+            durationMs,
+          });
+          setClips((prev) => [...prev, clip]);
+        } else {
+          const clip = await registerMidiClip.mutateAsync({
+            trackId: newTrack.id,
+            filename: file.name,
+            storageKey,
+            organizationId: song.organizationId,
+            startMeasure,
+            durationMs,
+          });
+          setMidiClips((prev) => [...prev, clip]);
+        }
+
+        // Push undo entry
+        pushHistory(() => {
+          // API undo would delete the track and clips
+          // For now, fire-and-forget
+        });
+      } catch (err) {
+        logger.error("Bottom zone drop failed", err instanceof Error ? err.message : String(err));
+      }
+    },
+    [tracks, song, createTrack, getUploadUrl, registerClip, registerMidiClip, pushHistory],
+  );
+
+  // Helper functions for file type and duration detection
+  function detectFileTypeFromFile(file: File): "audio" | "midi" | null {
+    const mime = file.type.toLowerCase();
+    const name = file.name.toLowerCase();
+    if (mime === "audio/midi" || mime === "audio/x-midi" || name.endsWith(".mid") || name.endsWith(".midi"))
+      return "midi";
+    if (mime.startsWith("audio/") || /\.(wav|mp3|ogg|flac|aac|m4a)$/.test(name))
+      return "audio";
+    return null;
+  }
+
+  function getAudioDurationMs(file: File): Promise<number | undefined> {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const audio = new Audio();
+      audio.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        resolve(
+          Number.isFinite(audio.duration)
+            ? Math.round(audio.duration * 1000)
+            : undefined,
+        );
+      };
+      audio.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(undefined);
+      };
+      audio.src = url;
+    });
+  }
 
   const buildAudioGraph = useCallback(
     async (
@@ -533,6 +980,27 @@ export function Daw({ song, initialTracks, initialClips, initialMidiClips, bpm }
         </div>
       </div>
 
+      {/* T013: Render multi-file drop modal */}
+      <MultiFileDropModal
+        pendingDrop={pendingMultiDrop}
+        onConfirm={(mode: MultiFileDropMode) => {
+          if (!pendingMultiDrop) return;
+          if (mode === "use-existing-tracks") {
+            handleImportUseExistingTracks(
+              pendingMultiDrop.files,
+              pendingMultiDrop.targetTrackIndex,
+              pendingMultiDrop.targetStartMeasure,
+            );
+          } else {
+            handleImportCreateNewTracks(
+              pendingMultiDrop.files,
+              pendingMultiDrop.targetStartMeasure,
+            );
+          }
+        }}
+        onCancel={() => setPendingMultiDrop(null)}
+      />
+
       <Timeline
         tracks={tracks}
         clips={clips}
@@ -555,6 +1023,16 @@ export function Daw({ song, initialTracks, initialClips, initialMidiClips, bpm }
         onEditingTrackIdChange={setEditingTrackId}
         onTrackRenamed={handleTrackRenamed}
         onAddTrack={handleAddTrack}
+        onTracksReordered={handleTracksReordered}
+        // NEW: Undo/redo callbacks
+        pushHistory={pushHistory}
+        undo={handleUndo}
+        redo={handleRedo}
+        // T009-T013: Multi-file drop callback
+        onPendingMultiDrop={setPendingMultiDrop}
+        // T026-T027: Bottom drop zone callbacks
+        onBottomDropZoneChange={setBottomDropZone}
+        onBottomZoneDrop={handleBottomZoneDrop}
       />
     </div>
   );

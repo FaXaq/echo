@@ -5,7 +5,7 @@ export const makeCreateTrack =
   async (input: { songId: string; name: string; volume?: number }) => {
     const existing = await deps.trackRepo.list({ songId: input.songId });
     const order = existing.length + 1;
-    const volume = input.volume ?? 80;
+    const volume = input.volume ?? 0;
     return deps.trackRepo.create({
       id: crypto.randomUUID(),
       songId: input.songId,
