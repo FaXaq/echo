@@ -6,7 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/ui/alert-dialog";
-import type { MultiFileDropMode, PendingMultiFileDrop } from "./-timeline";
+import type { MultiFileDropMode, PendingMultiFileDrop } from "./-daw-types";
 
 interface MultiFileDropModalProps {
   pendingDrop: PendingMultiFileDrop;
