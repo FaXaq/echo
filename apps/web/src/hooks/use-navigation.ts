@@ -1,7 +1,6 @@
 import { authClient } from "@/lib/auth"
 import type { FileRouteTypes } from "@/routeTree.gen"
-import { useNavigate } from "@tanstack/react-router"
-import { useActiveOrganization } from "./use-active-organization"
+import { useNavigate, useParams } from "@tanstack/react-router"
 
 type NavItem = {
   title: string
@@ -29,8 +28,13 @@ type OrganizationOption = Omit<NonNullable<ReturnType<Awaited<typeof authClient.
 
 export function useNavigation() {
   const { data: organizations } = authClient.useListOrganizations()
-  const { activeOrganization, setActiveOrganization: setActiveOrganizationHook } = useActiveOrganization()
   const navigate = useNavigate();
+
+  const params = useParams({ strict: false })
+  const currentSlug = (params as Record<string, string | undefined>).organizationSlug
+  const activeOrganization = currentSlug
+    ? (organizations ?? []).find((o) => o.slug === currentSlug) ?? null
+    : null
 
   const orgOptions: OrganizationOption[] = [
     { id: PERSONAL_ID, name: "Personal", createdAt: new Date(), slug: "" },
@@ -39,7 +43,6 @@ export function useNavigation() {
 
   const setActiveOrganization = (org: OrganizationOption) => {
     if (org.id === null) {
-      setActiveOrganizationHook({ organizationId: null })
       navigate({ to: "/" })
     } else {
       navigate({ to: "/organizations/$organizationSlug", params: { "organizationSlug": org.slug } })

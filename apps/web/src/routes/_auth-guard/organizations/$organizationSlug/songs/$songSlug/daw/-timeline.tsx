@@ -34,6 +34,8 @@ export function Timeline() {
     isPlaying,
     setEditingTrackId,
     setPendingMultiDrop,
+    selection,
+    setSelection,
     onClipPositionChanged,
     onMidiClipPositionChanged,
     onTrackDeleted,
@@ -110,12 +112,13 @@ export function Timeline() {
   );
 
   // Interaction hooks
-  const { selection, setSelection, selectionRect, handleTimelineMouseDown } = useClipSelection({
+  const { selectionRect, handleTimelineMouseDown } = useClipSelection({
     containerRef,
     tracks,
     clips,
     midiClips,
     secondsPerMeasure,
+    setSelection,
   });
 
   const { handleMouseDown, handleMidiMouseDown } = useClipDrag({
@@ -297,9 +300,6 @@ export function Timeline() {
               totalMeasures={totalMeasures}
               secondsPerMeasure={secondsPerMeasure}
               editingClipId={editingClipId}
-              selectedAudioClipIds={selection.audioClipIds}
-              selectedMidiClipIds={selection.midiClipIds}
-              selectionCount={selection.audioClipIds.size + selection.midiClipIds.size}
               pendingStartMeasureRef={pendingStartMeasureRef}
               onAudioMouseDown={handleMouseDown}
               onMidiMouseDown={handleMidiMouseDown}
