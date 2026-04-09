@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import i18next from "../i18n";
 import {
   createRootRouteWithContext,
   Outlet,
@@ -44,11 +45,19 @@ function RootLayout() {
     }),
   );
 
+  useEffect(() => {
+    if (session?.user.locale) {
+      i18next.changeLanguage(session.user.locale);
+    }
+  }, [session?.user.locale]);
+
+  const serverTheme = session?.user.theme as "light" | "dark" | "system" | undefined;
+
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
             <RootContent session={session} />
           </ThemeProvider>
         </TooltipProvider>

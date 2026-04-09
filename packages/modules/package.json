@@ -1,0 +1,150 @@
+{
+  "name": "@echo/modules",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./song/domain": {
+      "types": "./src/song/domain/index.ts",
+      "default": "./src/song/domain/index.ts"
+    },
+    "./song/infrastructure": {
+      "types": "./src/song/infrastructure/index.ts",
+      "default": "./src/song/infrastructure/index.ts"
+    },
+    "./song/use-cases": {
+      "types": "./src/song/use-cases/index.ts",
+      "default": "./src/song/use-cases/index.ts"
+    },
+    "./track/domain": {
+      "types": "./src/track/domain/index.ts",
+      "default": "./src/track/domain/index.ts"
+    },
+    "./track/infrastructure": {
+      "types": "./src/track/infrastructure/index.ts",
+      "default": "./src/track/infrastructure/index.ts"
+    },
+    "./track/use-cases": {
+      "types": "./src/track/use-cases/index.ts",
+      "default": "./src/track/use-cases/index.ts"
+    },
+    "./audio-clip/domain": {
+      "types": "./src/audio-clip/domain/index.ts",
+      "default": "./src/audio-clip/domain/index.ts"
+    },
+    "./audio-clip/infrastructure": {
+      "types": "./src/audio-clip/infrastructure/index.ts",
+      "default": "./src/audio-clip/infrastructure/index.ts"
+    },
+    "./audio-clip/use-cases": {
+      "types": "./src/audio-clip/use-cases/index.ts",
+      "default": "./src/audio-clip/use-cases/index.ts"
+    },
+    "./midi-clip/domain": {
+      "types": "./src/midi-clip/domain/index.ts",
+      "default": "./src/midi-clip/domain/index.ts"
+    },
+    "./midi-clip/infrastructure": {
+      "types": "./src/midi-clip/infrastructure/index.ts",
+      "default": "./src/midi-clip/infrastructure/index.ts"
+    },
+    "./midi-clip/use-cases": {
+      "types": "./src/midi-clip/use-cases/index.ts",
+      "default": "./src/midi-clip/use-cases/index.ts"
+    },
+    "./file/domain": {
+      "types": "./src/file/domain/index.ts",
+      "default": "./src/file/domain/index.ts"
+    },
+    "./file/infrastructure": {
+      "types": "./src/file/infrastructure/index.ts",
+      "default": "./src/file/infrastructure/index.ts"
+    },
+    "./file/use-cases": {
+      "types": "./src/file/use-cases/index.ts",
+      "default": "./src/file/use-cases/index.ts"
+    },
+    "./invitation/domain": {
+      "types": "./src/invitation/domain/index.ts",
+      "default": "./src/invitation/domain/index.ts"
+    },
+    "./invitation/infrastructure": {
+      "types": "./src/invitation/infrastructure/index.ts",
+      "default": "./src/invitation/infrastructure/index.ts"
+    },
+    "./invitation/use-cases": {
+      "types": "./src/invitation/use-cases/index.ts",
+      "default": "./src/invitation/use-cases/index.ts"
+    },
+    "./organization/domain": {
+      "types": "./src/organization/domain/index.ts",
+      "default": "./src/organization/domain/index.ts"
+    },
+    "./organization/infrastructure": {
+      "types": "./src/organization/infrastructure/index.ts",
+      "default": "./src/organization/infrastructure/index.ts"
+    },
+    "./organization/use-cases": {
+      "types": "./src/organization/use-cases/index.ts",
+      "default": "./src/organization/use-cases/index.ts"
+    },
+    "./user/domain": {
+      "types": "./src/user/domain/index.ts",
+      "default": "./src/user/domain/index.ts"
+    },
+    "./user/infrastructure": {
+      "types": "./src/user/infrastructure/index.ts",
+      "default": "./src/user/infrastructure/index.ts"
+    },
+    "./user/use-cases": {
+      "types": "./src/user/use-cases/index.ts",
+      "default": "./src/user/use-cases/index.ts"
+    },
+    "./notification/domain": {
+      "types": "./src/notification/domain/index.ts",
+      "default": "./src/notification/domain/index.ts"
+    },
+    "./notification/infrastructure": {
+      "types": "./src/notification/infrastructure/index.ts",
+      "default": "./src/notification/infrastructure/index.ts"
+    },
+    "./notification/use-cases": {
+      "types": "./src/notification/use-cases/index.ts",
+      "default": "./src/notification/use-cases/index.ts"
+    },
+    "./health/domain": {
+      "types": "./src/health/domain/index.ts",
+      "default": "./src/health/domain/index.ts"
+    },
+    "./health/infrastructure": {
+      "types": "./src/health/infrastructure/index.ts",
+      "default": "./src/health/infrastructure/index.ts"
+    },
+    "./health/use-cases": {
+      "types": "./src/health/use-cases/index.ts",
+      "default": "./src/health/use-cases/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1009.0",
+    "@aws-sdk/s3-request-presigner": "^3.1009.0",
+    "@echo/auth": "workspace:*",
+    "@echo/db": "workspace:*",
+    "@echo/errors": "workspace:*",
+    "@echo/i18n": "workspace:*",
+    "@echo/logger": "workspace:*",
+    "kysely": "^0.27.4",
+    "mjml": "^4.18.0",
+    "nodemailer": "^8.0.1",
+    "zod": "4"
+  },
+  "devDependencies": {
+    "@echo/config": "workspace:*",
+    "@types/mjml": "^4.7.4",
+    "@types/nodemailer": "^7.0.11",
+    "typescript": "^5.7.0"
+  }
+}

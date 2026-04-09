@@ -7,8 +7,8 @@ import {
   makeRenameMidiClip,
   makeDeleteMidiClip,
   makeDeleteManyMidiClips,
-  makeGetSignedUrls,
-} from "@echo/app";
+} from "@echo/modules/midi-clip/use-cases";
+import { makeGetSignedUrls } from "@echo/modules/audio-clip/use-cases";
 
 export const makeMidiClipRouter = () =>
   router({

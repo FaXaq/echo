@@ -7,6 +7,12 @@ export const userAdditionalFields = {
     input: true,
     defaultValue: "en",
   },
+  theme: {
+    type: "string",
+    required: false,
+    input: true,
+    defaultValue: "system",
+  },
 } satisfies {
   [key: string]: DBFieldAttribute;
 };

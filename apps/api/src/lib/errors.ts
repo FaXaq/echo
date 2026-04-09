@@ -1,4 +1,4 @@
-import { AppError } from "@echo/app/errors";
+import { AppError } from "@echo/errors";
 import { makeLogger } from "@echo/logger";
 import { TRPCError } from "@trpc/server";
 

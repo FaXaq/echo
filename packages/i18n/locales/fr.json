@@ -45,6 +45,8 @@
     "Sign up failed": "Échec de l'inscription",
     "Login failed": "Échec de la connexion",
     "Log out": "Se déconnecter",
+    "Theme": "Thème",
+    "Language": "Langue",
 
     "Enter your email to receive a reset link": "Entrez votre email pour recevoir un lien de réinitialisation",
     "Send reset link": "Envoyer le lien",

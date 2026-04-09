@@ -1,21 +1,19 @@
 import type { CreateFastifyContextOptions } from "@trpc/server/adapters/fastify";
 import type { ServerAuth } from "@echo/auth";
-import { makeInvitationRepo } from "./adapters/invitation";
 import { makeDbAdapter } from "@echo/db";
 import { appConfig } from "./adapters/config/index";
-import { makeHealthRepo } from "./adapters/health";
-import { makeMailer } from "./adapters/mailer/mailer";
 import { makeLogger } from "@echo/logger";
 import type { Context } from "./trpc";
-import { makeUserPermissionRepo } from "./adapters/auth/user-permission";
-import { makeEmailNotifierRepo } from "./adapters/email-notifier";
-import { makeSongRepo } from "./adapters/song";
-import { makeTrackRepo } from "./adapters/track";
-import { makeAudioClipRepo } from "./adapters/audio-clip";
-import { makeMidiClipRepo } from "./adapters/midi-clip";
-import { makeFileRepo } from "./adapters/file";
-import { makeFileStorageAdapter } from "./adapters/file-storage";
-import { makeOrganizationRepo } from "./adapters/organization";
+import { makeHealthRepo } from "@echo/modules/health/infrastructure";
+import { makeInvitationRepo } from "@echo/modules/invitation/infrastructure";
+import { makeSongRepo } from "@echo/modules/song/infrastructure";
+import { makeTrackRepo } from "@echo/modules/track/infrastructure";
+import { makeAudioClipRepo } from "@echo/modules/audio-clip/infrastructure";
+import { makeMidiClipRepo } from "@echo/modules/midi-clip/infrastructure";
+import { makeFileRepo, makeFileStorageAdapter } from "@echo/modules/file/infrastructure";
+import { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
+import { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
+import { makeEmailNotifierRepo, makeMailer } from "@echo/modules/notification/infrastructure";
 
 // Singletons — created once at startup
 const { db, pool } = makeDbAdapter(appConfig.db);
@@ -40,10 +38,11 @@ export const makeCreateContext =
       const audioClip = makeAudioClipRepo({ db });
       const midiClip = makeMidiClipRepo({ db });
       const file = makeFileRepo({ db });
-      const organization = makeOrganizationRepo({ headers });
+      const organization = makeOrganizationRepo({ auth, headers });
       const userPermission = makeUserPermissionRepo({
+        auth,
         userId: session?.user.id,
-        headers
+        headers,
       });
       const notifiers = {
         email: makeEmailNotifierRepo({

@@ -12,7 +12,7 @@ import { useDawPlayback } from "./hooks/-use-daw-playback";
 import { useDawVolume } from "./hooks/-use-daw-volume";
 import { useDawFileImport } from "./hooks/-use-daw-file-import";
 import { useDawContext } from "./-daw-context";
-import type { Song, Track, AudioClip, MidiClip, PendingMultiFileDrop, MultiFileDropMode } from "./-daw-types";
+import type { Song, Track, AudioClip, MidiClip, PendingMultiFileDrop, MultiFileDropMode, ClipSelection } from "./-daw-types";
 
 export interface DawProps {
   song: Song;
@@ -42,6 +42,10 @@ function DawProvider({
   const [playbackPosition, setPlaybackPosition] = useState(0);
   const [editingTrackId, setEditingTrackId] = useState<string | null>(null);
   const [pendingMultiDrop, setPendingMultiDrop] = useState<PendingMultiFileDrop>(null);
+  const [selection, setSelection] = useState<ClipSelection>({
+    audioClipIds: new Set(),
+    midiClipIds: new Set(),
+  });
 
   // tRPC queries + download URL map
   const getDownloadUrlsQuery = trpc.organization.audioClip.getDownloadUrls.useQuery(
@@ -183,6 +187,8 @@ function DawProvider({
         playbackPosition,
         editingTrackId,
         setEditingTrackId,
+        selection,
+        setSelection,
         setTracks,
         setClips,
         setMidiClips,

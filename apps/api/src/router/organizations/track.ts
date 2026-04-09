@@ -8,7 +8,7 @@ import {
   makeRenameTrack,
   makeSetTrackInstrumentPreset,
   makeReorderTracks,
-} from "@echo/app";
+} from "@echo/modules/track/use-cases";
 
 export const makeTrackRouter = () =>
   router({

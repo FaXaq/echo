@@ -36,7 +36,7 @@ const { db, pool } = makeDbAdapter({
 
 const auth = makeServerAuth({
   secret: input.AUTH_SECRET,
-  db,
+  pool,
   baseUrl: input.AUTH_BASE_URL,
 });
 

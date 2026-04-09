@@ -18,9 +18,6 @@ export interface DawTrackRowProps {
   totalMeasures: number;
   secondsPerMeasure: number;
   editingClipId: string | null;
-  selectedAudioClipIds: Set<string>;
-  selectedMidiClipIds: Set<string>;
-  selectionCount: number;
   pendingStartMeasureRef: React.MutableRefObject<number>;
   onAudioMouseDown: (e: React.MouseEvent, clip: AudioClip) => void;
   onMidiMouseDown: (e: React.MouseEvent, clip: MidiClip) => void;
@@ -38,9 +35,6 @@ export function DawTrackRow({
   totalMeasures,
   secondsPerMeasure,
   editingClipId,
-  selectedAudioClipIds,
-  selectedMidiClipIds,
-  selectionCount,
   pendingStartMeasureRef,
   onAudioMouseDown,
   onMidiMouseDown,
@@ -52,7 +46,8 @@ export function DawTrackRow({
   onUploadAudio,
   onUploadMidi,
 }: DawTrackRowProps) {
-  const { clips, midiClips, downloadUrls } = useDawContext();
+  const { clips, midiClips, downloadUrls, selection } = useDawContext();
+  const selectionCount = selection.audioClipIds.size + selection.midiClipIds.size;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const midiInputRef = useRef<HTMLInputElement>(null);
 
@@ -100,15 +95,21 @@ export function DawTrackRow({
               key={clip.id}
               clip={clip}
               isEditing={editingClipId === clip.id}
-              isSelected={selectedAudioClipIds.has(clip.id)}
+              isSelected={selection.audioClipIds.has(clip.id)}
               selectionCount={selectionCount}
               downloadUrl={downloadUrls.get(clip.file.storageKey)}
               secondsPerMeasure={secondsPerMeasure}
               onMouseDown={onAudioMouseDown}
               onEditStart={() => onEditClipStart(clip.id)}
               onEditCommit={(name) => onEditClipCommit(clip, name)}
-              onDelete={() => onDeleteClip(clip.id)}
-              onDeleteSelection={onDeleteSelection}
+              onDelete={() => {
+                console.log("deleting 1 audio clip")
+                onDeleteClip(clip.id)
+              }}
+              onDeleteSelection={() => {
+                console.log("deleting selection audio")
+                onDeleteSelection()
+              }}
             />
           ))}
 
@@ -117,13 +118,19 @@ export function DawTrackRow({
             <MidiClipView
               key={clip.id}
               clip={clip}
-              isSelected={selectedMidiClipIds.has(clip.id)}
+              isSelected={selection.midiClipIds.has(clip.id)}
               selectionCount={selectionCount}
               downloadUrl={downloadUrls.get(clip.file.storageKey)}
               secondsPerMeasure={secondsPerMeasure}
               onMouseDown={onMidiMouseDown}
-              onDelete={() => onDeleteMidiClip(clip.id)}
-              onDeleteSelection={onDeleteSelection}
+              onDelete={() => {
+                console.log("deleting 1 clip");
+                onDeleteMidiClip(clip.id)
+              }}
+              onDeleteSelection={() => {
+                console.log("deleting selection midi")
+                onDeleteSelection()
+              }}
             />
           ))}
 

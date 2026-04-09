@@ -9,7 +9,7 @@ import {
   makeDeleteManyAudioClips,
   makeGetSignedUrls,
   makeRenameAudioClip,
-} from "@echo/app";
+} from "@echo/modules/audio-clip/use-cases";
 
 export const makeAudioClipRouter = () =>
   router({

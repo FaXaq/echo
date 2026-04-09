@@ -33,7 +33,7 @@ import {
   canUpdateOrgMemberRole,
   canRevokeMembership,
   canCancelInvitation,
-} from "@echo/domain/user"
+} from "@echo/modules/user/domain"
 import type { OrganizationRole, ClientMember, ClientInvitation } from "@echo/auth"
 import { logger } from "@/lib/logger"
 

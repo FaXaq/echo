@@ -17,21 +17,18 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1009.0",
-    "@aws-sdk/s3-request-presigner": "^3.1009.0",
-    "@echo/app": "workspace:*",
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
+    "@echo/errors": "workspace:*",
     "@echo/i18n": "workspace:*",
     "@echo/logger": "workspace:*",
+    "@echo/modules": "workspace:*",
     "@fastify/cors": "^11.2.0",
     "@trpc/server": "^11.0.0",
     "better-auth": "^1.4.18",
     "dotenv": "^16.5.0",
     "fastify": "^5.2.0",
     "kysely": "^0.27.4",
-    "mjml": "^4.18.0",
-    "nodemailer": "^8.0.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {

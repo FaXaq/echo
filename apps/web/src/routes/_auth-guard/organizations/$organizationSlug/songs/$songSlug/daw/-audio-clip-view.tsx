@@ -151,14 +151,14 @@ export function AudioClipView({
         {selectionCount > 1 ? (
           <ContextMenuItem
             className="text-destructive focus:text-destructive"
-            onSelect={onDeleteSelection}
+            onSelect={() => { console.log(selectionCount, "ds") }}
           >
             Delete {selectionCount} clips
           </ContextMenuItem>
         ) : (
           <ContextMenuItem
             className="text-destructive focus:text-destructive"
-            onSelect={onDelete}
+            onSelect={() => { console.log(selectionCount, "d1") }}
           >
             Delete clip
           </ContextMenuItem>

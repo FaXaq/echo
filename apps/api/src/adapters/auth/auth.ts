@@ -2,8 +2,7 @@ import { makeServerAuth } from "@echo/auth";
 import { makeServerI18n } from "@echo/i18n";
 import { makeDbAdapter } from "../db/index";
 import { appConfig } from "../config/index";
-import { makeMailer } from "../mailer/mailer";
-import { renderResetPasswordEmail, renderInvitationEmail } from "../mailer/templates/index";
+import { makeMailer, renderResetPasswordEmail, renderInvitationEmail } from "@echo/modules/notification/infrastructure";
 
 const { pool } = makeDbAdapter(appConfig.db);
 const mailer = makeMailer(appConfig.mailer);

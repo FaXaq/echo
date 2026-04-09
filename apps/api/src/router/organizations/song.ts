@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
-import { makeListSongs, makeCreateSong, makeGetSong, makeUpdateSong } from "@echo/app";
+import { makeListSongs, makeCreateSong, makeGetSong, makeUpdateSong } from "@echo/modules/song/use-cases";
 import { appErrorToTRPC } from "../../lib/errors";
 
 export const makeSongRouter = () =>

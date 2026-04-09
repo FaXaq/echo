@@ -135,6 +135,7 @@ export interface User {
   locale: Generated<string>;
   name: string;
   role: string | null;
+  theme: Generated<string>;
   updatedAt: Generated<Timestamp>;
   username: string | null;
 }

@@ -29,27 +29,24 @@ importers:
 
   apps/api:
     dependencies:
-      '@aws-sdk/client-s3':
-        specifier: ^3.1009.0
-        version: 3.1009.0
-      '@aws-sdk/s3-request-presigner':
-        specifier: ^3.1009.0
-        version: 3.1009.0
-      '@echo/app':
-        specifier: workspace:*
-        version: link:../../packages/app
       '@echo/auth':
         specifier: workspace:*
         version: link:../../packages/auth
       '@echo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@echo/errors':
+        specifier: workspace:*
+        version: link:../../packages/errors
       '@echo/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
       '@echo/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@echo/modules':
+        specifier: workspace:*
+        version: link:../../packages/modules
       '@fastify/cors':
         specifier: ^11.2.0
         version: 11.2.0
@@ -68,12 +65,6 @@ importers:
       kysely:
         specifier: ^0.27.4
         version: 0.27.6
-      mjml:
-        specifier: ^4.18.0
-        version: 4.18.0
-      nodemailer:
-        specifier: ^8.0.1
-        version: 8.0.1
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -160,15 +151,15 @@ importers:
       '@echo/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@echo/domain':
-        specifier: workspace:*
-        version: link:../../packages/domain
       '@echo/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
       '@echo/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@echo/modules':
+        specifier: workspace:*
+        version: link:../../packages/modules
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
@@ -300,28 +291,6 @@ importers:
         specifier: ^4.0.18
         version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.3.2)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.31.1)(msw@2.12.10(@types/node@25.3.2)(typescript@5.9.3))(tsx@4.21.0)
 
-  packages/app:
-    dependencies:
-      '@echo/auth':
-        specifier: workspace:*
-        version: link:../auth
-      '@echo/domain':
-        specifier: workspace:*
-        version: link:../domain
-      zod:
-        specifier: '4'
-        version: 4.3.6
-    devDependencies:
-      '@echo/config':
-        specifier: workspace:*
-        version: link:../config
-      typescript:
-        specifier: ^5.7.0
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.3.2)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.31.1)(msw@2.12.10(@types/node@25.3.2)(typescript@5.9.3))(tsx@4.21.0)
-
   packages/auth:
     dependencies:
       better-auth:
@@ -421,24 +390,18 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
 
-  packages/domain:
+  packages/errors:
     dependencies:
       zod:
         specifier: '4'
         version: 4.3.6
     devDependencies:
-      '@echo/auth':
-        specifier: workspace:*
-        version: link:../auth
       '@echo/config':
         specifier: workspace:*
         version: link:../config
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.3.2)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.31.1)(msw@2.12.10(@types/node@25.3.2)(typescript@5.9.3))(tsx@4.21.0)
 
   packages/i18n:
     dependencies:
@@ -474,6 +437,55 @@ importers:
       vitest:
         specifier: ^4.0.18
         version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.3.0)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@2.0.1))(lightningcss@1.31.1)(msw@2.12.10(@types/node@25.3.0)(typescript@5.9.3))(tsx@4.21.0)
+
+  packages/modules:
+    dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.1009.0
+        version: 3.1009.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: ^3.1009.0
+        version: 3.1009.0
+      '@echo/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@echo/db':
+        specifier: workspace:*
+        version: link:../db
+      '@echo/errors':
+        specifier: workspace:*
+        version: link:../errors
+      '@echo/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@echo/logger':
+        specifier: workspace:*
+        version: link:../logger
+      kysely:
+        specifier: ^0.27.4
+        version: 0.27.6
+      mjml:
+        specifier: ^4.18.0
+        version: 4.18.0
+      nodemailer:
+        specifier: ^8.0.1
+        version: 8.0.1
+      zod:
+        specifier: '4'
+        version: 4.3.6
+    devDependencies:
+      '@echo/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/mjml':
+        specifier: ^4.7.4
+        version: 4.7.4
+      '@types/nodemailer':
+        specifier: ^7.0.11
+        version: 7.0.11
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
 
 packages:
 

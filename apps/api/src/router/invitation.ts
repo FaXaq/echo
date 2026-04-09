@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
-import { makeGetInvitation } from "@echo/app";
+import { makeGetInvitation } from "@echo/modules/invitation/use-cases";
 
 export const makeInvitationRouter = () =>
   router({

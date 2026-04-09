@@ -1,20 +1,17 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { systemRole, type ServerSession } from "@echo/auth";
-import type { InvitationRepoPort } from "@echo/app";
 import type { makeDbAdapter } from "@echo/db";
-import type { makeHealthRepo } from "./adapters/health";
 import type { makeLogger } from "@echo/logger";
-import type {
-  EmailNotifierPort,
-} from "@echo/app/ports";
-import type { makeSongRepo } from "./adapters/song";
-import type { makeTrackRepo } from "./adapters/track";
-import type { makeAudioClipRepo } from "./adapters/audio-clip";
-import type { makeMidiClipRepo } from "./adapters/midi-clip";
-import type { makeFileRepo } from "./adapters/file";
-import type { makeOrganizationRepo } from "./adapters/organization";
-import type { makeUserPermissionRepo } from "./adapters/auth/user-permission";
-import type { FileStoragePort } from "@echo/app";
+import type { InvitationRepoPort } from "@echo/modules/invitation/infrastructure";
+import type { EmailNotifierPort } from "@echo/modules/notification/infrastructure";
+import type { makeHealthRepo } from "@echo/modules/health/infrastructure";
+import type { makeSongRepo } from "@echo/modules/song/infrastructure";
+import type { makeTrackRepo } from "@echo/modules/track/infrastructure";
+import type { makeAudioClipRepo } from "@echo/modules/audio-clip/infrastructure";
+import type { makeMidiClipRepo } from "@echo/modules/midi-clip/infrastructure";
+import type { makeFileRepo, FileStoragePort } from "@echo/modules/file/infrastructure";
+import type { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
+import type { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
 import { appErrorToTRPC } from "./lib/errors";
 
 export type Context = {

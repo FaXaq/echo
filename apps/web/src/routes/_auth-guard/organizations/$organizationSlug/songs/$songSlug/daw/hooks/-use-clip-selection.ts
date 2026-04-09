@@ -9,6 +9,7 @@ interface UseClipSelectionDeps {
   clips: AudioClip[];
   midiClips: MidiClip[];
   secondsPerMeasure: number;
+  setSelection: React.Dispatch<React.SetStateAction<ClipSelection>>;
 }
 
 export function useClipSelection({
@@ -17,12 +18,9 @@ export function useClipSelection({
   clips,
   midiClips,
   secondsPerMeasure,
+  setSelection,
 }: UseClipSelectionDeps) {
   const [selectionRect, setSelectionRect] = useState<SelectionRect>(null);
-  const [selection, setSelection] = useState<ClipSelection>({
-    audioClipIds: new Set(),
-    midiClipIds: new Set(),
-  });
 
   const handleTimelineMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -117,5 +115,5 @@ export function useClipSelection({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  return { selection, setSelection, selectionRect, handleTimelineMouseDown };
+  return { selectionRect, handleTimelineMouseDown };
 }

@@ -6,6 +6,7 @@ import type {
   AudioClip,
   MidiClip,
   PendingMultiFileDrop,
+  ClipSelection,
 } from "./-daw-types";
 
 // ============================================================================
@@ -31,6 +32,10 @@ export interface DawContextValue {
   // Editing state
   editingTrackId: string | null;
   setEditingTrackId: (id: string | null) => void;
+
+  // Clip selection state
+  selection: ClipSelection;
+  setSelection: React.Dispatch<React.SetStateAction<ClipSelection>>;
 
   // State setters (used by hooks wired into the provider)
   setTracks: React.Dispatch<React.SetStateAction<Track[]>>;
