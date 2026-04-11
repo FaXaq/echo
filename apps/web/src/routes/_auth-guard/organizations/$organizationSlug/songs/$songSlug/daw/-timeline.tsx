@@ -55,6 +55,10 @@ export function Timeline() {
   const pendingStartMeasureRef = useRef<number>(1);
   const [editingClipId, setEditingClipId] = useState<string | null>(null);
 
+  // Always-current selection ref — avoids stale closures in callbacks
+  const selectionRef = useRef(selection);
+  selectionRef.current = selection;
+
   // tRPC mutations
   const deleteTrack = trpc.organization.track.delete.useMutation();
   const renameTrack = trpc.organization.track.rename.useMutation();
@@ -111,6 +115,52 @@ export function Timeline() {
     [getUploadUrl, registerMidiClip, onMidiClipUploaded, organizationId],
   );
 
+  // Track-level handlers
+  const handleDeleteTrack = useCallback(
+    (trackId: string) => {
+      deleteTrack.mutate({ trackId }, { onSuccess: () => onTrackDeleted(trackId) });
+    },
+    [deleteTrack, onTrackDeleted],
+  );
+
+  const handleDeleteClip = useCallback(
+    (clipId: string) => {
+      deleteClip.mutate({ clipId }, { onSuccess: () => onClipDeleted(clipId) });
+    },
+    [deleteClip, onClipDeleted],
+  );
+
+  const handleDeleteMidiClip = useCallback(
+    (clipId: string) => {
+      deleteMidiClip.mutate({ clipId }, { onSuccess: () => onMidiClipDeleted(clipId) });
+    },
+    [deleteMidiClip, onMidiClipDeleted],
+  );
+
+  const handleDeleteSelection = useCallback(() => {
+    const currentSelection = selectionRef.current;
+    const audioIds = Array.from(currentSelection.audioClipIds);
+    const midiIds = Array.from(currentSelection.midiClipIds);
+    if (audioIds.length === 0 && midiIds.length === 0) return;
+    setSelection({ audioClipIds: new Set(), midiClipIds: new Set() });
+    const promises: Promise<unknown>[] = [];
+    if (audioIds.length > 0) {
+      promises.push(
+        deleteManyAudioClips
+          .mutateAsync({ clipIds: audioIds })
+          .then(() => audioIds.forEach((id) => onClipDeleted(id))),
+      );
+    }
+    if (midiIds.length > 0) {
+      promises.push(
+        deleteManyMidiClips
+          .mutateAsync({ clipIds: midiIds })
+          .then(() => midiIds.forEach((id) => onMidiClipDeleted(id))),
+      );
+    }
+    Promise.allSettled(promises);
+  }, [deleteManyAudioClips, deleteManyMidiClips, onClipDeleted, onMidiClipDeleted, setSelection]);
+
   // Interaction hooks
   const { selectionRect, handleTimelineMouseDown } = useClipSelection({
     containerRef,
@@ -119,6 +169,7 @@ export function Timeline() {
     midiClips,
     secondsPerMeasure,
     setSelection,
+    onDeleteSelection: handleDeleteSelection,
   });
 
   const { handleMouseDown, handleMidiMouseDown } = useClipDrag({
@@ -148,50 +199,6 @@ export function Timeline() {
       handleUploadAudio,
       handleUploadMidi,
     });
-
-  // Track-level handlers
-  const handleDeleteTrack = useCallback(
-    (trackId: string) => {
-      deleteTrack.mutate({ trackId }, { onSuccess: () => onTrackDeleted(trackId) });
-    },
-    [deleteTrack, onTrackDeleted],
-  );
-
-  const handleDeleteClip = useCallback(
-    (clipId: string) => {
-      deleteClip.mutate({ clipId }, { onSuccess: () => onClipDeleted(clipId) });
-    },
-    [deleteClip, onClipDeleted],
-  );
-
-  const handleDeleteMidiClip = useCallback(
-    (clipId: string) => {
-      deleteMidiClip.mutate({ clipId }, { onSuccess: () => onMidiClipDeleted(clipId) });
-    },
-    [deleteMidiClip, onMidiClipDeleted],
-  );
-
-  const handleDeleteSelection = useCallback(() => {
-    const audioIds = Array.from(selection.audioClipIds);
-    const midiIds = Array.from(selection.midiClipIds);
-    setSelection({ audioClipIds: new Set(), midiClipIds: new Set() });
-    const promises: Promise<unknown>[] = [];
-    if (audioIds.length > 0) {
-      promises.push(
-        deleteManyAudioClips
-          .mutateAsync({ clipIds: audioIds })
-          .then(() => audioIds.forEach((id) => onClipDeleted(id))),
-      );
-    }
-    if (midiIds.length > 0) {
-      promises.push(
-        deleteManyMidiClips
-          .mutateAsync({ clipIds: midiIds })
-          .then(() => midiIds.forEach((id) => onMidiClipDeleted(id))),
-      );
-    }
-    Promise.allSettled(promises);
-  }, [selection, deleteManyAudioClips, deleteManyMidiClips, onClipDeleted, onMidiClipDeleted, setSelection]);
 
   const handleRenameCommit = useCallback(
     (trackId: string, name: string, originalName: string) => {

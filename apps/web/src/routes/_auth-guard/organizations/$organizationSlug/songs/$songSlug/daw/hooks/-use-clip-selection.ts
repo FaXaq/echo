@@ -10,6 +10,7 @@ interface UseClipSelectionDeps {
   midiClips: MidiClip[];
   secondsPerMeasure: number;
   setSelection: React.Dispatch<React.SetStateAction<ClipSelection>>;
+  onDeleteSelection: () => void;
 }
 
 export function useClipSelection({
@@ -19,6 +20,7 @@ export function useClipSelection({
   midiClips,
   secondsPerMeasure,
   setSelection,
+  onDeleteSelection,
 }: UseClipSelectionDeps) {
   const [selectionRect, setSelectionRect] = useState<SelectionRect>(null);
 
@@ -27,6 +29,7 @@ export function useClipSelection({
       if (e.button !== 0) return;
       const target = e.target as HTMLElement;
       if (target.closest("[data-clip]")) return;
+      if (target.closest('[role="menu"]') || target.closest('[role="menuitem"]')) return;
 
       setSelection({ audioClipIds: new Set(), midiClipIds: new Set() });
 
@@ -103,17 +106,22 @@ export function useClipSelection({
     [clips, midiClips, tracks, secondsPerMeasure, containerRef],
   );
 
-  // Clear selection on Escape
+  // Keyboard shortcuts: Escape clears selection, Delete/Backspace deletes selected clips
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSelection({ audioClipIds: new Set(), midiClipIds: new Set() });
         setSelectionRect(null);
       }
+      if (e.key === "Delete" || e.key === "Backspace") {
+        const target = e.target as HTMLElement;
+        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+        onDeleteSelection();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [onDeleteSelection]);
 
   return { selectionRect, handleTimelineMouseDown };
 }

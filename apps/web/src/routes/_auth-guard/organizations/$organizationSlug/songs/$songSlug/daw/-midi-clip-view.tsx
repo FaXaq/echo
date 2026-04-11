@@ -94,6 +94,7 @@ export function MidiClipView({
             width: clipWidth,
           }}
           onMouseDown={(e) => onMouseDown(e, clip)}
+          onContextMenu={(e) => e.stopPropagation()}
           title={clip.file.filename}
         >
           <canvas

@@ -164,6 +164,14 @@ export function DawTrackRow({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
+        {selectionCount > 0 && (
+          <ContextMenuItem
+            className="text-destructive focus:text-destructive"
+            onSelect={onDeleteSelection}
+          >
+            {selectionCount > 1 ? `Delete ${selectionCount} clips` : "Delete clip"}
+          </ContextMenuItem>
+        )}
         <ContextMenuItem onSelect={() => fileInputRef.current?.click()}>
           Upload audio
         </ContextMenuItem>

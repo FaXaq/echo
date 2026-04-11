@@ -116,6 +116,7 @@ export function AudioClipView({
             width: clipWidth,
           }}
           onMouseDown={(e) => onMouseDown(e, clip)}
+          onContextMenu={(e) => e.stopPropagation()}
           onDoubleClick={(e) => {
             e.stopPropagation();
             onEditStart();
@@ -151,14 +152,14 @@ export function AudioClipView({
         {selectionCount > 1 ? (
           <ContextMenuItem
             className="text-destructive focus:text-destructive"
-            onSelect={() => { console.log(selectionCount, "ds") }}
+            onSelect={onDeleteSelection}
           >
             Delete {selectionCount} clips
           </ContextMenuItem>
         ) : (
           <ContextMenuItem
             className="text-destructive focus:text-destructive"
-            onSelect={() => { console.log(selectionCount, "d1") }}
+            onSelect={onDelete}
           >
             Delete clip
           </ContextMenuItem>
