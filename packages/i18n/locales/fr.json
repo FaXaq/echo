@@ -168,7 +168,10 @@
     "Delete track": "Supprimer la piste",
     "Drag to reorder track": "Glisser pour réorganiser la piste",
     "Delete clip": "Supprimer le clip",
-    "Delete {{count}} clips": "Supprimer {{count}} clips"
+    "Delete {{count}} clips": "Supprimer {{count}} clips",
+    "This action cannot be undone.": "Cette action est irréversible.",
+    "Delete": "Supprimer",
+    "Cancel": "Annuler"
   },
 
   "emails": {

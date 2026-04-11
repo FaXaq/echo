@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { GripVertical } from "lucide-react";
 import { Slider } from "@/ui/slider";
 import { PhantomInput } from "@/ui/phantom-input";
@@ -7,6 +8,16 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/ui/context-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/ui/alert-dialog";
 import { TRACK_HEIGHT } from "./-constants";
 import type { Track } from "./-daw-types";
 import { useDawContext } from "./-daw-context";
@@ -29,8 +40,10 @@ export function DawTrackHeader({
 }: DawTrackHeaderProps) {
   const { editingTrackId, setEditingTrackId, onVolumeChanged } = useDawContext();
   const { t } = useTranslation("songs");
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
+    <>
     <ContextMenu>
       <ContextMenuTrigger asChild>
         <div
@@ -81,11 +94,32 @@ export function DawTrackHeader({
       <ContextMenuContent>
         <ContextMenuItem
           className="text-destructive focus:text-destructive"
-          onSelect={() => onDeleteTrack(track.id)}
+          onSelect={() => setConfirmDelete(true)}
         >
           {t("Delete track")}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
+
+    <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("Delete track")}</AlertDialogTitle>
+          <AlertDialogDescription>{t("This action cannot be undone.")}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => setConfirmDelete(false)}>{t("Cancel")}</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => {
+              onDeleteTrack(track.id);
+              setConfirmDelete(false);
+            }}
+          >
+            {t("Delete")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }

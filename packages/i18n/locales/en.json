@@ -168,7 +168,10 @@
     "Delete track": "Delete track",
     "Drag to reorder track": "Drag to reorder track",
     "Delete clip": "Delete clip",
-    "Delete {{count}} clips": "Delete {{count}} clips"
+    "Delete {{count}} clips": "Delete {{count}} clips",
+    "This action cannot be undone.": "This action cannot be undone.",
+    "Delete": "Delete",
+    "Cancel": "Cancel"
   },
 
   "emails": {
