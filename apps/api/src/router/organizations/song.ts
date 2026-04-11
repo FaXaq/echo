@@ -2,9 +2,11 @@ import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
 import { makeListSongs, makeCreateSong, makeGetSong, makeUpdateSong } from "@echo/modules/song/use-cases";
 import { appErrorToTRPC } from "../../lib/errors";
+import { makeSongSectionRouter } from "./song-section";
 
 export const makeSongRouter = () =>
   router({
+    section: makeSongSectionRouter(),
     list: authedProcedure
       .input(z.object({ organizationSlug: z.string().min(1) }))
       .query(async ({ input, ctx }) => {

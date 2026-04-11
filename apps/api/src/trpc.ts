@@ -10,6 +10,7 @@ import type { makeTrackRepo } from "@echo/modules/track/infrastructure";
 import type { makeAudioClipRepo } from "@echo/modules/audio-clip/infrastructure";
 import type { makeMidiClipRepo } from "@echo/modules/midi-clip/infrastructure";
 import type { makeFileRepo, FileStoragePort } from "@echo/modules/file/infrastructure";
+import type { makeSongSectionDefinitionRepo, makeSongSectionInstanceRepo } from "@echo/modules/song-section/infrastructure";
 import type { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
 import type { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
 import { appErrorToTRPC } from "./lib/errors";
@@ -33,6 +34,8 @@ export type Context = {
   fileStorage: FileStoragePort;
   organization: ReturnType<typeof makeOrganizationRepo>;
   userPermission: ReturnType<typeof makeUserPermissionRepo>;
+  songSectionDefinition: ReturnType<typeof makeSongSectionDefinitionRepo>;
+  songSectionInstance: ReturnType<typeof makeSongSectionInstanceRepo>;
 };
 
 const t = initTRPC.context<Context>().create();

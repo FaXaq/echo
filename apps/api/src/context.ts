@@ -10,6 +10,7 @@ import { makeSongRepo } from "@echo/modules/song/infrastructure";
 import { makeTrackRepo } from "@echo/modules/track/infrastructure";
 import { makeAudioClipRepo } from "@echo/modules/audio-clip/infrastructure";
 import { makeMidiClipRepo } from "@echo/modules/midi-clip/infrastructure";
+import { makeSongSectionDefinitionRepo, makeSongSectionInstanceRepo } from "@echo/modules/song-section/infrastructure";
 import { makeFileRepo, makeFileStorageAdapter } from "@echo/modules/file/infrastructure";
 import { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
 import { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
@@ -31,6 +32,8 @@ export const makeCreateContext =
       });
       const session = await auth.api.getSession({ headers });
 
+      const songSectionDefinition = makeSongSectionDefinitionRepo({ db });
+      const songSectionInstance = makeSongSectionInstanceRepo({ db });
       const health = makeHealthRepo({ db });
       const invitation = makeInvitationRepo({ db });
       const song = makeSongRepo({ db });
@@ -68,5 +71,7 @@ export const makeCreateContext =
         file,
         fileStorage,
         organization,
+        songSectionDefinition,
+        songSectionInstance,
       };
     };

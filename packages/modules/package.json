@@ -122,6 +122,18 @@
     "./health/use-cases": {
       "types": "./src/health/use-cases/index.ts",
       "default": "./src/health/use-cases/index.ts"
+    },
+    "./song-section/domain": {
+      "types": "./src/song-section/domain/index.ts",
+      "default": "./src/song-section/domain/index.ts"
+    },
+    "./song-section/infrastructure": {
+      "types": "./src/song-section/infrastructure/index.ts",
+      "default": "./src/song-section/infrastructure/index.ts"
+    },
+    "./song-section/use-cases": {
+      "types": "./src/song-section/use-cases/index.ts",
+      "default": "./src/song-section/use-cases/index.ts"
     }
   },
   "scripts": {
