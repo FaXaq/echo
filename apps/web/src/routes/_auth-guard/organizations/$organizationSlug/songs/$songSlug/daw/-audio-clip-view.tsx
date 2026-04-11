@@ -1,4 +1,5 @@
 import { useRef, useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { PhantomInput } from "@/ui/phantom-input";
 import {
@@ -38,6 +39,7 @@ export function AudioClipView({
   onDelete,
   onDeleteSelection,
 }: AudioClipViewProps) {
+  const { t } = useTranslation("songs");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const displayName = clip.name ?? stripExtension(clip.file.filename);
   const clipWidth = computeClipWidthPx(clip.durationMs ?? undefined, secondsPerMeasure);
@@ -147,21 +149,21 @@ export function AudioClipView({
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onSelect={handleExportClip} disabled={!downloadUrl}>
-          Export clip
+          {t("Export clip")}
         </ContextMenuItem>
         {selectionCount > 1 ? (
           <ContextMenuItem
             className="text-destructive focus:text-destructive"
             onSelect={onDeleteSelection}
           >
-            Delete {selectionCount} clips
+            {t("Delete {{count}} clips", { count: selectionCount })}
           </ContextMenuItem>
         ) : (
           <ContextMenuItem
             className="text-destructive focus:text-destructive"
             onSelect={onDelete}
           >
-            Delete clip
+            {t("Delete clip")}
           </ContextMenuItem>
         )}
       </ContextMenuContent>

@@ -1,6 +1,7 @@
 import { authClient } from "@/lib/auth"
 import type { FileRouteTypes } from "@/routeTree.gen"
 import { useNavigate, useParams } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 
 type NavItem = {
   title: string
@@ -13,20 +14,10 @@ export type NavGroup = { title: string; items: NavItem[] }
 
 const PERSONAL_ID = null
 
-const personalNavGroups: NavGroup[] = [
-  {
-    title: "Personal",
-    items: [
-      { title: "Planning", to: "/" },
-      { title: "Practice", to: "/" },
-      { title: "Backlog", to: "/" },
-    ],
-  },
-]
-
 type OrganizationOption = Omit<NonNullable<ReturnType<Awaited<typeof authClient.useListOrganizations>>["data"]>[number], "id"> & { id: string | null };
 
 export function useNavigation() {
+  const { t } = useTranslation("navigation")
   const { data: organizations } = authClient.useListOrganizations()
   const navigate = useNavigate();
 
@@ -37,7 +28,7 @@ export function useNavigation() {
     : null
 
   const orgOptions: OrganizationOption[] = [
-    { id: PERSONAL_ID, name: "Personal", createdAt: new Date(), slug: "" },
+    { id: PERSONAL_ID, name: t("Personal"), createdAt: new Date(), slug: "" },
     ...(organizations ?? []),
   ]
 
@@ -50,15 +41,26 @@ export function useNavigation() {
   }
 
   const slug = activeOrganization?.slug ?? ""
+  const personalNavGroups: NavGroup[] = [
+    {
+      title: t("Personal"),
+      items: [
+        { title: t("Planning"), to: "/" },
+        { title: t("Practice"), to: "/" },
+        { title: t("Backlog"), to: "/" },
+      ],
+    },
+  ]
+
   const projectNavGroups: NavGroup[] = [
     {
       title: activeOrganization?.name ?? "",
       items: [
-        { title: "Planning", to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
-        { title: "Songs", to: "/organizations/$organizationSlug/songs", params: { "organizationSlug": slug } },
-        { title: "Setlist", to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
-        { title: "Drive", to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
-        { title: "Members", to: "/organizations/$organizationSlug/members", params: { "organizationSlug": slug } },
+        { title: t("Schedule"), to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
+        { title: t("Songs"), to: "/organizations/$organizationSlug/songs", params: { "organizationSlug": slug } },
+        { title: t("Setlist"), to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
+        { title: t("Drive"), to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
+        { title: t("Members"), to: "/organizations/$organizationSlug/members", params: { "organizationSlug": slug } },
       ],
     },
   ]

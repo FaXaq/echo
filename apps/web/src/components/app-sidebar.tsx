@@ -15,14 +15,12 @@ import {
 } from "@/components/ui/sidebar"
 import { useNavigation } from "@/hooks/use-navigation"
 import { Link, useNavigate } from "@tanstack/react-router"
-import { useTranslation } from "react-i18next"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { orgOptions, activeOrganization, setActiveOrganization, navGroups } = useNavigation()
   const navigate = useNavigate()
-  const { t } = useTranslation("auth")
 
-  const activeOrgName = activeOrganization?.name ?? t("Personal")
+  const activeOrgName = activeOrganization?.name ?? orgOptions[0]?.name ?? ""
   const orgNames = orgOptions.map((o) => o.name)
 
   const handleOrgSelect = (name: string) => {

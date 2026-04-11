@@ -63,6 +63,14 @@
 
   "navigation": {
     "New project": "Nouveau projet",
+    "Personal": "Personnel",
+    "Planning": "Planning",
+    "Practice": "Pratique",
+    "Backlog": "Backlog",
+    "Schedule": "Agenda",
+    "Songs": "Morceaux",
+    "Setlist": "Setlist",
+    "Drive": "Drive",
     "Members": "Membres"
   },
 
@@ -156,7 +164,11 @@
     "Upload MIDI": "Importer un fichier MIDI",
     "Instrument": "Instrument",
     "Add BPM": "Ajouter un BPM",
-    "Add key": "Ajouter une tonalité"
+    "Add key": "Ajouter une tonalité",
+    "Delete track": "Supprimer la piste",
+    "Drag to reorder track": "Glisser pour réorganiser la piste",
+    "Delete clip": "Supprimer le clip",
+    "Delete {{count}} clips": "Supprimer {{count}} clips"
   },
 
   "emails": {

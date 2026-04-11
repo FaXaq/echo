@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
   ContextMenu,
@@ -47,6 +48,7 @@ export function DawTrackRow({
   onUploadMidi,
 }: DawTrackRowProps) {
   const { clips, midiClips, downloadUrls, selection } = useDawContext();
+  const { t } = useTranslation("songs");
   const selectionCount = selection.audioClipIds.size + selection.midiClipIds.size;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const midiInputRef = useRef<HTMLInputElement>(null);
@@ -169,14 +171,14 @@ export function DawTrackRow({
             className="text-destructive focus:text-destructive"
             onSelect={onDeleteSelection}
           >
-            {selectionCount > 1 ? `Delete ${selectionCount} clips` : "Delete clip"}
+            {selectionCount > 1 ? t("Delete {{count}} clips", { count: selectionCount }) : t("Delete clip")}
           </ContextMenuItem>
         )}
         <ContextMenuItem onSelect={() => fileInputRef.current?.click()}>
-          Upload audio
+          {t("Upload audio")}
         </ContextMenuItem>
         <ContextMenuItem onSelect={() => midiInputRef.current?.click()}>
-          Upload MIDI
+          {t("Upload MIDI")}
         </ContextMenuItem>
       </ContextMenuContent>
 

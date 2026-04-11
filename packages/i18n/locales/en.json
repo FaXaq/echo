@@ -63,6 +63,14 @@
 
   "navigation": {
     "New project": "New project",
+    "Personal": "Personal",
+    "Planning": "Planning",
+    "Practice": "Practice",
+    "Backlog": "Backlog",
+    "Schedule": "Schedule",
+    "Songs": "Songs",
+    "Setlist": "Setlist",
+    "Drive": "Drive",
     "Members": "Members"
   },
 
@@ -156,7 +164,11 @@
     "Upload MIDI": "Upload MIDI",
     "Instrument": "Instrument",
     "Add BPM": "Add BPM",
-    "Add key": "Add key"
+    "Add key": "Add key",
+    "Delete track": "Delete track",
+    "Drag to reorder track": "Drag to reorder track",
+    "Delete clip": "Delete clip",
+    "Delete {{count}} clips": "Delete {{count}} clips"
   },
 
   "emails": {

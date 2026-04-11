@@ -10,6 +10,7 @@ import {
 import { TRACK_HEIGHT } from "./-constants";
 import type { Track } from "./-daw-types";
 import { useDawContext } from "./-daw-context";
+import { useTranslation } from "react-i18next";
 
 export interface DawTrackHeaderProps {
   track: Track;
@@ -27,6 +28,7 @@ export function DawTrackHeader({
   onRenameCommit,
 }: DawTrackHeaderProps) {
   const { editingTrackId, setEditingTrackId, onVolumeChanged } = useDawContext();
+  const { t } = useTranslation("songs");
 
   return (
     <ContextMenu>
@@ -40,7 +42,7 @@ export function DawTrackHeader({
             data-drag-handle
             className="flex items-center justify-center flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
             onMouseDown={(e) => onMouseDown(e, trackIndex)}
-            title="Drag to reorder track"
+            title={t("Drag to reorder track")}
           >
             <GripVertical size={16} />
           </div>
@@ -81,7 +83,7 @@ export function DawTrackHeader({
           className="text-destructive focus:text-destructive"
           onSelect={() => onDeleteTrack(track.id)}
         >
-          Delete track
+          {t("Delete track")}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
