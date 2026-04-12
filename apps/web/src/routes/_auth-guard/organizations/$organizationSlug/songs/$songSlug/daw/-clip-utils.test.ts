@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { stripExtension, computeOverlaps, computeClipWidthPx } from "./-clip-utils";
-import { PIXELS_PER_MEASURE } from "./-constants";
 
 describe("stripExtension", () => {
   it("strips a simple .wav extension", () => {
@@ -71,23 +70,29 @@ describe("computeOverlaps", () => {
 });
 
 describe("computeClipWidthPx", () => {
-  const secondsPerMeasure = 2; // e.g. 120 bpm, 4/4
+  const secondsPerMeasure = 2; // 120 bpm, 4/4
+  const ppm = 120;
 
-  it("returns PIXELS_PER_MEASURE minimum when durationMs is undefined", () => {
-    expect(computeClipWidthPx(undefined, secondsPerMeasure)).toBe(PIXELS_PER_MEASURE);
+  it("returns pixelsPerMeasure minimum when durationMs is undefined", () => {
+    expect(computeClipWidthPx(undefined, secondsPerMeasure, ppm)).toBe(120);
   });
 
   it("computes correct width for a clip of exactly one measure duration", () => {
     const oneMeasureMs = secondsPerMeasure * 1000;
-    expect(computeClipWidthPx(oneMeasureMs, secondsPerMeasure)).toBe(PIXELS_PER_MEASURE);
+    expect(computeClipWidthPx(oneMeasureMs, secondsPerMeasure, ppm)).toBe(120);
   });
 
   it("computes correct width for a two-measure clip", () => {
     const twoMeasuresMs = secondsPerMeasure * 2 * 1000;
-    expect(computeClipWidthPx(twoMeasuresMs, secondsPerMeasure)).toBe(PIXELS_PER_MEASURE * 2);
+    expect(computeClipWidthPx(twoMeasuresMs, secondsPerMeasure, ppm)).toBe(240);
   });
 
-  it("never returns less than PIXELS_PER_MEASURE even for a very short clip", () => {
-    expect(computeClipWidthPx(1, secondsPerMeasure)).toBe(PIXELS_PER_MEASURE);
+  it("never returns less than pixelsPerMeasure even for a very short clip", () => {
+    expect(computeClipWidthPx(1, secondsPerMeasure, ppm)).toBe(120);
+  });
+
+  it("scales correctly at double zoom (240 ppm)", () => {
+    const twoMeasuresMs = secondsPerMeasure * 2 * 1000;
+    expect(computeClipWidthPx(twoMeasuresMs, secondsPerMeasure, 240)).toBe(480);
   });
 });

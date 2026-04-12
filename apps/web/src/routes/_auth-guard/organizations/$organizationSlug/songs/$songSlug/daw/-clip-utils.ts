@@ -3,7 +3,7 @@
  * No React, no tRPC — importable in any context including unit tests.
  */
 
-import { PIXELS_PER_MEASURE, RULER_HEIGHT, TRACK_HEIGHT } from "./-constants";
+import { RULER_HEIGHT, TRACK_HEIGHT } from "./-constants";
 import type { Track } from "./-daw-types";
 
 /**
@@ -21,13 +21,14 @@ export function computeGhostPosition(
   e: React.DragEvent<HTMLDivElement>,
   container: HTMLDivElement,
   tracks: Track[],
+  pixelsPerMeasure: number,
 ): { trackIndex: number; startMeasure: number } | null {
   if (tracks.length === 0) return null;
   const rect = container.getBoundingClientRect();
   const pixelY = e.clientY - rect.top;
   if (pixelY < RULER_HEIGHT) return null;
   const pixelX = e.clientX - rect.left + container.scrollLeft;
-  const startMeasure = Math.max(1, Math.round((pixelX / PIXELS_PER_MEASURE) * 4) / 4);
+  const startMeasure = Math.max(1, Math.round((pixelX / pixelsPerMeasure) * 4) / 4);
   const trackIndex = Math.max(
     0,
     Math.min(tracks.length - 1, Math.floor((pixelY - RULER_HEIGHT) / TRACK_HEIGHT)),
@@ -72,9 +73,10 @@ export function computeSnappedMeasure(
   startX: number,
   initialScrollLeft: number,
   originalMeasure: number,
+  pixelsPerMeasure: number,
 ): number {
   const dx = mouseX - startX + scrollLeft - initialScrollLeft;
-  return Math.round(Math.max(1, originalMeasure + dx / PIXELS_PER_MEASURE) * 4) / 4;
+  return Math.round(Math.max(1, originalMeasure + dx / pixelsPerMeasure) * 4) / 4;
 }
 
 /**
@@ -83,11 +85,12 @@ export function computeSnappedMeasure(
 export function computeClipWidthPx(
   durationMs: number | undefined,
   secondsPerMeasure: number,
+  pixelsPerMeasure: number,
 ): number {
   return Math.max(
-    PIXELS_PER_MEASURE,
+    pixelsPerMeasure,
     durationMs != null
-      ? (durationMs / 1000 / secondsPerMeasure) * PIXELS_PER_MEASURE
-      : PIXELS_PER_MEASURE,
+      ? (durationMs / 1000 / secondsPerMeasure) * pixelsPerMeasure
+      : pixelsPerMeasure,
   );
 }
