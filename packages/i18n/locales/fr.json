@@ -133,6 +133,7 @@
 
   "songs": {
     "Songs": "Morceaux",
+    "Structure": "Structure",
     "New song": "Nouveau morceau",
     "Add a new song to your project": "Ajoutez un nouveau morceau à votre projet",
     "Name": "Nom",

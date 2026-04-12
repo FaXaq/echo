@@ -1,6 +1,7 @@
 export const PIXELS_PER_MEASURE = 120;
 export const TRACK_HEIGHT = 64;
 export const RULER_HEIGHT = 32;
+export const STRUCTURE_LANE_HEIGHT = 40;
 export const MIN_MEASURES = 32;
 export const BUFFER_MEASURES = 8;
 export const LEFT_PANEL_WIDTH = 200;

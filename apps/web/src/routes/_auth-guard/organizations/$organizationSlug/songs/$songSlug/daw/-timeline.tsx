@@ -14,6 +14,7 @@ import { useDawContext } from "./-daw-context";
 import { getAudioDurationMs } from "./-file-utils";
 import { stripExtension } from "./-clip-utils";
 import { DawRuler } from "./-daw-ruler";
+import { DawStructureLane, DawStructureLaneHeader } from "./-daw-structure-lane";
 import { DawTrackHeader } from "./-daw-track-header";
 import { DawTrackRow } from "./-daw-track-row";
 import { DawBottomDropZone } from "./-daw-bottom-drop-zone";
@@ -51,6 +52,11 @@ export function Timeline() {
     pushHistory,
   } = useDawContext();
   const organizationId = song.organizationId;
+
+  // Section instances for the structure lane (read-only)
+  const { data: sectionInstances } = trpc.organization.song.section.instance.list.useQuery({ songId: song.id });
+  const structureInstances = sectionInstances ?? [];
+
   const containerRef = useRef<HTMLDivElement>(null);
   const pendingStartMeasureRef = useRef<number>(1);
   const [editingClipId, setEditingClipId] = useState<string | null>(null);
@@ -252,6 +258,8 @@ export function Timeline() {
       <div className="flex-shrink-0 border-r relative" style={{ width: LEFT_PANEL_WIDTH }}>
         <div className="bg-muted border-b" style={{ height: RULER_HEIGHT }} />
 
+        <DawStructureLaneHeader visible={structureInstances.length > 0} />
+
         {tracks.map((track, trackIndex) => (
           <DawTrackHeader
             key={track.id}
@@ -298,6 +306,8 @@ export function Timeline() {
       >
         <div className="relative" style={{ width: totalWidth }}>
           <DawRuler totalMeasures={totalMeasures} />
+
+          <DawStructureLane instances={structureInstances} totalWidth={totalWidth} />
 
           {/* Track lanes */}
           {tracks.map((track) => (
