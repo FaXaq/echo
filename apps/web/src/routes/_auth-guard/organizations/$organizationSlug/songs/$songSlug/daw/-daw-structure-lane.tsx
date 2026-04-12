@@ -3,7 +3,15 @@ import { useTranslation } from "react-i18next";
 import { PIXELS_PER_MEASURE, STRUCTURE_LANE_HEIGHT } from "./-constants";
 
 const CHORD_HIDE_WIDTH_PX = 60;
-const NEUTRAL_COLOR = "#6b7280";
+
+const PRESET_COLORS = [
+  "#7C3AED", "#2563EB", "#059669", "#D97706",
+  "#DC2626", "#DB2777", "#0891B2", "#65A30D",
+];
+
+function colorForIndex(index: number): string {
+  return PRESET_COLORS[index % PRESET_COLORS.length];
+}
 
 type Chord = { at: number; chord: string };
 
@@ -26,6 +34,17 @@ interface DawStructureLaneProps {
 export function DawStructureLane({ instances, totalWidth }: DawStructureLaneProps) {
   if (instances.length === 0) return null;
 
+  // Assign a consistent fallback color per definition (by order of first appearance)
+  const definitionColors = new Map<string, string>();
+  for (const instance of instances) {
+    if (!definitionColors.has(instance.definition.id)) {
+      definitionColors.set(
+        instance.definition.id,
+        instance.definition.color ?? colorForIndex(definitionColors.size),
+      );
+    }
+  }
+
   return (
     <div
       className="relative border-b bg-muted/30"
@@ -34,7 +53,7 @@ export function DawStructureLane({ instances, totalWidth }: DawStructureLaneProp
       {instances.map((instance) => {
         const leftPx = (instance.startMeasure - 1) * PIXELS_PER_MEASURE;
         const widthPx = instance.lengthMeasures * PIXELS_PER_MEASURE;
-        const color = instance.definition.color ?? NEUTRAL_COLOR;
+        const color = definitionColors.get(instance.definition.id)!;
         const chordLine =
           instance.definition.chords.length > 0
             ? instance.definition.chords.map((c) => c.chord).join(" · ")

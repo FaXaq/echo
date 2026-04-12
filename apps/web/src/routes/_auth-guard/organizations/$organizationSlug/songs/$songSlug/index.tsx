@@ -1,17 +1,16 @@
 import { useState } from "react";
 import type React from "react";
-import { GripVertical } from "lucide-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DragDropProvider } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { move } from "@dnd-kit/helpers";
 import { trpcLoader, trpc } from "@/lib/trpc";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/ui/button";
 import { EditableBadge } from "@/ui/editable-badge";
 import { ViewModeToggle, type ViewMode } from "./-view-mode-toggle";
 import { SectionCard, type SectionInstance } from "./-section-card";
-import { AddSectionDialog } from "./-add-section-dialog";
+import { AddSectionRow } from "./-add-section-row";
 import { DeleteSectionDialog } from "./-delete-section-dialog";
 
 export const Route = createFileRoute(
@@ -31,39 +30,31 @@ function SortableSectionRow({
   instance,
   index,
   viewMode,
+  autoFocusName,
   onDelete,
 }: {
   instance: SectionInstance;
   index: number;
   viewMode: ViewMode;
+  autoFocusName?: boolean;
   onDelete: (id: string) => void;
 }) {
   const { ref, handleRef, isDragging } = useSortable({ id: instance.id, index });
-  const { t } = useTranslation("songs");
 
   return (
-    <div ref={ref as React.Ref<HTMLDivElement>} className="relative group flex items-start gap-2">
-      <div
-        ref={handleRef as React.Ref<HTMLDivElement>}
-        className="flex-shrink-0 mt-3 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
-        title={t("Drag to reorder section")}
-      >
-        <GripVertical size={16} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <SectionCard instance={instance} viewMode={viewMode} dragging={isDragging} />
-      </div>
-      <button
-        type="button"
-        title={t("Remove section")}
-        className="absolute top-2 right-8 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all text-xs px-2 py-0.5 rounded"
-        onClick={() => onDelete(instance.id)}
-      >
-        ✕
-      </button>
+    <div ref={ref as React.Ref<HTMLDivElement>}>
+      <SectionCard
+        instance={instance}
+        viewMode={viewMode}
+        dragging={isDragging}
+        handleRef={handleRef as React.Ref<HTMLDivElement>}
+        autoFocusName={autoFocusName}
+        onDelete={() => onDelete(instance.id)}
+      />
     </div>
   );
 }
+
 
 function SongDetailPage() {
   const { t } = useTranslation("songs");
@@ -73,8 +64,8 @@ function SongDetailPage() {
   const utils = trpc.useUtils();
 
   const [viewMode, setViewMode] = useState<ViewMode>("lyrics+chords");
-  const [showAddDialog, setShowAddDialog] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [newlyCreatedDefId, setNewlyCreatedDefId] = useState<string | null>(null);
 
   const { data: instances = initialInstances } =
     trpc.organization.song.section.instance.list.useQuery({ songId: song.id });
@@ -94,9 +85,26 @@ function SongDetailPage() {
     onSuccess: () => utils.organization.song.section.instance.list.invalidate({ songId: song.id }),
   });
 
+  const createDefinition = trpc.organization.song.section.definition.create.useMutation();
+  const createInstance = trpc.organization.song.section.instance.create.useMutation({
+    onSuccess: () => utils.organization.song.section.instance.list.invalidate({ songId: song.id }),
+  });
+
   const deletingInstance = deletingId ? instances.find(i => i.id === deletingId) : null;
 
-  const uniqueDefinitions = Array.from(
+  async function handleCreateNew(name: string) {
+    const def = await createDefinition.mutateAsync({ songId: song.id, name });
+    setNewlyCreatedDefId(def.id);
+    createInstance.mutate({ songId: song.id, definitionId: def.id });
+  }
+
+  function handleAddInstance(definitionId: string) {
+    createInstance.mutate({ songId: song.id, definitionId });
+  }
+
+  const isAddPending = createDefinition.isPending || createInstance.isPending;
+
+  const existingDefinitions = Array.from(
     new Map(instances.map(i => [i.definition.id, i.definition])).values()
   );
 
@@ -142,18 +150,11 @@ function SongDetailPage() {
 
       {/* Structure section */}
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4">
           <ViewModeToggle value={viewMode} onChange={setViewMode} />
-          <Button variant="outline" size="sm" onClick={() => setShowAddDialog(true)}>
-            <Trans t={t}>Add section</Trans>
-          </Button>
         </div>
 
-        {instances.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground text-sm border border-dashed border-border rounded-lg">
-            <Trans t={t}>No sections yet. Add your first section to get started.</Trans>
-          </div>
-        ) : (
+        <div className="space-y-3">
           <DragDropProvider
             onDragEnd={(event) => {
               if (event.canceled) return;
@@ -164,29 +165,26 @@ function SongDetailPage() {
               });
             }}
           >
-            <div className="space-y-3">
-              {instances.map((instance, index) => (
-                <SortableSectionRow
-                  key={instance.id}
-                  instance={instance as SectionInstance}
-                  index={index}
-                  viewMode={viewMode}
-                  onDelete={setDeletingId}
-                />
-              ))}
-            </div>
+            {instances.map((instance, index) => (
+              <SortableSectionRow
+                key={instance.id}
+                instance={instance as SectionInstance}
+                index={index}
+                viewMode={viewMode}
+                autoFocusName={instance.definition.id === newlyCreatedDefId}
+                onDelete={setDeletingId}
+              />
+            ))}
           </DragDropProvider>
-        )}
-      </div>
 
-      {/* Dialogs */}
-      {showAddDialog && (
-        <AddSectionDialog
-          songId={song.id}
-          existingDefinitions={uniqueDefinitions}
-          onClose={() => setShowAddDialog(false)}
-        />
-      )}
+          <AddSectionRow
+            existingDefinitions={existingDefinitions}
+            onCreateNew={handleCreateNew}
+            onAddInstance={handleAddInstance}
+            isPending={isAddPending}
+          />
+        </div>
+      </div>
 
       {deletingInstance && (
         <DeleteSectionDialog

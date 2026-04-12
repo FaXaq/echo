@@ -1,4 +1,6 @@
 import { useState, useRef } from "react";
+import type React from "react";
+import { GripVertical } from "lucide-react";
 import { useTranslation, Trans } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import type { ViewMode } from "./-view-mode-toggle";
@@ -30,6 +32,9 @@ type Props = {
   instance: SectionInstance;
   viewMode: ViewMode;
   dragging?: boolean;
+  handleRef?: React.Ref<HTMLDivElement>;
+  autoFocusName?: boolean;
+  onDelete?: () => void;
 };
 
 function parseChordInput(raw: string): SongChord[] {
@@ -58,10 +63,12 @@ function colorForIndex(index: number): string {
   return PRESET_COLORS[index % PRESET_COLORS.length];
 }
 
-export function SectionCard({ instance, viewMode, dragging }: Props) {
+export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocusName, onDelete }: Props) {
   const { t } = useTranslation("songs");
   const utils = trpc.useUtils();
 
+  const [editingName, setEditingName] = useState(!!autoFocusName);
+  const [nameValue, setNameValue] = useState(instance.definition.name);
   const [editingLyrics, setEditingLyrics] = useState(false);
   const [lyricsValue, setLyricsValue] = useState(
     instance.lyricsOverride ?? instance.definition.lyrics ?? ""
@@ -108,6 +115,14 @@ export function SectionCard({ instance, viewMode, dragging }: Props) {
     setEditingChords(false);
   }
 
+  function saveName() {
+    const trimmed = nameValue.trim();
+    if (trimmed && trimmed !== instance.definition.name) {
+      updateDefinition.mutate({ id: instance.definition.id, name: trimmed });
+    }
+    setEditingName(false);
+  }
+
   function saveColor(hex: string) {
     updateDefinition.mutate({ id: instance.definition.id, color: hex });
     setEditingColor(false);
@@ -116,26 +131,67 @@ export function SectionCard({ instance, viewMode, dragging }: Props) {
   return (
     <div
       className={[
-        "rounded-lg border border-border bg-card transition-opacity",
+        "group rounded-lg border border-border bg-card transition-opacity",
         dragging ? "opacity-40" : "",
       ].join(" ")}
     >
       {/* Header */}
       <div
-        className="flex items-center gap-2 px-4 py-2 rounded-t-lg"
-        style={{ borderLeft: `4px solid ${color}` }}
+        className="flex items-center gap-2 px-3 py-2 rounded-t-lg border-b"
+        style={{
+          background: `${color}26`,
+          borderColor: `${color}40`,
+        }}
       >
+        <div
+          ref={handleRef}
+          className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
+          title={t("Drag to reorder section")}
+        >
+          <GripVertical size={14} />
+        </div>
         <button
           type="button"
           title={t("Change color")}
-          className="w-4 h-4 rounded-full border border-white/30 flex-shrink-0 cursor-pointer"
+          className="w-2.5 h-2.5 rounded-full flex-shrink-0 cursor-pointer"
           style={{ background: color }}
           onClick={() => setEditingColor(v => !v)}
         />
-        <span className="font-semibold text-sm">{instance.definition.name}</span>
-        <span className="text-xs text-muted-foreground ml-1">
-          {t("m{{start}}", { start: instance.startMeasure })}
+        {editingName ? (
+          <input
+            autoFocus
+            className="font-bold text-sm bg-transparent outline-none min-w-0 flex-1"
+            style={{ color }}
+            value={nameValue}
+            onChange={e => setNameValue(e.target.value)}
+            onBlur={saveName}
+            onKeyDown={e => {
+              if (e.key === "Enter") saveName();
+              if (e.key === "Escape") { setEditingName(false); setNameValue(instance.definition.name); }
+            }}
+          />
+        ) : (
+          <span
+            className="font-bold text-sm cursor-text"
+            style={{ color }}
+            onClick={() => { setEditingName(true); setNameValue(instance.definition.name); }}
+          >
+            {instance.definition.name}
+          </span>
+        )}
+        <span className="text-xs text-muted-foreground ml-auto">
+          {t("{{count}}m", { count: instance.lengthMeasures })}
         </span>
+        {onDelete && (
+          <button
+            type="button"
+            title={t("Remove section")}
+            className="text-muted-foreground hover:text-destructive transition-colors text-xs px-1 rounded flex-shrink-0"
+            onClick={onDelete}
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {/* Color picker */}
