@@ -15,12 +15,13 @@ import { getAudioDurationMs } from "./-file-utils";
 import { stripExtension } from "./-clip-utils";
 import { DawRuler } from "./-daw-ruler";
 import { DawStructureLane, DawStructureLaneHeader } from "./-daw-structure-lane";
-import { DawTrackHeader } from "./-daw-track-header";
 import { DawTrackRow } from "./-daw-track-row";
 import { DawBottomDropZone } from "./-daw-bottom-drop-zone";
 import { DawDragGhostOverlay } from "./-daw-drag-ghost";
 import { useClipDrag } from "./hooks/-use-clip-drag";
-import { useTrackHeaderDrag } from "./hooks/-use-track-header-drag";
+import { DragDropProvider } from "@dnd-kit/react";
+import { move } from "@dnd-kit/helpers";
+import { SortableTrackHeader } from "./-sortable-track-header";
 import { useFileDrop } from "./hooks/-use-file-drop";
 import { useClipSelection } from "./hooks/-use-clip-selection";
 
@@ -189,12 +190,6 @@ export function Timeline() {
     pushHistory,
   });
 
-  const { trackHeaderDragState, handleTrackHeaderMouseDown } = useTrackHeaderDrag({
-    containerRef,
-    tracks,
-    onTracksReordered,
-    pushHistory,
-  });
 
   const { isDragActive, dragGhost, bottomDropZone, handleDragEnter, handleDragOver, handleDragLeave, handleDrop, handleDragEnd } =
     useFileDrop({
@@ -260,28 +255,24 @@ export function Timeline() {
 
         <DawStructureLaneHeader visible={structureInstances.length > 0} />
 
-        {tracks.map((track, trackIndex) => (
-          <DawTrackHeader
-            key={track.id}
-            track={track}
-            trackIndex={trackIndex}
-            onMouseDown={handleTrackHeaderMouseDown}
-            onDeleteTrack={handleDeleteTrack}
-            onRenameCommit={handleRenameCommit}
-          />
-        ))}
-
-        {/* Insertion indicator zone during track reorder drag */}
-        {trackHeaderDragState && trackHeaderDragState.insertBeforeIndex !== null && (
-          <div
-            className="absolute left-0 right-0 border-t-4 border-primary bg-primary/10 pointer-events-none"
-            style={{
-              top: RULER_HEIGHT + (trackHeaderDragState.insertBeforeIndex * TRACK_HEIGHT),
-              height: TRACK_HEIGHT * 0.4,
-              marginTop: -(TRACK_HEIGHT * 0.2),
-            }}
-          />
-        )}
+        <DragDropProvider
+          onDragEnd={(event) => {
+            if (event.canceled) return;
+            const reordered = move(tracks, event);
+            onTracksReordered(reordered);
+            pushHistory?.(() => onTracksReordered(tracks));
+          }}
+        >
+          {tracks.map((track, index) => (
+            <SortableTrackHeader
+              key={track.id}
+              track={track}
+              index={index}
+              onDeleteTrack={handleDeleteTrack}
+              onRenameCommit={handleRenameCommit}
+            />
+          ))}
+        </DragDropProvider>
 
         {/* Add-track placeholder */}
         <div

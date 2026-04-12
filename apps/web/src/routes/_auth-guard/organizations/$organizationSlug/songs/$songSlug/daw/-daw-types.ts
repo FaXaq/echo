@@ -68,13 +68,7 @@ export type FileDragState = {
   uploading?: boolean;
 };
 
-export type TrackHeaderDragState = {
-  kind: "track-header";
-  sourceIndex: number;
-  insertBeforeIndex: number | null;
-};
-
-export type DragState = ClipDragState | FileDragState | TrackHeaderDragState | null;
+export type DragState = ClipDragState | FileDragState | null;
 
 // ============================================================================
 // Multi-file drop

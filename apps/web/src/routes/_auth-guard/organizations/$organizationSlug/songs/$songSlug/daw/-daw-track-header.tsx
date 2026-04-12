@@ -25,16 +25,14 @@ import { useTranslation } from "react-i18next";
 
 export interface DawTrackHeaderProps {
   track: Track;
-  trackIndex: number;
-  onMouseDown: (e: React.MouseEvent<HTMLDivElement>, trackIndex: number) => void;
+  handleRef: (el: Element | null) => void;
   onDeleteTrack: (trackId: string) => void;
   onRenameCommit: (trackId: string, newName: string, currentName: string) => void;
 }
 
 export function DawTrackHeader({
   track,
-  trackIndex,
-  onMouseDown,
+  handleRef,
   onDeleteTrack,
   onRenameCommit,
 }: DawTrackHeaderProps) {
@@ -52,9 +50,8 @@ export function DawTrackHeader({
         >
           {/* Grip handle for reordering */}
           <div
-            data-drag-handle
+            ref={handleRef as React.Ref<HTMLDivElement>}
             className="flex items-center justify-center flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
-            onMouseDown={(e) => onMouseDown(e, trackIndex)}
             title={t("Drag to reorder track")}
           >
             <GripVertical size={16} />
