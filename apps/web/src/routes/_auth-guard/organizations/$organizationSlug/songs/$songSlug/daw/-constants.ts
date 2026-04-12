@@ -33,3 +33,15 @@ export const GM_INSTRUMENT_NAMES = [
   "Melodic Tom", "Synth Drum", "Reverse Cymbal", "Guitar Fret Noise", "Breath Noise", "Seashore",
   "Bird Tweet", "Telephone Ring", "Helicopter", "Applause", "Gunshot",
 ] as const;
+
+export const ZOOM_LEVELS = [40, 60, 80, 120, 160, 240, 360, 480] as const;
+
+export function zoomIn(current: number): number {
+  const next = ZOOM_LEVELS.find((l) => l > current);
+  return next ?? ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
+}
+
+export function zoomOut(current: number): number {
+  const prev = [...ZOOM_LEVELS].reverse().find((l) => l < current);
+  return prev ?? ZOOM_LEVELS[0];
+}

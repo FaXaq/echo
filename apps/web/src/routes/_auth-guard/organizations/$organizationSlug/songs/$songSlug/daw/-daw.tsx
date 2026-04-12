@@ -4,7 +4,7 @@ import { Trans } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/ui/button";
 import { logger } from "@/lib/logger";
-import { PIXELS_PER_MEASURE } from "./-constants";
+import { ZOOM_LEVELS, zoomIn, zoomOut } from "./-constants";
 import { Timeline } from "./-timeline";
 import { MultiFileDropModal } from "./-multi-file-drop-modal";
 import { DawContext } from "./-daw-context";
@@ -47,7 +47,7 @@ function DawProvider({
     audioClipIds: new Set(),
     midiClipIds: new Set(),
   });
-  const [pixelsPerMeasure, setPixelsPerMeasure] = useState<number>(PIXELS_PER_MEASURE);
+  const [pixelsPerMeasure, setPixelsPerMeasure] = useState<number>(120);
 
   // tRPC queries + download URL map
   const getDownloadUrlsQuery = trpc.organization.audioClip.getDownloadUrls.useQuery(
@@ -253,6 +253,8 @@ function DawInner() {
     onPlay,
     onStop,
     onExport,
+    pixelsPerMeasure,
+    setPixelsPerMeasure,
   } = useDawContext();
 
   return (
@@ -261,7 +263,39 @@ function DawInner() {
         <h2 className="text-xl font-semibold">
           <Trans t={t}>Tracks</Trans>
         </h2>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          {/* Zoom controls */}
+          <div className="flex items-center gap-1 border rounded px-2 py-1">
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground text-sm w-5 h-5 flex items-center justify-center"
+              onClick={() => setPixelsPerMeasure(zoomOut(pixelsPerMeasure))}
+              disabled={pixelsPerMeasure <= ZOOM_LEVELS[0]}
+              title="Zoom out"
+            >
+              −
+            </button>
+            <input
+              type="range"
+              min={40}
+              max={480}
+              step={1}
+              value={pixelsPerMeasure}
+              onChange={(e) => setPixelsPerMeasure(Number(e.target.value))}
+              className="w-20 accent-primary"
+              title={`Zoom: ${pixelsPerMeasure}px/measure`}
+            />
+            <button
+              type="button"
+              className="text-muted-foreground hover:text-foreground text-sm w-5 h-5 flex items-center justify-center"
+              onClick={() => setPixelsPerMeasure(zoomIn(pixelsPerMeasure))}
+              disabled={pixelsPerMeasure >= ZOOM_LEVELS[ZOOM_LEVELS.length - 1]}
+              title="Zoom in"
+            >
+              +
+            </button>
+          </div>
+
           <Button
             variant="outline"
             size="sm"

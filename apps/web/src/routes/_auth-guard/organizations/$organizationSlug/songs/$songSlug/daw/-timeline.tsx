@@ -1,13 +1,15 @@
-import { useRef, useCallback, useMemo, useState } from "react";
+import { useRef, useCallback, useMemo, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc";
 import {
-  PIXELS_PER_MEASURE,
   TRACK_HEIGHT,
   RULER_HEIGHT,
   MIN_MEASURES,
   BUFFER_MEASURES,
   LEFT_PANEL_WIDTH,
+  ZOOM_LEVELS,
+  zoomIn,
+  zoomOut,
 } from "./-constants";
 import type { AudioClip } from "./-daw-types";
 import { useDawContext } from "./-daw-context";
@@ -51,6 +53,8 @@ export function Timeline() {
     onTracksReordered,
     onBottomZoneDrop,
     pushHistory,
+    pixelsPerMeasure,
+    setPixelsPerMeasure,
   } = useDawContext();
   const organizationId = song.organizationId;
 
@@ -66,6 +70,19 @@ export function Timeline() {
   // Always-current selection ref — avoids stale closures in callbacks
   const selectionRef = useRef(selection);
   selectionRef.current = selection;
+
+  // Zoom via Ctrl/Cmd + scroll wheel (non-passive so preventDefault works)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const handler = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      setPixelsPerMeasure((prev) => (e.deltaY < 0 ? zoomIn(prev) : zoomOut(prev)));
+    };
+    container.addEventListener("wheel", handler, { passive: false });
+    return () => container.removeEventListener("wheel", handler);
+  }, [setPixelsPerMeasure]);
 
   // tRPC mutations
   const deleteTrack = trpc.organization.track.delete.useMutation();
@@ -246,7 +263,7 @@ export function Timeline() {
     return Math.max(MIN_MEASURES, Math.ceil(Math.max(lastAudioEnd, lastMidiEnd)) + BUFFER_MEASURES);
   }, [clips, midiClips, secondsPerMeasure]);
 
-  const totalWidth = totalMeasures * PIXELS_PER_MEASURE;
+  const totalWidth = totalMeasures * pixelsPerMeasure;
 
   return (
     <div className="border rounded-lg overflow-hidden flex flex-row">
@@ -344,7 +361,7 @@ export function Timeline() {
               "absolute top-0 bottom-0 w-px pointer-events-none z-10",
               isPlaying ? "bg-primary" : "bg-muted-foreground/40",
             )}
-            style={{ left: playbackPosition * PIXELS_PER_MEASURE }}
+            style={{ left: playbackPosition * pixelsPerMeasure }}
           />
 
           {/* Selection rect overlay during drag-to-select */}
