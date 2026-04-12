@@ -1,5 +1,9 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
+import type React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { DragDropProvider } from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { move } from "@dnd-kit/helpers";
 import { trpcLoader, trpc } from "@/lib/trpc";
 import { useTranslation, Trans } from "react-i18next";
 import { Button } from "@/ui/button";
@@ -22,6 +26,35 @@ export const Route = createFileRoute(
   component: SongDetailPage,
 });
 
+function SortableSectionRow({
+  instance,
+  index,
+  viewMode,
+  onDelete,
+}: {
+  instance: SectionInstance;
+  index: number;
+  viewMode: ViewMode;
+  onDelete: (id: string) => void;
+}) {
+  const { ref, isDragging } = useSortable({ id: instance.id, index });
+  const { t } = useTranslation("songs");
+
+  return (
+    <div ref={ref as React.Ref<HTMLDivElement>} className="relative group">
+      <SectionCard instance={instance} viewMode={viewMode} dragging={isDragging} />
+      <button
+        type="button"
+        title={t("Remove section")}
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all text-xs px-2 py-0.5 rounded"
+        onClick={() => onDelete(instance.id)}
+      >
+        ✕
+      </button>
+    </div>
+  );
+}
+
 function SongDetailPage() {
   const { t } = useTranslation("songs");
   const { song, instances: initialInstances } = Route.useLoaderData();
@@ -32,8 +65,6 @@ function SongDetailPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("lyrics+chords");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [dragOverId, setDragOverId] = useState<string | null>(null);
-  const draggingId = useRef<string | null>(null);
 
   const { data: instances = initialInstances } =
     trpc.organization.song.section.instance.list.useQuery({ songId: song.id });
@@ -52,25 +83,6 @@ function SongDetailPage() {
   const reorderInstances = trpc.organization.song.section.instance.reorder.useMutation({
     onSuccess: () => utils.organization.song.section.instance.list.invalidate({ songId: song.id }),
   });
-
-  function handleDrop(targetId: string) {
-    const sourceId = draggingId.current;
-    if (!sourceId || sourceId === targetId) {
-      draggingId.current = null;
-      setDragOverId(null);
-      return;
-    }
-    const ids = instances.map(i => i.id);
-    const from = ids.indexOf(sourceId);
-    const to = ids.indexOf(targetId);
-    if (from === -1 || to === -1) return;
-    const reordered = [...ids];
-    reordered.splice(from, 1);
-    reordered.splice(to, 0, sourceId);
-    reorderInstances.mutate({ songId: song.id, orderedIds: reordered });
-    draggingId.current = null;
-    setDragOverId(null);
-  }
 
   const deletingInstance = deletingId ? instances.find(i => i.id === deletingId) : null;
 
@@ -132,34 +144,28 @@ function SongDetailPage() {
             <Trans t={t}>No sections yet. Add your first section to get started.</Trans>
           </div>
         ) : (
-          <div className="space-y-3">
-            {instances.map(instance => (
-              <div
-                key={instance.id}
-                className={[
-                  "relative group",
-                  dragOverId === instance.id ? "ring-2 ring-primary rounded-lg" : "",
-                ].join(" ")}
-              >
-                <SectionCard
+          <DragDropProvider
+            onDragEnd={(event) => {
+              if (event.canceled) return;
+              const reordered = move(instances, event);
+              reorderInstances.mutate({
+                songId: song.id,
+                orderedIds: reordered.map(i => i.id),
+              });
+            }}
+          >
+            <div className="space-y-3">
+              {instances.map((instance, index) => (
+                <SortableSectionRow
+                  key={instance.id}
                   instance={instance as SectionInstance}
+                  index={index}
                   viewMode={viewMode}
-                  dragging={draggingId.current === instance.id}
-                  onDragStart={() => { draggingId.current = instance.id; }}
-                  onDragOver={() => setDragOverId(instance.id)}
-                  onDrop={() => handleDrop(instance.id)}
+                  onDelete={setDeletingId}
                 />
-                <button
-                  type="button"
-                  title={t("Remove section")}
-                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all text-xs px-2 py-0.5 rounded"
-                  onClick={() => setDeletingId(instance.id)}
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </DragDropProvider>
         )}
       </div>
 

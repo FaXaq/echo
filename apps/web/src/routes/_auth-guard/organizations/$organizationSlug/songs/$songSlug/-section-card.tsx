@@ -30,9 +30,6 @@ type Props = {
   instance: SectionInstance;
   viewMode: ViewMode;
   dragging?: boolean;
-  onDragStart?: () => void;
-  onDragOver?: (e: React.DragEvent) => void;
-  onDrop?: () => void;
 };
 
 function parseChordInput(raw: string): SongChord[] {
@@ -61,7 +58,7 @@ function colorForIndex(index: number): string {
   return PRESET_COLORS[index % PRESET_COLORS.length];
 }
 
-export function SectionCard({ instance, viewMode, dragging, onDragStart, onDragOver, onDrop }: Props) {
+export function SectionCard({ instance, viewMode, dragging }: Props) {
   const { t } = useTranslation("songs");
   const utils = trpc.useUtils();
 
@@ -122,10 +119,6 @@ export function SectionCard({ instance, viewMode, dragging, onDragStart, onDragO
         "rounded-lg border border-border bg-card transition-opacity",
         dragging ? "opacity-40" : "",
       ].join(" ")}
-      draggable
-      onDragStart={onDragStart}
-      onDragOver={e => { e.preventDefault(); onDragOver?.(e); }}
-      onDrop={onDrop}
     >
       {/* Header */}
       <div
