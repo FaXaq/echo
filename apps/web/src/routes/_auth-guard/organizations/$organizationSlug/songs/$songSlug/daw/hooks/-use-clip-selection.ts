@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
 import type React from "react";
-import { PIXELS_PER_MEASURE, TRACK_HEIGHT, RULER_HEIGHT } from "../-constants";
+import { TRACK_HEIGHT, RULER_HEIGHT } from "../-constants";
 import type { Track, AudioClip, MidiClip, ClipSelection, SelectionRect } from "../-daw-types";
+import { useDawContext } from "../-daw-context";
 
 interface UseClipSelectionDeps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -22,6 +23,7 @@ export function useClipSelection({
   setSelection,
   onDeleteSelection,
 }: UseClipSelectionDeps) {
+  const { pixelsPerMeasure } = useDawContext();
   const [selectionRect, setSelectionRect] = useState<SelectionRect>(null);
 
   const handleTimelineMouseDown = useCallback(
@@ -70,9 +72,9 @@ export function useClipSelection({
         const midiClipIds = new Set<string>();
 
         clips.forEach((clip) => {
-          const clipLeft = (clip.startMeasure - 1) * PIXELS_PER_MEASURE;
+          const clipLeft = (clip.startMeasure - 1) * pixelsPerMeasure;
           const durationMeasures = clip.durationMs ? clip.durationMs / 1000 / secondsPerMeasure : 1;
-          const clipRight = clipLeft + durationMeasures * PIXELS_PER_MEASURE;
+          const clipRight = clipLeft + durationMeasures * pixelsPerMeasure;
           const trackIndex = tracks.findIndex((t) => t.id === clip.trackId);
           const clipTop = RULER_HEIGHT + trackIndex * TRACK_HEIGHT;
           const clipBottom = clipTop + TRACK_HEIGHT;
@@ -82,9 +84,9 @@ export function useClipSelection({
         });
 
         midiClips.forEach((clip) => {
-          const clipLeft = (clip.startMeasure - 1) * PIXELS_PER_MEASURE;
+          const clipLeft = (clip.startMeasure - 1) * pixelsPerMeasure;
           const durationMeasures = clip.durationMs ? clip.durationMs / 1000 / secondsPerMeasure : 1;
-          const clipRight = clipLeft + durationMeasures * PIXELS_PER_MEASURE;
+          const clipRight = clipLeft + durationMeasures * pixelsPerMeasure;
           const trackIndex = tracks.findIndex((t) => t.id === clip.trackId);
           const clipTop = RULER_HEIGHT + trackIndex * TRACK_HEIGHT;
           const clipBottom = clipTop + TRACK_HEIGHT;

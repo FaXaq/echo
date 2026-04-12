@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import type React from "react";
 import { TRACK_HEIGHT, RULER_HEIGHT } from "../-constants";
 import type { Track, PendingMultiFileDrop } from "../-daw-types";
+import { useDawContext } from "../-daw-context";
 import {
   detectFileTypeFromItems,
   detectFileTypeFromFile,
@@ -36,6 +37,7 @@ export function useFileDrop({
   handleUploadAudio,
   handleUploadMidi,
 }: UseFileDropDeps) {
+  const { pixelsPerMeasure } = useDawContext();
   const [isDragActive, setIsDragActive] = useState(false);
   const [dragGhost, setDragGhost] = useState<DragGhost>(null);
   const [bottomDropZone, setBottomDropZone] = useState(false);
@@ -71,7 +73,7 @@ export function useFileDrop({
         setDragGhost(null);
       } else {
         setBottomDropZone(false);
-        const pos = computeGhostPosition(e, containerRef.current, tracks);
+        const pos = computeGhostPosition(e, containerRef.current, tracks, pixelsPerMeasure);
         setDragGhost((prev) => (pos ? { ...prev, ...pos, fileType } : null));
       }
     },
@@ -118,7 +120,7 @@ export function useFileDrop({
           setDragGhost(null);
           return;
         }
-        const pos = computeGhostPosition(e, containerRef.current, tracks);
+        const pos = computeGhostPosition(e, containerRef.current, tracks, pixelsPerMeasure);
         if (!pos) { setDragGhost(null); return; }
         onPendingMultiDrop?.({
           files,
@@ -132,7 +134,7 @@ export function useFileDrop({
       const file = files[0];
       const fileType = detectFileTypeFromFile(file);
       if (!fileType) { setDragGhost(null); return; }
-      const pos = computeGhostPosition(e, containerRef.current, tracks);
+      const pos = computeGhostPosition(e, containerRef.current, tracks, pixelsPerMeasure);
 
       if (!pos) {
         try {

@@ -9,6 +9,7 @@ import {
 } from "../-constants";
 import type { Track, AudioClip, MidiClip, ClipSelection } from "../-daw-types";
 import { computeSnappedMeasure } from "../-clip-utils";
+import { useDawContext } from "../-daw-context";
 
 // ── Private helpers ─────────────────────────────────────────────────────────
 
@@ -114,6 +115,7 @@ export function useClipDrag({
   onMidiClipPositionChanged,
   pushHistory,
 }: UseClipDragDeps) {
+  const { pixelsPerMeasure } = useDawContext();
   const draggingAudioRef = useRef<DraggingState | null>(null);
   const draggingMidiRef = useRef<DraggingState | null>(null);
   const scrollAnimRef = useRef<number | null>(null);
@@ -153,7 +155,7 @@ export function useClipDrag({
       let lastCallbackTrackId = clip.trackId;
 
       const computeMeasure = (mouseX: number, scrollLeft: number) =>
-        computeSnappedMeasure(mouseX, scrollLeft, draggingAudioRef.current!.startX, draggingAudioRef.current!.initialScrollLeft, draggingAudioRef.current!.originalMeasure);
+        computeSnappedMeasure(mouseX, scrollLeft, draggingAudioRef.current!.startX, draggingAudioRef.current!.initialScrollLeft, draggingAudioRef.current!.originalMeasure, pixelsPerMeasure);
 
       const animate = () => {
         if (draggingAudioRef.current && containerRef.current && scrollSpeedRef.current !== 0) {
@@ -268,7 +270,7 @@ export function useClipDrag({
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     },
-    [onClipPositionChanged, onMidiClipPositionChanged, updateAudioPosition, updateMidiPosition, tracks, clips, midiClips, pushHistory, selection, containerRef],
+    [onClipPositionChanged, onMidiClipPositionChanged, updateAudioPosition, updateMidiPosition, tracks, clips, midiClips, pushHistory, selection, containerRef, pixelsPerMeasure],
   );
 
   const handleMidiMouseDown = useCallback(
@@ -301,7 +303,7 @@ export function useClipDrag({
       let lastCallbackTrackId = clip.trackId;
 
       const computeMeasure = (mouseX: number, scrollLeft: number) =>
-        computeSnappedMeasure(mouseX, scrollLeft, draggingMidiRef.current!.startX, draggingMidiRef.current!.initialScrollLeft, draggingMidiRef.current!.originalMeasure);
+        computeSnappedMeasure(mouseX, scrollLeft, draggingMidiRef.current!.startX, draggingMidiRef.current!.initialScrollLeft, draggingMidiRef.current!.originalMeasure, pixelsPerMeasure);
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
         if (!draggingMidiRef.current || !containerRef.current) return;
@@ -389,7 +391,7 @@ export function useClipDrag({
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
     },
-    [onMidiClipPositionChanged, onClipPositionChanged, updateMidiPosition, updateAudioPosition, tracks, clips, midiClips, pushHistory, selection, containerRef],
+    [onMidiClipPositionChanged, onClipPositionChanged, updateMidiPosition, updateAudioPosition, tracks, clips, midiClips, pushHistory, selection, containerRef, pixelsPerMeasure],
   );
 
   return { handleMouseDown, handleMidiMouseDown };
