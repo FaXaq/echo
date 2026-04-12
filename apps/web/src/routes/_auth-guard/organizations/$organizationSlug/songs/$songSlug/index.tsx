@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type React from "react";
+import { GripVertical } from "lucide-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DragDropProvider } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
@@ -37,16 +38,25 @@ function SortableSectionRow({
   viewMode: ViewMode;
   onDelete: (id: string) => void;
 }) {
-  const { ref, isDragging } = useSortable({ id: instance.id, index });
+  const { ref, handleRef, isDragging } = useSortable({ id: instance.id, index });
   const { t } = useTranslation("songs");
 
   return (
-    <div ref={ref as React.Ref<HTMLDivElement>} className="relative group">
-      <SectionCard instance={instance} viewMode={viewMode} dragging={isDragging} />
+    <div ref={ref as React.Ref<HTMLDivElement>} className="relative group flex items-start gap-2">
+      <div
+        ref={handleRef as React.Ref<HTMLDivElement>}
+        className="flex-shrink-0 mt-3 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
+        title={t("Drag to reorder section")}
+      >
+        <GripVertical size={16} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <SectionCard instance={instance} viewMode={viewMode} dragging={isDragging} />
+      </div>
       <button
         type="button"
         title={t("Remove section")}
-        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all text-xs px-2 py-0.5 rounded"
+        className="absolute top-2 right-8 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all text-xs px-2 py-0.5 rounded"
         onClick={() => onDelete(instance.id)}
       >
         ✕

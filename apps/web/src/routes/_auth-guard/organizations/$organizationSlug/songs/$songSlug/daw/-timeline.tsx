@@ -61,6 +61,7 @@ export function Timeline() {
   const containerRef = useRef<HTMLDivElement>(null);
   const pendingStartMeasureRef = useRef<number>(1);
   const [editingClipId, setEditingClipId] = useState<string | null>(null);
+  const [previewTracks, setPreviewTracks] = useState<typeof tracks | null>(null);
 
   // Always-current selection ref — avoids stale closures in callbacks
   const selectionRef = useRef(selection);
@@ -256,7 +257,11 @@ export function Timeline() {
         <DawStructureLaneHeader visible={structureInstances.length > 0} />
 
         <DragDropProvider
+          onDragOver={(event) => {
+            setPreviewTracks(move(tracks, event));
+          }}
           onDragEnd={(event) => {
+            setPreviewTracks(null);
             if (event.canceled) return;
             const reordered = move(tracks, event);
             onTracksReordered(reordered);
@@ -300,8 +305,8 @@ export function Timeline() {
 
           <DawStructureLane instances={structureInstances} totalWidth={totalWidth} />
 
-          {/* Track lanes */}
-          {tracks.map((track) => (
+          {/* Track lanes — follow previewTracks order during drag */}
+          {(previewTracks ?? tracks).map((track) => (
             <DawTrackRow
               key={track.id}
               track={track}
