@@ -26,6 +26,7 @@ import { move } from "@dnd-kit/helpers";
 import { SortableTrackHeader } from "./-sortable-track-header";
 import { useFileDrop } from "./hooks/-use-file-drop";
 import { useClipSelection } from "./hooks/-use-clip-selection";
+import { useStructureLaneResize } from "./hooks/-use-structure-lane-resize";
 
 export function Timeline() {
   const {
@@ -208,6 +209,12 @@ export function Timeline() {
     pushHistory,
   });
 
+  const { optimisticInstances, onResizeStart } = useStructureLaneResize({
+    instances: structureInstances,
+    scrollContainerRef: containerRef,
+    songId: song.id,
+  });
+
 
   const { isDragActive, dragGhost, bottomDropZone, handleDragEnter, handleDragOver, handleDragLeave, handleDrop, handleDragEnd } =
     useFileDrop({
@@ -252,6 +259,7 @@ export function Timeline() {
   );
 
   const totalMeasures = useMemo(() => {
+    const displayInstances = optimisticInstances ?? structureInstances;
     const lastAudioEnd = clips.reduce((max, clip) => {
       const durationMeasures = clip.durationMs ? clip.durationMs / 1000 / secondsPerMeasure : 1;
       return Math.max(max, clip.startMeasure + durationMeasures);
@@ -260,8 +268,11 @@ export function Timeline() {
       const durationMeasures = clip.durationMs ? clip.durationMs / 1000 / secondsPerMeasure : 1;
       return Math.max(max, clip.startMeasure + durationMeasures);
     }, 0);
-    return Math.max(MIN_MEASURES, Math.ceil(Math.max(lastAudioEnd, lastMidiEnd)) + BUFFER_MEASURES);
-  }, [clips, midiClips, secondsPerMeasure]);
+    const lastSectionEnd = displayInstances.reduce((max, i) => {
+      return Math.max(max, i.startMeasure - 1 + i.lengthMeasures);
+    }, 0);
+    return Math.max(MIN_MEASURES, Math.ceil(Math.max(lastAudioEnd, lastMidiEnd, lastSectionEnd)) + BUFFER_MEASURES);
+  }, [clips, midiClips, secondsPerMeasure, optimisticInstances, structureInstances]);
 
   const totalWidth = totalMeasures * pixelsPerMeasure;
 
@@ -320,7 +331,11 @@ export function Timeline() {
         <div className="relative" style={{ width: totalWidth }}>
           <DawRuler totalMeasures={totalMeasures} />
 
-          <DawStructureLane instances={structureInstances} totalWidth={totalWidth} />
+          <DawStructureLane
+            instances={optimisticInstances ?? structureInstances}
+            totalWidth={totalWidth}
+            onResizeStart={onResizeStart}
+          />
 
           {/* Track lanes — follow previewTracks order during drag */}
           {(previewTracks ?? tracks).map((track) => (

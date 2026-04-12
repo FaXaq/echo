@@ -30,9 +30,10 @@ export type SectionInstanceWithDefinition = {
 interface DawStructureLaneProps {
   instances: SectionInstanceWithDefinition[];
   totalWidth: number;
+  onResizeStart?: (e: React.MouseEvent, instance: SectionInstanceWithDefinition) => void;
 }
 
-export function DawStructureLane({ instances, totalWidth }: DawStructureLaneProps) {
+export function DawStructureLane({ instances, totalWidth, onResizeStart }: DawStructureLaneProps) {
   const { pixelsPerMeasure } = useDawContext();
 
   if (instances.length === 0) return null;
@@ -66,7 +67,7 @@ export function DawStructureLane({ instances, totalWidth }: DawStructureLaneProp
         return (
           <div
             key={instance.id}
-            className="absolute inset-y-1 rounded pointer-events-none flex flex-col justify-center px-2 overflow-hidden"
+            className="absolute inset-y-1 rounded flex flex-col justify-center px-2 overflow-hidden"
             style={{
               left: leftPx,
               width: widthPx - 2,
@@ -81,6 +82,12 @@ export function DawStructureLane({ instances, totalWidth }: DawStructureLaneProp
               <span className="text-xs leading-none truncate text-muted-foreground mt-0.5 font-mono">
                 {chordLine}
               </span>
+            )}
+            {onResizeStart && (
+              <div
+                className="absolute top-0 right-0 bottom-0 w-2 cursor-col-resize hover:bg-primary/40 transition-colors"
+                onMouseDown={(e) => onResizeStart(e, instance)}
+              />
             )}
           </div>
         );

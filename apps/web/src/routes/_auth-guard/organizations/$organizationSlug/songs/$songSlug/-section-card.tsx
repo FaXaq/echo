@@ -78,6 +78,8 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
     chordsToInput(instance.definition.chords)
   );
   const [editingColor, setEditingColor] = useState(false);
+  const [editingLength, setEditingLength] = useState(false);
+  const [lengthValue, setLengthValue] = useState(instance.lengthMeasures.toString());
   const lyricsRef = useRef<HTMLTextAreaElement>(null);
 
   const updateInstance = trpc.organization.song.section.instance.update.useMutation({
@@ -126,6 +128,18 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
   function saveColor(hex: string) {
     updateDefinition.mutate({ id: instance.definition.id, color: hex });
     setEditingColor(false);
+  }
+
+  function saveLength() {
+    const parsed = parseFloat(lengthValue);
+    if (!isNaN(parsed) && parsed >= 0.25) {
+      // Snap to 0.25 measure increments
+      const snapped = Math.round(parsed * 4) / 4;
+      if (snapped !== instance.lengthMeasures) {
+        updateInstance.mutate({ id: instance.id, lengthMeasures: snapped });
+      }
+    }
+    setEditingLength(false);
   }
 
   return (
@@ -179,9 +193,30 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
             {instance.definition.name}
           </span>
         )}
-        <span className="text-xs text-muted-foreground ml-auto">
-          {t("{{count}}m", { count: instance.lengthMeasures })}
-        </span>
+        {editingLength ? (
+          <input
+            autoFocus
+            type="number"
+            step="0.25"
+            min="0.25"
+            className="text-xs bg-transparent outline-none w-12 text-right ml-auto"
+            value={lengthValue}
+            onChange={e => setLengthValue(e.target.value)}
+            onBlur={saveLength}
+            onKeyDown={e => {
+              if (e.key === "Enter") saveLength();
+              if (e.key === "Escape") { setEditingLength(false); setLengthValue(instance.lengthMeasures.toString()); }
+            }}
+          />
+        ) : (
+          <span
+            className="text-xs text-muted-foreground ml-auto cursor-text hover:text-foreground transition-colors"
+            onClick={() => { setEditingLength(true); setLengthValue(instance.lengthMeasures.toString()); }}
+            title={t("Click to edit length")}
+          >
+            {t("{{count}}m", { count: instance.lengthMeasures })}
+          </span>
+        )}
         {onDelete && (
           <button
             type="button"
