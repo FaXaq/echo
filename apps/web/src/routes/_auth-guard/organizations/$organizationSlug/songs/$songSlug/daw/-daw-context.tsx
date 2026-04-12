@@ -75,6 +75,10 @@ export interface DawContextValue {
   pushHistory: (apiUndo: () => void) => void;
   undo: () => void;
   redo: () => void;
+
+  // Zoom
+  pixelsPerMeasure: number;
+  setPixelsPerMeasure: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // ============================================================================

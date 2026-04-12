@@ -4,6 +4,7 @@ import { Trans } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/ui/button";
 import { logger } from "@/lib/logger";
+import { PIXELS_PER_MEASURE } from "./-constants";
 import { Timeline } from "./-timeline";
 import { MultiFileDropModal } from "./-multi-file-drop-modal";
 import { DawContext } from "./-daw-context";
@@ -46,6 +47,7 @@ function DawProvider({
     audioClipIds: new Set(),
     midiClipIds: new Set(),
   });
+  const [pixelsPerMeasure, setPixelsPerMeasure] = useState<number>(PIXELS_PER_MEASURE);
 
   // tRPC queries + download URL map
   const getDownloadUrlsQuery = trpc.organization.audioClip.getDownloadUrls.useQuery(
@@ -218,6 +220,8 @@ function DawProvider({
         pushHistory,
         undo,
         redo,
+        pixelsPerMeasure,
+        setPixelsPerMeasure,
       }}
     >
       {children}
