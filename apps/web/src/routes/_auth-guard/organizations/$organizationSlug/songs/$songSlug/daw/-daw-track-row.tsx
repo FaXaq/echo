@@ -7,7 +7,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/ui/context-menu";
-import { PIXELS_PER_MEASURE, TRACK_HEIGHT } from "./-constants";
+import { TRACK_HEIGHT } from "./-constants";
 import type { Track, AudioClip, MidiClip } from "./-daw-types";
 import { useDawContext } from "./-daw-context";
 import { AudioClipView } from "./-audio-clip-view";
@@ -47,7 +47,7 @@ export function DawTrackRow({
   onUploadAudio,
   onUploadMidi,
 }: DawTrackRowProps) {
-  const { clips, midiClips, downloadUrls, selection } = useDawContext();
+  const { clips, midiClips, downloadUrls, selection, pixelsPerMeasure } = useDawContext();
   const { t } = useTranslation("songs");
   const selectionCount = selection.audioClipIds.size + selection.midiClipIds.size;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +71,7 @@ export function DawTrackRow({
               1,
               Math.min(
                 totalMeasures,
-                Math.round((pixelX / PIXELS_PER_MEASURE) * 4) / 4 + 1,
+                Math.round((pixelX / pixelsPerMeasure) * 4) / 4 + 1,
               ),
             );
           }}
@@ -86,7 +86,7 @@ export function DawTrackRow({
                   "absolute top-0 bottom-0 border-r",
                   isMeasure ? "border-border/30" : "border-border/10",
                 )}
-                style={{ left: ((i + 1) * PIXELS_PER_MEASURE) / 4 }}
+                style={{ left: ((i + 1) * pixelsPerMeasure) / 4 }}
               />
             );
           })}
@@ -139,21 +139,21 @@ export function DawTrackRow({
           {/* Overlap indicators */}
           {computeOverlaps([
             ...trackAudioClips.map((clip) => ({
-              left: (clip.startMeasure - 1) * PIXELS_PER_MEASURE,
+              left: (clip.startMeasure - 1) * pixelsPerMeasure,
               width: Math.max(
-                PIXELS_PER_MEASURE,
+                pixelsPerMeasure,
                 clip.durationMs
-                  ? (clip.durationMs / 1000 / secondsPerMeasure) * PIXELS_PER_MEASURE
-                  : PIXELS_PER_MEASURE,
+                  ? (clip.durationMs / 1000 / secondsPerMeasure) * pixelsPerMeasure
+                  : pixelsPerMeasure,
               ),
             })),
             ...trackMidiClips.map((clip) => ({
-              left: (clip.startMeasure - 1) * PIXELS_PER_MEASURE,
+              left: (clip.startMeasure - 1) * pixelsPerMeasure,
               width: Math.max(
-                PIXELS_PER_MEASURE,
+                pixelsPerMeasure,
                 clip.durationMs
-                  ? (clip.durationMs / 1000 / secondsPerMeasure) * PIXELS_PER_MEASURE
-                  : PIXELS_PER_MEASURE,
+                  ? (clip.durationMs / 1000 / secondsPerMeasure) * pixelsPerMeasure
+                  : pixelsPerMeasure,
               ),
             })),
           ]).map((overlap, idx) => (

@@ -18,9 +18,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/ui/alert-dialog";
-import { PIXELS_PER_MEASURE } from "./-constants";
 import type { AudioClip } from "./-daw-types";
 import { stripExtension, computeClipWidthPx } from "./-clip-utils";
+import { useDawContext } from "./-daw-context";
 
 export interface AudioClipViewProps {
   clip: AudioClip;
@@ -50,10 +50,11 @@ export function AudioClipView({
   onDeleteSelection,
 }: AudioClipViewProps) {
   const { t } = useTranslation("songs");
+  const { pixelsPerMeasure } = useDawContext();
   const [pendingDelete, setPendingDelete] = useState<"single" | "selection" | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const displayName = clip.name ?? stripExtension(clip.file.filename);
-  const clipWidth = computeClipWidthPx(clip.durationMs ?? undefined, secondsPerMeasure);
+  const clipWidth = computeClipWidthPx(clip.durationMs ?? undefined, secondsPerMeasure, pixelsPerMeasure);
 
   useEffect(() => {
     if (!downloadUrl || !canvasRef.current) return;
@@ -126,7 +127,7 @@ export function AudioClipView({
               : "border-primary/40"
           )}
           style={{
-            left: (clip.startMeasure - 1) * PIXELS_PER_MEASURE,
+            left: (clip.startMeasure - 1) * pixelsPerMeasure,
             width: clipWidth,
           }}
           onMouseDown={(e) => onMouseDown(e, clip)}

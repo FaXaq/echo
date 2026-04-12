@@ -1,6 +1,7 @@
 import { Trans } from "react-i18next";
 import { useTranslation } from "react-i18next";
-import { PIXELS_PER_MEASURE, STRUCTURE_LANE_HEIGHT } from "./-constants";
+import { STRUCTURE_LANE_HEIGHT } from "./-constants";
+import { useDawContext } from "./-daw-context";
 
 const CHORD_HIDE_WIDTH_PX = 60;
 
@@ -32,6 +33,8 @@ interface DawStructureLaneProps {
 }
 
 export function DawStructureLane({ instances, totalWidth }: DawStructureLaneProps) {
+  const { pixelsPerMeasure } = useDawContext();
+
   if (instances.length === 0) return null;
 
   // Assign a consistent fallback color per definition (by order of first appearance)
@@ -51,8 +54,8 @@ export function DawStructureLane({ instances, totalWidth }: DawStructureLaneProp
       style={{ height: STRUCTURE_LANE_HEIGHT, width: totalWidth }}
     >
       {instances.map((instance) => {
-        const leftPx = (instance.startMeasure - 1) * PIXELS_PER_MEASURE;
-        const widthPx = instance.lengthMeasures * PIXELS_PER_MEASURE;
+        const leftPx = (instance.startMeasure - 1) * pixelsPerMeasure;
+        const widthPx = instance.lengthMeasures * pixelsPerMeasure;
         const color = definitionColors.get(instance.definition.id)!;
         const chordLine =
           instance.definition.chords.length > 0
