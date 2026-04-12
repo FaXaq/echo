@@ -7,7 +7,6 @@ import {
   MIN_MEASURES,
   BUFFER_MEASURES,
   LEFT_PANEL_WIDTH,
-  ZOOM_LEVELS,
   zoomIn,
   zoomOut,
 } from "./-constants";
@@ -260,15 +259,15 @@ export function Timeline() {
 
   const totalMeasures = useMemo(() => {
     const displayInstances = optimisticInstances ?? structureInstances;
-    const lastAudioEnd = clips.reduce((max, clip) => {
+    const lastAudioEnd = clips.reduce((max: number, clip) => {
       const durationMeasures = clip.durationMs ? clip.durationMs / 1000 / secondsPerMeasure : 1;
       return Math.max(max, clip.startMeasure + durationMeasures);
     }, 0);
-    const lastMidiEnd = midiClips.reduce((max, clip) => {
+    const lastMidiEnd = midiClips.reduce((max: number, clip) => {
       const durationMeasures = clip.durationMs ? clip.durationMs / 1000 / secondsPerMeasure : 1;
       return Math.max(max, clip.startMeasure + durationMeasures);
     }, 0);
-    const lastSectionEnd = displayInstances.reduce((max, i) => {
+    const lastSectionEnd = displayInstances.reduce((max: number, i) => {
       return Math.max(max, i.startMeasure - 1 + i.lengthMeasures);
     }, 0);
     return Math.max(MIN_MEASURES, Math.ceil(Math.max(lastAudioEnd, lastMidiEnd, lastSectionEnd)) + BUFFER_MEASURES);

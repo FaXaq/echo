@@ -21,6 +21,7 @@ export type SectionInstanceWithDefinition = {
   startMeasure: number;
   lengthMeasures: number;
   definition: {
+    id: string;
     name: string;
     color: string | null;
     chords: Chord[];

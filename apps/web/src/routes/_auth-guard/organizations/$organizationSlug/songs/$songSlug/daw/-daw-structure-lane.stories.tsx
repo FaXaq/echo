@@ -32,6 +32,7 @@ export const SingleInstanceWithChords: Story = {
         startMeasure: 1,
         lengthMeasures: 8,
         definition: {
+          id: "def-1",
           name: "Verse",
           color: "#2563EB",
           chords: [
@@ -55,6 +56,7 @@ export const MultipleInstancesMixedColors: Story = {
         startMeasure: 1,
         lengthMeasures: 4,
         definition: {
+          id: "def-1",
           name: "Intro",
           color: "#7C3AED",
           chords: [{ at: 1.0, chord: "Em" }, { at: 2.0, chord: "C" }],
@@ -65,6 +67,7 @@ export const MultipleInstancesMixedColors: Story = {
         startMeasure: 5,
         lengthMeasures: 8,
         definition: {
+          id: "def-2",
           name: "Verse",
           color: "#2563EB",
           chords: [{ at: 1.0, chord: "Am" }, { at: 2.0, chord: "G" }, { at: 3.0, chord: "F" }, { at: 4.0, chord: "C" }],
@@ -75,6 +78,7 @@ export const MultipleInstancesMixedColors: Story = {
         startMeasure: 13,
         lengthMeasures: 8,
         definition: {
+          id: "def-3",
           name: "Chorus",
           color: "#DC2626",
           chords: [{ at: 1.0, chord: "C" }, { at: 2.0, chord: "G" }, { at: 3.0, chord: "Am" }, { at: 4.0, chord: "F" }],
@@ -85,6 +89,7 @@ export const MultipleInstancesMixedColors: Story = {
         startMeasure: 21,
         lengthMeasures: 8,
         definition: {
+          id: "def-2",
           name: "Verse",
           color: "#2563EB",
           chords: [{ at: 1.0, chord: "Am" }, { at: 2.0, chord: "G" }, { at: 3.0, chord: "F" }, { at: 4.0, chord: "C" }],
@@ -105,6 +110,7 @@ export const NarrowBlockChordsHidden: Story = {
         startMeasure: 1,
         lengthMeasures: 0.4,
         definition: {
+          id: "def-4",
           name: "Fill",
           color: "#059669",
           chords: [{ at: 1.0, chord: "G" }],
@@ -115,6 +121,7 @@ export const NarrowBlockChordsHidden: Story = {
         startMeasure: 3,
         lengthMeasures: 6,
         definition: {
+          id: "def-5",
           name: "Bridge",
           color: "#D97706",
           chords: [{ at: 1.0, chord: "Bm" }, { at: 2.0, chord: "A" }, { at: 3.0, chord: "G" }],
