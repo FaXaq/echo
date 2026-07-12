@@ -95,9 +95,9 @@
       "types": "./src/user/infrastructure/index.ts",
       "default": "./src/user/infrastructure/index.ts"
     },
-    "./user/use-cases": {
-      "types": "./src/user/use-cases/index.ts",
-      "default": "./src/user/use-cases/index.ts"
+    "./user/app": {
+      "types": "./src/user/app/index.ts",
+      "default": "./src/user/app/index.ts"
     },
     "./notification/domain": {
       "types": "./src/notification/domain/index.ts",
