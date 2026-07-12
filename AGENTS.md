@@ -44,7 +44,7 @@ Architectural goals:
 - `/packages/modules` – Business modules (DDD + functional). Each module under `src/<name>/` has its own `domain/` (pure model), `app/` (use cases, one file per use case), and `infrastructure/` (port + adapter, one pair of files per repository/service).
 - `/packages/config` – Shared TS/ESLint/Vite/Turbo config, etc.
 
-Agents must respect this layering: **web → app → domain**, and adapters in `apps/api` depend on ports in `packages/app`, never the other way.
+Agents must respect this layering: **web → app → domain**, and adapters in `apps/api` depend on ports defined in `packages/modules/src/<name>/infrastructure`, never the other way.
 
 ---
 
