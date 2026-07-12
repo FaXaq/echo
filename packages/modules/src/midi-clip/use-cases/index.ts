@@ -1,3 +1,4 @@
+import type { KyselyDB } from "@echo/db";
 import type { MidiClipRepoPort } from "../infrastructure/index.js";
 import type { TrackRepoPort } from "../../track/infrastructure/index.js";
 import type { FileRepoPort } from "../../file/infrastructure/index.js";
@@ -39,7 +40,7 @@ export const makeListMidiClipsBySong =
   };
 
 export const makeUpdateMidiClipPosition =
-  (deps: { midiClipRepo: MidiClipRepoPort; trackRepo: TrackRepoPort }) =>
+  (deps: { midiClipRepo: MidiClipRepoPort; trackRepo: TrackRepoPort; db: KyselyDB }) =>
   async (input: { clipId: string; startMeasure: number; trackId?: string }) => {
     if (input.startMeasure < 1) {
       throw conflict("Start measure must be >= 1");
@@ -51,14 +52,14 @@ export const makeUpdateMidiClipPosition =
         throw notFound("MidiClip");
       }
 
-      const currentTrack = await deps.trackRepo.findById({
+      const currentTrack = await deps.trackRepo.findById(deps.db, {
         trackId: clip.trackId,
       });
       if (!currentTrack) {
         throw notFound("Track");
       }
 
-      const targetTrack = await deps.trackRepo.findById({
+      const targetTrack = await deps.trackRepo.findById(deps.db, {
         trackId: input.trackId,
       });
       if (!targetTrack) {

@@ -1,23 +1,21 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
 import {
-  makeListTracks,
-  makeCreateTrack,
-  makeUpdateTrackVolume,
-  makeDeleteTrack,
-  makeRenameTrack,
-  makeSetTrackInstrumentPreset,
-  makeReorderTracks,
-} from "@echo/modules/track/use-cases";
+  listTracks,
+  createTrack,
+  updateTrackVolume,
+  setTrackInstrumentPreset,
+  deleteTrack,
+  renameTrack,
+  reorderTracks,
+} from "@echo/modules/track/app";
 
 export const makeTrackRouter = () =>
   router({
     list: authedProcedure
       .input(z.object({ songId: z.string().min(1) }))
       .query(async ({ input, ctx }) => {
-        return makeListTracks({ trackRepo: ctx.track })({
-          songId: input.songId,
-        });
+        return listTracks({ db: ctx.db, trackRepo: ctx.track }, { songId: input.songId });
       }),
 
     create: authedProcedure
@@ -29,11 +27,10 @@ export const makeTrackRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeCreateTrack({ trackRepo: ctx.track })({
-          songId: input.songId,
-          name: input.name,
-          volume: input.volume,
-        });
+        return createTrack(
+          { db: ctx.db, trackRepo: ctx.track },
+          { songId: input.songId, name: input.name, volume: input.volume },
+        );
       }),
 
     updateVolume: authedProcedure
@@ -44,10 +41,10 @@ export const makeTrackRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeUpdateTrackVolume({ trackRepo: ctx.track })({
-          trackId: input.trackId,
-          volumeDb: input.volumeDb,
-        });
+        return updateTrackVolume(
+          { db: ctx.db, trackRepo: ctx.track },
+          { trackId: input.trackId, volumeDb: input.volumeDb },
+        );
       }),
 
     setInstrumentPreset: authedProcedure
@@ -58,15 +55,13 @@ export const makeTrackRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeSetTrackInstrumentPreset({ trackRepo: ctx.track })(input);
+        return setTrackInstrumentPreset({ db: ctx.db, trackRepo: ctx.track }, input);
       }),
 
     delete: authedProcedure
       .input(z.object({ trackId: z.string().min(1) }))
       .mutation(async ({ input, ctx }) => {
-        return makeDeleteTrack({ trackRepo: ctx.track })({
-          trackId: input.trackId,
-        });
+        return deleteTrack({ db: ctx.db, trackRepo: ctx.track }, { trackId: input.trackId });
       }),
 
     rename: authedProcedure
@@ -77,7 +72,7 @@ export const makeTrackRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeRenameTrack({ trackRepo: ctx.track })(input);
+        return renameTrack({ db: ctx.db, trackRepo: ctx.track }, input);
       }),
 
     reorder: authedProcedure
@@ -88,9 +83,9 @@ export const makeTrackRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeReorderTracks({ trackRepo: ctx.track })({
-          songId: input.songId,
-          orderedTrackIds: input.orderedTrackIds,
-        });
+        return reorderTracks(
+          { db: ctx.db, trackRepo: ctx.track },
+          { songId: input.songId, orderedTrackIds: input.orderedTrackIds },
+        );
       }),
   });

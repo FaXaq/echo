@@ -74,6 +74,7 @@ export const makeAudioClipRouter = () =>
         return makeUpdateAudioClipPosition({
           audioClipRepo: ctx.audioClip,
           trackRepo: ctx.track,
+          db: ctx.db,
         })({
           clipId: input.clipId,
           startMeasure: input.startMeasure,

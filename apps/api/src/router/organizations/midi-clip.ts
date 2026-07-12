@@ -57,6 +57,7 @@ export const makeMidiClipRouter = () =>
         return makeUpdateMidiClipPosition({
           midiClipRepo: ctx.midiClip,
           trackRepo: ctx.track,
+          db: ctx.db,
         })({
           clipId: input.clipId,
           startMeasure: input.startMeasure,

@@ -1,3 +1,4 @@
+import type { KyselyDB } from "@echo/db";
 import type { AudioClipRepoPort, AudioClip } from "../infrastructure/index.js";
 import type { TrackRepoPort } from "../../track/infrastructure/index.js";
 import type { FileRepoPort } from "../../file/infrastructure/index.js";
@@ -50,7 +51,7 @@ export const makeRegisterAudioClip =
   };
 
 export const makeUpdateAudioClipPosition =
-  (deps: { audioClipRepo: AudioClipRepoPort; trackRepo: TrackRepoPort }) =>
+  (deps: { audioClipRepo: AudioClipRepoPort; trackRepo: TrackRepoPort; db: KyselyDB }) =>
   async (input: { clipId: string; startMeasure: number; trackId?: string }) => {
     if (input.trackId !== undefined) {
       const clip = await deps.audioClipRepo.findById({ clipId: input.clipId });
@@ -58,14 +59,14 @@ export const makeUpdateAudioClipPosition =
         throw notFound("AudioClip");
       }
 
-      const currentTrack = await deps.trackRepo.findById({
+      const currentTrack = await deps.trackRepo.findById(deps.db, {
         trackId: clip.trackId,
       });
       if (!currentTrack) {
         throw notFound("Track");
       }
 
-      const targetTrack = await deps.trackRepo.findById({
+      const targetTrack = await deps.trackRepo.findById(deps.db, {
         trackId: input.trackId,
       });
       if (!targetTrack) {

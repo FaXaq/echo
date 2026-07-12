@@ -23,9 +23,9 @@
       "types": "./src/track/infrastructure/index.ts",
       "default": "./src/track/infrastructure/index.ts"
     },
-    "./track/use-cases": {
-      "types": "./src/track/use-cases/index.ts",
-      "default": "./src/track/use-cases/index.ts"
+    "./track/app": {
+      "types": "./src/track/app/index.ts",
+      "default": "./src/track/app/index.ts"
     },
     "./audio-clip/domain": {
       "types": "./src/audio-clip/domain/index.ts",
