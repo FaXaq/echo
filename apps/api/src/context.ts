@@ -32,8 +32,8 @@ export const makeCreateContext =
       });
       const session = await auth.api.getSession({ headers });
 
-      const songSectionDefinition = makeSongSectionDefinitionRepo({ db });
-      const songSectionInstance = makeSongSectionInstanceRepo({ db });
+      const songSectionDefinition = makeSongSectionDefinitionRepo();
+      const songSectionInstance = makeSongSectionInstanceRepo();
       const health = makeHealthRepo({ db });
       const invitation = makeInvitationRepo({ db });
       const song = makeSongRepo();

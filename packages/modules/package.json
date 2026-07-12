@@ -131,9 +131,9 @@
       "types": "./src/song-section/infrastructure/index.ts",
       "default": "./src/song-section/infrastructure/index.ts"
     },
-    "./song-section/use-cases": {
-      "types": "./src/song-section/use-cases/index.ts",
-      "default": "./src/song-section/use-cases/index.ts"
+    "./song-section/app": {
+      "types": "./src/song-section/app/index.ts",
+      "default": "./src/song-section/app/index.ts"
     }
   },
   "scripts": {

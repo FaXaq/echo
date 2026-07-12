@@ -1,16 +1,16 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
 import {
-  makeCreateSectionDefinition,
-  makeUpdateSectionDefinition,
-  makeDeleteSectionDefinition,
-  makeListSectionDefinitions,
-  makeCreateSectionInstance,
-  makeUpdateSectionInstance,
-  makeDeleteSectionInstance,
-  makeListSectionInstances,
-  makeReorderSectionInstances,
-} from "@echo/modules/song-section/use-cases";
+  createSectionDefinition,
+  updateSectionDefinition,
+  deleteSectionDefinition,
+  listSectionDefinitions,
+  createSectionInstance,
+  updateSectionInstance,
+  deleteSectionInstance,
+  listSectionInstances,
+  reorderSectionInstances,
+} from "@echo/modules/song-section/app";
 
 const chordSchema = z.object({
   at: z.number().min(0.5),
@@ -31,7 +31,10 @@ export const makeSongSectionRouter = () =>
           }),
         )
         .mutation(async ({ input, ctx }) => {
-          return makeCreateSectionDefinition({ definitionRepo: ctx.songSectionDefinition })(input);
+          return createSectionDefinition(
+            { db: ctx.db, definitionRepo: ctx.songSectionDefinition },
+            input,
+          );
         }),
 
       update: authedProcedure
@@ -45,19 +48,28 @@ export const makeSongSectionRouter = () =>
           }),
         )
         .mutation(async ({ input, ctx }) => {
-          return makeUpdateSectionDefinition({ definitionRepo: ctx.songSectionDefinition })(input);
+          return updateSectionDefinition(
+            { db: ctx.db, definitionRepo: ctx.songSectionDefinition },
+            input,
+          );
         }),
 
       delete: authedProcedure
         .input(z.object({ id: z.string().min(1) }))
         .mutation(async ({ input, ctx }) => {
-          await makeDeleteSectionDefinition({ definitionRepo: ctx.songSectionDefinition })(input);
+          await deleteSectionDefinition(
+            { db: ctx.db, definitionRepo: ctx.songSectionDefinition },
+            input,
+          );
         }),
 
       list: authedProcedure
         .input(z.object({ songId: z.string().min(1) }))
         .query(async ({ input, ctx }) => {
-          return makeListSectionDefinitions({ definitionRepo: ctx.songSectionDefinition })(input);
+          return listSectionDefinitions(
+            { db: ctx.db, definitionRepo: ctx.songSectionDefinition },
+            input,
+          );
         }),
     }),
 
@@ -72,10 +84,14 @@ export const makeSongSectionRouter = () =>
           }),
         )
         .mutation(async ({ input, ctx }) => {
-          return makeCreateSectionInstance({
-            instanceRepo: ctx.songSectionInstance,
-            definitionRepo: ctx.songSectionDefinition,
-          })(input);
+          return createSectionInstance(
+            {
+              db: ctx.db,
+              instanceRepo: ctx.songSectionInstance,
+              definitionRepo: ctx.songSectionDefinition,
+            },
+            input,
+          );
         }),
 
       update: authedProcedure
@@ -85,23 +101,32 @@ export const makeSongSectionRouter = () =>
             startMeasure: z.number().min(1).optional(),
             lengthMeasures: z.number().positive().optional(),
             lyricsOverride: z.string().nullable().optional(),
-            repeat: z.number().optional()
+            repeat: z.number().optional(),
           }),
         )
         .mutation(async ({ input, ctx }) => {
-          return makeUpdateSectionInstance({ instanceRepo: ctx.songSectionInstance })(input);
+          return updateSectionInstance(
+            { db: ctx.db, instanceRepo: ctx.songSectionInstance },
+            input,
+          );
         }),
 
       delete: authedProcedure
         .input(z.object({ id: z.string().min(1) }))
         .mutation(async ({ input, ctx }) => {
-          await makeDeleteSectionInstance({ instanceRepo: ctx.songSectionInstance })(input);
+          await deleteSectionInstance(
+            { db: ctx.db, instanceRepo: ctx.songSectionInstance },
+            input,
+          );
         }),
 
       list: authedProcedure
         .input(z.object({ songId: z.string().min(1) }))
         .query(async ({ input, ctx }) => {
-          return makeListSectionInstances({ instanceRepo: ctx.songSectionInstance })(input);
+          return listSectionInstances(
+            { db: ctx.db, instanceRepo: ctx.songSectionInstance },
+            input,
+          );
         }),
 
       reorder: authedProcedure
@@ -112,7 +137,10 @@ export const makeSongSectionRouter = () =>
           }),
         )
         .mutation(async ({ input, ctx }) => {
-          return makeReorderSectionInstances({ instanceRepo: ctx.songSectionInstance })(input);
+          return reorderSectionInstances(
+            { db: ctx.db, instanceRepo: ctx.songSectionInstance },
+            input,
+          );
         }),
     }),
   });
