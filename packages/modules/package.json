@@ -83,9 +83,9 @@
       "types": "./src/organization/infrastructure/index.ts",
       "default": "./src/organization/infrastructure/index.ts"
     },
-    "./organization/use-cases": {
-      "types": "./src/organization/use-cases/index.ts",
-      "default": "./src/organization/use-cases/index.ts"
+    "./organization/app": {
+      "types": "./src/organization/app/index.ts",
+      "default": "./src/organization/app/index.ts"
     },
     "./user/domain": {
       "types": "./src/user/domain/index.ts",
