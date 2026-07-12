@@ -107,9 +107,9 @@
       "types": "./src/notification/infrastructure/index.ts",
       "default": "./src/notification/infrastructure/index.ts"
     },
-    "./notification/use-cases": {
-      "types": "./src/notification/use-cases/index.ts",
-      "default": "./src/notification/use-cases/index.ts"
+    "./notification/app": {
+      "types": "./src/notification/app/index.ts",
+      "default": "./src/notification/app/index.ts"
     },
     "./health/domain": {
       "types": "./src/health/domain/index.ts",
