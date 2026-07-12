@@ -1,22 +1,22 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
 import {
-  makeListAudioClips,
-  makeGetUploadUrl,
-  makeRegisterAudioClip,
-  makeUpdateAudioClipPosition,
-  makeDeleteAudioClip,
-  makeDeleteManyAudioClips,
-  makeGetSignedUrls,
-  makeRenameAudioClip,
-} from "@echo/modules/audio-clip/use-cases";
+  listAudioClips,
+  getUploadUrl,
+  registerAudioClip,
+  updateAudioClipPosition,
+  deleteAudioClip,
+  deleteManyAudioClips,
+  getSignedUrls,
+  renameAudioClip,
+} from "@echo/modules/audio-clip/app";
 
 export const makeAudioClipRouter = () =>
   router({
     listBySong: authedProcedure
       .input(z.object({ songId: z.string().min(1) }))
       .query(async ({ input, ctx }) => {
-        return makeListAudioClips({ audioClipRepo: ctx.audioClip })({
+        return listAudioClips({ db: ctx.db, audioClipRepo: ctx.audioClip }, {
           songId: input.songId,
         });
       }),
@@ -30,7 +30,7 @@ export const makeAudioClipRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeGetUploadUrl({ fileStorage: ctx.fileStorage })({
+        return getUploadUrl({ fileStorage: ctx.fileStorage }, {
           filename: input.filename,
           contentType: input.contentType,
           organizationId: input.organizationId,
@@ -49,18 +49,17 @@ export const makeAudioClipRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeRegisterAudioClip({
-          audioClipRepo: ctx.audioClip,
-          fileRepo: ctx.file,
-          db: ctx.db,
-        })({
-          trackId: input.trackId,
-          filename: input.filename,
-          storageKey: input.storageKey,
-          organizationId: input.organizationId,
-          startMeasure: input.startMeasure,
-          durationMs: input.durationMs,
-        });
+        return registerAudioClip(
+          { db: ctx.db, audioClipRepo: ctx.audioClip, fileRepo: ctx.file },
+          {
+            trackId: input.trackId,
+            filename: input.filename,
+            storageKey: input.storageKey,
+            organizationId: input.organizationId,
+            startMeasure: input.startMeasure,
+            durationMs: input.durationMs,
+          },
+        );
       }),
 
     updatePosition: authedProcedure
@@ -72,34 +71,29 @@ export const makeAudioClipRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeUpdateAudioClipPosition({
-          audioClipRepo: ctx.audioClip,
-          trackRepo: ctx.track,
-          db: ctx.db,
-        })({
-          clipId: input.clipId,
-          startMeasure: input.startMeasure,
-          trackId: input.trackId,
-        });
+        return updateAudioClipPosition(
+          { db: ctx.db, audioClipRepo: ctx.audioClip, trackRepo: ctx.track },
+          {
+            clipId: input.clipId,
+            startMeasure: input.startMeasure,
+            trackId: input.trackId,
+          },
+        );
       }),
 
     delete: authedProcedure
-      .input(
-        z.object({
-          clipId: z.string().min(1),
-        }),
-      )
+      .input(z.object({ clipId: z.string().min(1) }))
       .mutation(async ({ input, ctx }) => {
-        return makeDeleteAudioClip({
-          audioClipRepo: ctx.audioClip,
-          fileStorage: ctx.fileStorage,
-        })({ clipId: input.clipId });
+        return deleteAudioClip(
+          { db: ctx.db, audioClipRepo: ctx.audioClip, fileStorage: ctx.fileStorage },
+          { clipId: input.clipId },
+        );
       }),
 
     getDownloadUrls: authedProcedure
       .input(z.object({ storageKeys: z.array(z.string()) }))
       .query(async ({ input, ctx }) => {
-        return makeGetSignedUrls({ fileStorage: ctx.fileStorage })({
+        return getSignedUrls({ fileStorage: ctx.fileStorage }, {
           storageKeys: input.storageKeys,
         });
       }),
@@ -107,15 +101,15 @@ export const makeAudioClipRouter = () =>
     rename: authedProcedure
       .input(z.object({ clipId: z.string().min(1), name: z.string().min(1) }))
       .mutation(async ({ input, ctx }) => {
-        return makeRenameAudioClip({ audioClipRepo: ctx.audioClip })(input);
+        return renameAudioClip({ db: ctx.db, audioClipRepo: ctx.audioClip }, input);
       }),
 
     deleteMany: authedProcedure
       .input(z.object({ clipIds: z.array(z.string().min(1)).min(1) }))
       .mutation(async ({ input, ctx }) => {
-        return makeDeleteManyAudioClips({
-          audioClipRepo: ctx.audioClip,
-          fileStorage: ctx.fileStorage,
-        })({ clipIds: input.clipIds });
+        return deleteManyAudioClips(
+          { db: ctx.db, audioClipRepo: ctx.audioClip, fileStorage: ctx.fileStorage },
+          { clipIds: input.clipIds },
+        );
       }),
   });

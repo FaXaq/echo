@@ -35,9 +35,9 @@
       "types": "./src/audio-clip/infrastructure/index.ts",
       "default": "./src/audio-clip/infrastructure/index.ts"
     },
-    "./audio-clip/use-cases": {
-      "types": "./src/audio-clip/use-cases/index.ts",
-      "default": "./src/audio-clip/use-cases/index.ts"
+    "./audio-clip/app": {
+      "types": "./src/audio-clip/app/index.ts",
+      "default": "./src/audio-clip/app/index.ts"
     },
     "./midi-clip/domain": {
       "types": "./src/midi-clip/domain/index.ts",

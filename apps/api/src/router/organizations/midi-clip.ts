@@ -8,7 +8,7 @@ import {
   makeDeleteMidiClip,
   makeDeleteManyMidiClips,
 } from "@echo/modules/midi-clip/use-cases";
-import { makeGetSignedUrls } from "@echo/modules/audio-clip/use-cases";
+import { getSignedUrls } from "@echo/modules/audio-clip/app";
 
 export const makeMidiClipRouter = () =>
   router({
@@ -81,7 +81,7 @@ export const makeMidiClipRouter = () =>
     getDownloadUrls: authedProcedure
       .input(z.object({ storageKeys: z.array(z.string()) }))
       .query(async ({ input, ctx }) => {
-        return makeGetSignedUrls({ fileStorage: ctx.fileStorage })({
+        return getSignedUrls({ fileStorage: ctx.fileStorage }, {
           storageKeys: input.storageKeys,
         });
       }),
