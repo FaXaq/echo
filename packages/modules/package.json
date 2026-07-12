@@ -59,9 +59,9 @@
       "types": "./src/file/infrastructure/index.ts",
       "default": "./src/file/infrastructure/index.ts"
     },
-    "./file/use-cases": {
-      "types": "./src/file/use-cases/index.ts",
-      "default": "./src/file/use-cases/index.ts"
+    "./file/app": {
+      "types": "./src/file/app/index.ts",
+      "default": "./src/file/app/index.ts"
     },
     "./invitation/domain": {
       "types": "./src/invitation/domain/index.ts",

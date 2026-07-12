@@ -35,6 +35,7 @@ export const makeMidiClipRouter = () =>
         return makeRegisterMidiClip({
           midiClipRepo: ctx.midiClip,
           fileRepo: ctx.file,
+          db: ctx.db,
         })({
           trackId: input.trackId,
           filename: input.filename,

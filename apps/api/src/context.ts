@@ -40,7 +40,7 @@ export const makeCreateContext =
       const track = makeTrackRepo();
       const audioClip = makeAudioClipRepo({ db });
       const midiClip = makeMidiClipRepo({ db });
-      const file = makeFileRepo({ db });
+      const file = makeFileRepo();
       const organization = makeOrganizationRepo({ auth, headers });
       const userPermission = makeUserPermissionRepo({
         auth,

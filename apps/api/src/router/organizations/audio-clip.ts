@@ -52,6 +52,7 @@ export const makeAudioClipRouter = () =>
         return makeRegisterAudioClip({
           audioClipRepo: ctx.audioClip,
           fileRepo: ctx.file,
+          db: ctx.db,
         })({
           trackId: input.trackId,
           filename: input.filename,

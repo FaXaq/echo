@@ -6,7 +6,7 @@ import { notFound, conflict } from "@echo/errors";
 import { randomUUID } from "node:crypto";
 
 export const makeRegisterMidiClip =
-  (deps: { midiClipRepo: MidiClipRepoPort; fileRepo: FileRepoPort }) =>
+  (deps: { midiClipRepo: MidiClipRepoPort; fileRepo: FileRepoPort; db: KyselyDB }) =>
   async (input: {
     trackId: string;
     filename: string;
@@ -16,7 +16,7 @@ export const makeRegisterMidiClip =
     durationMs?: number | null;
   }) => {
     const fileId = randomUUID();
-    await deps.fileRepo.create({
+    await deps.fileRepo.create(deps.db, {
       id: fileId,
       storageKey: input.storageKey,
       filename: input.filename,

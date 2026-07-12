@@ -24,7 +24,7 @@ export const makeGetUploadUrl =
   };
 
 export const makeRegisterAudioClip =
-  (deps: { audioClipRepo: AudioClipRepoPort; fileRepo: FileRepoPort }) =>
+  (deps: { audioClipRepo: AudioClipRepoPort; fileRepo: FileRepoPort; db: KyselyDB }) =>
   async (input: {
     trackId: string;
     filename: string;
@@ -34,7 +34,7 @@ export const makeRegisterAudioClip =
     durationMs?: number | null;
   }) => {
     const fileId = crypto.randomUUID();
-    await deps.fileRepo.create({
+    await deps.fileRepo.create(deps.db, {
       id: fileId,
       storageKey: input.storageKey,
       filename: input.filename,
