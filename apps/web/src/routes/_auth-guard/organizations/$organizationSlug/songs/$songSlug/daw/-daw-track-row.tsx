@@ -105,11 +105,9 @@ export function DawTrackRow({
               onEditStart={() => onEditClipStart(clip.id)}
               onEditCommit={(name) => onEditClipCommit(clip, name)}
               onDelete={() => {
-                console.log("deleting 1 audio clip")
                 onDeleteClip(clip.id)
               }}
               onDeleteSelection={() => {
-                console.log("deleting selection audio")
                 onDeleteSelection()
               }}
             />
@@ -126,11 +124,9 @@ export function DawTrackRow({
               secondsPerMeasure={secondsPerMeasure}
               onMouseDown={onMidiMouseDown}
               onDelete={() => {
-                console.log("deleting 1 clip");
                 onDeleteMidiClip(clip.id)
               }}
               onDeleteSelection={() => {
-                console.log("deleting selection midi")
                 onDeleteSelection()
               }}
             />

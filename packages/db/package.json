@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc --build",
     "typecheck": "tsc --noEmit",
-    "db:generate-schema": "pnpm exec kysely-codegen --env-file .env --out-file src/schema.d.ts",
+    "schema:generate": "pnpm exec kysely-codegen --env-file .env --out-file src/schema.d.ts",
     "migration:create": "node src/migration-create.ts",
     "migration:down": "node src/migrate-down.ts"
   },

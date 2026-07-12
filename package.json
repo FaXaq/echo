@@ -17,6 +17,8 @@
     "test:api": "turbo test --filter=@echo/api",
     "storybook": "turbo storybook --filter=@echo/web",
     "cli": "pnpm --filter @echo/cli execute --",
+    "db:migration:create": "pnpm --filter @echo/db migration:create",
+    "db:schema:generate": "pnpm --filter @echo/db schema:generate",
     "db:migrate": "pnpm cli db migrate",
     "db:migrate:down": "pnpm cli db migrate-down",
     "create-admin": "pnpm --filter @echo/api create-admin",

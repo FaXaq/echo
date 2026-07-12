@@ -9,9 +9,10 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/ui/button";
 import { EditableBadge } from "@/ui/editable-badge";
 import { ViewModeToggle, type ViewMode } from "./-view-mode-toggle";
-import { SectionCard, type SectionInstance } from "./-section-card";
+import { SectionCard } from "./-section-card";
 import { AddSectionRow } from "./-add-section-row";
 import { DeleteSectionDialog } from "./-delete-section-dialog";
+import type { RouterOutputs } from "@echo/api/router";
 
 export const Route = createFileRoute(
   "/_auth-guard/organizations/$organizationSlug/songs/$songSlug/",
@@ -33,7 +34,7 @@ function SortableSectionRow({
   autoFocusName,
   onDelete,
 }: {
-  instance: SectionInstance;
+  instance: RouterOutputs["organization"]["song"]["section"]["instance"]["list"][number];
   index: number;
   viewMode: ViewMode;
   autoFocusName?: boolean;
@@ -67,8 +68,8 @@ function SongDetailPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [newlyCreatedDefId, setNewlyCreatedDefId] = useState<string | null>(null);
 
-  const { data: instances = initialInstances } =
-    trpc.organization.song.section.instance.list.useQuery({ songId: song.id });
+  const { data: instances } =
+    trpc.organization.song.section.instance.list.useQuery({ songId: song.id }, { initialData: initialInstances });
 
   const updateSong = trpc.organization.song.update.useMutation({
     onSuccess: () => utils.organization.song.get.invalidate({ songId: song.id }),
@@ -168,7 +169,7 @@ function SongDetailPage() {
             {instances.map((instance, index) => (
               <SortableSectionRow
                 key={instance.id}
-                instance={instance as SectionInstance}
+                instance={instance}
                 index={index}
                 viewMode={viewMode}
                 autoFocusName={instance.definition.id === newlyCreatedDefId}

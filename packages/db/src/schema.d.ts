@@ -130,6 +130,7 @@ export interface SongSectionDefinition {
   id: string;
   lyrics: string | null;
   name: string;
+  repeat: Generated<number>;
   songId: string;
   updatedAt: Generated<Timestamp>;
 }
@@ -140,6 +141,7 @@ export interface SongSectionInstance {
   id: string;
   lengthMeasures: Generated<number>;
   lyricsOverride: string | null;
+  repeat: Generated<number>;
   songId: string;
   startMeasure: number;
   updatedAt: Generated<Timestamp>;

@@ -85,6 +85,7 @@ export const makeSongSectionRouter = () =>
             startMeasure: z.number().min(1).optional(),
             lengthMeasures: z.number().positive().optional(),
             lyricsOverride: z.string().nullable().optional(),
+            repeat: z.number().optional()
           }),
         )
         .mutation(async ({ input, ctx }) => {

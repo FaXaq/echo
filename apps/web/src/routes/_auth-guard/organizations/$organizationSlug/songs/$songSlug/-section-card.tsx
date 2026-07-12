@@ -1,35 +1,18 @@
 import { useState, useRef } from "react";
 import type React from "react";
-import { GripVertical } from "lucide-react";
+import { GripVertical, X } from "lucide-react";
 import { useTranslation, Trans } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import type { ViewMode } from "./-view-mode-toggle";
+import type { RouterOutputs } from "@echo/api/router";
 
 type SongChord = {
   at: number;
   chord: string;
 };
 
-type Definition = {
-  id: string;
-  name: string;
-  chords: SongChord[];
-  lyrics: string | null;
-  color: string | null;
-};
-
-export type SectionInstance = {
-  id: string;
-  songId: string;
-  definitionId: string;
-  startMeasure: number;
-  lengthMeasures: number;
-  lyricsOverride: string | null;
-  definition: Definition;
-};
-
 type Props = {
-  instance: SectionInstance;
+  instance: RouterOutputs["organization"]["song"]["section"]["instance"]["list"][number];
   viewMode: ViewMode;
   dragging?: boolean;
   handleRef?: React.Ref<HTMLDivElement>;
@@ -103,9 +86,6 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
   }
 
   function handleLyricsClick() {
-    if (!hasOwnLyrics && instance.definition.lyrics) {
-      // Prompt handled inline via a small UI choice
-    }
     setEditingLyrics(true);
     setLyricsValue(displayLyrics);
     setTimeout(() => lyricsRef.current?.focus(), 0);
@@ -133,7 +113,6 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
   function saveLength() {
     const parsed = parseFloat(lengthValue);
     if (!isNaN(parsed) && parsed >= 0.25) {
-      // Snap to 0.25 measure increments
       const snapped = Math.round(parsed * 4) / 4;
       if (snapped !== instance.lengthMeasures) {
         updateInstance.mutate({ id: instance.id, lengthMeasures: snapped });
@@ -145,36 +124,33 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
   return (
     <div
       className={[
-        "group rounded-lg border border-border bg-card transition-opacity",
+        "group pl-4 py-2 transition-opacity border-l-[3px]",
         dragging ? "opacity-40" : "",
       ].join(" ")}
+      style={{ borderLeftColor: color }}
     >
-      {/* Header */}
-      <div
-        className="flex items-center gap-2 px-3 py-2 rounded-t-lg border-b"
-        style={{
-          background: `${color}26`,
-          borderColor: `${color}40`,
-        }}
-      >
+      {/* Header row */}
+      <div className="flex items-center gap-2 mb-2">
         <div
           ref={handleRef}
-          className="flex-shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
+          className="shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors"
           title={t("Drag to reorder section")}
         >
-          <GripVertical size={14} />
+          <GripVertical size={12} />
         </div>
+
         <button
           type="button"
           title={t("Change color")}
-          className="w-2.5 h-2.5 rounded-full flex-shrink-0 cursor-pointer"
+          className="w-2.5 h-2.5 rounded-full shrink-0 cursor-pointer ring-1 ring-inset ring-black/10"
           style={{ background: color }}
           onClick={() => setEditingColor(v => !v)}
         />
+
         {editingName ? (
           <input
             autoFocus
-            className="font-bold text-sm bg-transparent outline-none min-w-0 flex-1"
+            className="font-mono font-bold text-sm bg-transparent outline-none min-w-0 flex-1 border-b border-b-current"
             style={{ color }}
             value={nameValue}
             onChange={e => setNameValue(e.target.value)}
@@ -186,20 +162,21 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
           />
         ) : (
           <span
-            className="font-bold text-sm cursor-text"
+            className="font-mono font-bold text-sm cursor-text"
             style={{ color }}
             onClick={() => { setEditingName(true); setNameValue(instance.definition.name); }}
           >
             {instance.definition.name}
           </span>
         )}
+
         {editingLength ? (
           <input
             autoFocus
             type="number"
             step="0.25"
             min="0.25"
-            className="text-xs bg-transparent outline-none w-12 text-right ml-auto"
+            className="font-mono text-[11px] bg-transparent outline-none w-10 text-right ml-auto text-muted-foreground border-b border-b-muted-foreground"
             value={lengthValue}
             onChange={e => setLengthValue(e.target.value)}
             onBlur={saveLength}
@@ -210,33 +187,35 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
           />
         ) : (
           <span
-            className="text-xs text-muted-foreground ml-auto cursor-text hover:text-foreground transition-colors"
+            className="font-mono text-[11px] text-muted-foreground/50 ml-auto cursor-text hover:text-muted-foreground transition-colors"
             onClick={() => { setEditingLength(true); setLengthValue(instance.lengthMeasures.toString()); }}
             title={t("Click to edit length")}
           >
             {t("{{count}}m", { count: instance.lengthMeasures })}
           </span>
         )}
+
+
         {onDelete && (
           <button
             type="button"
             title={t("Remove section")}
-            className="text-muted-foreground hover:text-destructive transition-colors text-xs px-1 rounded flex-shrink-0"
+            className="opacity-0 group-hover:opacity-100 text-muted-foreground/50 hover:text-destructive transition-all shrink-0"
             onClick={onDelete}
           >
-            ✕
+            <X size={12} />
           </button>
         )}
       </div>
 
       {/* Color picker */}
       {editingColor && (
-        <div className="px-4 py-2 flex gap-2 flex-wrap border-b border-border">
+        <div className="flex gap-2 flex-wrap mb-2 pl-[18px]">
           {PRESET_COLORS.map(hex => (
             <button
               key={hex}
               type="button"
-              className="w-6 h-6 rounded-full border-2 border-transparent hover:border-white transition-colors"
+              className="w-5 h-5 rounded-full ring-1 ring-inset ring-black/10 hover:scale-110 transition-transform"
               style={{ background: hex }}
               onClick={() => saveColor(hex)}
             />
@@ -244,76 +223,75 @@ export function SectionCard({ instance, viewMode, dragging, handleRef, autoFocus
         </div>
       )}
 
-      <div className="px-4 py-3 space-y-2">
-        {/* Chords row */}
+      {/* Body */}
+      <div className="space-y-1.5 pl-[18px]">
+        {/* Chords */}
         {(viewMode === "lyrics+chords" || viewMode === "chords") && (
-          <div>
-            {editingChords ? (
-              <input
-                autoFocus
-                className="w-full text-sm font-mono bg-muted rounded px-2 py-1 outline-none border border-primary"
-                value={chordsValue}
-                onChange={e => setChordsValue(e.target.value)}
-                onBlur={saveChords}
-                onKeyDown={e => { if (e.key === "Enter") saveChords(); if (e.key === "Escape") setEditingChords(false); }}
-                placeholder="Am@1.0, G@1.5, F@2.0, C@2.5"
-              />
-            ) : (
-              <button
-                type="button"
-                className="text-sm font-mono text-left w-full text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => { setEditingChords(true); setChordsValue(chordsToInput(instance.definition.chords)); }}
-              >
-                {instance.definition.chords.length > 0
-                  ? instance.definition.chords.map(c => c.chord).join("  —  ")
-                  : <span className="italic">{t("Add chords…")}</span>
-                }
-              </button>
-            )}
-          </div>
+          editingChords ? (
+            <input
+              autoFocus
+              className="w-full text-sm font-mono bg-transparent outline-none border-b border-b-current py-0.5 text-foreground"
+              style={{ borderBottomColor: color }}
+              value={chordsValue}
+              onChange={e => setChordsValue(e.target.value)}
+              onBlur={saveChords}
+              onKeyDown={e => { if (e.key === "Enter") saveChords(); if (e.key === "Escape") setEditingChords(false); }}
+              placeholder="Am, G, F, C"
+            />
+          ) : (
+            <button
+              type="button"
+              className="text-sm font-mono text-left w-full text-muted-foreground hover:text-foreground transition-colors py-0.5"
+              onClick={() => { setEditingChords(true); setChordsValue(chordsToInput(instance.definition.chords)); }}
+            >
+              {instance.definition.chords.length > 0
+                ? instance.definition.chords.map(c => c.chord).join("  ·  ")
+                : <span className="italic text-muted-foreground/50">{t("Add chords…")}</span>
+              }
+            </button>
+          )
         )}
 
-        {/* Lyrics block */}
+        {/* Lyrics */}
         {(viewMode === "lyrics+chords" || viewMode === "lyrics") && (
-          <div>
-            {editingLyrics ? (
-              <div className="space-y-1">
-                {!hasOwnLyrics && instance.definition.lyrics && (
-                  <div className="flex gap-2 text-xs text-muted-foreground">
-                    <span><Trans t={t}>Editing canonical lyrics (affects all uses)</Trans></span>
-                    <button
-                      type="button"
-                      className="underline text-primary"
-                      onMouseDown={e => e.preventDefault()}
-                      onClick={() => {
-                        updateInstance.mutate({ id: instance.id, lyricsOverride: lyricsValue });
-                        setEditingLyrics(false);
-                      }}
-                    >
-                      <Trans t={t}>Override for this instance only</Trans>
-                    </button>
-                  </div>
-                )}
-                <textarea
-                  ref={lyricsRef}
-                  className="w-full text-sm bg-muted rounded px-2 py-1 outline-none border border-primary min-h-[80px] resize-y font-mono"
-                  value={lyricsValue}
-                  onChange={e => setLyricsValue(e.target.value)}
-                  onBlur={() => saveLyrics(lyricsValue)}
-                />
-              </div>
-            ) : (
-              <button
-                type="button"
-                className="text-sm text-left w-full whitespace-pre-wrap text-foreground hover:bg-muted/50 rounded px-1 py-0.5 transition-colors"
-                onClick={handleLyricsClick}
-              >
-                {displayLyrics || (
-                  <span className="italic text-muted-foreground">{t("Add lyrics…")}</span>
-                )}
-              </button>
-            )}
-          </div>
+          editingLyrics ? (
+            <div className="space-y-1">
+              {!hasOwnLyrics && instance.definition.lyrics && (
+                <div className="flex gap-2 text-xs text-muted-foreground">
+                  <span><Trans t={t}>Editing canonical lyrics (affects all uses)</Trans></span>
+                  <button
+                    type="button"
+                    className="underline text-primary"
+                    onMouseDown={e => e.preventDefault()}
+                    onClick={() => {
+                      updateInstance.mutate({ id: instance.id, lyricsOverride: lyricsValue });
+                      setEditingLyrics(false);
+                    }}
+                  >
+                    <Trans t={t}>Override for this instance only</Trans>
+                  </button>
+                </div>
+              )}
+              <textarea
+                ref={lyricsRef}
+                className="w-full text-sm bg-transparent outline-none border-b py-0.5 min-h-18 resize-y leading-relaxed"
+                style={{ borderBottomColor: color }}
+                value={lyricsValue}
+                onChange={e => setLyricsValue(e.target.value)}
+                onBlur={() => saveLyrics(lyricsValue)}
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="text-sm text-left w-full whitespace-pre-wrap text-foreground/80 hover:text-foreground transition-colors leading-relaxed py-0.5"
+              onClick={handleLyricsClick}
+            >
+              {displayLyrics || (
+                <span className="italic text-muted-foreground/50">{t("Add lyrics…")}</span>
+              )}
+            </button>
+          )
         )}
       </div>
     </div>

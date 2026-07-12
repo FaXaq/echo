@@ -77,7 +77,7 @@ export function AudioClipView({
         const mid = canvas.height / 2;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(99,102,241,0.35)";
+        ctx.fillStyle = "rgba(99,102,241,0.45)";
         for (let i = 0; i < numBins; i++) {
           let peak = 0;
           for (let j = 0; j < samplesPerBin; j++) {
@@ -121,10 +121,10 @@ export function AudioClipView({
         <div
           data-clip
           className={cn(
-            "absolute top-1 bottom-1 rounded bg-primary/20 border cursor-grab active:cursor-grabbing overflow-hidden select-none",
+            "absolute top-1 bottom-1 rounded-none bg-indigo-50 dark:bg-indigo-400/15 border-t-2 cursor-grab active:cursor-grabbing overflow-hidden select-none",
             isSelected
-              ? "border-primary ring-2 ring-primary ring-inset"
-              : "border-primary/40"
+              ? "border-t-indigo-500 dark:border-t-indigo-400 shadow-[inset_0_0_0_1px] shadow-indigo-200 dark:shadow-indigo-400/30"
+              : "border-t-indigo-300 dark:border-t-indigo-400/60"
           )}
           style={{
             left: (clip.startMeasure - 1) * pixelsPerMeasure,
@@ -155,7 +155,7 @@ export function AudioClipView({
                 }}
               />
             ) : (
-              <span className="text-xs truncate">{displayName}</span>
+              <span className="font-mono text-xs font-semibold truncate text-indigo-700 dark:text-indigo-300">{displayName}</span>
             )}
           </div>
         </div>

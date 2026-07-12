@@ -95,78 +95,78 @@ export function MidiClipView({
 
   return (
     <>
-    <ContextMenu>
-      <ContextMenuTrigger asChild>
-        <div
-          data-clip
-          className={cn(
-            "absolute top-1 bottom-1 rounded bg-emerald-500/20 border cursor-grab active:cursor-grabbing overflow-hidden select-none flex items-center px-2",
-            isSelected
-              ? "border-emerald-500 ring-2 ring-emerald-500 ring-inset"
-              : "border-emerald-500/40"
-          )}
-          style={{
-            left: (clip.startMeasure - 1) * pixelsPerMeasure,
-            width: clipWidth,
-          }}
-          onMouseDown={(e) => onMouseDown(e, clip)}
-          onContextMenu={(e) => e.stopPropagation()}
-          title={clip.file.filename}
-        >
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full"
-            width={clipWidth}
-            height={TRACK_HEIGHT - 8}
-          />
-          <span className="relative z-10 text-xs truncate text-emerald-700 dark:text-emerald-300">
-            ♩ {displayName}
-          </span>
-        </div>
-      </ContextMenuTrigger>
-      <ContextMenuContent>
-        {selectionCount > 1 ? (
-          <ContextMenuItem
-            className="text-destructive focus:text-destructive"
-            onSelect={() => setPendingDelete("selection")}
-          >
-            {t("Delete {{count}} clips", { count: selectionCount })}
-          </ContextMenuItem>
-        ) : (
-          <ContextMenuItem
-            className="text-destructive focus:text-destructive"
-            onSelect={() => setPendingDelete("single")}
-          >
-            {t("Delete clip")}
-          </ContextMenuItem>
-        )}
-      </ContextMenuContent>
-    </ContextMenu>
-
-    <AlertDialog open={pendingDelete !== null} onOpenChange={(open) => !open && setPendingDelete(null)}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {pendingDelete === "selection"
-              ? t("Delete {{count}} clips", { count: selectionCount })
-              : t("Delete clip")}
-          </AlertDialogTitle>
-          <AlertDialogDescription>{t("This action cannot be undone.")}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setPendingDelete(null)}>{t("Cancel")}</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => {
-              if (pendingDelete === "selection") onDeleteSelection();
-              else onDelete();
-              setPendingDelete(null);
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <div
+            data-clip
+            className={cn(
+              "absolute top-1 bottom-1 rounded-md bg-emerald-50 dark:bg-emerald-400/15 border-t-2 cursor-grab active:cursor-grabbing overflow-hidden select-none flex items-center px-2",
+              isSelected
+                ? "border-t-emerald-500 dark:border-t-emerald-400 shadow-[inset_0_0_0_1px] shadow-emerald-200 dark:shadow-emerald-400/30"
+                : "border-t-emerald-300 dark:border-t-emerald-400/60"
+            )}
+            style={{
+              left: (clip.startMeasure - 1) * pixelsPerMeasure,
+              width: clipWidth,
             }}
+            onMouseDown={(e) => onMouseDown(e, clip)}
+            onContextMenu={(e) => e.stopPropagation()}
+            title={clip.file.filename}
           >
-            {t("Delete")}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full"
+              width={clipWidth}
+              height={TRACK_HEIGHT - 8}
+            />
+            <span className="relative z-10 font-mono text-xs font-semibold truncate text-emerald-700 dark:text-emerald-300 px-2">
+              ♩ {displayName}
+            </span>
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          {selectionCount > 1 ? (
+            <ContextMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={() => setPendingDelete("selection")}
+            >
+              {t("Delete {{count}} clips", { count: selectionCount })}
+            </ContextMenuItem>
+          ) : (
+            <ContextMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={() => setPendingDelete("single")}
+            >
+              {t("Delete clip")}
+            </ContextMenuItem>
+          )}
+        </ContextMenuContent>
+      </ContextMenu>
+
+      <AlertDialog open={pendingDelete !== null} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {pendingDelete === "selection"
+                ? t("Delete {{count}} clips", { count: selectionCount })
+                : t("Delete clip")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>{t("This action cannot be undone.")}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPendingDelete(null)}>{t("Cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingDelete === "selection") onDeleteSelection();
+                else onDelete();
+                setPendingDelete(null);
+              }}
+            >
+              {t("Delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

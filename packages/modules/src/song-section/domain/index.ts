@@ -15,6 +15,7 @@ export type SongSectionDefinition = {
   color: string | null;
   createdAt: Date;
   updatedAt: Date;
+  repeat: number;
 };
 
 export type SongSectionInstance = {
@@ -26,6 +27,7 @@ export type SongSectionInstance = {
   lyricsOverride: string | null;
   createdAt: Date;
   updatedAt: Date;
+  repeat: number;
 };
 
 export type SongSectionInstanceWithDefinition = SongSectionInstance & {

@@ -16,6 +16,7 @@ export interface SongSectionDefinitionRepoPort {
     chords: SongChord[];
     lyrics?: string | null;
     color?: string | null;
+    repeat?: number;
   }) => Promise<SongSectionDefinition>;
   update: (input: {
     id: string;
@@ -23,6 +24,7 @@ export interface SongSectionDefinitionRepoPort {
     chords?: SongChord[];
     lyrics?: string | null;
     color?: string | null;
+    repeat?: number;
   }) => Promise<SongSectionDefinition>;
   delete: (input: { id: string }) => Promise<void>;
   list: (input: { songId: string }) => Promise<SongSectionDefinition[]>;
@@ -43,6 +45,7 @@ export interface SongSectionInstanceRepoPort {
     startMeasure?: number;
     lengthMeasures?: number;
     lyricsOverride?: string | null;
+    repeat?: number;
   }) => Promise<SongSectionInstance>;
   delete: (input: { id: string }) => Promise<void>;
   list: (input: { songId: string }) => Promise<SongSectionInstanceWithDefinition[]>;
@@ -125,13 +128,15 @@ export const makeSongSectionInstanceRepo = ({ db }: { db: KyselyDB }): SongSecti
     return toInstance(row);
   },
 
-  update: async ({ id, startMeasure, lengthMeasures, lyricsOverride }) => {
+  update: async ({ id, startMeasure, lengthMeasures, lyricsOverride, repeat }) => {
     const row = await db
       .updateTable("songSectionInstance")
       .set({
         ...(startMeasure !== undefined ? { startMeasure } : {}),
         ...(lengthMeasures !== undefined ? { lengthMeasures } : {}),
         ...(lyricsOverride !== undefined ? { lyricsOverride } : {}),
+        ...(lyricsOverride !== undefined ? { lyricsOverride } : {}),
+        ...(repeat !== undefined ? { repeat } : {}),
         updatedAt: new Date(),
       })
       .where("id", "=", id)
@@ -157,6 +162,7 @@ export const makeSongSectionInstanceRepo = ({ db }: { db: KyselyDB }): SongSecti
         "i.lyricsOverride",
         "i.createdAt",
         "i.updatedAt",
+        "i.repeat",
         "d.id as defId",
         "d.songId as defSongId",
         "d.name as defName",
@@ -165,6 +171,7 @@ export const makeSongSectionInstanceRepo = ({ db }: { db: KyselyDB }): SongSecti
         "d.color as defColor",
         "d.createdAt as defCreatedAt",
         "d.updatedAt as defUpdatedAt",
+        "d.repeat as defRepeat"
       ])
       .where("i.songId", "=", songId)
       .orderBy("i.startMeasure", "asc")
@@ -179,6 +186,7 @@ export const makeSongSectionInstanceRepo = ({ db }: { db: KyselyDB }): SongSecti
       lyricsOverride: row.lyricsOverride,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      repeat: row.repeat,
       definition: {
         id: row.defId,
         songId: row.defSongId,
@@ -188,6 +196,7 @@ export const makeSongSectionInstanceRepo = ({ db }: { db: KyselyDB }): SongSecti
         color: row.defColor,
         createdAt: row.defCreatedAt,
         updatedAt: row.defUpdatedAt,
+        repeat: row.defRepeat
       },
     }));
   },
@@ -232,6 +241,7 @@ function toDefinition(row: {
   color: string | null;
   createdAt: Date;
   updatedAt: Date;
+  repeat: number;
 }): SongSectionDefinition {
   return {
     id: row.id,
@@ -242,6 +252,7 @@ function toDefinition(row: {
     color: row.color,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
+    repeat: row.repeat
   };
 }
 
@@ -254,6 +265,7 @@ function toInstance(row: {
   lyricsOverride: string | null;
   createdAt: Date;
   updatedAt: Date;
+  repeat: number;
 }): SongSectionInstance {
   return {
     id: row.id,
@@ -264,6 +276,7 @@ function toInstance(row: {
     lyricsOverride: row.lyricsOverride,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
+    repeat: row.repeat
   };
 }
 

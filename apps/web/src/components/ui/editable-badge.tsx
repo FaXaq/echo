@@ -44,15 +44,16 @@ export function EditableBadge({
     setDraft(String(value));
   };
 
-  const pillBase =
-    "inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-sm transition-colors";
+  const base =
+    "inline-flex items-center gap-1 rounded px-2.5 py-1 transition-all";
 
   if (editing) {
     return (
       <span
-        className={cn(pillBase, "border-primary bg-background", className)}
+        className={cn(base, "bg-foreground/[0.06] border-b-2 border-b-primary", className)}
       >
-        <span className="text-xs text-muted-foreground">{label}</span>
+        <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground">{label}</span>
+        <span className="text-muted-foreground/40 text-[10px]">·</span>
         <input
           ref={inputRef}
           type={type}
@@ -65,7 +66,7 @@ export function EditableBadge({
             if (e.key === "Escape") cancel();
           }}
           className={cn(
-            "bg-transparent border-none outline-none font-medium",
+            "bg-transparent border-none outline-none font-mono font-bold text-sm",
             type === "number" ? "w-14" : "w-24",
           )}
         />
@@ -78,15 +79,16 @@ export function EditableBadge({
       type="button"
       onClick={startEditing}
       className={cn(
-        pillBase,
-        "border-border bg-muted hover:border-primary hover:bg-muted/80 cursor-pointer",
+        base,
+        "bg-foreground/[0.06] hover:bg-foreground/[0.09] border-b-2 border-b-transparent hover:border-b-primary/40 cursor-pointer",
         className,
       )}
     >
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <span className="font-medium">
+      <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground">{label}</span>
+      <span className="text-muted-foreground/40 text-[10px]">·</span>
+      <span className="font-mono font-bold text-sm">
         {value !== "" && value != null ? value : (
-          <span className="text-muted-foreground italic">{placeholder ?? "—"}</span>
+          <span className="text-muted-foreground/50">{placeholder ?? "—"}</span>
         )}
       </span>
     </button>
