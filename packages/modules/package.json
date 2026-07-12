@@ -11,9 +11,9 @@
       "types": "./src/song/infrastructure/index.ts",
       "default": "./src/song/infrastructure/index.ts"
     },
-    "./song/use-cases": {
-      "types": "./src/song/use-cases/index.ts",
-      "default": "./src/song/use-cases/index.ts"
+    "./song/app": {
+      "types": "./src/song/app/index.ts",
+      "default": "./src/song/app/index.ts"
     },
     "./track/domain": {
       "types": "./src/track/domain/index.ts",

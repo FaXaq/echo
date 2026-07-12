@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
-import { makeListSongs, makeCreateSong, makeGetSong, makeUpdateSong } from "@echo/modules/song/use-cases";
+import { listSongs, createSong, getSong, updateSong } from "@echo/modules/song/app";
 import { appErrorToTRPC } from "../../lib/errors";
 import { makeSongSectionRouter } from "./song-section";
 
@@ -11,10 +11,10 @@ export const makeSongRouter = () =>
       .input(z.object({ organizationSlug: z.string().min(1) }))
       .query(async ({ input, ctx }) => {
         try {
-          return await makeListSongs({
-            songRepo: ctx.song,
-            organizationRepo: ctx.organization,
-          })({ organizationSlug: input.organizationSlug });
+          return await listSongs(
+            { db: ctx.db, songRepo: ctx.song, organizationRepo: ctx.organization },
+            { organizationSlug: input.organizationSlug },
+          );
         } catch (e) {
           throw appErrorToTRPC(e);
         }
@@ -30,15 +30,15 @@ export const makeSongRouter = () =>
       )
       .mutation(async ({ input, ctx }) => {
         try {
-          return await makeCreateSong({
-            songRepo: ctx.song,
-            organizationRepo: ctx.organization,
-          })({
-            organizationSlug: input.organizationSlug,
-            name: input.name,
-            createdBy: ctx.session.user.id,
-            key: input.key,
-          });
+          return await createSong(
+            { db: ctx.db, songRepo: ctx.song, organizationRepo: ctx.organization },
+            {
+              organizationSlug: input.organizationSlug,
+              name: input.name,
+              createdBy: ctx.session.user.id,
+              key: input.key,
+            },
+          );
         } catch (e) {
           throw appErrorToTRPC(e);
         }
@@ -48,9 +48,7 @@ export const makeSongRouter = () =>
       .input(z.object({ songId: z.string().min(1) }))
       .query(async ({ input, ctx }) => {
         try {
-          return await makeGetSong({ songRepo: ctx.song })({
-            songId: input.songId,
-          });
+          return await getSong({ db: ctx.db, songRepo: ctx.song }, { songId: input.songId });
         } catch (e) {
           throw appErrorToTRPC(e);
         }
@@ -66,7 +64,7 @@ export const makeSongRouter = () =>
       )
       .mutation(async ({ input, ctx }) => {
         try {
-          return await makeUpdateSong({ songRepo: ctx.song })(input);
+          return await updateSong({ db: ctx.db, songRepo: ctx.song }, input);
         } catch (e) {
           throw appErrorToTRPC(e);
         }
