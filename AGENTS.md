@@ -41,8 +41,7 @@ Architectural goals:
 - `/apps/cli` – Administration CLI for user management. Uses **Commander** for subcommands. Never deployed alongside web/api.
 - `/packages/auth` – Auth configuration: `makeServerAuth` and `makeClientAuth` factories, better-auth plugin setup (admin + organization RBAC), permission definitions, and generated auth schema. Single source of truth for all authentication concerns.
 - `/packages/db` – Shared database package: Kysely `Database` interface, migrations, and `makeDbAdapter` factory. Single source of truth for all DB schema and migration concerns.
-- `/packages/domain` – Pure domain model (DDD + functional).
-- `/packages/app` – Application services (use cases) and ports.
+- `/packages/modules` – Business modules (DDD + functional). Each module under `src/<name>/` has its own `domain/` (pure model), `app/` (use cases, one file per use case), and `infrastructure/` (port + adapter, one pair of files per repository/service).
 - `/packages/config` – Shared TS/ESLint/Vite/Turbo config, etc.
 
 Agents must respect this layering: **web → app → domain**, and adapters in `apps/api` depend on ports in `packages/app`, never the other way.
@@ -51,7 +50,7 @@ Agents must respect this layering: **web → app → domain**, and adapters in `
 
 ## Architecture: DDD + hexagonal
 
-### Domain layer (`/packages/domain`)
+### Domain layer (`packages/modules/src/<name>/domain`)
 
 - Implement **pure** business logic (aggregates, value objects, domain services) as immutable types and functions, no framework imports.
 - Use TypeScript type aliases / interfaces and tagged unions (ADTs), not classes, unless there is a strong reason.
@@ -62,33 +61,32 @@ Rules for agents:
 - Domain functions must be deterministic and side-effect free.
 - Expose only domain types and pure functions (e.g. `createUser`, `changePlan`, `calculateInvoice`).
 
-### Application layer (`/packages/app`)
+### Application layer (`packages/modules/src/<name>/app`)
 
-- Contains **use cases** and **ports** (hexagonal center).
-- Use cases are functions that orchestrate domain operations and call ports for I/O.
-
-Example (pattern, not exact code):
+- Contains **use cases**, one per file, named after the use case (e.g. `create-track.ts` exports `createTrack`). A barrel `app/index.ts` re-exports every use case.
+- Use cases are plain async functions — not curried factories: `export async function createTrack(deps, input) { ... }`.
+- `deps` always includes `db: KyselyDB` alongside the repo ports the use case needs; `input` is the use-case's own parameters.
+- Ports are defined in the module's `infrastructure/*.port.ts` files. Every port method that touches the database takes `db: KyselyDB` as its first parameter — repo factories (`makeXRepo()`) hold no `db` reference themselves, so the same repo instance can be called with either the ambient connection or an open transaction.
+- To make multiple repository calls atomic, a use case opens a transaction and passes the transaction handle into each port call instead of `deps.db`:
 
 ```ts
-// Port
-export interface UserRepoPort {
-  findById: (id: UserId) => Promise<User | null>;
-  save: (user: User) => Promise<void>;
+export async function someUseCase(
+  deps: { db: KyselyDB; repoA: APort; repoB: BPort },
+  input: Input,
+) {
+  return deps.db.transaction().execute(async (trx) => {
+    await deps.repoA.method(trx, ...);
+    await deps.repoB.method(trx, ...);
+  });
 }
-
-// Use case factory (functional DI)
-export const makeUpgradePlan =
-  (deps: { userRepo: UserRepoPort }) =>
-  async (input: { userId: UserId; newPlan: Plan }) => {
-    // orchestrate domain and ports
-  };
 ```
 
 Rules for agents:
 
-- Define all external dependencies as **ports** (interfaces or function types).
+- Define all external dependencies as **ports** (interfaces or function types) in `infrastructure/*.port.ts`.
 - Never reference concrete Fastify routes, PostgreSQL drivers/ORMs, or tRPC server details here.
-- Prefer factories (`makeX(deps)`) instead of classes; wiring is done at the edges.
+- Prefer factories (`makeXRepo(nonDbDeps)`) instead of classes for adapters; wiring is done at the edges (`apps/api/src/context.ts` and the tRPC router).
+- Only wrap multiple port calls in `db.transaction()` when the use case genuinely needs cross-repository atomicity — a single repo call needs no explicit transaction.
 
 
 ### Auth layer (`/packages/auth`)
@@ -292,6 +290,7 @@ Rules for agents:
 - For integration tests of DB adapters, use a real PostgreSQL instance (e.g. Testcontainers/Docker) rather than mocking the driver.
 - Schema changes: add a new migration file to `packages/db/migrations/`, then run `pnpm --filter @echo/db migrate` to apply it.
 - Kysely query patterns: `db.selectFrom('table').selectAll().where('col', '=', val).executeTakeFirst()`, `db.insertInto('table').values({...}).returningAll().executeTakeFirstOrThrow()`, `db.transaction().execute(async (trx) => {...})`.
+- Repository port methods take `db: KyselyDB` as their first parameter (not baked into the adapter at construction). This lets a use case pass either the ambient connection or an open transaction (`db.transaction().execute(async (trx) => ...)`) to compose atomic operations across repositories.
 
 ---
 
