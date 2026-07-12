@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../../trpc";
 import {
-  makeRegisterMidiClip,
-  makeListMidiClipsBySong,
-  makeUpdateMidiClipPosition,
-  makeRenameMidiClip,
-  makeDeleteMidiClip,
-  makeDeleteManyMidiClips,
-} from "@echo/modules/midi-clip/use-cases";
+  registerMidiClip,
+  listMidiClipsBySong,
+  updateMidiClipPosition,
+  renameMidiClip,
+  deleteMidiClip,
+  deleteManyMidiClips,
+} from "@echo/modules/midi-clip/app";
 import { getSignedUrls } from "@echo/modules/audio-clip/app";
 
 export const makeMidiClipRouter = () =>
@@ -15,7 +15,7 @@ export const makeMidiClipRouter = () =>
     listBySong: authedProcedure
       .input(z.object({ songId: z.string().min(1) }))
       .query(async ({ input, ctx }) => {
-        return makeListMidiClipsBySong({ midiClipRepo: ctx.midiClip })({
+        return listMidiClipsBySong({ db: ctx.db, midiClipRepo: ctx.midiClip }, {
           songId: input.songId,
         });
       }),
@@ -32,18 +32,17 @@ export const makeMidiClipRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeRegisterMidiClip({
-          midiClipRepo: ctx.midiClip,
-          fileRepo: ctx.file,
-          db: ctx.db,
-        })({
-          trackId: input.trackId,
-          filename: input.filename,
-          storageKey: input.storageKey,
-          organizationId: input.organizationId,
-          startMeasure: input.startMeasure,
-          durationMs: input.durationMs,
-        });
+        return registerMidiClip(
+          { db: ctx.db, midiClipRepo: ctx.midiClip, fileRepo: ctx.file },
+          {
+            trackId: input.trackId,
+            filename: input.filename,
+            storageKey: input.storageKey,
+            organizationId: input.organizationId,
+            startMeasure: input.startMeasure,
+            durationMs: input.durationMs,
+          },
+        );
       }),
 
     updatePosition: authedProcedure
@@ -55,27 +54,26 @@ export const makeMidiClipRouter = () =>
         }),
       )
       .mutation(async ({ input, ctx }) => {
-        return makeUpdateMidiClipPosition({
-          midiClipRepo: ctx.midiClip,
-          trackRepo: ctx.track,
-          db: ctx.db,
-        })({
-          clipId: input.clipId,
-          startMeasure: input.startMeasure,
-          trackId: input.trackId,
-        });
+        return updateMidiClipPosition(
+          { db: ctx.db, midiClipRepo: ctx.midiClip, trackRepo: ctx.track },
+          {
+            clipId: input.clipId,
+            startMeasure: input.startMeasure,
+            trackId: input.trackId,
+          },
+        );
       }),
 
     rename: authedProcedure
       .input(z.object({ clipId: z.string().min(1), name: z.string().min(1) }))
       .mutation(async ({ input, ctx }) => {
-        return makeRenameMidiClip({ midiClipRepo: ctx.midiClip })(input);
+        return renameMidiClip({ db: ctx.db, midiClipRepo: ctx.midiClip }, input);
       }),
 
     delete: authedProcedure
       .input(z.object({ clipId: z.string().min(1) }))
       .mutation(async ({ input, ctx }) => {
-        return makeDeleteMidiClip({ midiClipRepo: ctx.midiClip })(input);
+        return deleteMidiClip({ db: ctx.db, midiClipRepo: ctx.midiClip }, input);
       }),
 
     getDownloadUrls: authedProcedure
@@ -89,7 +87,7 @@ export const makeMidiClipRouter = () =>
     deleteMany: authedProcedure
       .input(z.object({ clipIds: z.array(z.string().min(1)).min(1) }))
       .mutation(async ({ input, ctx }) => {
-        return makeDeleteManyMidiClips({ midiClipRepo: ctx.midiClip })({
+        return deleteManyMidiClips({ db: ctx.db, midiClipRepo: ctx.midiClip }, {
           clipIds: input.clipIds,
         });
       }),

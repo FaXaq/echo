@@ -47,9 +47,9 @@
       "types": "./src/midi-clip/infrastructure/index.ts",
       "default": "./src/midi-clip/infrastructure/index.ts"
     },
-    "./midi-clip/use-cases": {
-      "types": "./src/midi-clip/use-cases/index.ts",
-      "default": "./src/midi-clip/use-cases/index.ts"
+    "./midi-clip/app": {
+      "types": "./src/midi-clip/app/index.ts",
+      "default": "./src/midi-clip/app/index.ts"
     },
     "./file/domain": {
       "types": "./src/file/domain/index.ts",
