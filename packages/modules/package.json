@@ -71,9 +71,9 @@
       "types": "./src/invitation/infrastructure/index.ts",
       "default": "./src/invitation/infrastructure/index.ts"
     },
-    "./invitation/use-cases": {
-      "types": "./src/invitation/use-cases/index.ts",
-      "default": "./src/invitation/use-cases/index.ts"
+    "./invitation/app": {
+      "types": "./src/invitation/app/index.ts",
+      "default": "./src/invitation/app/index.ts"
     },
     "./organization/domain": {
       "types": "./src/organization/domain/index.ts",
