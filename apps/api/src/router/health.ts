@@ -1,9 +1,9 @@
 import { router, publicProcedure } from "../trpc";
-import { makeHealthCheck } from "@echo/modules/health/use-cases";
+import { healthCheck } from "@echo/modules/health/app";
 
 export const makeHealthRouter = () =>
   router({
     health: publicProcedure.query(({ ctx }) =>
-      makeHealthCheck({ healthCheck: ctx.health })(),
+      healthCheck({ db: ctx.db, healthCheck: ctx.health }),
     ),
   });

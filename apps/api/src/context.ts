@@ -34,7 +34,7 @@ export const makeCreateContext =
 
       const songSectionDefinition = makeSongSectionDefinitionRepo();
       const songSectionInstance = makeSongSectionInstanceRepo();
-      const health = makeHealthRepo({ db });
+      const health = makeHealthRepo();
       const invitation = makeInvitationRepo();
       const song = makeSongRepo();
       const track = makeTrackRepo();

@@ -119,9 +119,9 @@
       "types": "./src/health/infrastructure/index.ts",
       "default": "./src/health/infrastructure/index.ts"
     },
-    "./health/use-cases": {
-      "types": "./src/health/use-cases/index.ts",
-      "default": "./src/health/use-cases/index.ts"
+    "./health/app": {
+      "types": "./src/health/app/index.ts",
+      "default": "./src/health/app/index.ts"
     },
     "./song-section/domain": {
       "types": "./src/song-section/domain/index.ts",
