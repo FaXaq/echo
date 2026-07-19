@@ -3,18 +3,6 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./file/domain": {
-      "types": "./src/file/domain/index.ts",
-      "default": "./src/file/domain/index.ts"
-    },
-    "./file/infrastructure": {
-      "types": "./src/file/infrastructure/index.ts",
-      "default": "./src/file/infrastructure/index.ts"
-    },
-    "./file/app": {
-      "types": "./src/file/app/index.ts",
-      "default": "./src/file/app/index.ts"
-    },
     "./invitation/domain": {
       "types": "./src/invitation/domain/index.ts",
       "default": "./src/invitation/domain/index.ts"

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
 import { trpc } from "../src/lib/trpc";
+import "../src/i18n";
 import "../src/index.css";
 
 const withTRPC: Decorator = (Story) => {

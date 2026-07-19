@@ -6,7 +6,6 @@ import { makeLogger } from "@echo/logger";
 import type { Context } from "./trpc";
 import { makeHealthRepo } from "@echo/modules/health/infrastructure";
 import { makeInvitationRepo } from "@echo/modules/invitation/infrastructure";
-import { makeFileRepo, makeFileStorageAdapter } from "@echo/modules/file/infrastructure";
 import { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
 import { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
 import { makeEmailNotifierRepo, makeMailer } from "@echo/modules/notification/infrastructure";
@@ -15,7 +14,6 @@ import { makeEmailNotifierRepo, makeMailer } from "@echo/modules/notification/in
 const { db, pool } = makeDbAdapter(appConfig.db);
 const logger = makeLogger();
 const mailer = makeMailer(appConfig.mailer);
-const fileStorage = makeFileStorageAdapter(appConfig.s3);
 
 export const makeCreateContext =
   (auth: ServerAuth) =>
@@ -29,7 +27,6 @@ export const makeCreateContext =
 
       const health = makeHealthRepo();
       const invitation = makeInvitationRepo();
-      const file = makeFileRepo();
       const organization = makeOrganizationRepo({ auth, headers });
       const userPermission = makeUserPermissionRepo({
         auth,
@@ -53,8 +50,6 @@ export const makeCreateContext =
         invitation,
         notifiers,
         userPermission,
-        file,
-        fileStorage,
         organization,
       };
     };

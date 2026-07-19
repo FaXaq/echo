@@ -5,7 +5,6 @@ import type { makeLogger } from "@echo/logger";
 import type { InvitationRepoPort } from "@echo/modules/invitation/infrastructure";
 import type { EmailNotifierPort } from "@echo/modules/notification/infrastructure";
 import type { makeHealthRepo } from "@echo/modules/health/infrastructure";
-import type { makeFileRepo, FileStoragePort } from "@echo/modules/file/infrastructure";
 import type { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
 import type { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
 import { appErrorToTRPC } from "./lib/errors";
@@ -21,8 +20,6 @@ export type Context = {
   notifiers: {
     email: EmailNotifierPort;
   };
-  file: ReturnType<typeof makeFileRepo>;
-  fileStorage: FileStoragePort;
   organization: ReturnType<typeof makeOrganizationRepo>;
   userPermission: ReturnType<typeof makeUserPermissionRepo>;
 };

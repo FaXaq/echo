@@ -12,7 +12,6 @@
     "build": "tsc --build",
     "start": "node dist/server.js",
     "test": "vitest run",
-    "create-admin": "tsx src/scripts/create-admin.ts",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit"
   },
