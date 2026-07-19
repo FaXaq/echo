@@ -1,4 +1,4 @@
-import type { AudioFile, FileType } from "../domain/index.js";
+import { fileTypeSchema, type AudioFile, type FileType } from "../domain/index.js";
 import type { FileRepoPort } from "./file-repository.port.js";
 
 export const makeFileRepo = (): FileRepoPort => ({
@@ -24,7 +24,7 @@ function toFile(row: {
     id: row.id,
     storageKey: row.storageKey,
     filename: row.filename,
-    type: row.type as FileType,
+    type: fileTypeSchema.parse(row.type),
     organizationId: row.organizationId,
     createdAt: row.createdAt,
   };

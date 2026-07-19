@@ -6,11 +6,6 @@ import { makeLogger } from "@echo/logger";
 import type { Context } from "./trpc";
 import { makeHealthRepo } from "@echo/modules/health/infrastructure";
 import { makeInvitationRepo } from "@echo/modules/invitation/infrastructure";
-import { makeSongRepo } from "@echo/modules/song/infrastructure";
-import { makeTrackRepo } from "@echo/modules/track/infrastructure";
-import { makeAudioClipRepo } from "@echo/modules/audio-clip/infrastructure";
-import { makeMidiClipRepo } from "@echo/modules/midi-clip/infrastructure";
-import { makeSongSectionDefinitionRepo, makeSongSectionInstanceRepo } from "@echo/modules/song-section/infrastructure";
 import { makeFileRepo, makeFileStorageAdapter } from "@echo/modules/file/infrastructure";
 import { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
 import { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
@@ -32,14 +27,8 @@ export const makeCreateContext =
       });
       const session = await auth.api.getSession({ headers });
 
-      const songSectionDefinition = makeSongSectionDefinitionRepo();
-      const songSectionInstance = makeSongSectionInstanceRepo();
       const health = makeHealthRepo();
       const invitation = makeInvitationRepo();
-      const song = makeSongRepo();
-      const track = makeTrackRepo();
-      const audioClip = makeAudioClipRepo();
-      const midiClip = makeMidiClipRepo();
       const file = makeFileRepo();
       const organization = makeOrganizationRepo({ auth, headers });
       const userPermission = makeUserPermissionRepo({
@@ -64,14 +53,8 @@ export const makeCreateContext =
         invitation,
         notifiers,
         userPermission,
-        song,
-        track,
-        audioClip,
-        midiClip,
         file,
         fileStorage,
         organization,
-        songSectionDefinition,
-        songSectionInstance,
       };
     };

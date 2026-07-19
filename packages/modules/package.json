@@ -3,54 +3,6 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./song/domain": {
-      "types": "./src/song/domain/index.ts",
-      "default": "./src/song/domain/index.ts"
-    },
-    "./song/infrastructure": {
-      "types": "./src/song/infrastructure/index.ts",
-      "default": "./src/song/infrastructure/index.ts"
-    },
-    "./song/app": {
-      "types": "./src/song/app/index.ts",
-      "default": "./src/song/app/index.ts"
-    },
-    "./track/domain": {
-      "types": "./src/track/domain/index.ts",
-      "default": "./src/track/domain/index.ts"
-    },
-    "./track/infrastructure": {
-      "types": "./src/track/infrastructure/index.ts",
-      "default": "./src/track/infrastructure/index.ts"
-    },
-    "./track/app": {
-      "types": "./src/track/app/index.ts",
-      "default": "./src/track/app/index.ts"
-    },
-    "./audio-clip/domain": {
-      "types": "./src/audio-clip/domain/index.ts",
-      "default": "./src/audio-clip/domain/index.ts"
-    },
-    "./audio-clip/infrastructure": {
-      "types": "./src/audio-clip/infrastructure/index.ts",
-      "default": "./src/audio-clip/infrastructure/index.ts"
-    },
-    "./audio-clip/app": {
-      "types": "./src/audio-clip/app/index.ts",
-      "default": "./src/audio-clip/app/index.ts"
-    },
-    "./midi-clip/domain": {
-      "types": "./src/midi-clip/domain/index.ts",
-      "default": "./src/midi-clip/domain/index.ts"
-    },
-    "./midi-clip/infrastructure": {
-      "types": "./src/midi-clip/infrastructure/index.ts",
-      "default": "./src/midi-clip/infrastructure/index.ts"
-    },
-    "./midi-clip/app": {
-      "types": "./src/midi-clip/app/index.ts",
-      "default": "./src/midi-clip/app/index.ts"
-    },
     "./file/domain": {
       "types": "./src/file/domain/index.ts",
       "default": "./src/file/domain/index.ts"
@@ -122,18 +74,6 @@
     "./health/app": {
       "types": "./src/health/app/index.ts",
       "default": "./src/health/app/index.ts"
-    },
-    "./song-section/domain": {
-      "types": "./src/song-section/domain/index.ts",
-      "default": "./src/song-section/domain/index.ts"
-    },
-    "./song-section/infrastructure": {
-      "types": "./src/song-section/infrastructure/index.ts",
-      "default": "./src/song-section/infrastructure/index.ts"
-    },
-    "./song-section/app": {
-      "types": "./src/song-section/app/index.ts",
-      "default": "./src/song-section/app/index.ts"
     }
   },
   "scripts": {

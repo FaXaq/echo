@@ -11,19 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
-import { Route as AuthGuardRouteRouteImport } from './routes/_auth-guard/route'
+import { Route as OrganizationsRouteRouteImport } from './routes/organizations/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthGuardOrganizationsRouteRouteImport } from './routes/_auth-guard/organizations/route'
-import { Route as AuthGuardOrganizationsNewRouteImport } from './routes/_auth-guard/organizations/new'
-import { Route as AuthGuardOrganizationsOrganizationSlugRouteRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/route'
-import { Route as AuthGuardOrganizationsOrganizationSlugIndexRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/index'
-import { Route as AuthGuardOrganizationsOrganizationSlugSongsRouteRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/songs/route'
-import { Route as AuthGuardOrganizationsOrganizationSlugSongsIndexRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/songs/index'
-import { Route as AuthGuardOrganizationsOrganizationSlugMembersIndexRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/members/index'
-import { Route as AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/songs/$songSlug/route'
-import { Route as AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/songs/$songSlug/index'
-import { Route as AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/route'
-import { Route as AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRouteImport } from './routes/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/index'
+import { Route as OrganizationsNewRouteImport } from './routes/organizations/new'
+import { Route as OrganizationsOrganizationSlugRouteRouteImport } from './routes/organizations/$organizationSlug/route'
+import { Route as OrganizationsOrganizationSlugIndexRouteImport } from './routes/organizations/$organizationSlug/index'
+import { Route as OrganizationsOrganizationSlugMembersIndexRouteImport } from './routes/organizations/$organizationSlug/members/index'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -35,8 +28,9 @@ const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
   path: '/accept-invitation',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthGuardRouteRoute = AuthGuardRouteRouteImport.update({
-  id: '/_auth-guard',
+const OrganizationsRouteRoute = OrganizationsRouteRouteImport.update({
+  id: '/organizations',
+  path: '/organizations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -44,177 +38,95 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthGuardOrganizationsRouteRoute =
-  AuthGuardOrganizationsRouteRouteImport.update({
-    id: '/organizations',
-    path: '/organizations',
-    getParentRoute: () => AuthGuardRouteRoute,
-  } as any)
-const AuthGuardOrganizationsNewRoute =
-  AuthGuardOrganizationsNewRouteImport.update({
-    id: '/new',
-    path: '/new',
-    getParentRoute: () => AuthGuardOrganizationsRouteRoute,
-  } as any)
-const AuthGuardOrganizationsOrganizationSlugRouteRoute =
-  AuthGuardOrganizationsOrganizationSlugRouteRouteImport.update({
+const OrganizationsNewRoute = OrganizationsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => OrganizationsRouteRoute,
+} as any)
+const OrganizationsOrganizationSlugRouteRoute =
+  OrganizationsOrganizationSlugRouteRouteImport.update({
     id: '/$organizationSlug',
     path: '/$organizationSlug',
-    getParentRoute: () => AuthGuardOrganizationsRouteRoute,
+    getParentRoute: () => OrganizationsRouteRoute,
   } as any)
-const AuthGuardOrganizationsOrganizationSlugIndexRoute =
-  AuthGuardOrganizationsOrganizationSlugIndexRouteImport.update({
+const OrganizationsOrganizationSlugIndexRoute =
+  OrganizationsOrganizationSlugIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthGuardOrganizationsOrganizationSlugRouteRoute,
+    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
   } as any)
-const AuthGuardOrganizationsOrganizationSlugSongsRouteRoute =
-  AuthGuardOrganizationsOrganizationSlugSongsRouteRouteImport.update({
-    id: '/songs',
-    path: '/songs',
-    getParentRoute: () => AuthGuardOrganizationsOrganizationSlugRouteRoute,
-  } as any)
-const AuthGuardOrganizationsOrganizationSlugSongsIndexRoute =
-  AuthGuardOrganizationsOrganizationSlugSongsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthGuardOrganizationsOrganizationSlugSongsRouteRoute,
-  } as any)
-const AuthGuardOrganizationsOrganizationSlugMembersIndexRoute =
-  AuthGuardOrganizationsOrganizationSlugMembersIndexRouteImport.update({
+const OrganizationsOrganizationSlugMembersIndexRoute =
+  OrganizationsOrganizationSlugMembersIndexRouteImport.update({
     id: '/members/',
     path: '/members/',
-    getParentRoute: () => AuthGuardOrganizationsOrganizationSlugRouteRoute,
+    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
   } as any)
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute =
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteImport.update({
-    id: '/$songSlug',
-    path: '/$songSlug',
-    getParentRoute: () => AuthGuardOrganizationsOrganizationSlugSongsRouteRoute,
-  } as any)
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute =
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () =>
-      AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute,
-  } as any)
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRoute =
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteImport.update(
-    {
-      id: '/daw',
-      path: '/daw',
-      getParentRoute: () =>
-        AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute,
-    } as any,
-  )
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute =
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRouteImport.update(
-    {
-      id: '/',
-      path: '/',
-      getParentRoute: () =>
-        AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRoute,
-    } as any,
-  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/organizations': typeof AuthGuardOrganizationsRouteRouteWithChildren
-  '/organizations/$organizationSlug': typeof AuthGuardOrganizationsOrganizationSlugRouteRouteWithChildren
-  '/organizations/new': typeof AuthGuardOrganizationsNewRoute
-  '/organizations/$organizationSlug/songs': typeof AuthGuardOrganizationsOrganizationSlugSongsRouteRouteWithChildren
-  '/organizations/$organizationSlug/': typeof AuthGuardOrganizationsOrganizationSlugIndexRoute
-  '/organizations/$organizationSlug/songs/$songSlug': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteWithChildren
-  '/organizations/$organizationSlug/members/': typeof AuthGuardOrganizationsOrganizationSlugMembersIndexRoute
-  '/organizations/$organizationSlug/songs/': typeof AuthGuardOrganizationsOrganizationSlugSongsIndexRoute
-  '/organizations/$organizationSlug/songs/$songSlug/daw': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteWithChildren
-  '/organizations/$organizationSlug/songs/$songSlug/': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute
-  '/organizations/$organizationSlug/songs/$songSlug/daw/': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute
+  '/organizations/$organizationSlug': typeof OrganizationsOrganizationSlugRouteRouteWithChildren
+  '/organizations/new': typeof OrganizationsNewRoute
+  '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
+  '/organizations/$organizationSlug/members/': typeof OrganizationsOrganizationSlugMembersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/organizations': typeof AuthGuardOrganizationsRouteRouteWithChildren
-  '/organizations/new': typeof AuthGuardOrganizationsNewRoute
-  '/organizations/$organizationSlug': typeof AuthGuardOrganizationsOrganizationSlugIndexRoute
-  '/organizations/$organizationSlug/members': typeof AuthGuardOrganizationsOrganizationSlugMembersIndexRoute
-  '/organizations/$organizationSlug/songs': typeof AuthGuardOrganizationsOrganizationSlugSongsIndexRoute
-  '/organizations/$organizationSlug/songs/$songSlug': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute
-  '/organizations/$organizationSlug/songs/$songSlug/daw': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute
+  '/organizations/new': typeof OrganizationsNewRoute
+  '/organizations/$organizationSlug': typeof OrganizationsOrganizationSlugIndexRoute
+  '/organizations/$organizationSlug/members': typeof OrganizationsOrganizationSlugMembersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_auth-guard': typeof AuthGuardRouteRouteWithChildren
+  '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/_auth-guard/organizations': typeof AuthGuardOrganizationsRouteRouteWithChildren
-  '/_auth-guard/organizations/$organizationSlug': typeof AuthGuardOrganizationsOrganizationSlugRouteRouteWithChildren
-  '/_auth-guard/organizations/new': typeof AuthGuardOrganizationsNewRoute
-  '/_auth-guard/organizations/$organizationSlug/songs': typeof AuthGuardOrganizationsOrganizationSlugSongsRouteRouteWithChildren
-  '/_auth-guard/organizations/$organizationSlug/': typeof AuthGuardOrganizationsOrganizationSlugIndexRoute
-  '/_auth-guard/organizations/$organizationSlug/songs/$songSlug': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteWithChildren
-  '/_auth-guard/organizations/$organizationSlug/members/': typeof AuthGuardOrganizationsOrganizationSlugMembersIndexRoute
-  '/_auth-guard/organizations/$organizationSlug/songs/': typeof AuthGuardOrganizationsOrganizationSlugSongsIndexRoute
-  '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteWithChildren
-  '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute
-  '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/': typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute
+  '/organizations/$organizationSlug': typeof OrganizationsOrganizationSlugRouteRouteWithChildren
+  '/organizations/new': typeof OrganizationsNewRoute
+  '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
+  '/organizations/$organizationSlug/members/': typeof OrganizationsOrganizationSlugMembersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
-    | '/organizations'
     | '/organizations/$organizationSlug'
     | '/organizations/new'
-    | '/organizations/$organizationSlug/songs'
     | '/organizations/$organizationSlug/'
-    | '/organizations/$organizationSlug/songs/$songSlug'
     | '/organizations/$organizationSlug/members/'
-    | '/organizations/$organizationSlug/songs/'
-    | '/organizations/$organizationSlug/songs/$songSlug/daw'
-    | '/organizations/$organizationSlug/songs/$songSlug/'
-    | '/organizations/$organizationSlug/songs/$songSlug/daw/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
-    | '/organizations'
     | '/organizations/new'
     | '/organizations/$organizationSlug'
     | '/organizations/$organizationSlug/members'
-    | '/organizations/$organizationSlug/songs'
-    | '/organizations/$organizationSlug/songs/$songSlug'
-    | '/organizations/$organizationSlug/songs/$songSlug/daw'
   id:
     | '__root__'
     | '/'
-    | '/_auth-guard'
+    | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
-    | '/_auth-guard/organizations'
-    | '/_auth-guard/organizations/$organizationSlug'
-    | '/_auth-guard/organizations/new'
-    | '/_auth-guard/organizations/$organizationSlug/songs'
-    | '/_auth-guard/organizations/$organizationSlug/'
-    | '/_auth-guard/organizations/$organizationSlug/songs/$songSlug'
-    | '/_auth-guard/organizations/$organizationSlug/members/'
-    | '/_auth-guard/organizations/$organizationSlug/songs/'
-    | '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw'
-    | '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/'
-    | '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/'
+    | '/organizations/$organizationSlug'
+    | '/organizations/new'
+    | '/organizations/$organizationSlug/'
+    | '/organizations/$organizationSlug/members/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthGuardRouteRoute: typeof AuthGuardRouteRouteWithChildren
+  OrganizationsRouteRoute: typeof OrganizationsRouteRouteWithChildren
   AcceptInvitationRoute: typeof AcceptInvitationRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
@@ -235,11 +147,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcceptInvitationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth-guard': {
-      id: '/_auth-guard'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthGuardRouteRouteImport
+    '/organizations': {
+      id: '/organizations'
+      path: '/organizations'
+      fullPath: '/organizations'
+      preLoaderRoute: typeof OrganizationsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -249,191 +161,72 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth-guard/organizations': {
-      id: '/_auth-guard/organizations'
-      path: '/organizations'
-      fullPath: '/organizations'
-      preLoaderRoute: typeof AuthGuardOrganizationsRouteRouteImport
-      parentRoute: typeof AuthGuardRouteRoute
-    }
-    '/_auth-guard/organizations/new': {
-      id: '/_auth-guard/organizations/new'
+    '/organizations/new': {
+      id: '/organizations/new'
       path: '/new'
       fullPath: '/organizations/new'
-      preLoaderRoute: typeof AuthGuardOrganizationsNewRouteImport
-      parentRoute: typeof AuthGuardOrganizationsRouteRoute
+      preLoaderRoute: typeof OrganizationsNewRouteImport
+      parentRoute: typeof OrganizationsRouteRoute
     }
-    '/_auth-guard/organizations/$organizationSlug': {
-      id: '/_auth-guard/organizations/$organizationSlug'
+    '/organizations/$organizationSlug': {
+      id: '/organizations/$organizationSlug'
       path: '/$organizationSlug'
       fullPath: '/organizations/$organizationSlug'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugRouteRouteImport
-      parentRoute: typeof AuthGuardOrganizationsRouteRoute
+      preLoaderRoute: typeof OrganizationsOrganizationSlugRouteRouteImport
+      parentRoute: typeof OrganizationsRouteRoute
     }
-    '/_auth-guard/organizations/$organizationSlug/': {
-      id: '/_auth-guard/organizations/$organizationSlug/'
+    '/organizations/$organizationSlug/': {
+      id: '/organizations/$organizationSlug/'
       path: '/'
       fullPath: '/organizations/$organizationSlug/'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugIndexRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugRouteRoute
+      preLoaderRoute: typeof OrganizationsOrganizationSlugIndexRouteImport
+      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
     }
-    '/_auth-guard/organizations/$organizationSlug/songs': {
-      id: '/_auth-guard/organizations/$organizationSlug/songs'
-      path: '/songs'
-      fullPath: '/organizations/$organizationSlug/songs'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsRouteRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugRouteRoute
-    }
-    '/_auth-guard/organizations/$organizationSlug/songs/': {
-      id: '/_auth-guard/organizations/$organizationSlug/songs/'
-      path: '/'
-      fullPath: '/organizations/$organizationSlug/songs/'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsIndexRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsRouteRoute
-    }
-    '/_auth-guard/organizations/$organizationSlug/members/': {
-      id: '/_auth-guard/organizations/$organizationSlug/members/'
+    '/organizations/$organizationSlug/members/': {
+      id: '/organizations/$organizationSlug/members/'
       path: '/members'
       fullPath: '/organizations/$organizationSlug/members/'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugMembersIndexRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugRouteRoute
-    }
-    '/_auth-guard/organizations/$organizationSlug/songs/$songSlug': {
-      id: '/_auth-guard/organizations/$organizationSlug/songs/$songSlug'
-      path: '/$songSlug'
-      fullPath: '/organizations/$organizationSlug/songs/$songSlug'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsRouteRoute
-    }
-    '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/': {
-      id: '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/'
-      path: '/'
-      fullPath: '/organizations/$organizationSlug/songs/$songSlug/'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute
-    }
-    '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw': {
-      id: '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw'
-      path: '/daw'
-      fullPath: '/organizations/$organizationSlug/songs/$songSlug/daw'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute
-    }
-    '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/': {
-      id: '/_auth-guard/organizations/$organizationSlug/songs/$songSlug/daw/'
-      path: '/'
-      fullPath: '/organizations/$organizationSlug/songs/$songSlug/daw/'
-      preLoaderRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRouteImport
-      parentRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRoute
+      preLoaderRoute: typeof OrganizationsOrganizationSlugMembersIndexRouteImport
+      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
     }
   }
 }
 
-interface AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteChildren {
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute
+interface OrganizationsOrganizationSlugRouteRouteChildren {
+  OrganizationsOrganizationSlugIndexRoute: typeof OrganizationsOrganizationSlugIndexRoute
+  OrganizationsOrganizationSlugMembersIndexRoute: typeof OrganizationsOrganizationSlugMembersIndexRoute
 }
 
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteChildren: AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteChildren =
+const OrganizationsOrganizationSlugRouteRouteChildren: OrganizationsOrganizationSlugRouteRouteChildren =
   {
-    AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute:
-      AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawIndexRoute,
+    OrganizationsOrganizationSlugIndexRoute:
+      OrganizationsOrganizationSlugIndexRoute,
+    OrganizationsOrganizationSlugMembersIndexRoute:
+      OrganizationsOrganizationSlugMembersIndexRoute,
   }
 
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteWithChildren =
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRoute._addFileChildren(
-    AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteChildren,
+const OrganizationsOrganizationSlugRouteRouteWithChildren =
+  OrganizationsOrganizationSlugRouteRoute._addFileChildren(
+    OrganizationsOrganizationSlugRouteRouteChildren,
   )
 
-interface AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteChildren {
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteWithChildren
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute
+interface OrganizationsRouteRouteChildren {
+  OrganizationsOrganizationSlugRouteRoute: typeof OrganizationsOrganizationSlugRouteRouteWithChildren
+  OrganizationsNewRoute: typeof OrganizationsNewRoute
 }
 
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteChildren: AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteChildren =
-  {
-    AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRoute:
-      AuthGuardOrganizationsOrganizationSlugSongsSongSlugDawRouteRouteWithChildren,
-    AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute:
-      AuthGuardOrganizationsOrganizationSlugSongsSongSlugIndexRoute,
-  }
-
-const AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteWithChildren =
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute._addFileChildren(
-    AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteChildren,
-  )
-
-interface AuthGuardOrganizationsOrganizationSlugSongsRouteRouteChildren {
-  AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteWithChildren
-  AuthGuardOrganizationsOrganizationSlugSongsIndexRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsIndexRoute
+const OrganizationsRouteRouteChildren: OrganizationsRouteRouteChildren = {
+  OrganizationsOrganizationSlugRouteRoute:
+    OrganizationsOrganizationSlugRouteRouteWithChildren,
+  OrganizationsNewRoute: OrganizationsNewRoute,
 }
 
-const AuthGuardOrganizationsOrganizationSlugSongsRouteRouteChildren: AuthGuardOrganizationsOrganizationSlugSongsRouteRouteChildren =
-  {
-    AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRoute:
-      AuthGuardOrganizationsOrganizationSlugSongsSongSlugRouteRouteWithChildren,
-    AuthGuardOrganizationsOrganizationSlugSongsIndexRoute:
-      AuthGuardOrganizationsOrganizationSlugSongsIndexRoute,
-  }
-
-const AuthGuardOrganizationsOrganizationSlugSongsRouteRouteWithChildren =
-  AuthGuardOrganizationsOrganizationSlugSongsRouteRoute._addFileChildren(
-    AuthGuardOrganizationsOrganizationSlugSongsRouteRouteChildren,
-  )
-
-interface AuthGuardOrganizationsOrganizationSlugRouteRouteChildren {
-  AuthGuardOrganizationsOrganizationSlugSongsRouteRoute: typeof AuthGuardOrganizationsOrganizationSlugSongsRouteRouteWithChildren
-  AuthGuardOrganizationsOrganizationSlugIndexRoute: typeof AuthGuardOrganizationsOrganizationSlugIndexRoute
-  AuthGuardOrganizationsOrganizationSlugMembersIndexRoute: typeof AuthGuardOrganizationsOrganizationSlugMembersIndexRoute
-}
-
-const AuthGuardOrganizationsOrganizationSlugRouteRouteChildren: AuthGuardOrganizationsOrganizationSlugRouteRouteChildren =
-  {
-    AuthGuardOrganizationsOrganizationSlugSongsRouteRoute:
-      AuthGuardOrganizationsOrganizationSlugSongsRouteRouteWithChildren,
-    AuthGuardOrganizationsOrganizationSlugIndexRoute:
-      AuthGuardOrganizationsOrganizationSlugIndexRoute,
-    AuthGuardOrganizationsOrganizationSlugMembersIndexRoute:
-      AuthGuardOrganizationsOrganizationSlugMembersIndexRoute,
-  }
-
-const AuthGuardOrganizationsOrganizationSlugRouteRouteWithChildren =
-  AuthGuardOrganizationsOrganizationSlugRouteRoute._addFileChildren(
-    AuthGuardOrganizationsOrganizationSlugRouteRouteChildren,
-  )
-
-interface AuthGuardOrganizationsRouteRouteChildren {
-  AuthGuardOrganizationsOrganizationSlugRouteRoute: typeof AuthGuardOrganizationsOrganizationSlugRouteRouteWithChildren
-  AuthGuardOrganizationsNewRoute: typeof AuthGuardOrganizationsNewRoute
-}
-
-const AuthGuardOrganizationsRouteRouteChildren: AuthGuardOrganizationsRouteRouteChildren =
-  {
-    AuthGuardOrganizationsOrganizationSlugRouteRoute:
-      AuthGuardOrganizationsOrganizationSlugRouteRouteWithChildren,
-    AuthGuardOrganizationsNewRoute: AuthGuardOrganizationsNewRoute,
-  }
-
-const AuthGuardOrganizationsRouteRouteWithChildren =
-  AuthGuardOrganizationsRouteRoute._addFileChildren(
-    AuthGuardOrganizationsRouteRouteChildren,
-  )
-
-interface AuthGuardRouteRouteChildren {
-  AuthGuardOrganizationsRouteRoute: typeof AuthGuardOrganizationsRouteRouteWithChildren
-}
-
-const AuthGuardRouteRouteChildren: AuthGuardRouteRouteChildren = {
-  AuthGuardOrganizationsRouteRoute:
-    AuthGuardOrganizationsRouteRouteWithChildren,
-}
-
-const AuthGuardRouteRouteWithChildren = AuthGuardRouteRoute._addFileChildren(
-  AuthGuardRouteRouteChildren,
-)
+const OrganizationsRouteRouteWithChildren =
+  OrganizationsRouteRoute._addFileChildren(OrganizationsRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthGuardRouteRoute: AuthGuardRouteRouteWithChildren,
+  OrganizationsRouteRoute: OrganizationsRouteRouteWithChildren,
   AcceptInvitationRoute: AcceptInvitationRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
