@@ -34,3 +34,5 @@ coverage/
 
 # tanstack
 .tanstack
+
+graphify-out

@@ -9,18 +9,6 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Json = JsonValue;
-
-export type JsonArray = JsonValue[];
-
-export type JsonObject = {
-  [x: string]: JsonValue | undefined;
-};
-
-export type JsonPrimitive = boolean | number | string | null;
-
-export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
-
 export type Timestamp = ColumnType<Date, Date | string>;
 
 export interface Account {
@@ -39,23 +27,18 @@ export interface Account {
   userId: string;
 }
 
-export interface AudioClip {
-  createdAt: Generated<Timestamp>;
-  durationMs: number | null;
-  fileId: string;
+export interface CalendarEvent {
+  all_day: Generated<boolean | null>;
+  created_at: Generated<Timestamp | null>;
+  created_by: string | null;
+  description: string | null;
+  end_date: Timestamp;
   id: string;
-  name: string | null;
-  startMeasure: Generated<number>;
-  trackId: string;
-}
-
-export interface File {
-  createdAt: Generated<Timestamp>;
-  filename: string;
-  id: string;
-  organizationId: string;
-  storageKey: string;
-  type: string;
+  organization_id: string | null;
+  start_date: Timestamp;
+  title: string;
+  updated_at: Generated<Timestamp | null>;
+  updated_by: string | null;
 }
 
 export interface Invitation {
@@ -75,16 +58,6 @@ export interface Member {
   organizationId: string;
   role: string;
   userId: string;
-}
-
-export interface MidiClip {
-  createdAt: Generated<Timestamp>;
-  durationMs: number | null;
-  fileId: string;
-  id: string;
-  name: string | null;
-  startMeasure: Generated<number>;
-  trackId: string;
 }
 
 export interface Organization {
@@ -110,54 +83,6 @@ export interface Session {
   userId: string;
 }
 
-export interface Song {
-  bpm: number | null;
-  createdAt: Generated<Timestamp>;
-  createdBy: string;
-  description: string | null;
-  id: string;
-  key: string | null;
-  name: string;
-  organizationId: string;
-  updatedAt: Generated<Timestamp>;
-  updatedBy: string | null;
-}
-
-export interface SongSectionDefinition {
-  chords: Generated<Json>;
-  color: string | null;
-  createdAt: Generated<Timestamp>;
-  id: string;
-  lyrics: string | null;
-  name: string;
-  repeat: Generated<number>;
-  songId: string;
-  updatedAt: Generated<Timestamp>;
-}
-
-export interface SongSectionInstance {
-  createdAt: Generated<Timestamp>;
-  definitionId: string;
-  id: string;
-  lengthMeasures: Generated<number>;
-  lyricsOverride: string | null;
-  repeat: Generated<number>;
-  songId: string;
-  startMeasure: number;
-  updatedAt: Generated<Timestamp>;
-}
-
-export interface Track {
-  createdAt: Generated<Timestamp>;
-  id: string;
-  instrumentPreset: number | null;
-  name: string;
-  order: number;
-  songId: string;
-  updatedAt: Generated<Timestamp>;
-  volume: Generated<number>;
-}
-
 export interface User {
   banExpires: Timestamp | null;
   banned: boolean | null;
@@ -168,10 +93,10 @@ export interface User {
   emailVerified: boolean;
   id: string;
   image: string | null;
-  locale: Generated<string>;
+  locale: string | null;
   name: string;
   role: string | null;
-  theme: Generated<string>;
+  theme: string | null;
   updatedAt: Generated<Timestamp>;
   username: string | null;
 }
@@ -187,17 +112,11 @@ export interface Verification {
 
 export interface DB {
   account: Account;
-  audioClip: AudioClip;
-  file: File;
+  calendar_event: CalendarEvent;
   invitation: Invitation;
   member: Member;
-  midiClip: MidiClip;
   organization: Organization;
   session: Session;
-  song: Song;
-  songSectionDefinition: SongSectionDefinition;
-  songSectionInstance: SongSectionInstance;
-  track: Track;
   user: User;
   verification: Verification;
 }
