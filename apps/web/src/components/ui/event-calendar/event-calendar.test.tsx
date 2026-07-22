@@ -54,7 +54,7 @@ describe("EventCalendar", () => {
     )
   })
 
-  it("calls onEventClick and opens the edit dialog when an event is clicked", async () => {
+  it("calls onEventClick and does not open a dialog when an event is clicked", async () => {
     const user = userEvent.setup()
     const onEventClick = vi.fn()
     const event = makeEvent()
@@ -63,8 +63,7 @@ describe("EventCalendar", () => {
     await user.click(screen.getByText("Standup"))
 
     expect(onEventClick).toHaveBeenCalledWith(event)
-    expect(screen.getByRole("dialog")).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Edit event" })).toBeInTheDocument()
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
   })
 
   it("validates and creates a new event from the New event dialog", async () => {
@@ -86,23 +85,5 @@ describe("EventCalendar", () => {
 
     expect(onEventCreate).toHaveBeenCalledTimes(1)
     expect(onEventCreate.mock.calls[0]![0]).toMatchObject({ title: "Retro" })
-  })
-
-  it("deletes an event after confirming in the alert dialog", async () => {
-    const user = userEvent.setup()
-    const onEventDelete = vi.fn()
-    const event = makeEvent()
-    render(<EventCalendar events={[event]} onEventDelete={onEventDelete} />)
-
-    await user.click(screen.getByText("Standup"))
-    const dialog = screen.getByRole("dialog")
-    await user.click(within(dialog).getByRole("button", { name: "Delete" }))
-
-    const confirmDialog = await screen.findByRole("alertdialog")
-    await user.click(
-      within(confirmDialog).getByRole("button", { name: "Delete" })
-    )
-
-    expect(onEventDelete).toHaveBeenCalledWith(event.id)
   })
 })

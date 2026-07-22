@@ -102,7 +102,6 @@ export function EventCalendar({
     () => ({
       requestEventClick: (event) => {
         setDayOverflow(null)
-        setDialogState({ mode: "edit", event })
         onEventClick?.(event)
       },
       requestEventCreate: (range) => {
