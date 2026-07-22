@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
 import { Route as OrganizationsRouteRouteImport } from './routes/organizations/route'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalendarIndexRouteImport } from './routes/calendar/index'
 import { Route as OrganizationsNewRouteImport } from './routes/organizations/new'
 import { Route as CalendarEventIdRouteImport } from './routes/calendar/$eventId'
@@ -33,6 +34,11 @@ const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
 const OrganizationsRouteRoute = OrganizationsRouteRouteImport.update({
   id: '/organizations',
   path: '/organizations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalendarIndexRoute = CalendarIndexRouteImport.update({
@@ -76,6 +82,7 @@ const OrganizationsOrganizationSlugCalendarIndexRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/organizations/$organizationSlug/members/': typeof OrganizationsOrganizationSlugMembersIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -100,6 +108,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -114,6 +123,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/organizations/$organizationSlug/members/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/organizations/$organizationSlug/members'
   id:
     | '__root__'
+    | '/'
     | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
@@ -150,6 +162,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   OrganizationsRouteRoute: typeof OrganizationsRouteRouteWithChildren
   AcceptInvitationRoute: typeof AcceptInvitationRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       path: '/organizations'
       fullPath: '/organizations'
       preLoaderRoute: typeof OrganizationsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calendar/': {
@@ -268,6 +288,7 @@ const OrganizationsRouteRouteWithChildren =
   OrganizationsRouteRoute._addFileChildren(OrganizationsRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   OrganizationsRouteRoute: OrganizationsRouteRouteWithChildren,
   AcceptInvitationRoute: AcceptInvitationRoute,
   ResetPasswordRoute: ResetPasswordRoute,
