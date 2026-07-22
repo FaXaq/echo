@@ -200,11 +200,7 @@ export function EventCalendar({
           state={dialogState}
           onOpenChange={(open) => !open && setDialogState(null)}
           onSubmit={(event) => {
-            if (dialogState?.mode === "edit") {
-              onEventUpdate?.(event)
-            } else {
-              onEventCreate?.(event)
-            }
+            onEventCreate?.(event)
             setDialogState(null)
           }}
           onDelete={(id) => {
