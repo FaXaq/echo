@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
-import { EVENT_COLORS, eventDotClasses } from "./colors"
+import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
 import type { CalendarEvent, CalendarEventRange, EventColor } from "./types"
 
 const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm"
@@ -68,15 +68,6 @@ export type EventDialogState =
   | { mode: "create"; range: CalendarEventRange }
   | { mode: "edit"; event: CalendarEvent }
   | null
-
-const COLOR_LABELS: Record<EventColor, string> = {
-  blue: "Blue",
-  green: "Green",
-  red: "Red",
-  yellow: "Yellow",
-  purple: "Purple",
-  orange: "Orange",
-}
 
 function stateToDefaultValues(state: EventDialogState): EventFormValues {
   if (state?.mode === "edit") {

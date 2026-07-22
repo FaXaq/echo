@@ -26,3 +26,12 @@ export const eventDotClasses: Record<EventColor, string> = {
   purple: "bg-event-purple",
   orange: "bg-event-orange",
 }
+
+export const COLOR_LABELS: Record<EventColor, string> = {
+  blue: "Blue",
+  green: "Green",
+  red: "Red",
+  yellow: "Yellow",
+  purple: "Purple",
+  orange: "Orange",
+}
