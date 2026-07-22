@@ -29,6 +29,7 @@ export interface Account {
 
 export interface CalendarEvent {
   all_day: Generated<boolean | null>;
+  color: Generated<string>;
   created_at: Generated<Timestamp | null>;
   created_by: string | null;
   description: string | null;

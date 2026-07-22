@@ -234,7 +234,10 @@
     "This will permanently delete this event. This action cannot be undone.": "Cette action supprimera définitivement cet événement. Cette action est irréversible.",
     "Events on {{date}}": "Événements du {{date}}",
     "+{{count}} more": "+{{count}} de plus",
-    "No events scheduled": "Aucun événement prévu"
+    "No events scheduled": "Aucun événement prévu",
+    "Calendar": "Agenda",
+    "Manage your personal events and calendar": "Gérez vos événements et votre planning personnel",
+    "Manage your organization's events and calendar": "Gérez les événements et le planning de votre organisation"
   },
 
   "emails": {

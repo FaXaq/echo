@@ -62,6 +62,18 @@
     "./health/app": {
       "types": "./src/health/app/index.ts",
       "default": "./src/health/app/index.ts"
+    },
+    "./calendar/domain": {
+      "types": "./src/calendar/domain/index.ts",
+      "default": "./src/calendar/domain/index.ts"
+    },
+    "./calendar/infrastructure": {
+      "types": "./src/calendar/infrastructure/index.ts",
+      "default": "./src/calendar/infrastructure/index.ts"
+    },
+    "./calendar/app": {
+      "types": "./src/calendar/app/index.ts",
+      "default": "./src/calendar/app/index.ts"
     }
   },
   "scripts": {

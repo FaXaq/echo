@@ -67,7 +67,7 @@
     "Planning": "Planning",
     "Practice": "Practice",
     "Backlog": "Backlog",
-    "Schedule": "Schedule",
+    "Calendar": "Calendar",
     "Songs": "Songs",
     "Setlist": "Setlist",
     "Drive": "Drive",
@@ -234,7 +234,10 @@
     "This will permanently delete this event. This action cannot be undone.": "This will permanently delete this event. This action cannot be undone.",
     "Events on {{date}}": "Events on {{date}}",
     "+{{count}} more": "+{{count}} more",
-    "No events scheduled": "No events scheduled"
+    "No events scheduled": "No events scheduled",
+    "Calendar": "Calendar",
+    "Manage your personal events and calendar": "Manage your personal events and calendar",
+    "Manage your organization's events and calendar": "Manage your organization's events and calendar"
   },
 
   "emails": {

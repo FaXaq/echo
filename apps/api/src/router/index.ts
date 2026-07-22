@@ -3,6 +3,7 @@ import { makeHealthRouter } from "./health";
 import { makeInvitationRouter } from "./invitation";
 import { makeDebugRouter } from "./debug";
 import { makeOrganizationRouter } from "./organizations/index";
+import { makeCalendarRouter } from "./calendar";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export const makeAppRouter = () =>
@@ -12,6 +13,7 @@ export const makeAppRouter = () =>
       invitation: makeInvitationRouter(),
       debug: makeDebugRouter(),
       organization: makeOrganizationRouter(),
+      calendar: makeCalendarRouter(),
     }),
   );
 

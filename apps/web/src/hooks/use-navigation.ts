@@ -56,8 +56,7 @@ export function useNavigation() {
     {
       title: activeOrganization?.name ?? "",
       items: [
-        { title: t("Schedule"), to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
-        { title: t("Songs"), to: "/organizations/$organizationSlug/songs", params: { "organizationSlug": slug } },
+        { title: t("Calendar"), to: "/organizations/$organizationSlug/calendar", params: { "organizationSlug": slug } },
         { title: t("Setlist"), to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
         { title: t("Drive"), to: "/organizations/$organizationSlug", params: { "organizationSlug": slug } },
         { title: t("Members"), to: "/organizations/$organizationSlug/members", params: { "organizationSlug": slug } },

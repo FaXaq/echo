@@ -10,6 +10,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn("start_date", "timestamptz", col => col.notNull())
     .addColumn("end_date", "timestamptz", col => col.notNull())
     .addColumn("all_day", "boolean", col => col.defaultTo(false))
+    .addColumn("color", "text", col => col.notNull().defaultTo("blue"))
     .addColumn("organization_id", "text", col => col.references("organization.id").onDelete("cascade"))
     .addColumn("created_by", "text", col => col.references("user.id").onDelete("cascade"))
     .addColumn("updated_by", "text", col => col.references("user.id").onDelete("cascade"))
