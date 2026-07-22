@@ -45,6 +45,7 @@ export function useNavigation() {
     {
       title: t("Personal"),
       items: [
+        { title: t("Calendar"), to: "/calendar" },
         { title: t("Planning"), to: "/" },
         { title: t("Practice"), to: "/" },
         { title: t("Backlog"), to: "/" },
