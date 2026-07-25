@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from "react"
+import { useEffect, useRef, useState, type RefObject } from "react"
 import dayjs from "dayjs"
 
 import { cn } from "@/lib/utils"
@@ -20,8 +20,28 @@ interface TimeGridViewProps {
   events: CalendarEvent[]
 }
 
+function useScrollbarWidth(ref: RefObject<HTMLDivElement | null>): number {
+  const [width, setWidth] = useState(0)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === "undefined") return
+
+    const measure = () => setWidth(el.offsetWidth - el.clientWidth)
+    measure()
+
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [ref])
+
+  return width
+}
+
 export function TimeGridView({ days, events }: TimeGridViewProps) {
   const { requestEventCreate } = useCalendarContext()
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollbarWidth = useScrollbarWidth(scrollRef)
 
   // A fresh plain map (not a useRef) each render, so column DOM node refs
   // are assigned via the callback ref below without mutating ref.current
@@ -55,11 +75,12 @@ export function TimeGridView({ days, events }: TimeGridViewProps) {
             </div>
           </div>
         ))}
+        <div className="shrink-0" style={{ width: scrollbarWidth }} />
       </div>
 
-      <AllDayRow days={days} events={events} />
+      <AllDayRow days={days} events={events} scrollbarWidth={scrollbarWidth} />
 
-      <div className="flex flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="flex flex-1 overflow-y-auto">
         <div className="w-14 shrink-0">
           {HOURS.map((hour) => (
             <div
@@ -86,7 +107,7 @@ export function TimeGridView({ days, events }: TimeGridViewProps) {
                 columnRef.current = el
               }}
               data-drop-day={dayKey}
-              className="relative flex-1 border-l"
+              className="relative flex-1"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect()
                 const minutes = pixelOffsetToMinutes(
@@ -106,7 +127,7 @@ export function TimeGridView({ days, events }: TimeGridViewProps) {
                   key={hour}
                   data-drop-day={dayKey}
                   data-drop-minutes={hour * 60}
-                  className="h-16 border-b"
+                  className="h-16 border-b border-l"
                 />
               ))}
               {isToday && <CurrentTimeIndicator />}
@@ -129,9 +150,11 @@ export function TimeGridView({ days, events }: TimeGridViewProps) {
 function AllDayRow({
   days,
   events,
+  scrollbarWidth,
 }: {
   days: Date[]
   events: CalendarEvent[]
+  scrollbarWidth: number
 }) {
   const hasAllDayEvents = days.some((day) =>
     getEventsForDay(events, day).some((event) => event.allDay)
@@ -154,6 +177,7 @@ function AllDayRow({
             ))}
         </div>
       ))}
+      <div className="shrink-0" style={{ width: scrollbarWidth }} />
     </div>
   )
 }
