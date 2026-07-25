@@ -44,6 +44,23 @@ describe("EventFileAttachments", () => {
     expect(mutateSpy).toHaveBeenCalledWith({ eventId: "event-1", organizationId: "org-1", file })
   })
 
+  it("shows the specific server error message when upload fails", async () => {
+    vi.spyOn(fileResource, "useUploadFileMutation").mockReturnValue({
+      mutate: vi.fn(),
+      isPending: false,
+      isError: true,
+      error: new Error("File is too large"),
+    } as never)
+    vi.spyOn(fileResource, "useDeleteFileMutation").mockReturnValue({
+      mutate: vi.fn(),
+    } as never)
+
+    renderWithClient(<EventFileAttachments eventId="event-1" />)
+
+    expect(await screen.findByText("File is too large")).toBeInTheDocument()
+    expect(screen.queryByText("Upload failed")).not.toBeInTheDocument()
+  })
+
   it("requests deletion via useDeleteFileMutation when confirming delete", async () => {
     vi.spyOn(fileResource, "getEventFilesQueryOptions").mockReturnValue({
       queryKey: ["file", "listEventFiles"],

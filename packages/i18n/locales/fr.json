@@ -247,6 +247,8 @@
     "Add files": "Ajouter des fichiers",
     "No files attached": "Aucun fichier joint",
     "Upload failed": "Échec de l'envoi",
+    "File is too large": "Le fichier est trop volumineux",
+    "Unsupported file type": "Type de fichier non pris en charge",
     "Delete this file?": "Supprimer ce fichier ?",
     "This will permanently delete the file. This action cannot be undone.": "Cette action supprimera définitivement le fichier. Cette action est irréversible."
   },

@@ -45,7 +45,13 @@ export function EventFileAttachments({ eventId, organizationId }: EventFileAttac
         disabled={uploadMutation.isPending}
       />
       {uploadMutation.isError && (
-        <p className="text-xs text-destructive">{t("Upload failed")}</p>
+        <p className="text-xs text-destructive">
+          {t(
+            uploadMutation.error instanceof Error && uploadMutation.error.message
+              ? uploadMutation.error.message
+              : "Upload failed",
+          )}
+        </p>
       )}
       {files.length === 0 ? (
         <p className="text-xs text-muted-foreground">{t("No files attached")}</p>
