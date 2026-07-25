@@ -240,7 +240,14 @@
     "Event not found": "Event not found",
     "This event doesn't exist or has been deleted.": "This event doesn't exist or has been deleted.",
     "Calendar": "Calendar",
-    "Manage your organization's events and calendar": "Manage your organization's events and calendar"
+    "Manage your organization's events and calendar": "Manage your organization's events and calendar",
+    "Attachments": "Attachments",
+    "Drag and drop files here, or click to select": "Drag and drop files here, or click to select",
+    "Add files": "Add files",
+    "No files attached": "No files attached",
+    "Upload failed": "Upload failed",
+    "Delete this file?": "Delete this file?",
+    "This will permanently delete the file. This action cannot be undone.": "This will permanently delete the file. This action cannot be undone."
   },
 
   "emails": {

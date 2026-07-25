@@ -241,7 +241,14 @@
     "Event not found": "Événement introuvable",
     "This event doesn't exist or has been deleted.": "Cet événement n'existe pas ou a été supprimé.",
     "Calendar": "Agenda",
-    "Manage your organization's events and calendar": "Gérez les événements et le planning de votre organisation"
+    "Manage your organization's events and calendar": "Gérez les événements et le planning de votre organisation",
+    "Attachments": "Pièces jointes",
+    "Drag and drop files here, or click to select": "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner",
+    "Add files": "Ajouter des fichiers",
+    "No files attached": "Aucun fichier joint",
+    "Upload failed": "Échec de l'envoi",
+    "Delete this file?": "Supprimer ce fichier ?",
+    "This will permanently delete the file. This action cannot be undone.": "Cette action supprimera définitivement le fichier. Cette action est irréversible."
   },
 
   "emails": {
