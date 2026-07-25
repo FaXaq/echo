@@ -42,6 +42,21 @@ export interface CalendarEvent {
   updated_by: string | null;
 }
 
+export interface File {
+  created_at: Generated<Timestamp | null>;
+  event_id: string | null;
+  id: string;
+  kind: string;
+  mime_type: string;
+  organization_id: string | null;
+  original_filename: string;
+  s3_key: string;
+  size_bytes: number;
+  status: Generated<string>;
+  updated_at: Generated<Timestamp | null>;
+  uploaded_by: string;
+}
+
 export interface Invitation {
   createdAt: Generated<Timestamp>;
   email: string;
@@ -114,6 +129,7 @@ export interface Verification {
 export interface DB {
   account: Account;
   calendar_event: CalendarEvent;
+  file: File;
   invitation: Invitation;
   member: Member;
   organization: Organization;
