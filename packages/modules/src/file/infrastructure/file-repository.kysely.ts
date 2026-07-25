@@ -1,4 +1,3 @@
-import type { KyselyDB } from "@echo/db";
 import type { FileRecord } from "../domain/index.js";
 import type { FileRepoPort } from "./file-repository.port.js";
 
