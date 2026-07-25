@@ -47,7 +47,12 @@ function titleForView(view: CalendarView, date: Date): string {
 }
 
 function stepDate(view: CalendarView, date: Date, direction: 1 | -1): Date {
-  const unit = view === "month" ? "month" : view === "week" ? "week" : "day"
+  const unit =
+    view === "month" || view === "agenda"
+      ? "month"
+      : view === "week"
+        ? "week"
+        : "day"
   return dayjs(date).add(direction, unit).toDate()
 }
 

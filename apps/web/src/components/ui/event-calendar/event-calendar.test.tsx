@@ -54,6 +54,20 @@ describe("EventCalendar", () => {
     )
   })
 
+  it("navigates to the next month in agenda view", async () => {
+    const user = userEvent.setup()
+    render(<EventCalendar events={[]} />)
+
+    await user.click(screen.getByRole("tab", { name: "Agenda" }))
+    const initialTitle = screen.getByRole("heading", { level: 2 }).textContent
+
+    await user.click(screen.getByRole("button", { name: "Next" }))
+
+    expect(screen.getByRole("heading", { level: 2 }).textContent).not.toBe(
+      initialTitle
+    )
+  })
+
   it("calls onEventClick and does not open a dialog when an event is clicked", async () => {
     const user = userEvent.setup()
     const onEventClick = vi.fn()
