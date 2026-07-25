@@ -45,6 +45,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
 import type { CalendarEvent, CalendarEventRange, EventColor } from "./types"
+import { EventFileAttachments } from "./event-file-attachments"
 
 const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm"
 
@@ -100,6 +101,7 @@ interface EventDialogProps {
   onOpenChange: (open: boolean) => void
   onSubmit: (event: CalendarEvent) => void | Promise<void>
   onDelete: (id: string) => void | Promise<void>
+  organizationId?: string
 }
 
 export function EventDialog({
@@ -107,6 +109,7 @@ export function EventDialog({
   onOpenChange,
   onSubmit,
   onDelete,
+  organizationId,
 }: EventDialogProps) {
   const { t } = useTranslation("calendar")
   const isEdit = state?.mode === "edit"
@@ -251,6 +254,12 @@ export function EventDialog({
               />
             </Field>
           </FieldGroup>
+
+          {isEdit && (
+            <div className="mt-4 border-t border-border pt-4">
+              <EventFileAttachments eventId={state.event.id} organizationId={organizationId} />
+            </div>
+          )}
 
           <DialogFooter className="items-center sm:justify-between">
             {isEdit ? (

@@ -87,6 +87,7 @@ function OrganizationEventDetailPage() {
         onOpenChange={(open) => !open && setDialogState(null)}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
+        organizationId={organizationId}
       />
     </div>
   )
