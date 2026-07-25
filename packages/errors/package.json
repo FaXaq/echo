@@ -13,10 +13,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "4"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@echo/config": "workspace:*",
-    "typescript": "^5.7.0"
+    "typescript": "^5.9.3"
   }
 }

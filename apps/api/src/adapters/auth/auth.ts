@@ -20,7 +20,7 @@ const auth = makeServerAuth({
     await mailer.send({
       to: email,
       subject: t("emails", "Reset your Echo password"),
-      html: renderResetPasswordEmail(
+      html: await renderResetPasswordEmail(
         {
           email,
           token,
@@ -38,7 +38,7 @@ const auth = makeServerAuth({
       subject: t("emails", "Invitation to join {{orgName}}", {
         orgName: organization.name,
       }),
-      html: renderInvitationEmail(
+      html: await renderInvitationEmail(
         {
           orgName: organization.name,
           invitationId: invitation.id,

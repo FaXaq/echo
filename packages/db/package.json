@@ -14,18 +14,18 @@
   },
   "dependencies": {
     "@echo/auth": "workspace:*",
-    "better-auth": "^1.4.18",
-    "dotenv": "^16.5.0",
-    "kysely": "^0.27.4",
-    "pg": "^8.13.0",
-    "zod": "^4.3.6"
+    "better-auth": "^1.6.24",
+    "dotenv": "^16.6.1",
+    "kysely": "^0.27.6",
+    "pg": "^8.22.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.21",
     "@echo/config": "workspace:*",
-    "@types/node": "^25.3.0",
-    "@types/pg": "^8.11.10",
+    "@types/node": "^25.9.5",
+    "@types/pg": "^8.20.0",
     "kysely-codegen": "^0.16.8",
-    "typescript": "^5.7.0"
+    "typescript": "^5.9.3"
   }
 }

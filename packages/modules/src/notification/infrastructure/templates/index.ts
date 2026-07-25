@@ -3,20 +3,20 @@ import type { makeServerI18n } from "@echo/i18n";
 
 type T = ReturnType<typeof makeServerI18n>;
 
-export function renderInvitationEmail(
+export async function renderInvitationEmail(
   data: {
     orgName: string;
     invitationId: string;
     appBaseUrl: string;
   },
   t: T,
-): string {
+): Promise<string> {
   const bodyText = t("emails", "You have been invited to join {{orgName}}", {
     orgName: data.orgName,
   });
   const buttonText = t("emails", "Accept invitation");
 
-  const { html, errors } = mjml2html(`
+  const { html, errors } = await mjml2html(`
     <mjml>
       <mj-body>
         <mj-section>
@@ -35,18 +35,18 @@ export function renderInvitationEmail(
   return html;
 }
 
-export function renderResetPasswordEmail(
+export async function renderResetPasswordEmail(
   data: {
     email: string;
     appBaseUrl: string;
     token: string;
   },
   t: T,
-): string {
+): Promise<string> {
   const bodyText = t("emails", "You requested a password reset.");
   const buttonText = t("emails", "Reset my password");
 
-  const { html, errors } = mjml2html(`
+  const { html, errors } = await mjml2html(`
     <mjml>
       <mj-body>
         <mj-section>
@@ -65,8 +65,8 @@ export function renderResetPasswordEmail(
   return html;
 }
 
-export function renderExampleEmail(data: { name: string }): string {
-  const { html, errors } = mjml2html(`
+export async function renderExampleEmail(data: { name: string }): Promise<string> {
+  const { html, errors } = await mjml2html(`
     <mjml>
       <mj-body>
         <mj-section>

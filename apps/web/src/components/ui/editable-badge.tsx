@@ -20,11 +20,13 @@ export function EditableBadge({
 }: EditableBadgeProps) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(String(value));
+  const [prevValue, setPrevValue] = React.useState(value);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  React.useEffect(() => {
+  if (value !== prevValue) {
+    setPrevValue(value);
     setDraft(String(value));
-  }, [value]);
+  }
 
   const startEditing = () => {
     setDraft(String(value));

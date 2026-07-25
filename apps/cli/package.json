@@ -31,18 +31,18 @@
   "dependencies": {
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
-    "better-auth": "^1.4.18",
-    "commander": "^13.0.0",
-    "dotenv": "^16.5.0",
-    "kysely": "^0.27.4",
-    "zod": "^4.3.6"
+    "better-auth": "^1.6.24",
+    "commander": "^13.1.0",
+    "dotenv": "^16.6.1",
+    "kysely": "^0.27.6",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@better-auth/cli": "^1.4.21",
     "@echo/config": "workspace:*",
-    "@types/node": "^25.3.0",
-    "tsx": "^4.19.4",
-    "typescript": "^5.7.0",
-    "vitest": "^3.0.0"
+    "@types/node": "^25.9.5",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
   }
 }

@@ -22,13 +22,13 @@ export const registerGetCommand = (parent: Command) => {
       const sessions = await db
         .selectFrom("session")
         .select("id")
-        .where("user_id", "=", id)
+        .where("userId", "=", id)
         .execute();
 
       const accounts = await db
         .selectFrom("account")
-        .select("provider_id")
-        .where("user_id", "=", id)
+        .select("providerId")
+        .where("userId", "=", id)
         .execute();
 
       printOutput(
@@ -36,12 +36,12 @@ export const registerGetCommand = (parent: Command) => {
           id: result.id,
           email: result.email,
           name: result.name,
-          emailVerified: result.email_verified,
+          emailVerified: result.emailVerified,
           image: result.image,
-          createdAt: result.created_at,
-          updatedAt: result.updated_at,
+          createdAt: result.createdAt,
+          updatedAt: result.updatedAt,
           activeSessions: sessions.length,
-          accounts: accounts.map((a) => a.provider_id).join(", "),
+          accounts: accounts.map((a) => a.providerId).join(", "),
         },
         "json",
       );

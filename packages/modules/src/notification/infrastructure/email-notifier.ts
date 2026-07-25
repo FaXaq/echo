@@ -13,18 +13,18 @@ export const makeEmailNotifierRepo = ({
   const t = makeServerI18n();
 
   return {
-    sendUserInvitationToJoinOrganization: ({ to, orgName, invitationId }) =>
+    sendUserInvitationToJoinOrganization: async ({ to, orgName, invitationId }) =>
       mailer.send({
         to,
         subject: t("emails", "Invitation to join {{orgName}}", { orgName }),
-        html: renderInvitationEmail({ orgName, invitationId, appBaseUrl }, t),
+        html: await renderInvitationEmail({ orgName, invitationId, appBaseUrl }, t),
       }),
 
-    sendUserResetPassword: ({ to, token }) =>
+    sendUserResetPassword: async ({ to, token }) =>
       mailer.send({
         to: to,
         subject: t("emails", "Reset your Echo password"),
-        html: renderResetPasswordEmail({ email: to, appBaseUrl, token }, t),
+        html: await renderResetPasswordEmail({ email: to, appBaseUrl, token }, t),
       }),
   };
 };
