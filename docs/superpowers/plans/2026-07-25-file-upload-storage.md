@@ -2024,6 +2024,7 @@ git commit -m "feat(i18n): add file attachment translation keys"
 **Files:**
 - Create: `apps/web/src/components/ui/event-calendar/event-file-attachments.tsx`
 - Create: `apps/web/src/components/ui/event-calendar/event-file-attachments.test.tsx`
+- Create: `apps/web/src/components/ui/event-calendar/event-file-attachments.stories.tsx`
 
 **Interfaces:**
 - Consumes: `FileUpload` (Task 15); `getEventFilesQueryOptions`, `useUploadFileMutation`, `useDeleteFileMutation`, `type EventFile` from `@/services/resources/file` (Task 14); i18n keys (Task 16).
@@ -2212,10 +2213,68 @@ export function EventFileAttachments({ eventId, organizationId }: EventFileAttac
 Run: `pnpm --filter @echo/web exec vitest run src/components/ui/event-calendar/event-file-attachments.test.tsx`
 Expected: PASS, all 3 tests green.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Add the Storybook file**
+
+`EventFileAttachments` fetches via `useQuery`, so its story seeds a `QueryClient` with `setQueryData` at the exact query key `getEventFilesQueryOptions` produces, instead of hitting the network. Mutations (upload/delete) are not exercised interactively in Storybook — the story is for visual states only.
+
+Create `apps/web/src/components/ui/event-calendar/event-file-attachments.stories.tsx`:
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { EventFileAttachments } from "./event-file-attachments";
+import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/file";
+
+function withSeededFiles(files: EventFile[]) {
+  const queryClient = new QueryClient();
+  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, files);
+  return queryClient;
+}
+
+const meta = {
+  title: "UI/EventCalendar/EventFileAttachments",
+  component: EventFileAttachments,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+} satisfies Meta<typeof EventFileAttachments>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Empty: Story = {
+  args: { eventId: "event-1" },
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={withSeededFiles([])}>
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
+};
+
+export const WithFiles: Story = {
+  args: { eventId: "event-1" },
+  decorators: [
+    (Story) => (
+      <QueryClientProvider
+        client={withSeededFiles([
+          { id: "file-1", originalFilename: "demo.mp3" } as EventFile,
+          { id: "file-2", originalFilename: "cover.png" } as EventFile,
+        ])}
+      >
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
+};
+```
+
+- [ ] **Step 6: Commit**
 
 ```bash
-git add apps/web/src/components/ui/event-calendar/event-file-attachments.tsx apps/web/src/components/ui/event-calendar/event-file-attachments.test.tsx
+git add apps/web/src/components/ui/event-calendar/event-file-attachments.tsx apps/web/src/components/ui/event-calendar/event-file-attachments.test.tsx apps/web/src/components/ui/event-calendar/event-file-attachments.stories.tsx
 git commit -m "feat(web): add EventFileAttachments component"
 ```
 
