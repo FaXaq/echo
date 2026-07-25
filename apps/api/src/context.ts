@@ -9,6 +9,7 @@ import { makeInvitationRepo } from "@echo/modules/invitation/infrastructure";
 import { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
 import { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
 import { makeEmailNotifierRepo, makeMailer } from "@echo/modules/notification/infrastructure";
+import { makeFileRepo, makeS3Storage } from "@echo/modules/file/infrastructure";
 
 // Singletons — created once at startup
 const { db, pool } = makeDbAdapter(appConfig.db);
@@ -39,6 +40,8 @@ export const makeCreateContext =
           appBaseUrl: appConfig.appBaseUrl,
         }),
       };
+      const fileRepo = makeFileRepo();
+      const s3Storage = makeS3Storage(appConfig.s3);
 
       return {
         session,
@@ -51,5 +54,7 @@ export const makeCreateContext =
         notifiers,
         userPermission,
         organization,
+        fileRepo,
+        s3Storage,
       };
     };

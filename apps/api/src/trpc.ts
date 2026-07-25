@@ -7,6 +7,7 @@ import type { EmailNotifierPort } from "@echo/modules/notification/infrastructur
 import type { makeHealthRepo } from "@echo/modules/health/infrastructure";
 import type { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
 import type { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
+import type { FileRepoPort, S3StoragePort } from "@echo/modules/file/infrastructure";
 import { appErrorToTRPC } from "./lib/errors";
 
 export type Context = {
@@ -22,6 +23,8 @@ export type Context = {
   };
   organization: ReturnType<typeof makeOrganizationRepo>;
   userPermission: ReturnType<typeof makeUserPermissionRepo>;
+  fileRepo: FileRepoPort;
+  s3Storage: S3StoragePort;
 };
 
 const t = initTRPC.context<Context>().create();
