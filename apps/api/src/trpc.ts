@@ -1,4 +1,5 @@
 import { initTRPC, TRPCError } from "@trpc/server";
+import { AppError } from "@echo/errors";
 import { systemRole, type ServerSession } from "@echo/auth";
 import type { makeDbAdapter } from "@echo/db";
 import type { makeLogger } from "@echo/logger";
@@ -33,12 +34,12 @@ export const router = t.router;
 export const mergeRouters = t.mergeRouters;
 
 const appErrorMiddleware = t.middleware(async ({ next }) => {
-  try {
-    return await next();
-  } catch (err) {
-    if (err instanceof TRPCError) throw err;
-    throw appErrorToTRPC(err);
+  const result = await next();
+  if (result.ok) return result;
+  if (result.error.cause instanceof AppError) {
+    throw appErrorToTRPC(result.error.cause);
   }
+  return result;
 });
 
 export const publicProcedure = t.procedure.use(appErrorMiddleware);
