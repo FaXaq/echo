@@ -78,7 +78,8 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",
@@ -97,6 +98,7 @@
     "@echo/config": "workspace:*",
     "@types/mjml": "^4.7.4",
     "@types/nodemailer": "^7.0.12",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
   }
 }
