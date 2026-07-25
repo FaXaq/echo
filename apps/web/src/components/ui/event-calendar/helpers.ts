@@ -1,6 +1,6 @@
 import dayjs, { type Dayjs } from "dayjs"
 
-import type { CalendarEvent } from "./types"
+import type { CalendarEvent, CalendarEventRange } from "./types"
 
 export const MINUTES_IN_DAY = 24 * 60
 export const MIN_EVENT_DURATION_MINUTES = 15
@@ -137,6 +137,15 @@ export function resizeEventEnd(
   )
   const end = dayjs(newEndDate).isBefore(minEnd) ? minEnd : dayjs(newEndDate)
   return { ...event, endDate: end.toDate() }
+}
+
+export function currentHourRange(day: Date = new Date()): CalendarEventRange {
+  const start = dayjs(day)
+    .hour(dayjs().hour())
+    .minute(0)
+    .second(0)
+    .millisecond(0)
+  return { start: start.toDate(), end: start.add(1, "hour").toDate() }
 }
 
 export function pixelOffsetToMinutes(

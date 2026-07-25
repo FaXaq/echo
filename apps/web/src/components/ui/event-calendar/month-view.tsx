@@ -5,7 +5,12 @@ import { cn } from "@/lib/utils"
 
 import { useCalendarContext } from "./calendar-context"
 import { EventCard } from "./event-card"
-import { bucketDayEvents, getEventsForDay, getMonthGrid } from "./helpers"
+import {
+  bucketDayEvents,
+  currentHourRange,
+  getEventsForDay,
+  getMonthGrid,
+} from "./helpers"
 import type { CalendarEvent } from "./types"
 
 const MAX_VISIBLE_EVENTS_PER_DAY = 3
@@ -36,7 +41,7 @@ export function MonthView({ date, events }: MonthViewProps) {
           </div>
         ))}
       </div>
-      <div className="grid flex-1 grid-cols-7 grid-rows-6">
+      <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-6">
         {cells.map((cell) => {
           const dayEvents = getEventsForDay(events, cell.date.toDate())
           const { visible, overflowCount } = bucketDayEvents(
@@ -50,13 +55,10 @@ export function MonthView({ date, events }: MonthViewProps) {
               key={cell.date.format("YYYY-MM-DD")}
               data-drop-day={cell.date.format("YYYY-MM-DD")}
               onClick={() =>
-                requestEventCreate({
-                  start: cell.date.startOf("day").toDate(),
-                  end: cell.date.endOf("day").toDate(),
-                })
+                requestEventCreate(currentHourRange(cell.date.toDate()))
               }
               className={cn(
-                "flex min-h-0 flex-col gap-1 border-b border-r p-1 last:border-r-0",
+                "flex min-h-0 flex-col gap-1 overflow-hidden border-b border-r p-1 last:border-r-0",
                 !cell.isCurrentMonth && "bg-muted/20 text-muted-foreground"
               )}
             >
@@ -68,23 +70,23 @@ export function MonthView({ date, events }: MonthViewProps) {
               >
                 {cell.date.date()}
               </span>
-              <div className="flex flex-col gap-0.5">
+              <div className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden">
                 {visible.map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))}
-                {overflowCount > 0 && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      requestDayOverflow(cell.date.toDate(), dayEvents)
-                    }}
-                    className="px-1.5 text-left text-[0.625rem] font-medium text-muted-foreground hover:text-foreground"
-                  >
-                    {t("+{{count}} more", { count: overflowCount })}
-                  </button>
-                )}
               </div>
+              {overflowCount > 0 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    requestDayOverflow(cell.date.toDate(), dayEvents)
+                  }}
+                  className="shrink-0 px-1.5 text-left text-[0.625rem] font-medium text-muted-foreground hover:text-foreground"
+                >
+                  {t("+{{count}} more", { count: overflowCount })}
+                </button>
+              )}
             </div>
           )
         })}

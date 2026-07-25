@@ -104,7 +104,9 @@ function RootContent({ session }: { session: ClientSession | null }) {
               />
             </div>
           </header>
-          <Outlet />
+          <div className="flex-1 overflow-y-auto">
+            <Outlet />
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </SessionProvider>

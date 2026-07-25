@@ -1,6 +1,8 @@
 import dayjs from "dayjs"
+import { Plus } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -9,7 +11,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+import { useCalendarContext } from "./calendar-context"
 import { EventCard } from "./event-card"
+import { currentHourRange } from "./helpers"
 import type { CalendarEvent } from "./types"
 
 interface DayEventsDialogProps {
@@ -24,6 +28,7 @@ export function DayEventsDialog({
   onOpenChange,
 }: DayEventsDialogProps) {
   const { t } = useTranslation("calendar")
+  const { requestEventCreate } = useCalendarContext()
   const title = t("Events on {{date}}", {
     date: day ? dayjs(day).format("MMMM D, YYYY") : "",
   })
@@ -40,6 +45,15 @@ export function DayEventsDialog({
             <EventCard key={event.id} event={event} />
           ))}
         </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => day && requestEventCreate(currentHourRange(day))}
+        >
+          <Plus className="size-3.5" data-icon="inline-start" />
+          {t("New event")}
+        </Button>
       </DialogContent>
     </Dialog>
   )

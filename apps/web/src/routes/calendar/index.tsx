@@ -45,9 +45,6 @@ function CalendarPage() {
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">{t("Calendar")}</h1>
-        <p className="text-muted-foreground">
-          {t("Manage your personal events and calendar")}
-        </p>
       </div>
       <EventCalendar
         events={events.map(toViewEvent)}

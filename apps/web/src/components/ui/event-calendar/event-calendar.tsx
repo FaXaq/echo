@@ -13,6 +13,7 @@ import { DayEventsDialog } from "./day-events-dialog"
 import { DayView } from "./day-view"
 import { EventDialog, type EventDialogState } from "./event-dialog"
 import {
+  currentHourRange,
   formatDayTitle,
   formatMonthTitle,
   formatWeekRangeTitle,
@@ -124,7 +125,7 @@ export function EventCalendar({
     <CalendarContext.Provider value={contextValue}>
       <div
         data-slot="event-calendar"
-        className={cn("flex h-full flex-col gap-3", className)}
+        className={cn("flex h-full min-h-0 flex-col gap-3", className)}
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -178,10 +179,7 @@ export function EventCalendar({
               onClick={() =>
                 setDialogState({
                   mode: "create",
-                  range: {
-                    start: dayjs(date).startOf("hour").toDate(),
-                    end: dayjs(date).startOf("hour").add(1, "hour").toDate(),
-                  },
+                  range: currentHourRange(date),
                 })
               }
             >
