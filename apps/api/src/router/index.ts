@@ -4,6 +4,7 @@ import { makeInvitationRouter } from "./invitation";
 import { makeDebugRouter } from "./debug";
 import { makeOrganizationRouter } from "./organizations/index";
 import { makeCalendarRouter } from "./calendar";
+import { makeFileRouter } from "./file";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export const makeAppRouter = () =>
@@ -14,6 +15,7 @@ export const makeAppRouter = () =>
       debug: makeDebugRouter(),
       organization: makeOrganizationRouter(),
       calendar: makeCalendarRouter(),
+      file: makeFileRouter(),
     }),
   );
 
