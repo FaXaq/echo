@@ -74,6 +74,18 @@
     "./calendar/app": {
       "types": "./src/calendar/app/index.ts",
       "default": "./src/calendar/app/index.ts"
+    },
+    "./file/domain": {
+      "types": "./src/file/domain/index.ts",
+      "default": "./src/file/domain/index.ts"
+    },
+    "./file/infrastructure": {
+      "types": "./src/file/infrastructure/index.ts",
+      "default": "./src/file/infrastructure/index.ts"
+    },
+    "./file/app": {
+      "types": "./src/file/app/index.ts",
+      "default": "./src/file/app/index.ts"
     }
   },
   "scripts": {
