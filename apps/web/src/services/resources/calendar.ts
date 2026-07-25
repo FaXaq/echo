@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { RouterInputs, RouterOutputs } from "@echo/api/router";
 import { apiClient } from "@/services/api-client";
 import { initResourceKey } from "./init-resource-key";
@@ -27,29 +27,108 @@ export function getOrganizationEventsQueryOptions(opts: { organizationId: string
 }
 
 export type CreateUserEventInput = RouterInputs["calendar"]["createUserEvent"];
-export function createUserEvent(input: CreateUserEventInput) {
-  return apiClient.calendar.createUserEvent.mutate(input);
+export function useCreateUserEventMutation({
+  onSuccess,
+}: { onSuccess?: (event: CalendarEvent) => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateUserEventInput) => apiClient.calendar.createUserEvent.mutate(input),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.(result);
+    },
+  });
 }
 
-export type CreateOrganizationEventInput = RouterInputs["calendar"]["createOrganizationEvent"];
-export function createOrganizationEvent(input: CreateOrganizationEventInput) {
-  return apiClient.calendar.createOrganizationEvent.mutate(input);
+export type CreateOrganizationEventInput = Omit<
+  RouterInputs["calendar"]["createOrganizationEvent"],
+  "organizationId"
+>;
+export function useCreateOrganizationEventMutation({
+  organizationId,
+  onSuccess,
+}: {
+  organizationId: string;
+  onSuccess?: (event: CalendarEvent) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateOrganizationEventInput) =>
+      apiClient.calendar.createOrganizationEvent.mutate({ organizationId, ...input }),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.(result);
+    },
+  });
 }
 
 export type UpdateUserEventInput = RouterInputs["calendar"]["updateUserEvent"];
-export function updateUserEvent(input: UpdateUserEventInput) {
-  return apiClient.calendar.updateUserEvent.mutate(input);
+export function useUpdateUserEventMutation({
+  onSuccess,
+}: { onSuccess?: (event: CalendarEvent) => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: UpdateUserEventInput) => apiClient.calendar.updateUserEvent.mutate(input),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.(result);
+    },
+  });
 }
 
-export type UpdateOrganizationEventInput = RouterInputs["calendar"]["updateOrganizationEvent"];
-export function updateOrganizationEvent(input: UpdateOrganizationEventInput) {
-  return apiClient.calendar.updateOrganizationEvent.mutate(input);
+export type UpdateOrganizationEventInput = Omit<
+  RouterInputs["calendar"]["updateOrganizationEvent"],
+  "organizationId"
+>;
+export function useUpdateOrganizationEventMutation({
+  organizationId,
+  onSuccess,
+}: {
+  organizationId: string;
+  onSuccess?: (event: CalendarEvent) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: UpdateOrganizationEventInput) =>
+      apiClient.calendar.updateOrganizationEvent.mutate({ organizationId, ...input }),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.(result);
+    },
+  });
 }
 
-export function deleteUserEvent(input: { id: string }) {
-  return apiClient.calendar.deleteUserEvent.mutate(input);
+export function useDeleteUserEventMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string }) => apiClient.calendar.deleteUserEvent.mutate(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
 }
 
-export function deleteOrganizationEvent(input: { id: string; organizationId: string }) {
-  return apiClient.calendar.deleteOrganizationEvent.mutate(input);
+export function useDeleteOrganizationEventMutation({
+  organizationId,
+  onSuccess,
+}: {
+  organizationId: string;
+  onSuccess?: () => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string }) =>
+      apiClient.calendar.deleteOrganizationEvent.mutate({ id: input.id, organizationId }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
 }

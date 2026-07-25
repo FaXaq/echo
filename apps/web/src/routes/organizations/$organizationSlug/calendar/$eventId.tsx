@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import {
   EventDetail,
   EventDialog,
@@ -9,10 +9,9 @@ import {
 } from '@/ui/event-calendar'
 import type { CalendarEvent as ViewEvent } from '@/ui/event-calendar'
 import {
-  key as calendarKey,
   getOrganizationEventsQueryOptions,
-  updateOrganizationEvent,
-  deleteOrganizationEvent,
+  useUpdateOrganizationEventMutation,
+  useDeleteOrganizationEventMutation,
 } from '@/services/resources/calendar'
 import { toViewEvent, fromViewEvent } from '@/lib/calendar-events'
 import { Button } from '@/components/ui/button'
@@ -29,7 +28,6 @@ function OrganizationEventDetailPage() {
   const { organizationSlug, eventId } = Route.useParams()
   const { organizationId } = Route.useRouteContext()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { data: events = [] } = useQuery(
     getOrganizationEventsQueryOptions({ organizationId }),
   )
@@ -37,14 +35,20 @@ function OrganizationEventDetailPage() {
 
   const event = events.find((e) => e.id === eventId)
 
-  const refresh = () =>
-    queryClient.invalidateQueries({ queryKey: calendarKey })
-
   const goBack = () =>
     navigate({
       to: '/organizations/$organizationSlug/calendar',
       params: { organizationSlug },
     })
+
+  const updateEventMutation = useUpdateOrganizationEventMutation({
+    organizationId,
+    onSuccess: () => setDialogState(null),
+  })
+  const deleteEventMutation = useDeleteOrganizationEventMutation({
+    organizationId,
+    onSuccess: goBack,
+  })
 
   if (!event) {
     return (
@@ -63,19 +67,11 @@ function OrganizationEventDetailPage() {
   const viewEvent = toViewEvent(event)
 
   const handleDelete = async (id: string) => {
-    await deleteOrganizationEvent({ id, organizationId })
-    refresh()
-    goBack()
+    await deleteEventMutation.mutateAsync({ id })
   }
 
   const handleSubmit = async (updated: ViewEvent) => {
-    await updateOrganizationEvent({
-      id: updated.id,
-      organizationId,
-      ...fromViewEvent(updated),
-    })
-    refresh()
-    setDialogState(null)
+    await updateEventMutation.mutateAsync({ id: updated.id, ...fromViewEvent(updated) })
   }
 
   return (

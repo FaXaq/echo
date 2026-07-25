@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   EventDetail,
   EventDialog,
@@ -9,10 +9,9 @@ import {
 } from "@/ui/event-calendar";
 import type { CalendarEvent as ViewEvent } from "@/ui/event-calendar";
 import {
-  key as calendarKey,
   getUserEventsQueryOptions,
-  updateUserEvent,
-  deleteUserEvent,
+  useUpdateUserEventMutation,
+  useDeleteUserEventMutation,
 } from "@/services/resources/calendar";
 import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
 import { Button } from "@/components/ui/button";
@@ -26,15 +25,17 @@ function EventDetailPage() {
   const { t } = useTranslation("calendar");
   const { eventId } = Route.useParams();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { data: events = [] } = useQuery(getUserEventsQueryOptions());
   const [dialogState, setDialogState] = useState<EventDialogState>(null);
 
   const event = events.find((e) => e.id === eventId);
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: calendarKey });
-
   const goBack = () => navigate({ to: "/calendar" });
+
+  const updateEventMutation = useUpdateUserEventMutation({
+    onSuccess: () => setDialogState(null),
+  });
+  const deleteEventMutation = useDeleteUserEventMutation({ onSuccess: goBack });
 
   if (!event) {
     return (
@@ -53,15 +54,11 @@ function EventDetailPage() {
   const viewEvent = toViewEvent(event);
 
   const handleDelete = async (id: string) => {
-    await deleteUserEvent({ id });
-    refresh();
-    goBack();
+    await deleteEventMutation.mutateAsync({ id });
   };
 
   const handleSubmit = async (updated: ViewEvent) => {
-    await updateUserEvent({ id: updated.id, ...fromViewEvent(updated) });
-    refresh();
-    setDialogState(null);
+    await updateEventMutation.mutateAsync({ id: updated.id, ...fromViewEvent(updated) });
   };
 
   return (

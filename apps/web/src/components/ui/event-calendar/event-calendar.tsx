@@ -57,9 +57,9 @@ export interface EventCalendarProps {
   date?: Date
   onDateChange?: (date: Date) => void
   onEventClick?: (event: CalendarEvent) => void
-  onEventCreate?: (event: CalendarEvent) => void
-  onEventUpdate?: (event: CalendarEvent) => void
-  onEventDelete?: (id: string) => void
+  onEventCreate?: (event: CalendarEvent) => void | Promise<void>
+  onEventUpdate?: (event: CalendarEvent) => void | Promise<void>
+  onEventDelete?: (id: string) => void | Promise<void>
   className?: string
 }
 
@@ -199,12 +199,12 @@ export function EventCalendar({
         <EventDialog
           state={dialogState}
           onOpenChange={(open) => !open && setDialogState(null)}
-          onSubmit={(event) => {
-            onEventCreate?.(event)
+          onSubmit={async (event) => {
+            await onEventCreate?.(event)
             setDialogState(null)
           }}
-          onDelete={(id) => {
-            onEventDelete?.(id)
+          onDelete={async (id) => {
+            await onEventDelete?.(id)
             setDialogState(null)
           }}
         />

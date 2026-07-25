@@ -1,6 +1,6 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import dayjs from "dayjs"
-import { Controller, useForm, useWatch } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useTranslation } from "react-i18next"
@@ -97,8 +97,8 @@ function stateToDefaultValues(state: EventDialogState): EventFormValues {
 interface EventDialogProps {
   state: EventDialogState
   onOpenChange: (open: boolean) => void
-  onSubmit: (event: CalendarEvent) => void
-  onDelete: (id: string) => void
+  onSubmit: (event: CalendarEvent) => void | Promise<void>
+  onDelete: (id: string) => void | Promise<void>
 }
 
 export function EventDialog({
@@ -115,27 +115,31 @@ export function EventDialog({
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    watch,
+    formState: { errors, isSubmitting },
   } = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: stateToDefaultValues(state),
   })
 
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const allDay = watch("allDay");
+
   useEffect(() => {
     reset(stateToDefaultValues(state))
   }, [state, reset])
 
-  const allDay = useWatch({ control, name: "allDay" })
 
-  const submit = (values: EventFormValues) => {
-    const start = allDay
+  const submit = async (values: EventFormValues) => {
+    const start = values.allDay
       ? dayjs(values.startDate).startOf("day")
       : dayjs(values.startDate)
-    const end = allDay
+    const end = values.allDay
       ? dayjs(values.endDate).endOf("day")
       : dayjs(values.endDate)
 
-    onSubmit({
+    await onSubmit({
       id: isEdit ? state.event.id : crypto.randomUUID(),
       title: values.title,
       description: values.description || undefined,
@@ -144,6 +148,17 @@ export function EventDialog({
       allDay: values.allDay,
       color: values.color,
     })
+  }
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    if (!isEdit) return
+    e.preventDefault()
+    setIsDeleting(true)
+    try {
+      await onDelete(state.event.id)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -177,6 +192,7 @@ export function EventDialog({
             <Field orientation="horizontal">
               <FieldLabel htmlFor="event-start">{t("Start")}</FieldLabel>
               <Input
+                disabled={allDay}
                 id="event-start"
                 type="datetime-local"
                 {...register("startDate")}
@@ -186,6 +202,7 @@ export function EventDialog({
             <Field orientation="horizontal">
               <FieldLabel htmlFor="event-end">{t("End")}</FieldLabel>
               <Input
+                disabled={allDay}
                 id="event-end"
                 type="datetime-local"
                 {...register("endDate")}
@@ -238,7 +255,12 @@ export function EventDialog({
             {isEdit ? (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button type="button" variant="destructive" size="sm">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    disabled={isSubmitting}
+                  >
                     {t("Delete")}
                   </Button>
                 </AlertDialogTrigger>
@@ -252,9 +274,12 @@ export function EventDialog({
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
+                    <AlertDialogCancel disabled={isDeleting}>
+                      {t("Cancel")}
+                    </AlertDialogCancel>
                     <AlertDialogAction
-                      onClick={() => onDelete(state.event.id)}
+                      isLoading={isDeleting}
+                      onClick={handleDelete}
                     >
                       {t("Delete")}
                     </AlertDialogAction>
@@ -266,11 +291,11 @@ export function EventDialog({
             )}
             <div className="flex gap-2">
               <DialogClose asChild>
-                <Button type="button" variant="outline">
+                <Button type="button" variant="outline" disabled={isSubmitting}>
                   {t("Cancel")}
                 </Button>
               </DialogClose>
-              <Button type="submit">
+              <Button type="submit" isLoading={isSubmitting}>
                 {isEdit ? t("Save changes") : t("Save")}
               </Button>
             </div>

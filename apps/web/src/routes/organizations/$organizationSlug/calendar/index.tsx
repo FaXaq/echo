@@ -1,15 +1,14 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { useTranslation } from 'react-i18next'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { EventCalendar } from '@/ui/event-calendar'
 import type { CalendarEvent as ViewEvent } from '@/ui/event-calendar'
 import {
-  key as calendarKey,
   getOrganizationEventsQueryOptions,
-  createOrganizationEvent,
-  updateOrganizationEvent,
-  deleteOrganizationEvent,
+  useCreateOrganizationEventMutation,
+  useUpdateOrganizationEventMutation,
+  useDeleteOrganizationEventMutation,
 } from '@/services/resources/calendar'
 import { toViewEvent, fromViewEvent } from '@/lib/calendar-events'
 
@@ -25,24 +24,22 @@ function OrganizationCalendarPage() {
   const { organizationId } = Route.useRouteContext()
   const { organizationSlug } = Route.useParams()
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { data: events = [] } = useQuery(getOrganizationEventsQueryOptions({ organizationId }))
 
-  const refresh = () => queryClient.invalidateQueries({ queryKey: calendarKey })
+  const createEventMutation = useCreateOrganizationEventMutation({ organizationId })
+  const updateEventMutation = useUpdateOrganizationEventMutation({ organizationId })
+  const deleteEventMutation = useDeleteOrganizationEventMutation({ organizationId })
 
   const handleEventCreate = async (event: ViewEvent) => {
-    await createOrganizationEvent({ organizationId, ...fromViewEvent(event) })
-    refresh()
+    await createEventMutation.mutateAsync(fromViewEvent(event))
   }
 
   const handleEventUpdate = async (event: ViewEvent) => {
-    await updateOrganizationEvent({ id: event.id, organizationId, ...fromViewEvent(event) })
-    refresh()
+    await updateEventMutation.mutateAsync({ id: event.id, ...fromViewEvent(event) })
   }
 
   const handleEventDelete = async (id: string) => {
-    await deleteOrganizationEvent({ id, organizationId })
-    refresh()
+    await deleteEventMutation.mutateAsync({ id })
   }
 
   const handleEventClick = (event: ViewEvent) => {
