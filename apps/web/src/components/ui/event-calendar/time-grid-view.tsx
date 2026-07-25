@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from "react"
 import dayjs from "dayjs"
+import { useTranslation } from "react-i18next"
 
 import { cn } from "@/lib/utils"
 
@@ -78,7 +79,18 @@ export function TimeGridView({ days, events }: TimeGridViewProps) {
         <div className="shrink-0" style={{ width: scrollbarWidth }} />
       </div>
 
-      <AllDayRow days={days} events={events} scrollbarWidth={scrollbarWidth} />
+      <AllDayRow
+        days={days}
+        events={events}
+        scrollbarWidth={scrollbarWidth}
+        onCreate={(day) =>
+          requestEventCreate({
+            start: dayjs(day).startOf("day").toDate(),
+            end: dayjs(day).endOf("day").toDate(),
+            allDay: true,
+          })
+        }
+      />
 
       <div ref={scrollRef} className="flex flex-1 overflow-y-auto">
         <div className="w-14 shrink-0">
@@ -151,24 +163,25 @@ function AllDayRow({
   days,
   events,
   scrollbarWidth,
+  onCreate,
 }: {
   days: Date[]
   events: CalendarEvent[]
   scrollbarWidth: number
+  onCreate: (day: Date) => void
 }) {
-  const hasAllDayEvents = days.some((day) =>
-    getEventsForDay(events, day).some((event) => event.allDay)
-  )
-
-  if (!hasAllDayEvents) return null
+  const { t } = useTranslation("calendar")
 
   return (
     <div className="flex border-b">
-      <div className="w-14 shrink-0" />
+      <div className="flex w-14 shrink-0 items-center justify-end pr-2 text-right text-[0.625rem] text-muted-foreground">
+        {t("All day")}
+      </div>
       {days.map((day) => (
         <div
           key={day.toISOString()}
-          className="flex flex-1 flex-col gap-0.5 border-l p-1"
+          onClick={() => onCreate(day)}
+          className="flex min-h-8 flex-1 flex-col gap-0.5 border-l p-1"
         >
           {getEventsForDay(events, day)
             .filter((event) => event.allDay)

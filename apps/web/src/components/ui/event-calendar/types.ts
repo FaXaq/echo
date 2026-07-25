@@ -21,4 +21,5 @@ export type CalendarView = "month" | "week" | "day" | "agenda"
 export interface CalendarEventRange {
   start: Date
   end: Date
+  allDay?: boolean
 }

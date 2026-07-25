@@ -83,13 +83,14 @@ function stateToDefaultValues(state: EventDialogState): EventFormValues {
   }
 
   const start = state?.mode === "create" ? dayjs(state.range.start) : dayjs()
+  const allDay = state?.mode === "create" ? !!state.range.allDay : false
 
   return {
     title: "",
     description: "",
     startDate: start.format(DATETIME_FORMAT),
     endDate: start.add(1, "hour").format(DATETIME_FORMAT),
-    allDay: false,
+    allDay,
     color: "blue",
   }
 }
