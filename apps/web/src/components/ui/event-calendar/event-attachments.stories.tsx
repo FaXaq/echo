@@ -57,6 +57,12 @@ export const WithMixedFiles: Story = {
             originalFilename: "cover.png",
             downloadUrl: "https://example.com/cover.png",
           } as EventFile,
+          {
+            id: "file-3",
+            kind: "video",
+            originalFilename: "clip.mp4",
+            downloadUrl: "https://example.com/clip.mp4",
+          } as EventFile,
         ])}
       >
         <Story />
