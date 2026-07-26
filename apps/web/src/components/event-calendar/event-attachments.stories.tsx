@@ -10,7 +10,7 @@ function withSeededFiles(files: EventFile[]) {
 }
 
 const meta = {
-  title: "UI/EventCalendar/EventAttachments",
+  title: "EventCalendar/EventAttachments",
   component: EventAttachments,
   parameters: {
     layout: "centered",

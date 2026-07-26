@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 import { COLOR_LABELS, eventDotClasses } from "./colors"
-import { EventAttachments } from "./event-attachments"
+import { EventAttachments } from "@/components/event-calendar/event-attachments"
 import type { CalendarEvent } from "./types"
 
 export interface EventDetailProps {

@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next"
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { AudioPlayer } from "@/components/ui/audio-player"
 import { EventGallery } from "@/components/ui/event-gallery"
 import { getEventFilesQueryOptions } from "@/services/resources/file"
 import { Suspense } from "react"
-import { Skeleton } from "../skeleton"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export interface EventAttachmentsProps {
   eventId: string

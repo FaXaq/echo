@@ -45,7 +45,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
 import type { CalendarEvent, CalendarEventRange, EventColor } from "./types"
-import { EventFileAttachments } from "./event-file-attachments"
+import { EventFileAttachments } from "@/components/event-calendar/event-file-attachments"
 
 const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm"
 
