@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { EventGallery } from "./event-gallery"
 import type { EventFile } from "@/services/resources/file"
 
@@ -100,5 +100,34 @@ describe("EventGallery", () => {
     const audioTile = screen.getByRole("button", { name: "song.mp3" })
     expect(audioTile.querySelector("img")).toBeNull()
     expect(audioTile.querySelector("svg")).toBeNull()
+  })
+
+  it("does not render a delete button when onDelete is not provided", () => {
+    render(<EventGallery files={files} />)
+
+    expect(
+      screen.queryByRole("button", { name: "Delete cover.png" })
+    ).not.toBeInTheDocument()
+  })
+
+  it("calls onDelete with the file after confirming deletion", async () => {
+    const user = userEvent.setup()
+    const onDelete = vi.fn()
+    render(<EventGallery files={files} onDelete={onDelete} />)
+
+    await user.click(screen.getByRole("button", { name: "Delete cover.png" }))
+    const confirmDialog = await screen.findByRole("alertdialog")
+    await user.click(within(confirmDialog).getByRole("button", { name: "Delete" }))
+
+    expect(onDelete).toHaveBeenCalledWith(files[0])
+  })
+
+  it("does not open the lightbox when clicking the delete button", async () => {
+    const user = userEvent.setup()
+    render(<EventGallery files={files} onDelete={vi.fn()} />)
+
+    await user.click(screen.getByRole("button", { name: "Delete cover.png" }))
+
+    expect(screen.queryByRole("dialog", { name: "cover.png" })).not.toBeInTheDocument()
   })
 })
