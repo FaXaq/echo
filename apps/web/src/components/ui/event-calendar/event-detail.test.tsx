@@ -105,4 +105,33 @@ describe("EventDetail", () => {
 
     expect(await screen.findByText("Player: demo.mp3")).toBeInTheDocument()
   })
+
+  it("forwards organizationId to EventAttachments for file uploads", async () => {
+    const uploadSpy = vi.fn()
+    vi.spyOn(fileResource, "useUploadFileMutation").mockReturnValue({
+      mutate: uploadSpy,
+      isPending: false,
+      isError: false,
+    } as never)
+    vi.spyOn(fileResource, "useDeleteFileMutation").mockReturnValue({
+      mutate: vi.fn(),
+    } as never)
+
+    const user = userEvent.setup()
+    renderWithClient(
+      <EventDetail
+        event={makeEvent()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onBack={vi.fn()}
+        organizationId="org-1"
+      />
+    )
+
+    const input = await screen.findByLabelText("Add files", { selector: "input" })
+    const file = new File(["x"], "demo.mp3", { type: "audio/mpeg" })
+    await user.upload(input, file)
+
+    expect(uploadSpy).toHaveBeenCalledWith({ eventId: "1", organizationId: "org-1", file })
+  })
 })

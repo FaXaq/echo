@@ -26,6 +26,7 @@ export interface EventDetailProps {
   onEdit: () => void
   onDelete: () => void
   onBack: () => void
+  organizationId?: string
   className?: string
 }
 
@@ -34,6 +35,7 @@ export function EventDetail({
   onEdit,
   onDelete,
   onBack,
+  organizationId,
   className,
 }: EventDetailProps) {
   const { t } = useTranslation("calendar")
@@ -80,7 +82,7 @@ export function EventDetail({
         )}
       </div>
 
-      <EventAttachments eventId={event.id} />
+      <EventAttachments eventId={event.id} organizationId={organizationId} />
 
       <div className="flex gap-2">
         <Button type="button" onClick={onEdit}>
