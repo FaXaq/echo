@@ -84,4 +84,21 @@ describe("EventGallery", () => {
     await user.click(screen.getByRole("button", { name: "poster.jpg" }))
     expect(screen.getByRole("dialog", { name: "poster.jpg" })).toBeInTheDocument()
   })
+
+  it("renders an empty tile for audio files", () => {
+    const audioFiles: EventFile[] = [
+      {
+        id: "file-1",
+        kind: "audio",
+        originalFilename: "song.mp3",
+        downloadUrl: "https://example.com/song.mp3",
+      } as EventFile,
+    ]
+
+    render(<EventGallery files={audioFiles} />)
+
+    const audioTile = screen.getByRole("button", { name: "song.mp3" })
+    expect(audioTile.querySelector("img")).toBeNull()
+    expect(audioTile.querySelector("svg")).toBeNull()
+  })
 })

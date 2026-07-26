@@ -30,11 +30,11 @@ export function EventGallery({ files }: EventGalleryProps) {
           >
             {file.kind === "image" ? (
               <img src={file.downloadUrl} alt="" className="h-full w-full object-cover" />
-            ) : (
+            ) : file.kind === "video" ? (
               <div className="flex h-full w-full items-center justify-center">
                 <Video className="size-6 text-muted-foreground" />
               </div>
-            )}
+            ) : null}
           </button>
         ))}
       </div>
@@ -68,11 +68,11 @@ export function EventGallery({ files }: EventGalleryProps) {
                   alt=""
                   className="max-h-[70vh] w-full object-contain"
                 />
-              ) : (
+              ) : selected.kind === "video" ? (
                 <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
                   <Video className="size-12 text-muted-foreground" />
                 </div>
-              )}
+              ) : null}
 
               {selectedIndex < files.length - 1 && (
                 <Button
