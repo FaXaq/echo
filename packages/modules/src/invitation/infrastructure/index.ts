@@ -1,2 +1,2 @@
-export type { InvitationRepoPort, InvitationDetails } from "./invitation-repository.port.js";
-export { makeInvitationRepo } from "./invitation-repository.kysely.js";
+export type { InvitationDetails } from "../domain/index.js";
+export { getInvitationById } from "./get-invitation-by-id.js";

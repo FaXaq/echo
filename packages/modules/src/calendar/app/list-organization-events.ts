@@ -1,14 +1,14 @@
 import type { KyselyDB } from "@echo/db";
 import { forbidden } from "@echo/errors";
-import type { UserPermissionRepoPort } from "@echo/modules/user/infrastructure";
+import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { CalendarEvent } from "../domain/index.js";
 import { listOrganizationCalendarEvents } from "../infrastructure/index.js";
 
 export async function listOrganizationEvents(
-  deps: { db: KyselyDB; userPermission: UserPermissionRepoPort },
+  deps: { db: KyselyDB; userHasPermissionInOrganization: CheckOrganizationPermission },
   input: { organizationId: string; userId: string },
 ): Promise<CalendarEvent[]> {
-  const { success } = await deps.userPermission.userHasPermissionInOrganization({
+  const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.organizationId,
     permissions: { calendarEvent: ["read"] },
   });

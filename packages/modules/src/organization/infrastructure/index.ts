@@ -1,2 +1,2 @@
-export type { OrganizationRepoPort, Organization } from "./organization-repository.port.js";
-export { makeOrganizationRepo } from "./organization-repository.better-auth.js";
+export type { Organization } from "../domain/index.js";
+export { getOrganizationBySlug } from "./get-organization-by-slug.js";

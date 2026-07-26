@@ -23,9 +23,9 @@ export const makeFileRouter = () =>
         createUpload(
           {
             db: ctx.db,
-            fileRepo: ctx.fileRepo,
             s3Storage: ctx.s3Storage,
-            userPermission: ctx.userPermission,
+            userHasPermission: ctx.userHasPermission,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
           { userId: ctx.session.user.id, ...input },
         ),
@@ -33,15 +33,18 @@ export const makeFileRouter = () =>
 
     confirmUpload: authedProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) =>
-        confirmUpload({ db: ctx.db, fileRepo: ctx.fileRepo, s3Storage: ctx.s3Storage }, input),
-      ),
+      .mutation(({ ctx, input }) => confirmUpload({ db: ctx.db, s3Storage: ctx.s3Storage }, input)),
 
     listEventFiles: authedProcedure
       .input(z.object({ eventId: z.string() }))
       .query(({ ctx, input }) =>
         listEventFiles(
-          { db: ctx.db, fileRepo: ctx.fileRepo, userPermission: ctx.userPermission, s3Storage: ctx.s3Storage },
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermission: ctx.userHasPermission,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          },
           { eventId: input.eventId, userId: ctx.session.user.id },
         ),
       ),
@@ -52,9 +55,9 @@ export const makeFileRouter = () =>
         deleteFile(
           {
             db: ctx.db,
-            fileRepo: ctx.fileRepo,
             s3Storage: ctx.s3Storage,
-            userPermission: ctx.userPermission,
+            userHasPermission: ctx.userHasPermission,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
           { id: input.id, userId: ctx.session.user.id },
         ),

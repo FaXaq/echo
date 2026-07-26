@@ -1,16 +1,19 @@
 import type { KyselyDB } from "@echo/db";
 import { conflict, forbidden } from "@echo/errors";
-import type { UserPermissionRepoPort } from "@echo/modules/user/infrastructure";
+import type {
+  CheckOrganizationPermission,
+  CheckUserPermission,
+} from "@echo/modules/user/infrastructure";
 import { isValidFileSize, kindForMimeType } from "../domain/index.js";
-import type { FileRepoPort } from "../infrastructure/file-repository.port.js";
-import type { S3StoragePort } from "../infrastructure/s3-storage.port.js";
+import { insertPendingFile } from "../infrastructure/index.js";
+import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
 export async function createUpload(
   deps: {
     db: KyselyDB;
-    fileRepo: FileRepoPort;
     s3Storage: S3StoragePort;
-    userPermission: UserPermissionRepoPort;
+    userHasPermission: CheckUserPermission;
+    userHasPermissionInOrganization: CheckOrganizationPermission;
   },
   input: {
     userId: string;
@@ -26,13 +29,13 @@ export async function createUpload(
   if (!isValidFileSize(input.sizeBytes)) throw conflict("File is too large");
 
   if (input.organizationId) {
-    const { success } = await deps.userPermission.userHasPermissionInOrganization({
+    const { success } = await deps.userHasPermissionInOrganization({
       organizationId: input.organizationId,
       permissions: { file: ["create"] },
     });
     if (!success) throw forbidden({ entity: "File", action: "create" });
   } else {
-    const { success } = await deps.userPermission.userHasPermission({
+    const { success } = await deps.userHasPermission({
       permissions: { file: ["selfCreate"] },
     });
     if (!success) throw forbidden({ entity: "File", action: "create" });
@@ -43,7 +46,7 @@ export async function createUpload(
     ? `org/${input.organizationId}/${id}/${input.filename}`
     : `personal/${input.userId}/${id}/${input.filename}`;
 
-  await deps.fileRepo.insertPending(deps.db, {
+  await insertPendingFile(deps.db, {
     id,
     eventId: input.eventId ?? null,
     organizationId: input.organizationId ?? null,

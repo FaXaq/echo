@@ -1,4 +1,5 @@
-export type { FileRepoPort } from "./file-repository.port.js";
-export { makeFileRepo } from "./file-repository.kysely.js";
-export type { S3StoragePort } from "./s3-storage.port.js";
-export { makeS3Storage } from "./s3-storage.adapter.js";
+export { insertPendingFile } from "./insert-pending-file.js";
+export { markFileUploaded } from "./mark-file-uploaded.js";
+export { findFileById } from "./find-file-by-id.js";
+export { listFilesByEvent } from "./list-files-by-event.js";
+export { deleteFileById } from "./delete-file-by-id.js";

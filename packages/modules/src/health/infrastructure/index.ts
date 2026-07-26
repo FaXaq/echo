@@ -1,2 +1,1 @@
-export type { HealthCheckPort } from "./health-repository.port.js";
-export { makeHealthRepo } from "./health-repository.kysely.js";
+export { checkDbHealth } from "./check-db-health.js";

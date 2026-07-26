@@ -1,30 +1,8 @@
-import type { UserPermissionRepoPort } from "@echo/modules/user/infrastructure";
-import type { FileRecord } from "../domain/index.js";
-import type { FileRepoPort } from "../infrastructure/file-repository.port.js";
-import type { S3StoragePort } from "../infrastructure/s3-storage.port.js";
-
-export function makeFakeFileRepo(seed: FileRecord[] = []): FileRepoPort {
-  const rows = new Map(seed.map((file) => [file.id, file]));
-
-  return {
-    insertPending: async (_db, input) => {
-      const record: FileRecord = { ...input, status: "pending" };
-      rows.set(record.id, record);
-      return record;
-    },
-    markUploaded: async (_db, id) => {
-      const existing = rows.get(id);
-      if (!existing) return null;
-      const updated: FileRecord = { ...existing, status: "uploaded" };
-      rows.set(id, updated);
-      return updated;
-    },
-    findById: async (_db, id) => rows.get(id) ?? null,
-    listByEvent: async (_db, eventId) =>
-      [...rows.values()].filter((f) => f.eventId === eventId && f.status === "uploaded"),
-    deleteById: async (_db, id) => rows.delete(id),
-  };
-}
+import type {
+  CheckOrganizationPermission,
+  CheckUserPermission,
+} from "@echo/modules/user/infrastructure";
+import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
 export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
   const keys = new Set(existingKeys);
@@ -42,9 +20,15 @@ export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
   };
 }
 
-export function makeFakeUserPermission(
-  overrides: Partial<UserPermissionRepoPort> = {},
-): UserPermissionRepoPort {
+export function makeFakePermissionChecks(
+  overrides: Partial<{
+    userHasPermission: CheckUserPermission;
+    userHasPermissionInOrganization: CheckOrganizationPermission;
+  }> = {},
+): {
+  userHasPermission: CheckUserPermission;
+  userHasPermissionInOrganization: CheckOrganizationPermission;
+} {
   return {
     userHasPermission: async () => ({ success: true, error: null }),
     userHasPermissionInOrganization: async () => ({ success: true, error: null, role: null }),

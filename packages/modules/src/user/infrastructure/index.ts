@@ -1,2 +1,5 @@
-export type { UserPermissionRepoPort } from "./user-permission-repository.port.js";
-export { makeUserPermissionRepo } from "./user-permission-repository.better-auth.js";
+export type { CheckUserPermission } from "./user-has-permission.js";
+export { userHasPermission } from "./user-has-permission.js";
+
+export type { CheckOrganizationPermission } from "./user-has-permission-in-organization.js";
+export { userHasPermissionInOrganization } from "./user-has-permission-in-organization.js";

@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@echo/adapters": "workspace:*",
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
     "@echo/errors": "workspace:*",

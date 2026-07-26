@@ -33,7 +33,10 @@ export const makeCalendarRouter = () =>
       .input(z.object({ organizationId: z.string() }))
       .query(({ ctx, input }) =>
         listOrganizationEvents(
-          { db: ctx.db, userPermission: ctx.userPermission },
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          },
           { organizationId: input.organizationId, userId: ctx.session.user.id },
         ),
       ),
@@ -48,7 +51,10 @@ export const makeCalendarRouter = () =>
       .input(z.object({ organizationId: z.string(), ...eventInput }))
       .mutation(({ ctx, input }) =>
         createOrganizationEvent(
-          { db: ctx.db, userPermission: ctx.userPermission },
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          },
           { userId: ctx.session.user.id, ...input },
         ),
       ),
@@ -63,7 +69,10 @@ export const makeCalendarRouter = () =>
       .input(z.object({ id: z.string(), organizationId: z.string(), ...eventInput }))
       .mutation(({ ctx, input }) =>
         updateOrganizationEvent(
-          { db: ctx.db, userPermission: ctx.userPermission },
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          },
           { userId: ctx.session.user.id, ...input },
         ),
       ),
@@ -78,7 +87,10 @@ export const makeCalendarRouter = () =>
       .input(z.object({ id: z.string(), organizationId: z.string() }))
       .mutation(({ ctx, input }) =>
         deleteOrganizationEvent(
-          { db: ctx.db, userPermission: ctx.userPermission },
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          },
           { id: input.id, organizationId: input.organizationId, userId: ctx.session.user.id },
         ),
       ),

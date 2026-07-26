@@ -4,12 +4,12 @@ import { makeDbAdapter } from "@echo/db";
 import { appConfig } from "./adapters/config/index";
 import { makeLogger } from "@echo/logger";
 import type { Context } from "./trpc";
-import { makeHealthRepo } from "@echo/modules/health/infrastructure";
-import { makeInvitationRepo } from "@echo/modules/invitation/infrastructure";
-import { makeOrganizationRepo } from "@echo/modules/organization/infrastructure";
-import { makeUserPermissionRepo } from "@echo/modules/user/infrastructure";
-import { makeEmailNotifierRepo, makeMailer } from "@echo/modules/notification/infrastructure";
-import { makeFileRepo, makeS3Storage } from "@echo/modules/file/infrastructure";
+import {
+  userHasPermission,
+  userHasPermissionInOrganization,
+} from "@echo/modules/user/infrastructure";
+import { makeMailer } from "@echo/adapters/mailer";
+import { makeS3Storage } from "@echo/adapters/s3-storage";
 
 // Singletons — created once at startup
 const { db, pool } = makeDbAdapter(appConfig.db);
@@ -26,21 +26,6 @@ export const makeCreateContext =
       });
       const session = await auth.api.getSession({ headers });
 
-      const health = makeHealthRepo();
-      const invitation = makeInvitationRepo();
-      const organization = makeOrganizationRepo({ auth, headers });
-      const userPermission = makeUserPermissionRepo({
-        auth,
-        userId: session?.user.id,
-        headers,
-      });
-      const notifiers = {
-        email: makeEmailNotifierRepo({
-          mailer: mailer,
-          appBaseUrl: appConfig.appBaseUrl,
-        }),
-      };
-      const fileRepo = makeFileRepo();
       const s3Storage = makeS3Storage(appConfig.s3);
 
       return {
@@ -48,13 +33,12 @@ export const makeCreateContext =
         db,
         pool,
         headers,
-        health,
         logger,
-        invitation,
-        notifiers,
-        userPermission,
-        organization,
-        fileRepo,
+        mailer,
+        userHasPermission: (input) =>
+          userHasPermission({ auth, userId: session?.user.id }, input),
+        userHasPermissionInOrganization: (input) =>
+          userHasPermissionInOrganization({ auth, userId: session?.user.id, headers }, input),
         s3Storage,
       };
     };

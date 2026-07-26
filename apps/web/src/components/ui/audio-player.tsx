@@ -98,68 +98,71 @@ export function AudioPlayer({ src, filename }: AudioPlayerProps) {
   const progress = duration > 0 ? currentTime / duration : 0
 
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon-sm"
-        disabled={status === "loading"}
-        aria-label={isPlaying ? t("Pause") : t("Play")}
-        onClick={togglePlay}
-      >
-        {isPlaying ? <Pause /> : <Play />}
-      </Button>
+    <>
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          disabled={status === "loading"}
+          aria-label={isPlaying ? t("Pause") : t("Play")}
+          onClick={togglePlay}
+        >
+          {isPlaying ? <Pause /> : <Play />}
+        </Button>
 
-      <div
-        ref={waveformRef}
-        data-testid="audio-player-waveform"
-        aria-label={filename}
-        onClick={handleSeek}
-        className="relative h-8 flex-1 cursor-pointer"
-      >
-        {status === "loading" ? (
-          <Skeleton className="h-full w-full" />
-        ) : (
-          <>
-            <div className="flex h-full items-end gap-px">
-              {peaks.map((peak, i) => (
-                <span
-                  key={i}
-                  className="min-w-px flex-1 rounded-full bg-muted-foreground/30"
-                  style={{ height: `${Math.max(peak * 100, 8)}%` }}
-                />
-              ))}
-            </div>
-            <div
-              className="absolute inset-0 flex h-full items-end gap-px"
-              style={{ clipPath: `inset(0 ${100 - progress * 100}% 0 0)` }}
-            >
-              {peaks.map((peak, i) => (
-                <span
-                  key={i}
-                  className="min-w-px flex-1 rounded-full bg-primary"
-                  style={{ height: `${Math.max(peak * 100, 8)}%` }}
-                />
-              ))}
-            </div>
-          </>
-        )}
+        <div
+          ref={waveformRef}
+          data-testid="audio-player-waveform"
+          aria-label={filename}
+          onClick={handleSeek}
+          className="relative h-16 flex-1 cursor-pointer"
+        >
+          {status === "loading" ? (
+            <Skeleton className="h-full w-full" />
+          ) : (
+            <>
+              <div className="flex h-full items-end gap-px">
+                {peaks.map((peak, i) => (
+                  <span
+                    key={i}
+                    className="min-w-px flex-1 rounded-full bg-muted-foreground/30"
+                    style={{ height: `${Math.max(peak * 100, 8)}%` }}
+                  />
+                ))}
+              </div>
+              <div
+                className="absolute inset-0 flex h-full items-end gap-px"
+                style={{ clipPath: `inset(0 ${100 - progress * 100}% 0 0)` }}
+              >
+                {peaks.map((peak, i) => (
+                  <span
+                    key={i}
+                    className="min-w-px flex-1 rounded-full bg-primary"
+                    style={{ height: `${Math.max(peak * 100, 8)}%` }}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <span className="text-xs tabular-nums text-muted-foreground">
+          {formatTime(currentTime)} / {formatTime(duration)}
+        </span>
+
+        <audio
+          ref={audioRef}
+          src={objectUrl ?? undefined}
+          className="hidden"
+          onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+          onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onEnded={() => setIsPlaying(false)}
+        />
+
       </div>
-
-      <span className="text-xs tabular-nums text-muted-foreground">
-        {formatTime(currentTime)} / {formatTime(duration)}
-      </span>
-
-      <audio
-        ref={audioRef}
-        src={objectUrl ?? undefined}
-        className="hidden"
-        onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-        onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-      />
-    </div>
+    </>
   )
 }

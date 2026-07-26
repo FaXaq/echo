@@ -1,8 +1,8 @@
 import type { KyselyDB } from "@echo/db";
-import type { HealthCheckPort } from "../infrastructure/index.js";
+import { checkDbHealth } from "../infrastructure/index.js";
 
-export async function healthCheck(deps: { db: KyselyDB; healthCheck: HealthCheckPort }) {
-  const dbConnected = await deps.healthCheck.check(deps.db);
+export async function healthCheck(deps: { db: KyselyDB }) {
+  const dbConnected = await checkDbHealth(deps.db);
   return {
     status: dbConnected ? "ok" : "degraded",
     db: dbConnected,

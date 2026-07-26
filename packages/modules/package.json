@@ -94,8 +94,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1093.0",
-    "@aws-sdk/s3-request-presigner": "^3.1093.0",
+    "@echo/adapters": "workspace:*",
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
     "@echo/errors": "workspace:*",
@@ -103,13 +102,11 @@
     "@echo/logger": "workspace:*",
     "kysely": "^0.27.6",
     "mjml": "^4.18.0",
-    "nodemailer": "^8.0.11",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@echo/config": "workspace:*",
     "@types/mjml": "^4.7.4",
-    "@types/nodemailer": "^7.0.12",
     "typescript": "^5.9.3",
     "vitest": "^4.1.10"
   }
