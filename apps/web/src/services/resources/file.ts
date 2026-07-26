@@ -16,6 +16,11 @@ export function getEventFilesQueryOptions(opts: { eventId: string }) {
       const [{ params }] = queryKey;
       return apiClient.file.listEventFiles.query(params, { signal });
     },
+    // Presigned download URLs are re-signed on every server call and expire
+    // after an hour; keeping this fresh for a few minutes avoids re-fetching
+    // (and re-decoding) unchanged audio/attachments every time a second
+    // observer (e.g. the edit dialog) mounts on the same query key.
+    staleTime: 5 * 60 * 1000,
   });
 }
 

@@ -112,7 +112,15 @@ export function EventDialog({
   organizationId,
 }: EventDialogProps) {
   const { t } = useTranslation("calendar")
-  const isEdit = state?.mode === "edit"
+
+  // Keep rendering the last non-null state while the dialog plays its close
+  // animation, so the content doesn't flicker/reset before it's done fading out.
+  const [content, setContent] = useState(state)
+  useEffect(() => {
+    if (state !== null) setContent(state)
+  }, [state])
+
+  const isEdit = content?.mode === "edit"
 
   const {
     register,
@@ -123,7 +131,7 @@ export function EventDialog({
     formState: { errors, isSubmitting },
   } = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: stateToDefaultValues(state),
+    defaultValues: stateToDefaultValues(content),
   })
 
   const [isDeleting, setIsDeleting] = useState(false)
@@ -131,7 +139,7 @@ export function EventDialog({
   const allDay = watch("allDay");
 
   useEffect(() => {
-    reset(stateToDefaultValues(state))
+    if (state !== null) reset(stateToDefaultValues(state))
   }, [state, reset])
 
 
@@ -144,7 +152,7 @@ export function EventDialog({
       : dayjs(values.endDate)
 
     await onSubmit({
-      id: isEdit ? state.event.id : crypto.randomUUID(),
+      id: isEdit ? content.event.id : crypto.randomUUID(),
       title: values.title,
       description: values.description || undefined,
       startDate: start.toDate(),
@@ -159,7 +167,7 @@ export function EventDialog({
     e.preventDefault()
     setIsDeleting(true)
     try {
-      await onDelete(state.event.id)
+      await onDelete(content.event.id)
     } finally {
       setIsDeleting(false)
     }
@@ -257,7 +265,7 @@ export function EventDialog({
 
           {isEdit && (
             <div className="mt-4 border-t border-border pt-4">
-              <EventFileAttachments eventId={state.event.id} organizationId={organizationId} />
+              <EventFileAttachments eventId={content.event.id} organizationId={organizationId} />
             </div>
           )}
 
