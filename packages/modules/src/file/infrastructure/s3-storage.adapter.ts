@@ -1,5 +1,6 @@
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -33,6 +34,12 @@ export function makeS3Storage(config: {
         ContentLength: contentLength,
       });
       const url = await getSignedUrl(client, command, { expiresIn: 300 });
+      return { url };
+    },
+
+    createDownloadUrl: async (key: string) => {
+      const command = new GetObjectCommand({ Bucket: config.bucket, Key: key });
+      const url = await getSignedUrl(client, command, { expiresIn: 3600 });
       return { url };
     },
 

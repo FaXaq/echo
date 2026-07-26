@@ -34,6 +34,7 @@ export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
       keys.add(key);
       return { url: `https://fake-s3.local/${key}` };
     },
+    createDownloadUrl: async (key) => ({ url: `https://fake-s3.local/${key}?download` }),
     headObject: async (key) => ({ exists: keys.has(key), sizeBytes: keys.has(key) ? 1 : null }),
     deleteObject: async (key) => {
       keys.delete(key);
