@@ -81,13 +81,13 @@ function OrganizationEventDetailPage() {
         onEdit={() => setDialogState({ mode: 'edit', event: viewEvent })}
         onDelete={() => handleDelete(viewEvent.id)}
         onBack={goBack}
+        organizationId={organizationId}
       />
       <EventDialog
         state={dialogState}
         onOpenChange={(open) => !open && setDialogState(null)}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
-        organizationId={organizationId}
       />
     </div>
   )
