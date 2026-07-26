@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { listEventFiles } from "./list-event-files.js";
-import { makeFakeFileRepo, makeFakeUserPermission } from "./test-fixtures.js";
+import { makeFakeFileRepo, makeFakeS3Storage, makeFakeUserPermission } from "./test-fixtures.js";
 
 const personalFile = {
   id: "file-1",
@@ -24,17 +24,21 @@ const orgFile = {
 };
 
 describe("listEventFiles", () => {
-  it("returns the uploader's own personal file", async () => {
+  it("returns the uploader's own personal file with a downloadUrl", async () => {
     const files = await listEventFiles(
       {
         db: {} as never,
         fileRepo: makeFakeFileRepo([personalFile]),
         userPermission: makeFakeUserPermission(),
+        s3Storage: makeFakeS3Storage(),
       },
       { eventId: "event-1", userId: "user-1" },
     );
 
     expect(files.map((f) => f.id)).toEqual(["file-1"]);
+    expect(files[0].downloadUrl).toBe(
+      "https://fake-s3.local/personal/user-1/file-1/cover.png?download",
+    );
   });
 
   it("excludes another user's personal file when selfRead/read are both denied", async () => {
@@ -45,6 +49,7 @@ describe("listEventFiles", () => {
         userPermission: makeFakeUserPermission({
           userHasPermission: async () => ({ success: false, error: null }),
         }),
+        s3Storage: makeFakeS3Storage(),
       },
       { eventId: "event-1", userId: "someone-else" },
     );
@@ -58,6 +63,7 @@ describe("listEventFiles", () => {
         db: {} as never,
         fileRepo: makeFakeFileRepo([orgFile]),
         userPermission: makeFakeUserPermission(),
+        s3Storage: makeFakeS3Storage(),
       },
       { eventId: "event-1", userId: "user-3" },
     );
@@ -77,6 +83,7 @@ describe("listEventFiles", () => {
             role: null,
           }),
         }),
+        s3Storage: makeFakeS3Storage(),
       },
       { eventId: "event-1", userId: "user-3" },
     );
