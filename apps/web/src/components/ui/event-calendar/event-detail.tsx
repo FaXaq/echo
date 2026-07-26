@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 import { COLOR_LABELS, eventDotClasses } from "./colors"
+import { EventAttachments } from "./event-attachments"
 import type { CalendarEvent } from "./types"
 
 export interface EventDetailProps {
@@ -78,6 +79,8 @@ export function EventDetail({
           <p className="whitespace-pre-wrap">{event.description}</p>
         )}
       </div>
+
+      <EventAttachments eventId={event.id} />
 
       <div className="flex gap-2">
         <Button type="button" onClick={onEdit}>

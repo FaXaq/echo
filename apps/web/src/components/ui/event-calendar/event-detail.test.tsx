@@ -1,10 +1,16 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { EventDetail } from "./event-detail"
 import type { CalendarEvent } from "./types"
+import * as fileResource from "@/services/resources/file"
+
+vi.mock("@/components/ui/audio-player", () => ({
+  AudioPlayer: ({ filename }: { filename: string }) => <div>Player: {filename}</div>,
+}))
 
 function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   return {
@@ -17,16 +23,23 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   }
 }
 
+function renderWithClient(ui: React.ReactElement) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  return render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>)
+}
+
 describe("EventDetail", () => {
+  beforeEach(() => {
+    vi.spyOn(fileResource, "getEventFilesQueryOptions").mockReturnValue({
+      queryKey: ["file", "listEventFiles"],
+      queryFn: async () => [],
+    } as never)
+  })
+
   it("renders the event title and description", () => {
     const event = makeEvent({ description: "Daily sync" })
-    render(
-      <EventDetail
-        event={event}
-        onEdit={vi.fn()}
-        onDelete={vi.fn()}
-        onBack={vi.fn()}
-      />
+    renderWithClient(
+      <EventDetail event={event} onEdit={vi.fn()} onDelete={vi.fn()} onBack={vi.fn()} />
     )
 
     expect(
@@ -38,13 +51,8 @@ describe("EventDetail", () => {
   it("calls onBack when the back button is clicked", async () => {
     const user = userEvent.setup()
     const onBack = vi.fn()
-    render(
-      <EventDetail
-        event={makeEvent()}
-        onEdit={vi.fn()}
-        onDelete={vi.fn()}
-        onBack={onBack}
-      />
+    renderWithClient(
+      <EventDetail event={makeEvent()} onEdit={vi.fn()} onDelete={vi.fn()} onBack={onBack} />
     )
 
     await user.click(screen.getByRole("button", { name: "Back to calendar" }))
@@ -54,13 +62,8 @@ describe("EventDetail", () => {
   it("calls onEdit when the edit button is clicked", async () => {
     const user = userEvent.setup()
     const onEdit = vi.fn()
-    render(
-      <EventDetail
-        event={makeEvent()}
-        onEdit={onEdit}
-        onDelete={vi.fn()}
-        onBack={vi.fn()}
-      />
+    renderWithClient(
+      <EventDetail event={makeEvent()} onEdit={onEdit} onDelete={vi.fn()} onBack={vi.fn()} />
     )
 
     await user.click(screen.getByRole("button", { name: "Edit" }))
@@ -70,13 +73,8 @@ describe("EventDetail", () => {
   it("calls onDelete after confirming in the alert dialog", async () => {
     const user = userEvent.setup()
     const onDelete = vi.fn()
-    render(
-      <EventDetail
-        event={makeEvent()}
-        onEdit={vi.fn()}
-        onDelete={onDelete}
-        onBack={vi.fn()}
-      />
+    renderWithClient(
+      <EventDetail event={makeEvent()} onEdit={vi.fn()} onDelete={onDelete} onBack={vi.fn()} />
     )
 
     await user.click(screen.getByRole("button", { name: "Delete" }))
@@ -86,5 +84,25 @@ describe("EventDetail", () => {
     )
 
     expect(onDelete).toHaveBeenCalledTimes(1)
+  })
+
+  it("renders an AudioPlayer for an attached audio file", async () => {
+    vi.spyOn(fileResource, "getEventFilesQueryOptions").mockReturnValue({
+      queryKey: ["file", "listEventFiles"],
+      queryFn: async () => [
+        {
+          id: "file-1",
+          kind: "audio",
+          originalFilename: "demo.mp3",
+          downloadUrl: "https://example.com/demo.mp3",
+        } as fileResource.EventFile,
+      ],
+    } as never)
+
+    renderWithClient(
+      <EventDetail event={makeEvent()} onEdit={vi.fn()} onDelete={vi.fn()} onBack={vi.fn()} />
+    )
+
+    expect(await screen.findByText("Player: demo.mp3")).toBeInTheDocument()
   })
 })

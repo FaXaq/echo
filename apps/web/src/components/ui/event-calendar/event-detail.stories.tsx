@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import { EventDetail } from "./event-detail"
+import { getEventFilesQueryOptions } from "@/services/resources/file"
+
+function withEmptyFiles() {
+  const queryClient = new QueryClient()
+  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "1" }).queryKey, [])
+  return queryClient
+}
 
 const meta = {
   title: "UI/EventDetail",
@@ -11,9 +19,11 @@ const meta = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div className="w-96">
-        <Story />
-      </div>
+      <QueryClientProvider client={withEmptyFiles()}>
+        <div className="w-96">
+          <Story />
+        </div>
+      </QueryClientProvider>
     ),
   ],
 } satisfies Meta<typeof EventDetail>
