@@ -21,7 +21,9 @@ export function getEventFilesQueryOptions(opts: { eventId: string }) {
 
 export function useUploadFileMutation({
   onSuccess,
-}: { onSuccess?: (file: EventFile) => void } = {}) {
+}: {
+  onSuccess?: (file: RouterOutputs["file"]["confirmUpload"]) => void;
+} = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
