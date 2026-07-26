@@ -253,7 +253,10 @@
     "File is too large": "Le fichier est trop volumineux",
     "Unsupported file type": "Type de fichier non pris en charge",
     "Delete this file?": "Supprimer ce fichier ?",
-    "This will permanently delete the file. This action cannot be undone.": "Cette action supprimera définitivement le fichier. Cette action est irréversible."
+    "This will permanently delete the file. This action cannot be undone.": "Cette action supprimera définitivement le fichier. Cette action est irréversible.",
+    "Gallery": "Galerie",
+    "Previous": "Précédent",
+    "Next": "Suivant"
   },
 
   "emails": {

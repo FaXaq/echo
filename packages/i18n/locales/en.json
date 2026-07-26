@@ -252,7 +252,10 @@
     "File is too large": "File is too large",
     "Unsupported file type": "Unsupported file type",
     "Delete this file?": "Delete this file?",
-    "This will permanently delete the file. This action cannot be undone.": "This will permanently delete the file. This action cannot be undone."
+    "This will permanently delete the file. This action cannot be undone.": "This will permanently delete the file. This action cannot be undone.",
+    "Gallery": "Gallery",
+    "Previous": "Previous",
+    "Next": "Next"
   },
 
   "emails": {
