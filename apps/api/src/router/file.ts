@@ -41,7 +41,7 @@ export const makeFileRouter = () =>
       .input(z.object({ eventId: z.string() }))
       .query(({ ctx, input }) =>
         listEventFiles(
-          { db: ctx.db, fileRepo: ctx.fileRepo, userPermission: ctx.userPermission },
+          { db: ctx.db, fileRepo: ctx.fileRepo, userPermission: ctx.userPermission, s3Storage: ctx.s3Storage },
           { eventId: input.eventId, userId: ctx.session.user.id },
         ),
       ),
