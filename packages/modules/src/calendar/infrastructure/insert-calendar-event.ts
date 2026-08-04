@@ -1,5 +1,5 @@
 import type { KyselyDB } from "@echo/db";
-import type { CalendarEvent, EventColor } from "../domain/index.js";
+import type { CalendarEvent, EventColor, EventPlace } from "../domain/index.js";
 import { toCalendarEvent } from "./map-calendar-event.js";
 
 export async function insertCalendarEvent(
@@ -14,6 +14,7 @@ export async function insertCalendarEvent(
     endDate: Date;
     allDay: boolean;
     color: EventColor;
+    place: EventPlace | null;
   },
 ): Promise<CalendarEvent> {
   const row = await db
@@ -29,6 +30,10 @@ export async function insertCalendarEvent(
       organization_id: input.organizationId,
       created_by: input.userId,
       updated_by: input.userId,
+      place_name: input.place?.name ?? null,
+      place_address: input.place?.address ?? null,
+      place_lat: input.place?.lat ?? null,
+      place_lng: input.place?.lng ?? null,
     })
     .returningAll()
     .executeTakeFirstOrThrow();

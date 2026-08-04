@@ -146,6 +146,7 @@
     "Title": "Titre",
     "Title is required": "Le titre est requis",
     "Description": "Description",
+    "Place": "Lieu",
     "Start": "Début",
     "End": "Fin",
     "All day": "Toute la journée",
@@ -185,7 +186,12 @@
     "Delete this file?": "Supprimer ce fichier ?",
     "This will permanently delete the file. This action cannot be undone.": "Cette action supprimera définitivement le fichier. Cette action est irréversible.",
     "Delete {{filename}}": "Supprimer {{filename}}",
-    "Gallery": "Galerie"
+    "Gallery": "Galerie",
+    "Search for a place": "Rechercher un lieu",
+    "Searching…": "Recherche…",
+    "No places found": "Aucun lieu trouvé",
+    "Clear place": "Effacer le lieu",
+    "Open in Maps": "Ouvrir dans Maps"
   },
 
   "emails": {

@@ -36,6 +36,10 @@ export interface CalendarEvent {
   end_date: Timestamp;
   id: string;
   organization_id: string | null;
+  place_address: string | null;
+  place_lat: number | null;
+  place_lng: number | null;
+  place_name: string | null;
   start_date: Timestamp;
   title: string;
   updated_at: Generated<Timestamp | null>;

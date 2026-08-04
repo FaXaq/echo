@@ -44,9 +44,17 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
+import { PlaceField } from "./place-field"
 import type { CalendarEvent, CalendarEventRange, EventColor } from "./types"
 
 const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm"
+
+const placeSchema = z.object({
+  name: z.string().min(1),
+  address: z.string().min(1),
+  lat: z.number(),
+  lng: z.number(),
+})
 
 const eventFormSchema = z
   .object({
@@ -56,6 +64,7 @@ const eventFormSchema = z
     endDate: z.string().min(1),
     allDay: z.boolean(),
     color: z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]),
+    place: placeSchema.nullable(),
   })
   .refine((data) => dayjs(data.endDate).isAfter(dayjs(data.startDate)), {
     error: "End date must be after start date",
@@ -79,6 +88,7 @@ function stateToDefaultValues(state: EventDialogState): EventFormValues {
       endDate: dayjs(event.endDate).format(DATETIME_FORMAT),
       allDay: !!event.allDay,
       color: event.color,
+      place: event.place,
     }
   }
 
@@ -92,6 +102,7 @@ function stateToDefaultValues(state: EventDialogState): EventFormValues {
     endDate: start.add(1, "hour").format(DATETIME_FORMAT),
     allDay,
     color: "blue",
+    place: null,
   }
 }
 
@@ -156,7 +167,8 @@ export function EventDialog({
       endDate: end.toDate(),
       allDay: values.allDay,
       color: values.color,
-      organizationId: isEdit ? content.event.organizationId : null
+      organizationId: isEdit ? content.event.organizationId : null,
+      place: values.place,
     })
   }
 
@@ -197,6 +209,21 @@ export function EventDialog({
                 {t("Description")}
               </FieldLabel>
               <Textarea id="event-description" {...register("description")} />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="event-place">{t("Place")}</FieldLabel>
+              <Controller
+                name="place"
+                control={control}
+                render={({ field }) => (
+                  <PlaceField
+                    id="event-place"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
             </Field>
 
             <Field orientation="horizontal">

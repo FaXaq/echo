@@ -19,6 +19,8 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     startDate: dayjs().hour(9).minute(0).second(0).millisecond(0).toDate(),
     endDate: dayjs().hour(9).minute(30).second(0).millisecond(0).toDate(),
     color: "blue",
+    organizationId: null,
+    place: null,
     ...overrides,
   }
 }
@@ -46,6 +48,35 @@ describe("EventDetail", () => {
       screen.getByRole("heading", { name: "Standup" })
     ).toBeInTheDocument()
     expect(screen.getByText("Daily sync")).toBeInTheDocument()
+  })
+
+  it("renders the place with an Open in Maps link when set", () => {
+    const event = makeEvent({
+      place: {
+        name: "Le Duplex",
+        address: "42 rue de la République, 69002 Lyon, France",
+        lat: 45.764,
+        lng: 4.8357,
+      },
+    })
+    renderWithClient(
+      <EventDetail event={event} onEdit={vi.fn()} onDelete={vi.fn()} onBack={vi.fn()} />
+    )
+
+    expect(screen.getByText(/Le Duplex/)).toBeInTheDocument()
+    const link = screen.getByRole("link", { name: "Open in Maps" })
+    expect(link).toHaveAttribute(
+      "href",
+      "https://www.google.com/maps/search/?api=1&query=45.764,4.8357"
+    )
+  })
+
+  it("does not render a place link when the event has no place", () => {
+    renderWithClient(
+      <EventDetail event={makeEvent()} onEdit={vi.fn()} onDelete={vi.fn()} onBack={vi.fn()} />
+    )
+
+    expect(screen.queryByRole("link", { name: "Open in Maps" })).not.toBeInTheDocument()
   })
 
   it("calls onBack when the back button is clicked", async () => {

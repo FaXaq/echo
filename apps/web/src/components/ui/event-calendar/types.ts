@@ -6,6 +6,13 @@ export type EventColor =
   | "purple"
   | "orange"
 
+export interface EventPlace {
+  name: string
+  address: string
+  lat: number
+  lng: number
+}
+
 export interface CalendarEvent {
   id: string
   title: string
@@ -15,6 +22,7 @@ export interface CalendarEvent {
   allDay?: boolean
   color: EventColor
   organizationId: string | null;
+  place: EventPlace | null;
 }
 
 export type CalendarView = "month" | "week" | "day" | "agenda"

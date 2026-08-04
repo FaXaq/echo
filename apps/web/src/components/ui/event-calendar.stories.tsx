@@ -33,6 +33,8 @@ function makeSampleEvents(): CalendarEvent[] {
       startDate: today.toDate(),
       endDate: today.add(30, "minute").toDate(),
       color: "blue",
+      organizationId: null,
+      place: null,
     },
     {
       id: "2",
@@ -41,6 +43,8 @@ function makeSampleEvents(): CalendarEvent[] {
       startDate: today.add(2, "hour").toDate(),
       endDate: today.add(3, "hour").toDate(),
       color: "purple",
+      organizationId: null,
+      place: null,
     },
     {
       id: "3",
@@ -48,6 +52,8 @@ function makeSampleEvents(): CalendarEvent[] {
       startDate: today.add(4, "hour").toDate(),
       endDate: today.add(5, "hour").toDate(),
       color: "green",
+      organizationId: null,
+      place: null,
     },
     {
       id: "4",
@@ -56,6 +62,8 @@ function makeSampleEvents(): CalendarEvent[] {
       startDate: today.startOf("day").toDate(),
       endDate: today.add(2, "day").endOf("day").toDate(),
       color: "orange",
+      organizationId: null,
+      place: null,
     },
     {
       id: "5",
@@ -63,6 +71,8 @@ function makeSampleEvents(): CalendarEvent[] {
       startDate: today.add(1, "day").hour(11).minute(0).toDate(),
       endDate: today.add(1, "day").hour(11).minute(30).toDate(),
       color: "red",
+      organizationId: null,
+      place: null,
     },
     {
       id: "6",
@@ -70,6 +80,8 @@ function makeSampleEvents(): CalendarEvent[] {
       startDate: today.add(3, "day").hour(14).minute(0).toDate(),
       endDate: today.add(3, "day").hour(15).minute(0).toDate(),
       color: "yellow",
+      organizationId: null,
+      place: null,
     },
   ];
 }
@@ -85,6 +97,8 @@ function makeOverflowEvents(): CalendarEvent[] {
     color: (["blue", "green", "red", "yellow", "purple", "orange"] as const)[
       i % 6
     ],
+    organizationId: null,
+    place: null,
   }));
 }
 

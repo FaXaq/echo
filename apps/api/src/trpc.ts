@@ -8,6 +8,7 @@ import type {
   CheckUserPermission,
 } from "@echo/modules/user/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import type { GeocodingPort } from "@echo/adapters/geocoding";
 import type { MailerPort } from "@echo/adapters/mailer";
 import { appErrorToTRPC } from "./lib/errors";
 
@@ -21,6 +22,7 @@ export type Context = {
   userHasPermission: CheckUserPermission;
   userHasPermissionInOrganization: CheckOrganizationPermission;
   s3Storage: S3StoragePort;
+  geocoding: GeocodingPort;
 };
 
 const t = initTRPC.context<Context>().create();

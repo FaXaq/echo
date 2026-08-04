@@ -77,6 +77,20 @@ export function EventDetail({
           {start === end ? start : `${start} – ${end}`}
         </p>
 
+        {event.place && (
+          <p className="text-sm text-muted-foreground">
+            {event.place.name} — {event.place.address}{" "}
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${event.place.lat},${event.place.lng}`}
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              {t("Open in Maps")}
+            </a>
+          </p>
+        )}
+
         {event.description && (
           <p className="whitespace-pre-wrap">{event.description}</p>
         )}

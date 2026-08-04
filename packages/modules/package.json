@@ -86,6 +86,14 @@
     "./file/app": {
       "types": "./src/file/app/index.ts",
       "default": "./src/file/app/index.ts"
+    },
+    "./place/domain": {
+      "types": "./src/place/domain/index.ts",
+      "default": "./src/place/domain/index.ts"
+    },
+    "./place/app": {
+      "types": "./src/place/app/index.ts",
+      "default": "./src/place/app/index.ts"
     }
   },
   "scripts": {

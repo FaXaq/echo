@@ -12,6 +12,15 @@ const eventInput = {
   endDate: z.coerce.date(),
   allDay: z.boolean().optional(),
   color: colorSchema,
+  place: z
+    .object({
+      name: z.string().min(1),
+      address: z.string().min(1),
+      lat: z.number().min(-90).max(90),
+      lng: z.number().min(-180).max(180),
+    })
+    .nullable()
+    .optional(),
 };
 
 export const makeCalendarRouter = () =>

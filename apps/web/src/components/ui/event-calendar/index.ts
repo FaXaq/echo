@@ -6,4 +6,5 @@ export type {
   CalendarEventRange,
   CalendarView,
   EventColor,
+  EventPlace,
 } from "./types"

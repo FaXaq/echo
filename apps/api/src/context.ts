@@ -10,11 +10,13 @@ import {
 } from "@echo/modules/user/infrastructure";
 import { makeMailer } from "@echo/adapters/mailer";
 import { makeS3Storage } from "@echo/adapters/s3-storage";
+import { makeGeocoding } from "@echo/adapters/geocoding";
 
 // Singletons — created once at startup
 const { db, pool } = makeDbAdapter(appConfig.db);
 const logger = makeLogger();
 const mailer = makeMailer(appConfig.mailer);
+const geocoding = makeGeocoding(appConfig.mapbox);
 
 export const makeCreateContext =
   (auth: ServerAuth) =>
@@ -40,5 +42,6 @@ export const makeCreateContext =
         userHasPermissionInOrganization: (input) =>
           userHasPermissionInOrganization({ auth, userId: session?.user.id, headers }, input),
         s3Storage,
+        geocoding,
       };
     };

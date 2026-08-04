@@ -38,7 +38,8 @@ const baseEvent = {
   startDate: new Date("2026-08-03T09:00:00"),
   endDate: new Date("2026-08-03T09:30:00"),
   color: "blue",
-  organizationId: null
+  organizationId: null,
+  place: null,
 } as const
 
 export const Default: Story = {
@@ -68,6 +69,23 @@ export const AllDay: Story = {
 export const NoDescription: Story = {
   args: {
     event: { ...baseEvent, description: undefined, color: "green" },
+    onEdit: () => {},
+    onDelete: () => {},
+    onBack: () => {},
+  },
+}
+
+export const WithPlace: Story = {
+  args: {
+    event: {
+      ...baseEvent,
+      place: {
+        name: "Le Duplex",
+        address: "42 rue de la République, 69002 Lyon, France",
+        lat: 45.764,
+        lng: 4.8357,
+      },
+    },
     onEdit: () => {},
     onDelete: () => {},
     onBack: () => {},

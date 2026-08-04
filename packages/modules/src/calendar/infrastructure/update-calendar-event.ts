@@ -1,5 +1,5 @@
 import type { KyselyDB } from "@echo/db";
-import type { CalendarEvent, EventColor } from "../domain/index.js";
+import type { CalendarEvent, EventColor, EventPlace } from "../domain/index.js";
 import { toCalendarEvent } from "./map-calendar-event.js";
 
 export async function updateCalendarEvent(
@@ -14,6 +14,7 @@ export async function updateCalendarEvent(
     endDate: Date;
     allDay: boolean;
     color: EventColor;
+    place: EventPlace | null;
   },
 ): Promise<CalendarEvent | null> {
   let query = db
@@ -27,6 +28,10 @@ export async function updateCalendarEvent(
       color: input.color,
       updated_by: input.userId,
       updated_at: new Date(),
+      place_name: input.place?.name ?? null,
+      place_address: input.place?.address ?? null,
+      place_lat: input.place?.lat ?? null,
+      place_lng: input.place?.lng ?? null,
     })
     .where("id", "=", input.id);
 

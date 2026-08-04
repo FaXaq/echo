@@ -215,6 +215,7 @@
     "Title": "Title",
     "Title is required": "Title is required",
     "Description": "Description",
+    "Place": "Place",
     "Start": "Start",
     "End": "End",
     "All day": "All day",
@@ -254,7 +255,12 @@
     "Delete this file?": "Delete this file?",
     "This will permanently delete the file. This action cannot be undone.": "This will permanently delete the file. This action cannot be undone.",
     "Delete {{filename}}": "Delete {{filename}}",
-    "Gallery": "Gallery"
+    "Gallery": "Gallery",
+    "Search for a place": "Search for a place",
+    "Searching…": "Searching…",
+    "No places found": "No places found",
+    "Clear place": "Clear place",
+    "Open in Maps": "Open in Maps"
   },
 
   "emails": {

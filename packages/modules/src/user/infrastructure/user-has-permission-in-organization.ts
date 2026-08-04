@@ -25,18 +25,22 @@ export async function userHasPermissionInOrganization(
 
   const activeOrganization = await deps.auth.api.getFullOrganization({ headers: deps.headers });
 
-  if (activeOrganization?.id !== input.organizationId) {
+  if (activeOrganization && activeOrganization.id !== input.organizationId) {
     return { success: false, error: null, role: null };
   }
+
+  const organizationId = input.organizationId ?? activeOrganization?.id;
 
   const { success, error } = await deps.auth.api.hasPermission({
     headers: deps.headers,
     body: {
       permissions: input.permissions ?? {},
+      organizationId
     },
   });
 
-  const { role } = await deps.auth.api.getActiveMemberRole({ headers: deps.headers });
+
+  const { role } = await deps.auth.api.getActiveMemberRole({ headers: deps.headers, query: { organizationId } });
 
   return { success, error, role };
 }

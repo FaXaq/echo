@@ -1,4 +1,4 @@
-import type { CalendarEvent as ViewEvent } from "@/ui/event-calendar";
+import type { CalendarEvent as ViewEvent, EventPlace } from "@/ui/event-calendar";
 import type { CalendarEvent as ApiEvent } from "@/services/resources/calendar";
 
 export function toViewEvent(event: ApiEvent): ViewEvent {
@@ -10,7 +10,8 @@ export function toViewEvent(event: ApiEvent): ViewEvent {
     endDate: new Date(event.endDate),
     allDay: event.allDay,
     color: event.color,
-    organizationId: event.organizationId
+    organizationId: event.organizationId,
+    place: event.place,
   };
 }
 
@@ -22,6 +23,7 @@ export type EventFormValues = {
   allDay?: boolean;
   color: ViewEvent["color"];
   organizationId?: string;
+  place: EventPlace | null;
 };
 
 export function fromViewEvent(event: ViewEvent): EventFormValues {
@@ -32,6 +34,7 @@ export function fromViewEvent(event: ViewEvent): EventFormValues {
     endDate: event.endDate,
     allDay: event.allDay,
     color: event.color,
-    organizationId: event.organizationId ?? undefined
+    organizationId: event.organizationId ?? undefined,
+    place: event.place,
   };
 }

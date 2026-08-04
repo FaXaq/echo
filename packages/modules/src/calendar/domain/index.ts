@@ -9,6 +9,13 @@ export const EVENT_COLORS: EventColor[] = [
   "orange",
 ];
 
+export type EventPlace = {
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+};
+
 export type CalendarEvent = {
   id: string;
   title: string;
@@ -20,6 +27,7 @@ export type CalendarEvent = {
   organizationId: string | null;
   createdBy: string;
   updatedBy: string | null;
+  place: EventPlace | null;
 };
 
 export function isValidEventRange(startDate: Date, endDate: Date): boolean {
