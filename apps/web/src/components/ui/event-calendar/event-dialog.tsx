@@ -44,6 +44,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
+import { OrganizationField } from "./organization-field"
 import { PlaceField } from "./place-field"
 import type { CalendarEvent, CalendarEventRange, EventColor } from "./types"
 
@@ -65,6 +66,7 @@ const eventFormSchema = z
     allDay: z.boolean(),
     color: z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]),
     place: placeSchema.nullable(),
+    organizationId: z.string().nullable(),
   })
   .refine((data) => dayjs(data.endDate).isAfter(dayjs(data.startDate)), {
     error: "End date must be after start date",
@@ -88,6 +90,7 @@ function stateToDefaultValues(state: EventDialogState): EventFormValues {
       endDate: dayjs(event.endDate).format(DATETIME_FORMAT),
       allDay: !!event.allDay,
       color: event.color,
+      organizationId: event.organizationId,
       place: event.place,
     }
   }
@@ -102,6 +105,7 @@ function stateToDefaultValues(state: EventDialogState): EventFormValues {
     endDate: start.add(1, "hour").format(DATETIME_FORMAT),
     allDay,
     color: "blue",
+    organizationId: null,
     place: null,
   }
 }
@@ -167,7 +171,7 @@ export function EventDialog({
       endDate: end.toDate(),
       allDay: values.allDay,
       color: values.color,
-      organizationId: isEdit ? content.event.organizationId : null,
+      organizationId: values.organizationId,
       place: values.place,
     })
   }
@@ -225,6 +229,25 @@ export function EventDialog({
                 )}
               />
             </Field>
+
+            {!isEdit && (
+              <Field>
+                <FieldLabel htmlFor="event-organization">
+                  {t("Organization")}
+                </FieldLabel>
+                <Controller
+                  name="organizationId"
+                  control={control}
+                  render={({ field }) => (
+                    <OrganizationField
+                      id="event-organization"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </Field>
+            )}
 
             <Field orientation="horizontal">
               <FieldLabel htmlFor="event-start">{t("Start")}</FieldLabel>

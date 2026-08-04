@@ -1,10 +1,17 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { EventCalendar } from "./event-calendar"
 import type { CalendarEvent } from "./types"
+import * as organizationResource from "@/services/resources/organization"
+
+const sampleOrganizations = [
+  { id: "org-1", name: "Acme Inc" },
+  { id: "org-2", name: "Beta Co" },
+]
 
 function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   return {
@@ -19,9 +26,21 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   }
 }
 
+function renderWithClient(ui: React.ReactElement) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  return render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>)
+}
+
 describe("EventCalendar", () => {
+  beforeEach(() => {
+    vi.spyOn(organizationResource, "selfListOrganizations").mockReturnValue({
+      queryKey: ["organization", "selfList"],
+      queryFn: async () => sampleOrganizations,
+    } as never)
+  })
+
   it("renders in month view by default", () => {
-    render(<EventCalendar events={[makeEvent()]} />)
+    renderWithClient(<EventCalendar events={[makeEvent()]} />)
     expect(screen.getByText("Standup")).toBeInTheDocument()
     expect(
       screen.getByRole("tab", { name: "Month", selected: true })
@@ -30,7 +49,7 @@ describe("EventCalendar", () => {
 
   it("switches views via the tab list", async () => {
     const user = userEvent.setup()
-    render(<EventCalendar events={[makeEvent()]} />)
+    renderWithClient(<EventCalendar events={[makeEvent()]} />)
 
     await user.click(screen.getByRole("tab", { name: "Week" }))
 
@@ -41,7 +60,7 @@ describe("EventCalendar", () => {
 
   it("navigates to the next month and back to today", async () => {
     const user = userEvent.setup()
-    render(<EventCalendar events={[]} />)
+    renderWithClient(<EventCalendar events={[]} />)
 
     const initialTitle = screen.getByRole("heading", { level: 2 }).textContent
     await user.click(screen.getByRole("button", { name: "Next" }))
@@ -58,7 +77,7 @@ describe("EventCalendar", () => {
 
   it("navigates to the next month in agenda view", async () => {
     const user = userEvent.setup()
-    render(<EventCalendar events={[]} />)
+    renderWithClient(<EventCalendar events={[]} />)
 
     await user.click(screen.getByRole("tab", { name: "Agenda" }))
     const initialTitle = screen.getByRole("heading", { level: 2 }).textContent
@@ -74,7 +93,7 @@ describe("EventCalendar", () => {
     const user = userEvent.setup()
     const onEventClick = vi.fn()
     const event = makeEvent()
-    render(<EventCalendar events={[event]} onEventClick={onEventClick} />)
+    renderWithClient(<EventCalendar events={[event]} onEventClick={onEventClick} />)
 
     await user.click(screen.getByText("Standup"))
 
@@ -85,7 +104,7 @@ describe("EventCalendar", () => {
   it("validates and creates a new event from the New event dialog", async () => {
     const user = userEvent.setup()
     const onEventCreate = vi.fn()
-    render(<EventCalendar events={[]} onEventCreate={onEventCreate} />)
+    renderWithClient(<EventCalendar events={[]} onEventCreate={onEventCreate} />)
 
     await user.click(screen.getByRole("button", { name: /New event/i }))
     const dialog = screen.getByRole("dialog")
@@ -100,6 +119,29 @@ describe("EventCalendar", () => {
     await user.click(within(dialog).getByRole("button", { name: "Save" }))
 
     expect(onEventCreate).toHaveBeenCalledTimes(1)
-    expect(onEventCreate.mock.calls[0]![0]).toMatchObject({ title: "Retro" })
+    expect(onEventCreate.mock.calls[0]![0]).toMatchObject({
+      title: "Retro",
+      organizationId: null,
+    })
+  })
+
+  it("lets the user attach an organization when creating an event", async () => {
+    const user = userEvent.setup()
+    const onEventCreate = vi.fn()
+    renderWithClient(<EventCalendar events={[]} onEventCreate={onEventCreate} />)
+
+    await user.click(screen.getByRole("button", { name: /New event/i }))
+    const dialog = screen.getByRole("dialog")
+
+    await user.type(within(dialog).getByLabelText("Title"), "Board sync")
+    await user.click(within(dialog).getByLabelText("Organization"))
+    await user.click(await screen.findByRole("option", { name: "Beta Co" }))
+    await user.click(within(dialog).getByRole("button", { name: "Save" }))
+
+    expect(onEventCreate).toHaveBeenCalledTimes(1)
+    expect(onEventCreate.mock.calls[0]![0]).toMatchObject({
+      title: "Board sync",
+      organizationId: "org-2",
+    })
   })
 })
