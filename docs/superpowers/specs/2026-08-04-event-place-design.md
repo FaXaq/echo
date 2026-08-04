@@ -9,7 +9,7 @@ Events (`calendar_event`) currently have no notion of where they happen. Users w
 - Creating/editing an event lets the user search for a place by typing (name or address); results come from Mapbox and are shown as a dropdown of suggestions.
 - Picking a suggestion attaches that place (name, formatted address, coordinates) to the event. The field is optional — an event can have no place.
 - Viewing an event shows the place as text (name + address) with an "Open in Maps" link. No embedded map.
-- Geocoding/search is proxied through the backend (not called from the browser), via a new shared `GeocodingPort`, so the Mapbox secret token never reaches the client and the capability is reusable outside the calendar module.
+- Geocoding/search is proxied through the backend (not called from the browser), via a new shared `GeocodingPort` and a standalone `place` module/router/resource (not owned by calendar), so the Mapbox secret token never reaches the client and the capability is reusable outside the calendar feature.
 
 ## Data model
 
@@ -66,25 +66,38 @@ Following the existing `mailer` / `s3-storage` pattern (not the module-local `in
 - `apps/api/src/context.ts` — `const geocoding = makeGeocoding(appConfig.mapbox)` (module-level singleton, same as `mailer`), added to the returned `Context`.
 - `apps/api/src/trpc.ts` — `Context` type gains `geocoding: GeocodingPort`.
 
-### Calendar app layer
+### New `place` module (`packages/modules/src/place/`)
 
-- `packages/modules/src/calendar/app/search-places.ts`:
+Place search is its own domain area — reused wherever addresses are needed, not owned by calendar. New module following the standard `domain`/`app`/`infrastructure` layout, though thin for now:
+
+- `domain/index.ts` — `export type Place = { name: string; address: string; lat: number; lng: number }` (the domain-facing shape; `GeocodedPlace` in the adapter port stays the external-facing name, mapped 1:1).
+- `app/search-places.ts`:
   ```ts
   export async function searchPlaces(
     deps: { geocoding: GeocodingPort },
     input: { query: string },
-  ) {
+  ): Promise<Place[]> {
     return deps.geocoding.searchPlaces(input.query);
   }
   ```
   Thin pass-through, kept as a use case (not called directly from the router) to stay consistent with "procedures call use cases from `@echo/app`". No auth/permission check beyond `authedProcedure` — search results aren't scoped to an organization or sensitive.
-- Exported from `calendar/app/index.ts`.
-- `createEvent` / `updateEvent` use cases gain an optional `place` field on their input, passed straight through to `insertCalendarEvent` / `updateCalendarEvent` (`calendar/infrastructure/`). No validation beyond what zod does at the router boundary (lat/lng ranges) — the use case trusts the caller since the place always originates from a prior `searchPlaces` result, never freehand input.
+- `app/index.ts` — barrel, exports `searchPlaces`.
 
-### Router (`apps/api/src/router/calendar.ts`)
+`createEvent` / `updateEvent` (in `calendar/app/`) gain an optional `place` field on their input, typed against `Place` from `@echo/modules/place/domain`, passed straight through to `insertCalendarEvent` / `updateCalendarEvent` (`calendar/infrastructure/`). No validation beyond what zod does at the router boundary (lat/lng ranges) — the use case trusts the caller since the place always originates from a prior `searchPlaces` result, never freehand input.
 
-- `searchPlaces: authedProcedure.input(z.object({ query: z.string().min(1) })).query(...)`.
-- `eventInput` gains:
+### Routers
+
+- New `apps/api/src/router/place.ts`:
+  ```ts
+  export const makePlaceRouter = () =>
+    router({
+      searchPlaces: authedProcedure
+        .input(z.object({ query: z.string().min(1) }))
+        .query(({ ctx, input }) => searchPlaces({ geocoding: ctx.geocoding }, input)),
+    });
+  ```
+  Wired into `apps/api/src/router/index.ts` as `place: makePlaceRouter()`, alongside `calendar`.
+- `apps/api/src/router/calendar.ts` — unchanged except `eventInput` gains:
   ```ts
   place: z.object({
     name: z.string().min(1),
@@ -93,7 +106,7 @@ Following the existing `mailer` / `s3-storage` pattern (not the module-local `in
     lng: z.number().min(-180).max(180),
   }).nullable().optional(),
   ```
-  applied to both `createEvent` and `updateEvent`.
+  applied to both `createEvent` and `updateEvent`. Calendar's router only carries the *stored* place shape on events — it never calls `searchPlaces` itself.
 
 ### Infrastructure (`calendar/infrastructure/`)
 
@@ -101,10 +114,15 @@ Following the existing `mailer` / `s3-storage` pattern (not the module-local `in
 
 ## Frontend
 
+### New `apps/web/src/services/resources/place.ts`
+
+Mirrors the shape of `calendar.ts` (`initResourceKey("place")`), kept separate since it's a distinct resource:
+
+- `useSearchPlacesQuery` (or a plain debounced-fetch hook) wrapping `apiClient.place.searchPlaces.query`. Given free-text search-as-you-type, this is called imperatively/debounced from the combobox component rather than as a standing `useQuery` subscription — exact hook shape decided during implementation.
+
 ### `apps/web/src/services/resources/calendar.ts`
 
-- `useSearchPlacesQuery` (or a plain debounced-fetch hook) wrapping `apiClient.calendar.searchPlaces.query`. Given free-text search-as-you-type, this is called imperatively/debounced from the combobox component rather than as a standing `useQuery` subscription — exact hook shape decided during implementation.
-- `CreateEventInput` / `UpdateEventInput` types pick up `place` automatically via `RouterInputs`.
+- No changes to the resource file itself — `CreateEventInput` / `UpdateEventInput` types pick up the new `place` field automatically via `RouterInputs`, since it's already derived from the router types.
 
 ### `EventDialog` (`apps/web/src/components/ui/event-calendar/event-dialog.tsx`)
 
@@ -118,14 +136,14 @@ Following the existing `mailer` / `s3-storage` pattern (not the module-local `in
 
 ## Error handling
 
-- Mapbox request failures in `makeGeocoding` (network error, non-2xx) are caught in the adapter and re-thrown via `unknownError(message)` from `@echo/errors`, per the project's rule that adapters never let raw errors cross their boundary. This reaches the tRPC boundary through `search-places.ts` unchanged and is converted by the existing `appErrorToTRPC` catch-all (`UNKNOWN` → `INTERNAL_SERVER_ERROR`) — no new error type or `case` needed in `apps/api/src/lib/errors.ts`.
+- Mapbox request failures in `makeGeocoding` (network error, non-2xx) are caught in the adapter and re-thrown via `unknownError(message)` from `@echo/errors`, per the project's rule that adapters never let raw errors cross their boundary. This reaches the tRPC boundary through `place/app/search-places.ts` unchanged and is converted by the existing `appErrorToTRPC` catch-all (`UNKNOWN` → `INTERNAL_SERVER_ERROR`) — no new error type or `case` needed in `apps/api/src/lib/errors.ts`.
 - On the frontend, a failed search leaves the dropdown empty (no results) rather than surfacing a hard error, so the user can keep typing or retry.
 - No results for a query → empty dropdown, no error state.
 
 ## Testing
 
 - `packages/adapters/src/geocoding/` — unit test `makeGeocoding` against a mocked `fetch`, covering a successful search and an empty-query short-circuit.
-- `packages/modules/src/calendar/app/search-places.test.ts` — trivial pass-through test with a fake `GeocodingPort`.
+- `packages/modules/src/place/app/search-places.test.ts` — trivial pass-through test with a fake `GeocodingPort`.
 - `createEvent`/`updateEvent` app tests — extend existing fakes to cover round-tripping `place` (set, null, omitted).
 - `apps/web/.../event-dialog.test.tsx` (if one exists at implementation time, else new) — combobox search + select + clear, mocking the `searchPlaces` query.
 - `event-detail.test.tsx` — extend to cover the "Open in Maps" link rendering when `place` is set and absence when `null`.
