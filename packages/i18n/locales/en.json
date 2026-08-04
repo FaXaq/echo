@@ -260,7 +260,9 @@
     "Searching…": "Searching…",
     "No places found": "No places found",
     "Clear place": "Clear place",
-    "Open in Maps": "Open in Maps"
+    "Open in Maps": "Open in Maps",
+    "Organization": "Organization",
+    "No organization": "No organization"
   },
 
   "emails": {

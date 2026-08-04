@@ -191,7 +191,9 @@
     "Searching…": "Recherche…",
     "No places found": "Aucun lieu trouvé",
     "Clear place": "Effacer le lieu",
-    "Open in Maps": "Ouvrir dans Maps"
+    "Open in Maps": "Ouvrir dans Maps",
+    "Organization": "Organisation",
+    "No organization": "Aucune organisation"
   },
 
   "emails": {
