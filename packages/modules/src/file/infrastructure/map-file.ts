@@ -9,6 +9,7 @@ export type FileRow = {
   mime_type: string;
   size_bytes: number;
   original_filename: string;
+  uploadedByName: string | null;
   s3_key: string;
   status: string;
 };
@@ -29,6 +30,7 @@ export function toFileRecord(row: FileRow): FileRecord {
     eventId: row.event_id,
     organizationId: row.organization_id,
     uploadedBy: row.uploaded_by,
+    uploadedByName: row.uploadedByName ?? row.uploaded_by,
     kind: toFileKind(row.kind),
     mimeType: row.mime_type,
     sizeBytes: row.size_bytes,

@@ -2,10 +2,11 @@ import type { KyselyDB } from "@echo/db";
 import type { CalendarEvent, EventColor } from "../domain/index.js";
 import { toCalendarEvent } from "./map-calendar-event.js";
 
-export async function updateUserCalendarEvent(
+export async function insertCalendarEvent(
   db: KyselyDB,
   input: {
     id: string;
+    organizationId: string | null;
     userId: string;
     title: string;
     description: string | null;
@@ -14,24 +15,23 @@ export async function updateUserCalendarEvent(
     allDay: boolean;
     color: EventColor;
   },
-): Promise<CalendarEvent | null> {
+): Promise<CalendarEvent> {
   const row = await db
-    .updateTable("calendar_event")
-    .set({
+    .insertInto("calendar_event")
+    .values({
+      id: input.id,
       title: input.title,
       description: input.description,
       start_date: input.startDate,
       end_date: input.endDate,
       all_day: input.allDay,
       color: input.color,
+      organization_id: input.organizationId,
+      created_by: input.userId,
       updated_by: input.userId,
-      updated_at: new Date(),
     })
-    .where("id", "=", input.id)
-    .where("organization_id", "is", null)
-    .where("created_by", "=", input.userId)
     .returningAll()
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 
-  return row ? toCalendarEvent(row) : null;
+  return toCalendarEvent(row);
 }

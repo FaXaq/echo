@@ -5,10 +5,10 @@ import { useQuery } from '@tanstack/react-query'
 import { EventCalendar } from '@/ui/event-calendar'
 import type { CalendarEvent as ViewEvent } from '@/ui/event-calendar'
 import {
-  getOrganizationEventsQueryOptions,
-  useCreateOrganizationEventMutation,
-  useUpdateOrganizationEventMutation,
-  useDeleteOrganizationEventMutation,
+  getEventsQueryOptions,
+  useCreateEventMutation,
+  useUpdateEventMutation,
+  useDeleteEventMutation,
 } from '@/services/resources/calendar'
 import { toViewEvent, fromViewEvent } from '@/lib/calendar-events'
 
@@ -24,11 +24,11 @@ function OrganizationCalendarPage() {
   const { organizationId } = Route.useRouteContext()
   const { organizationSlug } = Route.useParams()
   const navigate = useNavigate()
-  const { data: events = [] } = useQuery(getOrganizationEventsQueryOptions({ organizationId }))
+  const { data: events = [] } = useQuery(getEventsQueryOptions({ organizationId }))
 
-  const createEventMutation = useCreateOrganizationEventMutation({ organizationId })
-  const updateEventMutation = useUpdateOrganizationEventMutation({ organizationId })
-  const deleteEventMutation = useDeleteOrganizationEventMutation({ organizationId })
+  const createEventMutation = useCreateEventMutation({ organizationId })
+  const updateEventMutation = useUpdateEventMutation({ organizationId })
+  const deleteEventMutation = useDeleteEventMutation({ organizationId })
 
   const handleEventCreate = async (event: ViewEvent) => {
     await createEventMutation.mutateAsync(fromViewEvent(event))

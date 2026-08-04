@@ -149,6 +149,7 @@ function AlertDialogCancel({
   ...props
 }: React.ComponentProps<"button">) {
   return (
+    <AlertDialogPrimitive.AlertDialogCancel>
     <button
       data-slot="alert-dialog-cancel"
       onClick={onClick}
@@ -160,6 +161,7 @@ function AlertDialogCancel({
     >
       {children}
     </button>
+    </AlertDialogPrimitive.AlertDialogCancel>
   )
 }
 

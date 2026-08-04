@@ -1,15 +1,6 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../trpc";
-import {
-  createUserEvent,
-  createOrganizationEvent,
-  listUserEvents,
-  listOrganizationEvents,
-  updateUserEvent,
-  updateOrganizationEvent,
-  deleteUserEvent,
-  deleteOrganizationEvent,
-} from "@echo/modules/calendar/app";
+import { createEvent, listEvents, updateEvent, deleteEvent } from "@echo/modules/calendar/app";
 import { EVENT_COLORS, type EventColor } from "@echo/modules/calendar/domain";
 
 const colorSchema = z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]);
@@ -25,73 +16,55 @@ const eventInput = {
 
 export const makeCalendarRouter = () =>
   router({
-    listUserEvents: authedProcedure.query(({ ctx }) =>
-      listUserEvents({ db: ctx.db }, { userId: ctx.session.user.id }),
-    ),
-
-    listOrganizationEvents: authedProcedure
-      .input(z.object({ organizationId: z.string() }))
+    listEvents: authedProcedure
+      .input(z.object({ organizationId: z.string().optional() }))
       .query(({ ctx, input }) =>
-        listOrganizationEvents(
+        listEvents(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
-          { organizationId: input.organizationId, userId: ctx.session.user.id },
+          { organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
       ),
 
-    createUserEvent: authedProcedure
-      .input(z.object(eventInput))
+    createEvent: authedProcedure
+      .input(z.object({ organizationId: z.string().optional(), ...eventInput }))
       .mutation(({ ctx, input }) =>
-        createUserEvent({ db: ctx.db }, { userId: ctx.session.user.id, ...input }),
-      ),
-
-    createOrganizationEvent: authedProcedure
-      .input(z.object({ organizationId: z.string(), ...eventInput }))
-      .mutation(({ ctx, input }) =>
-        createOrganizationEvent(
+        createEvent(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
-          { userId: ctx.session.user.id, ...input },
+          { ...input, organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
       ),
 
-    updateUserEvent: authedProcedure
-      .input(z.object({ id: z.string(), ...eventInput }))
+    updateEvent: authedProcedure
+      .input(z.object({ id: z.string(), organizationId: z.string().optional(), ...eventInput }))
       .mutation(({ ctx, input }) =>
-        updateUserEvent({ db: ctx.db }, { userId: ctx.session.user.id, ...input }),
-      ),
-
-    updateOrganizationEvent: authedProcedure
-      .input(z.object({ id: z.string(), organizationId: z.string(), ...eventInput }))
-      .mutation(({ ctx, input }) =>
-        updateOrganizationEvent(
+        updateEvent(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
-          { userId: ctx.session.user.id, ...input },
+          { ...input, organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
       ),
 
-    deleteUserEvent: authedProcedure
-      .input(z.object({ id: z.string() }))
+    deleteEvent: authedProcedure
+      .input(z.object({ id: z.string(), organizationId: z.string().optional() }))
       .mutation(({ ctx, input }) =>
-        deleteUserEvent({ db: ctx.db }, { id: input.id, userId: ctx.session.user.id }),
-      ),
-
-    deleteOrganizationEvent: authedProcedure
-      .input(z.object({ id: z.string(), organizationId: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteOrganizationEvent(
+        deleteEvent(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
-          { id: input.id, organizationId: input.organizationId, userId: ctx.session.user.id },
+          {
+            id: input.id,
+            organizationId: input.organizationId ?? null,
+            userId: ctx.session.user.id,
+          },
         ),
       ),
   });

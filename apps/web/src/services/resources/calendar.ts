@@ -7,56 +7,31 @@ const { key, getResourceKey } = initResourceKey("calendar");
 
 export { key };
 
-export type CalendarEvent = RouterOutputs["calendar"]["listUserEvents"][number];
+export type CalendarEvent = RouterOutputs["calendar"]["listEvents"][number];
 
-export function getUserEventsQueryOptions() {
+export function getEventsQueryOptions(opts: { organizationId?: string } = {}) {
   return queryOptions({
-    queryKey: getResourceKey("listUserEvents", undefined),
-    queryFn: ({ signal }) => apiClient.calendar.listUserEvents.query(undefined, { signal }),
-  });
-}
-
-export function getOrganizationEventsQueryOptions(opts: { organizationId: string }) {
-  return queryOptions({
-    queryKey: getResourceKey("listOrganizationEvents", opts),
+    queryKey: getResourceKey("listEvents", opts),
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
-      return apiClient.calendar.listOrganizationEvents.query(params, { signal });
+      return apiClient.calendar.listEvents.query(params, { signal });
     },
   });
 }
 
-export type CreateUserEventInput = RouterInputs["calendar"]["createUserEvent"];
-export function useCreateUserEventMutation({
-  onSuccess,
-}: { onSuccess?: (event: CalendarEvent) => void } = {}) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: CreateUserEventInput) => apiClient.calendar.createUserEvent.mutate(input),
-    onSuccess: async (result) => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onSuccess?.(result);
-    },
-  });
-}
-
-export type CreateOrganizationEventInput = Omit<
-  RouterInputs["calendar"]["createOrganizationEvent"],
-  "organizationId"
->;
-export function useCreateOrganizationEventMutation({
+export type CreateEventInput = RouterInputs["calendar"]["createEvent"];
+export function useCreateEventMutation({
   organizationId,
   onSuccess,
 }: {
-  organizationId: string;
+  organizationId?: string;
   onSuccess?: (event: CalendarEvent) => void;
-}) {
+} = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateOrganizationEventInput) =>
-      apiClient.calendar.createOrganizationEvent.mutate({ organizationId, ...input }),
+    mutationFn: (input: CreateEventInput) =>
+      apiClient.calendar.createEvent.mutate({ organizationId, ...input }),
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.(result);
@@ -64,37 +39,19 @@ export function useCreateOrganizationEventMutation({
   });
 }
 
-export type UpdateUserEventInput = RouterInputs["calendar"]["updateUserEvent"];
-export function useUpdateUserEventMutation({
-  onSuccess,
-}: { onSuccess?: (event: CalendarEvent) => void } = {}) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: UpdateUserEventInput) => apiClient.calendar.updateUserEvent.mutate(input),
-    onSuccess: async (result) => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onSuccess?.(result);
-    },
-  });
-}
-
-export type UpdateOrganizationEventInput = Omit<
-  RouterInputs["calendar"]["updateOrganizationEvent"],
-  "organizationId"
->;
-export function useUpdateOrganizationEventMutation({
+export type UpdateEventInput = RouterInputs["calendar"]["updateEvent"];
+export function useUpdateEventMutation({
   organizationId,
   onSuccess,
 }: {
-  organizationId: string;
+  organizationId?: string;
   onSuccess?: (event: CalendarEvent) => void;
-}) {
+} = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: UpdateOrganizationEventInput) =>
-      apiClient.calendar.updateOrganizationEvent.mutate({ organizationId, ...input }),
+    mutationFn: (input: UpdateEventInput) =>
+      apiClient.calendar.updateEvent.mutate({ organizationId, ...input }),
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.(result);
@@ -102,30 +59,18 @@ export function useUpdateOrganizationEventMutation({
   });
 }
 
-export function useDeleteUserEventMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: { id: string }) => apiClient.calendar.deleteUserEvent.mutate(input),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onSuccess?.();
-    },
-  });
-}
-
-export function useDeleteOrganizationEventMutation({
+export function useDeleteEventMutation({
   organizationId,
   onSuccess,
 }: {
-  organizationId: string;
+  organizationId?: string;
   onSuccess?: () => void;
-}) {
+} = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (input: { id: string }) =>
-      apiClient.calendar.deleteOrganizationEvent.mutate({ id: input.id, organizationId }),
+      apiClient.calendar.deleteEvent.mutate({ organizationId, ...input }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();

@@ -33,5 +33,11 @@ export async function insertPendingFile(
     .returningAll()
     .executeTakeFirstOrThrow();
 
-  return toFileRecord(row);
+  const { username } = await db
+    .selectFrom("user")
+    .select("username")
+    .where("user.id", "=", row.uploaded_by)
+    .executeTakeFirstOrThrow();
+
+  return toFileRecord({ ...row, uploadedByName: username });
 }

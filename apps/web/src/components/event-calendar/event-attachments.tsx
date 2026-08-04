@@ -95,13 +95,13 @@ function EventAttachmentsSuspended({ eventId, organizationId }: EventAttachments
       {audioFiles.length > 0 && (
         <div className="flex flex-col gap-2">
           <h3 className="text-xs font-medium text-muted-foreground">{t("Attachments")}</h3>
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-col gap-2 w-full">
             {audioFiles.map((file) => (
-              <li key={file.id} className="flex items-center justify-between gap-2 text-xs">
-                <div>
+              <li key={file.id} className="flex items-center justify-between gap-2 text-xs ">
+                <div className="w-full">
                   <AudioPlayer src={file.downloadUrl} filename={file.originalFilename} />
                   <p>{file.originalFilename}</p>
-                  <p>{t("Uploaded by {{name}}", { name: file.uploadedBy })}</p>
+                  <p>{t("Uploaded by {{name}}", { name: file.uploadedByName })}</p>
                 </div>
                 <DeleteFileButton
                   file={file}

@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { EventCalendar } from "@/ui/event-calendar";
 import type { CalendarEvent as ViewEvent } from "@/ui/event-calendar";
 import {
-  getUserEventsQueryOptions,
-  useCreateUserEventMutation,
-  useUpdateUserEventMutation,
-  useDeleteUserEventMutation,
+  getEventsQueryOptions,
+  useCreateEventMutation,
+  useUpdateEventMutation,
+  useDeleteEventMutation,
 } from "@/services/resources/calendar";
 import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
 
@@ -19,22 +19,22 @@ export const Route = createFileRoute("/calendar/")({
 function CalendarPage() {
   const { t } = useTranslation("calendar");
   const navigate = useNavigate();
-  const { data: events = [] } = useQuery(getUserEventsQueryOptions());
+  const { data: events = [] } = useQuery(getEventsQueryOptions());
 
-  const createEventMutation = useCreateUserEventMutation();
-  const updateEventMutation = useUpdateUserEventMutation();
-  const deleteEventMutation = useDeleteUserEventMutation();
+  const createEventMutation = useCreateEventMutation();
+  const updateEventMutation = useUpdateEventMutation();
+  const deleteEventMutation = useDeleteEventMutation();
 
   const handleEventCreate = async (event: ViewEvent) => {
-    await createEventMutation.mutateAsync(fromViewEvent(event));
+    createEventMutation.mutate(fromViewEvent(event));
   };
 
   const handleEventUpdate = async (event: ViewEvent) => {
-    await updateEventMutation.mutateAsync({ id: event.id, ...fromViewEvent(event) });
+    updateEventMutation.mutate({ id: event.id, ...fromViewEvent(event) });
   };
 
   const handleEventDelete = async (id: string) => {
-    await deleteEventMutation.mutateAsync({ id });
+    deleteEventMutation.mutate({ id });
   };
 
   const handleEventClick = (event: ViewEvent) => {

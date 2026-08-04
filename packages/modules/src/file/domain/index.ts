@@ -25,6 +25,7 @@ export type FileRecord = {
   eventId: string | null;
   organizationId: string | null;
   uploadedBy: string;
+  uploadedByName: string;
   kind: FileKind;
   mimeType: string;
   sizeBytes: number;

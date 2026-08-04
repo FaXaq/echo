@@ -1,12 +1,14 @@
 import type { KyselyDB } from "@echo/db";
-import { conflict, notFound } from "@echo/errors";
+import { conflict, forbidden, notFound } from "@echo/errors";
+import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import { isValidEventRange, type CalendarEvent, type EventColor } from "../domain/index.js";
-import { updateUserCalendarEvent } from "../infrastructure/index.js";
+import { updateCalendarEvent } from "../infrastructure/index.js";
 
-export async function updateUserEvent(
-  deps: { db: KyselyDB },
+export async function updateEvent(
+  deps: { db: KyselyDB; userHasPermissionInOrganization: CheckOrganizationPermission },
   input: {
     id: string;
+    organizationId: string | null;
     userId: string;
     title: string;
     description?: string | null;
@@ -16,12 +18,21 @@ export async function updateUserEvent(
     color: EventColor;
   },
 ): Promise<CalendarEvent> {
+  if (input.organizationId !== null) {
+    const { success } = await deps.userHasPermissionInOrganization({
+      organizationId: input.organizationId,
+      permissions: { calendarEvent: ["update"] },
+    });
+    if (!success) throw forbidden({ entity: "CalendarEvent", action: "update" });
+  }
+
   if (!isValidEventRange(input.startDate, input.endDate)) {
     throw conflict("End date must be after start date");
   }
 
-  const updated = await updateUserCalendarEvent(deps.db, {
+  const updated = await updateCalendarEvent(deps.db, {
     id: input.id,
+    organizationId: input.organizationId,
     userId: input.userId,
     title: input.title,
     description: input.description ?? null,

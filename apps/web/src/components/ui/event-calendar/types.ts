@@ -14,6 +14,7 @@ export interface CalendarEvent {
   endDate: Date
   allDay?: boolean
   color: EventColor
+  organizationId: string | null;
 }
 
 export type CalendarView = "month" | "week" | "day" | "agenda"

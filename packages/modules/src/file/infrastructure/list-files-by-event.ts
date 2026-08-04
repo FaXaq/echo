@@ -5,10 +5,12 @@ import { toFileRecord } from "./map-file.js";
 export async function listFilesByEvent(db: KyselyDB, eventId: string): Promise<FileRecord[]> {
   const rows = await db
     .selectFrom("file")
-    .selectAll()
+    .innerJoin("user", "file.uploaded_by", "user.id")
+    .selectAll("file")
+    .select("user.name as uploadedByName")
     .where("event_id", "=", eventId)
     .where("status", "=", "uploaded")
     .execute();
 
-  return rows.map(toFileRecord);
+  return rows.map(row => toFileRecord({ ...row, uploadedByName: row.uploadedByName }));
 }

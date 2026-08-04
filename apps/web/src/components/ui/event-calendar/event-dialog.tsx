@@ -156,6 +156,7 @@ export function EventDialog({
       endDate: end.toDate(),
       allDay: values.allDay,
       color: values.color,
+      organizationId: isEdit ? content.event.organizationId : null
     })
   }
 

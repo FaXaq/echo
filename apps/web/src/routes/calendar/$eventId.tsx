@@ -9,9 +9,9 @@ import {
 } from "@/ui/event-calendar";
 import type { CalendarEvent as ViewEvent } from "@/ui/event-calendar";
 import {
-  getUserEventsQueryOptions,
-  useUpdateUserEventMutation,
-  useDeleteUserEventMutation,
+  getEventsQueryOptions,
+  useUpdateEventMutation,
+  useDeleteEventMutation,
 } from "@/services/resources/calendar";
 import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
 import { Button } from "@/components/ui/button";
@@ -25,17 +25,17 @@ function EventDetailPage() {
   const { t } = useTranslation("calendar");
   const { eventId } = Route.useParams();
   const navigate = useNavigate();
-  const { data: events = [] } = useQuery(getUserEventsQueryOptions());
+  const { data: events = [] } = useQuery(getEventsQueryOptions());
   const [dialogState, setDialogState] = useState<EventDialogState>(null);
 
   const event = events.find((e) => e.id === eventId);
 
   const goBack = () => navigate({ to: "/calendar" });
 
-  const updateEventMutation = useUpdateUserEventMutation({
+  const updateEventMutation = useUpdateEventMutation({
     onSuccess: () => setDialogState(null),
   });
-  const deleteEventMutation = useDeleteUserEventMutation({ onSuccess: goBack });
+  const deleteEventMutation = useDeleteEventMutation({ onSuccess: goBack });
 
   if (!event) {
     return (

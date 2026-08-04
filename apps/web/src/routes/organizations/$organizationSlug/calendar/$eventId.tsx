@@ -9,9 +9,9 @@ import {
 } from '@/ui/event-calendar'
 import type { CalendarEvent as ViewEvent } from '@/ui/event-calendar'
 import {
-  getOrganizationEventsQueryOptions,
-  useUpdateOrganizationEventMutation,
-  useDeleteOrganizationEventMutation,
+  getEventsQueryOptions,
+  useUpdateEventMutation,
+  useDeleteEventMutation,
 } from '@/services/resources/calendar'
 import { toViewEvent, fromViewEvent } from '@/lib/calendar-events'
 import { Button } from '@/components/ui/button'
@@ -29,7 +29,7 @@ function OrganizationEventDetailPage() {
   const { organizationId } = Route.useRouteContext()
   const navigate = useNavigate()
   const { data: events = [] } = useQuery(
-    getOrganizationEventsQueryOptions({ organizationId }),
+    getEventsQueryOptions({ organizationId }),
   )
   const [dialogState, setDialogState] = useState<EventDialogState>(null)
 
@@ -41,11 +41,11 @@ function OrganizationEventDetailPage() {
       params: { organizationSlug },
     })
 
-  const updateEventMutation = useUpdateOrganizationEventMutation({
+  const updateEventMutation = useUpdateEventMutation({
     organizationId,
     onSuccess: () => setDialogState(null),
   })
-  const deleteEventMutation = useDeleteOrganizationEventMutation({
+  const deleteEventMutation = useDeleteEventMutation({
     organizationId,
     onSuccess: goBack,
   })
