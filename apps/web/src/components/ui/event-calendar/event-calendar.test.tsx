@@ -144,4 +144,17 @@ describe("EventCalendar", () => {
       organizationId: "org-2",
     })
   })
+
+  it("pre-fills the organization field when defaultOrganizationId is provided", async () => {
+    const user = userEvent.setup()
+    renderWithClient(
+      <EventCalendar events={[]} defaultOrganizationId="org-2" onEventCreate={vi.fn()} />
+    )
+
+    await user.click(screen.getByRole("button", { name: /New event/i }))
+    const dialog = screen.getByRole("dialog")
+
+    const trigger = await within(dialog).findByLabelText("Organization")
+    expect(await within(trigger).findByText("Beta Co")).toBeInTheDocument()
+  })
 })

@@ -17,9 +17,10 @@ export interface OrganizationFieldProps {
   id?: string
   value: string | null
   onChange: (value: string | null) => void
+  disabled?: boolean
 }
 
-export function OrganizationField({ id, value, onChange }: OrganizationFieldProps) {
+export function OrganizationField({ id, value, onChange, disabled }: OrganizationFieldProps) {
   const { t } = useTranslation("calendar")
   const { data: organizations, isPending } = useQuery(selfListOrganizations())
 
@@ -29,6 +30,7 @@ export function OrganizationField({ id, value, onChange }: OrganizationFieldProp
 
   return (
     <Select
+      disabled={disabled}
       value={value ?? NONE_VALUE}
       onValueChange={(next) => onChange(next === NONE_VALUE ? null : next)}
     >

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { render, screen } from "@testing-library/react"
+import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -73,6 +73,7 @@ describe("OrganizationField", () => {
 
     renderWithClient(<OrganizationField value="org-2" onChange={vi.fn()} />)
 
-    expect(await screen.findByText("Beta Co")).toBeInTheDocument()
+    const trigger = await screen.findByRole("combobox")
+    expect(await within(trigger).findByText("Beta Co")).toBeInTheDocument()
   })
 })

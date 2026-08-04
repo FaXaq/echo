@@ -43,5 +43,6 @@ export const makeCreateContext =
           userHasPermissionInOrganization({ auth, userId: session?.user.id, headers }, input),
         s3Storage,
         geocoding,
+        auth
       };
     };

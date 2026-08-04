@@ -63,6 +63,7 @@ function OrganizationCalendarPage() {
         onEventCreate={handleEventCreate}
         onEventUpdate={handleEventUpdate}
         onEventDelete={handleEventDelete}
+        defaultOrganizationId={organizationId}
         className="flex-1"
       />
     </div>

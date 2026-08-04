@@ -66,6 +66,7 @@ export interface EventCalendarProps {
   onEventCreate?: (event: CalendarEvent) => void | Promise<void>
   onEventUpdate?: (event: CalendarEvent) => void | Promise<void>
   onEventDelete?: (id: string) => void | Promise<void>
+  defaultOrganizationId?: string | null
   className?: string
 }
 
@@ -79,6 +80,7 @@ export function EventCalendar({
   onEventCreate,
   onEventUpdate,
   onEventDelete,
+  defaultOrganizationId,
   className,
 }: EventCalendarProps) {
   const { t } = useTranslation("calendar")
@@ -201,6 +203,7 @@ export function EventCalendar({
 
         <EventDialog
           state={dialogState}
+          defaultOrganizationId={defaultOrganizationId}
           onOpenChange={(open) => !open && setDialogState(null)}
           onSubmit={async (event) => {
             await onEventCreate?.(event)

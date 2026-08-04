@@ -1,6 +1,6 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { AppError } from "@echo/errors";
-import { systemRole, type ServerSession } from "@echo/auth";
+import { systemRole, type ServerAuth, type ServerSession } from "@echo/auth";
 import type { makeDbAdapter } from "@echo/db";
 import type { makeLogger } from "@echo/logger";
 import type {
@@ -13,6 +13,7 @@ import type { MailerPort } from "@echo/adapters/mailer";
 import { appErrorToTRPC } from "./lib/errors";
 
 export type Context = {
+  auth: ServerAuth;
   session: ServerSession | null;
   headers: Headers;
   db: ReturnType<typeof makeDbAdapter>["db"];

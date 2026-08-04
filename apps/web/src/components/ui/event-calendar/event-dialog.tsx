@@ -80,7 +80,10 @@ export type EventDialogState =
   | { mode: "edit"; event: CalendarEvent }
   | null
 
-function stateToDefaultValues(state: EventDialogState): EventFormValues {
+function stateToDefaultValues(
+  state: EventDialogState,
+  defaultOrganizationId: string | null = null
+): EventFormValues {
   if (state?.mode === "edit") {
     const { event } = state
     return {
@@ -105,13 +108,14 @@ function stateToDefaultValues(state: EventDialogState): EventFormValues {
     endDate: start.add(1, "hour").format(DATETIME_FORMAT),
     allDay,
     color: "blue",
-    organizationId: null,
+    organizationId: defaultOrganizationId,
     place: null,
   }
 }
 
 interface EventDialogProps {
   state: EventDialogState
+  defaultOrganizationId?: string | null
   onOpenChange: (open: boolean) => void
   onSubmit: (event: CalendarEvent) => void | Promise<void>
   onDelete: (id: string) => void | Promise<void>
@@ -119,6 +123,7 @@ interface EventDialogProps {
 
 export function EventDialog({
   state,
+  defaultOrganizationId = null,
   onOpenChange,
   onSubmit,
   onDelete,
@@ -143,7 +148,7 @@ export function EventDialog({
     formState: { errors, isSubmitting },
   } = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: stateToDefaultValues(content),
+    defaultValues: stateToDefaultValues(content, defaultOrganizationId),
   })
 
   const [isDeleting, setIsDeleting] = useState(false)
@@ -151,8 +156,8 @@ export function EventDialog({
   const allDay = watch("allDay");
 
   useEffect(() => {
-    if (state !== null) reset(stateToDefaultValues(state))
-  }, [state, reset])
+    if (state !== null) reset(stateToDefaultValues(state, defaultOrganizationId))
+  }, [state, defaultOrganizationId, reset])
 
 
   const submit = async (values: EventFormValues) => {
@@ -230,24 +235,23 @@ export function EventDialog({
               />
             </Field>
 
-            {!isEdit && (
-              <Field>
-                <FieldLabel htmlFor="event-organization">
-                  {t("Organization")}
-                </FieldLabel>
-                <Controller
-                  name="organizationId"
-                  control={control}
-                  render={({ field }) => (
-                    <OrganizationField
-                      id="event-organization"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-              </Field>
-            )}
+            <Field>
+              <FieldLabel htmlFor="event-organization">
+                {t("Organization")}
+              </FieldLabel>
+              <Controller
+                name="organizationId"
+                control={control}
+                render={({ field }) => (
+                  <OrganizationField
+                    disabled={isEdit}
+                    id="event-organization"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </Field>
 
             <Field orientation="horizontal">
               <FieldLabel htmlFor="event-start">{t("Start")}</FieldLabel>

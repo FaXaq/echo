@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { render, screen } from "@testing-library/react"
+import { render, screen, within } from "@testing-library/react"
 import dayjs from "dayjs"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -46,6 +46,21 @@ describe("EventDialog", () => {
     )
 
     expect(await screen.findByLabelText("Organization")).toBeInTheDocument()
+  })
+
+  it("pre-fills the Organization field with defaultOrganizationId when creating", async () => {
+    renderWithClient(
+      <EventDialog
+        state={{ mode: "create", range: { start: new Date(), end: new Date() } }}
+        defaultOrganizationId="org-1"
+        onOpenChange={vi.fn()}
+        onSubmit={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    )
+
+    const trigger = await screen.findByLabelText("Organization")
+    expect(await within(trigger).findByText("Acme Inc")).toBeInTheDocument()
   })
 
   it("does not show the Organization field when editing an existing event", () => {
