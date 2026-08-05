@@ -1,8 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import { EventCalendar } from "@/ui/event-calendar";
-import type { CalendarEvent as ViewEvent } from "@/ui/event-calendar";
+import { z } from "zod";
+import { EventCalendar, calendarViewSchema } from "@/ui/event-calendar";
+import type { CalendarEvent as ViewEvent, CalendarView } from "@/ui/event-calendar";
 import {
   getEventsQueryOptions,
   useCreateEventMutation,
@@ -10,20 +11,31 @@ import {
   useDeleteEventMutation,
 } from "@/services/resources/calendar";
 import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
+import { formatCalendarDate, parseCalendarDate } from "@/lib/calendar-date";
 
 export const Route = createFileRoute("/calendar/")({
   staticData: { breadcrumb: "Calendar" },
+  validateSearch: z.object({
+    view: calendarViewSchema.optional().catch(undefined),
+    date: z.string().optional(),
+  }),
   component: CalendarPage,
 });
 
 function CalendarPage() {
   const { t } = useTranslation("calendar");
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const { data: events = [] } = useQuery(getEventsQueryOptions());
 
   const createEventMutation = useCreateEventMutation();
   const updateEventMutation = useUpdateEventMutation();
   const deleteEventMutation = useDeleteEventMutation();
+
+  const view = search.view ?? "month";
+  const date = search.date
+    ? (parseCalendarDate(search.date) ?? new Date())
+    : new Date();
 
   const handleEventCreate = async (event: ViewEvent) => {
     createEventMutation.mutate(fromViewEvent(event));
@@ -41,6 +53,22 @@ function CalendarPage() {
     navigate({ to: "/calendar/$eventId", params: { eventId: event.id } });
   };
 
+  const handleViewChange = (nextView: CalendarView) => {
+    navigate({
+      from: Route.fullPath,
+      search: (prev) => ({ ...prev, view: nextView }),
+      replace: true,
+    });
+  };
+
+  const handleDateChange = (nextDate: Date) => {
+    navigate({
+      from: Route.fullPath,
+      search: (prev) => ({ ...prev, date: formatCalendarDate(nextDate) }),
+      replace: true,
+    });
+  };
+
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
       <div className="mb-6">
@@ -48,6 +76,10 @@ function CalendarPage() {
       </div>
       <EventCalendar
         events={events.map(toViewEvent)}
+        view={view}
+        onViewChange={handleViewChange}
+        date={date}
+        onDateChange={handleDateChange}
         onEventClick={handleEventClick}
         onEventCreate={handleEventCreate}
         onEventUpdate={handleEventUpdate}
