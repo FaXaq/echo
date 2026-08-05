@@ -10,6 +10,7 @@ export function toViewEvent(event: ApiEvent): ViewEvent {
     endDate: new Date(event.endDate),
     allDay: event.allDay,
     color: event.color,
+    type: event.type,
     organizationId: event.organizationId,
     place: event.place,
   };
@@ -22,6 +23,7 @@ export type EventFormValues = {
   endDate: Date;
   allDay?: boolean;
   color: ViewEvent["color"];
+  type: ViewEvent["type"];
   organizationId?: string;
   place: EventPlace | null;
 };
@@ -34,6 +36,7 @@ export function fromViewEvent(event: ViewEvent): EventFormValues {
     endDate: event.endDate,
     allDay: event.allDay,
     color: event.color,
+    type: event.type,
     organizationId: event.organizationId ?? undefined,
     place: event.place,
   };
