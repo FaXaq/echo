@@ -1,4 +1,4 @@
-import type { CalendarEvent, EventColor, EventPlace } from "../domain/index.js";
+import { eventTypeSchema, type CalendarEvent, type EventColor, type EventPlace, type EventType } from "../domain/index.js";
 
 export type CalendarEventRow = {
   id: string;
@@ -8,6 +8,7 @@ export type CalendarEventRow = {
   end_date: Date;
   all_day: boolean | null;
   color: string;
+  type: string | null;
   organization_id: string | null;
   created_by: string | null;
   updated_by: string | null;
@@ -35,6 +36,10 @@ function toEventPlace(row: CalendarEventRow): EventPlace | null {
   };
 }
 
+function toEventType(value: string | null): EventType | null {
+  return value === null ? null : eventTypeSchema.parse(value);
+}
+
 export function toCalendarEvent(row: CalendarEventRow): CalendarEvent {
   return {
     id: row.id,
@@ -44,6 +49,7 @@ export function toCalendarEvent(row: CalendarEventRow): CalendarEvent {
     endDate: row.end_date,
     allDay: row.all_day ?? false,
     color: row.color as EventColor,
+    type: toEventType(row.type),
     organizationId: row.organization_id,
     createdBy: row.created_by,
     updatedBy: row.updated_by,
