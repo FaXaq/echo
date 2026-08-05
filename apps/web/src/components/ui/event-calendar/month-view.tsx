@@ -54,9 +54,9 @@ export function MonthView({ date, events }: MonthViewProps) {
             <div
               key={cell.date.format("YYYY-MM-DD")}
               data-drop-day={cell.date.format("YYYY-MM-DD")}
-              onClick={() =>
+              onClick={() => {
                 requestEventCreate(currentHourRange(cell.date.toDate()))
-              }
+              }}
               className={cn(
                 "flex min-h-0 flex-col gap-1 overflow-hidden border-b border-r p-1 last:border-r-0",
                 !cell.isCurrentMonth && "bg-muted/20 text-muted-foreground"

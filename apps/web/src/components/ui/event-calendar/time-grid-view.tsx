@@ -10,7 +10,6 @@ import { EventCard } from "./event-card"
 import {
   getEventsForDay,
   MINUTES_IN_DAY,
-  pixelOffsetToMinutes,
 } from "./helpers"
 import type { CalendarEvent } from "./types"
 
@@ -120,26 +119,20 @@ export function TimeGridView({ days, events }: TimeGridViewProps) {
               }}
               data-drop-day={dayKey}
               className="relative flex-1"
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect()
-                const minutes = pixelOffsetToMinutes(
-                  e.clientY - rect.top,
-                  rect.height,
-                  30
-                )
-                const start = dayjs(day).startOf("day").add(minutes, "minute")
-                requestEventCreate({
-                  start: start.toDate(),
-                  end: start.add(1, "hour").toDate(),
-                })
-              }}
             >
               {HOURS.map((hour) => (
                 <div
                   key={hour}
                   data-drop-day={dayKey}
                   data-drop-minutes={hour * 60}
-                  className="h-16 border-b border-l"
+                  className="h-16 border-b border-l cursor-pointer hover:bg-accent transition-colors"
+                  onClick={() => {
+                    const start = dayjs(day).startOf("day").set("hours", hour);
+                    requestEventCreate({
+                      start: start.toDate(),
+                      end: start.add(1, "hour").toDate(),
+                    })
+                  }}
                 />
               ))}
               {isToday && <CurrentTimeIndicator />}
