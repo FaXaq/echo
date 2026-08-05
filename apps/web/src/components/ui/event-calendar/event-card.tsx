@@ -42,7 +42,7 @@ export function EventCard({ event, className }: EventCardProps) {
         if (e.detail === 0) requestEventClick(event)
       }}
       className={cn(
-        "flex w-full touch-none items-center gap-1.5 truncate rounded-sm px-1.5 py-0.5 text-left text-[0.6875rem] font-medium transition-opacity",
+        "flex w-full touch-none items-center gap-1.5 truncate rounded-sm px-1.5 py-0.5 text-left text-[0.6875rem] font-medium transition-opacity cursor-pointer hover:opacity-50",
         eventColorClasses[event.color],
         isDragging && "opacity-50",
         className

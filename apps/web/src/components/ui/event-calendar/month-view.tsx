@@ -58,7 +58,7 @@ export function MonthView({ date, events }: MonthViewProps) {
                 requestEventCreate(currentHourRange(cell.date.toDate()))
               }}
               className={cn(
-                "flex min-h-0 flex-col gap-1 overflow-hidden border-b border-r p-1 last:border-r-0",
+                "flex min-h-0 flex-col gap-1 overflow-hidden border-b border-r p-1 last:border-r-0 cursor-pointer hover:bg-accent transition-colors",
                 !cell.isCurrentMonth && "bg-muted/20 text-muted-foreground"
               )}
             >

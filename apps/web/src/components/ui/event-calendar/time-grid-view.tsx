@@ -174,7 +174,7 @@ function AllDayRow({
         <div
           key={day.toISOString()}
           onClick={() => onCreate(day)}
-          className="flex min-h-8 flex-1 flex-col gap-0.5 border-l p-1"
+          className="flex min-h-8 flex-1 flex-col gap-0.5 border-l p-1 cursor-pointer hover:bg-accent transition-colors"
         >
           {getEventsForDay(events, day)
             .filter((event) => event.allDay)
