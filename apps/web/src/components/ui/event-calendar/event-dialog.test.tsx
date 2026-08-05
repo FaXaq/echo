@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { render, screen, within } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import dayjs from "dayjs"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -16,6 +17,7 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     startDate: dayjs().hour(9).minute(0).second(0).millisecond(0).toDate(),
     endDate: dayjs().hour(9).minute(30).second(0).millisecond(0).toDate(),
     color: "blue",
+    type: null,
     organizationId: "org-1",
     place: null,
     ...overrides,
@@ -74,5 +76,40 @@ describe("EventDialog", () => {
     )
 
     expect(screen.queryByLabelText("Organization")).not.toBeInTheDocument()
+  })
+
+  it("defaults the Type field to None when creating an event", async () => {
+    renderWithClient(
+      <EventDialog
+        state={{ mode: "create", range: { start: new Date(), end: new Date() } }}
+        onOpenChange={vi.fn()}
+        onSubmit={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    )
+
+    const trigger = await screen.findByLabelText("Type")
+    expect(await within(trigger).findByText("None")).toBeInTheDocument()
+  })
+
+  it("submits the selected event type", async () => {
+    const user = userEvent.setup()
+    const onSubmit = vi.fn()
+    renderWithClient(
+      <EventDialog
+        state={{ mode: "edit", event: makeEvent() }}
+        onOpenChange={vi.fn()}
+        onSubmit={onSubmit}
+        onDelete={vi.fn()}
+      />
+    )
+
+    await user.click(await screen.findByLabelText("Type"))
+    await user.click(await screen.findByRole("option", { name: "Concert" }))
+    await user.click(screen.getByRole("button", { name: "Save changes" }))
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "concert" })
+    )
   })
 })

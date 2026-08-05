@@ -44,9 +44,10 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
+import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS } from "./event-types"
 import { OrganizationField } from "./organization-field"
 import { PlaceField } from "./place-field"
-import type { CalendarEvent, CalendarEventRange, EventColor } from "./types"
+import { EVENT_TYPES, eventTypeSchema, type CalendarEvent, type CalendarEventRange, type EventColor, type EventType } from "./types"
 
 const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm"
 
@@ -65,6 +66,7 @@ const eventFormSchema = z
     endDate: z.string().min(1),
     allDay: z.boolean(),
     color: z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]),
+    type: eventTypeSchema.nullable(),
     place: placeSchema.nullable(),
     organizationId: z.string().nullable(),
   })
@@ -93,6 +95,7 @@ function stateToDefaultValues(
       endDate: dayjs(event.endDate).format(DATETIME_FORMAT),
       allDay: !!event.allDay,
       color: event.color,
+      type: event.type,
       organizationId: event.organizationId,
       place: event.place,
     }
@@ -108,6 +111,7 @@ function stateToDefaultValues(
     endDate: start.add(1, "hour").format(DATETIME_FORMAT),
     allDay,
     color: "blue",
+    type: null,
     organizationId: defaultOrganizationId,
     place: null,
   }
@@ -176,6 +180,7 @@ export function EventDialog({
       endDate: end.toDate(),
       allDay: values.allDay,
       color: values.color,
+      type: values.type,
       organizationId: values.organizationId,
       place: values.place,
     })
@@ -308,6 +313,38 @@ export function EventDialog({
                           {t(COLOR_LABELS[color])}
                         </SelectItem>
                       ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="event-type">{t("Type")}</FieldLabel>
+              <Controller
+                name="type"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value ?? "none"}
+                    onValueChange={(next) =>
+                      field.onChange(next === "none" ? null : (next as EventType))
+                    }
+                  >
+                    <SelectTrigger id="event-type" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{t("None")}</SelectItem>
+                      {EVENT_TYPES.map((type) => {
+                        const Icon = EVENT_TYPE_ICONS[type]
+                        return (
+                          <SelectItem key={type} value={type}>
+                            <Icon className="mr-1.5 inline-block size-3.5" />
+                            {t(EVENT_TYPE_LABELS[type])}
+                          </SelectItem>
+                        )
+                      })}
                     </SelectContent>
                   </Select>
                 )}
