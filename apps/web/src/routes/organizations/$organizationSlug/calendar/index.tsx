@@ -2,8 +2,9 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
-import { EventCalendar } from '@/ui/event-calendar'
-import type { CalendarEvent as ViewEvent } from '@/ui/event-calendar'
+import { z } from 'zod'
+import { EventCalendar, calendarViewSchema } from '@/ui/event-calendar'
+import type { CalendarEvent as ViewEvent, CalendarView } from '@/ui/event-calendar'
 import {
   getEventsQueryOptions,
   useCreateEventMutation,
@@ -11,11 +12,16 @@ import {
   useDeleteEventMutation,
 } from '@/services/resources/calendar'
 import { toViewEvent, fromViewEvent } from '@/lib/calendar-events'
+import { formatCalendarDate, parseCalendarDate } from '@/lib/calendar-date'
 
 export const Route = createFileRoute(
   '/organizations/$organizationSlug/calendar/',
 )({
   staticData: { breadcrumb: 'Calendar' },
+  validateSearch: z.object({
+    view: calendarViewSchema.optional().catch(undefined),
+    date: z.string().optional(),
+  }),
   component: OrganizationCalendarPage,
 })
 
@@ -23,12 +29,18 @@ function OrganizationCalendarPage() {
   const { t } = useTranslation('calendar')
   const { organizationId } = Route.useRouteContext()
   const { organizationSlug } = Route.useParams()
+  const search = Route.useSearch()
   const navigate = useNavigate()
   const { data: events = [] } = useQuery(getEventsQueryOptions({ organizationId }))
 
   const createEventMutation = useCreateEventMutation({ organizationId })
   const updateEventMutation = useUpdateEventMutation({ organizationId })
   const deleteEventMutation = useDeleteEventMutation({ organizationId })
+
+  const view = search.view ?? 'month'
+  const date = search.date
+    ? (parseCalendarDate(search.date) ?? new Date())
+    : new Date()
 
   const handleEventCreate = async (event: ViewEvent) => {
     await createEventMutation.mutateAsync(fromViewEvent(event))
@@ -49,6 +61,22 @@ function OrganizationCalendarPage() {
     })
   }
 
+  const handleViewChange = (nextView: CalendarView) => {
+    navigate({
+      from: Route.fullPath,
+      search: (prev) => ({ ...prev, view: nextView }),
+      replace: true,
+    })
+  }
+
+  const handleDateChange = (nextDate: Date) => {
+    navigate({
+      from: Route.fullPath,
+      search: (prev) => ({ ...prev, date: formatCalendarDate(nextDate) }),
+      replace: true,
+    })
+  }
+
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
       <div className="mb-6">
@@ -59,6 +87,10 @@ function OrganizationCalendarPage() {
       </div>
       <EventCalendar
         events={events.map(toViewEvent)}
+        view={view}
+        onViewChange={handleViewChange}
+        date={date}
+        onDateChange={handleDateChange}
         onEventClick={handleEventClick}
         onEventCreate={handleEventCreate}
         onEventUpdate={handleEventUpdate}
