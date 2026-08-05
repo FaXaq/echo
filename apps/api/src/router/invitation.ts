@@ -1,12 +1,10 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
-import { makeGetInvitation } from "@echo/app";
+import { getInvitation } from "@echo/modules/invitation/app";
 
 export const makeInvitationRouter = () =>
   router({
     get: publicProcedure
       .input(z.object({ id: z.string() }))
-      .query(({ input, ctx }) =>
-        makeGetInvitation({ invitationRepo: ctx.invitation })({ id: input.id }),
-      ),
+      .query(({ input, ctx }) => getInvitation({ db: ctx.db }, { id: input.id })),
   });

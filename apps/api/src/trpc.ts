@@ -1,37 +1,29 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import { systemRole, type ServerSession } from "@echo/auth";
-import type { InvitationRepoPort } from "@echo/app";
+import { AppError } from "@echo/errors";
+import { systemRole, type ServerAuth, type ServerSession } from "@echo/auth";
 import type { makeDbAdapter } from "@echo/db";
-import type { makeHealthRepo } from "./adapters/health";
 import type { makeLogger } from "@echo/logger";
 import type {
-  EmailNotifierPort,
-} from "@echo/app/ports";
-import type { makeSongRepo } from "./adapters/song";
-import type { makeTrackRepo } from "./adapters/track";
-import type { makeAudioClipRepo } from "./adapters/audio-clip";
-import type { makeOrganizationRepo } from "./adapters/organization";
-import type { makeUserPermissionRepo } from "./adapters/auth/user-permission";
-import type { FileStoragePort } from "@echo/app";
+  CheckOrganizationPermission,
+  CheckUserPermission,
+} from "@echo/modules/user/infrastructure";
+import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import type { GeocodingPort } from "@echo/adapters/geocoding";
+import type { MailerPort } from "@echo/adapters/mailer";
 import { appErrorToTRPC } from "./lib/errors";
 
 export type Context = {
+  auth: ServerAuth;
   session: ServerSession | null;
   headers: Headers;
   db: ReturnType<typeof makeDbAdapter>["db"];
   pool: ReturnType<typeof makeDbAdapter>["pool"];
-  health: ReturnType<typeof makeHealthRepo>;
   logger: ReturnType<typeof makeLogger>;
-  invitation: InvitationRepoPort;
-  notifiers: {
-    email: EmailNotifierPort;
-  };
-  song: ReturnType<typeof makeSongRepo>;
-  track: ReturnType<typeof makeTrackRepo>;
-  audioClip: ReturnType<typeof makeAudioClipRepo>;
-  fileStorage: FileStoragePort;
-  organization: ReturnType<typeof makeOrganizationRepo>;
-  userPermission: ReturnType<typeof makeUserPermissionRepo>;
+  mailer: MailerPort;
+  userHasPermission: CheckUserPermission;
+  userHasPermissionInOrganization: CheckOrganizationPermission;
+  s3Storage: S3StoragePort;
+  geocoding: GeocodingPort;
 };
 
 const t = initTRPC.context<Context>().create();
@@ -40,12 +32,12 @@ export const router = t.router;
 export const mergeRouters = t.mergeRouters;
 
 const appErrorMiddleware = t.middleware(async ({ next }) => {
-  try {
-    return await next();
-  } catch (err) {
-    if (err instanceof TRPCError) throw err;
-    throw appErrorToTRPC(err);
+  const result = await next();
+  if (result.ok) return result;
+  if (result.error.cause instanceof AppError) {
+    throw appErrorToTRPC(result.error.cause);
   }
+  return result;
 });
 
 export const publicProcedure = t.procedure.use(appErrorMiddleware);

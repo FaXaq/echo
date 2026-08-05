@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import i18next from "../i18n";
 import {
   createRootRouteWithContext,
   Outlet,
@@ -10,21 +11,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "../lib/trpc";
 import { authClient } from "../lib/auth";
-import { AppSidebar } from "@/components/app-sidebar"
-import { Separator } from "@/components/ui/separator"
+import { AppSidebar } from "@/components/app-sidebar";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/ui/tooltip";
 import type { ClientSession } from "@echo/auth";
 import { Landing } from "./-landing";
 import { UserMenu } from "@/components/user-menu";
 import { ThemeProvider } from "@/contexts/theme";
 import { SessionProvider } from "@/hooks/use-session";
+import { Toaster } from "@/components/ui/sonner";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
-
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   loader: async () => {
@@ -44,12 +45,22 @@ function RootLayout() {
     }),
   );
 
+  useEffect(() => {
+    if (session?.user.locale) {
+      i18next.changeLanguage(session.user.locale);
+    }
+  }, [session?.user.locale]);
+
+  const serverTheme = session?.user.theme as
+    "light" | "dark" | "system" | undefined;
+
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
             <RootContent session={session} />
+            <Toaster />
           </ThemeProvider>
         </TooltipProvider>
       </QueryClientProvider>
@@ -58,24 +69,24 @@ function RootLayout() {
 }
 
 function RootContent({ session }: { session: ClientSession | null }) {
-  const router = useRouter()
-  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   if (!session) {
     if (pathname === "/reset-password" || pathname === "/accept-invitation") {
-      return <Outlet />
+      return <Outlet />;
     }
-    return <Landing />
+    return <Landing />;
   }
 
   const handleLogout = async () => {
-    await authClient.signOut()
-    router.invalidate()
-  }
+    await authClient.signOut();
+    router.invalidate();
+  };
 
   return (
     <SessionProvider session={session}>
-      <SidebarProvider>
+      <SidebarProvider className="overflow-x-clip">
         <AppSidebar />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -95,9 +106,11 @@ function RootContent({ session }: { session: ClientSession | null }) {
               />
             </div>
           </header>
-          <Outlet />
+          <div className="flex-1 overflow-y-auto">
+            <Outlet />
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </SessionProvider>
-  )
+  );
 }

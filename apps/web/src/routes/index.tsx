@@ -1,17 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "../lib/trpc";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
-  component: HomePage,
+  beforeLoad: () => {
+    throw redirect({ to: "/calendar" });
+  },
 });
-
-function HomePage() {
-  const health = trpc.health.useQuery();
-
-  return (
-    <div>
-      <h1>Echo</h1>
-      <p>API status: {health.data?.status ?? "loading..."}</p>
-    </div>
-  );
-}

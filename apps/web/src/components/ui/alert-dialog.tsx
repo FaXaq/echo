@@ -2,6 +2,7 @@ import * as React from "react"
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
+import { Spinner } from "@/components/ui/spinner"
 
 function AlertDialog({
   ...props
@@ -120,18 +121,22 @@ function AlertDialogAction({
   className,
   onClick,
   children,
+  disabled,
+  isLoading = false,
   ...props
-}: React.ComponentProps<"button">) {
+}: React.ComponentProps<"button"> & { isLoading?: boolean }) {
   return (
     <button
       data-slot="alert-dialog-action"
       onClick={onClick}
+      disabled={disabled || isLoading}
       className={cn(
-        "inline-flex items-center justify-center rounded-md text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 h-9 px-4 py-2",
+        "inline-flex items-center justify-center gap-1.5 rounded-md text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 h-9 px-4 py-2 disabled:pointer-events-none disabled:opacity-50",
         className
       )}
       {...props}
     >
+      {isLoading ? <Spinner /> : null}
       {children}
     </button>
   )
@@ -144,6 +149,7 @@ function AlertDialogCancel({
   ...props
 }: React.ComponentProps<"button">) {
   return (
+    <AlertDialogPrimitive.AlertDialogCancel>
     <button
       data-slot="alert-dialog-cancel"
       onClick={onClick}
@@ -155,6 +161,7 @@ function AlertDialogCancel({
     >
       {children}
     </button>
+    </AlertDialogPrimitive.AlertDialogCancel>
   )
 }
 

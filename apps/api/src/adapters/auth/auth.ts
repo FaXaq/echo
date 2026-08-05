@@ -2,8 +2,8 @@ import { makeServerAuth } from "@echo/auth";
 import { makeServerI18n } from "@echo/i18n";
 import { makeDbAdapter } from "../db/index";
 import { appConfig } from "../config/index";
-import { makeMailer } from "../mailer/mailer";
-import { renderResetPasswordEmail, renderInvitationEmail } from "../mailer/templates/index";
+import { renderResetPasswordEmail, renderInvitationEmail } from "@echo/modules/notification/infrastructure";
+import { makeMailer } from "@echo/adapters/mailer";
 
 const { pool } = makeDbAdapter(appConfig.db);
 const mailer = makeMailer(appConfig.mailer);
@@ -21,7 +21,7 @@ const auth = makeServerAuth({
     await mailer.send({
       to: email,
       subject: t("emails", "Reset your Echo password"),
-      html: renderResetPasswordEmail(
+      html: await renderResetPasswordEmail(
         {
           email,
           token,
@@ -39,7 +39,7 @@ const auth = makeServerAuth({
       subject: t("emails", "Invitation to join {{orgName}}", {
         orgName: organization.name,
       }),
-      html: renderInvitationEmail(
+      html: await renderInvitationEmail(
         {
           orgName: organization.name,
           invitationId: invitation.id,

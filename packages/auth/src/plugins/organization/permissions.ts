@@ -7,25 +7,36 @@ import {
 } from "better-auth/plugins/organization/access";
 import z from "zod";
 
+const calendarEventActions = ["create", "read", "update", "delete"] as const;
+const fileActions = ["create", "read", "delete"] as const;
+
 export const statement = {
   ...defaultStatements,
   "*": ["read"],
+  calendarEvent: [...calendarEventActions],
+  file: [...fileActions],
 } as const;
 
 export const ac = createAccessControl(statement);
 
 const member = ac.newRole({
   "*": ["read"],
+  calendarEvent: [...calendarEventActions],
+  file: [...fileActions],
 });
 
 // Default Better-Auth role
 const owner = ac.newRole({
   ...ownerAc.statements,
+  calendarEvent: [...calendarEventActions],
+  file: [...fileActions],
 });
 
 // Default Better-Auth role
 const admin = ac.newRole({
   ...adminAc.statements,
+  calendarEvent: [...calendarEventActions],
+  file: [...fileActions],
 });
 
 // Define roles

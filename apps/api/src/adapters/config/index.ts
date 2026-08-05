@@ -31,4 +31,7 @@ export const appConfig = {
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
     endpoint: env.S3_ENDPOINT_URL,
   },
+  mapbox: {
+    accessToken: env.MAPBOX_ACCESS_TOKEN,
+  },
 };

@@ -27,6 +27,7 @@ const envSchema = z.object({
   AWS_ACCESS_KEY_ID: z.string().min(1),
   AWS_SECRET_ACCESS_KEY: z.string().min(1),
   S3_ENDPOINT_URL: z.string().optional(),
+  MAPBOX_ACCESS_TOKEN: z.string().min(1),
 });
 
 export const env = envSchema.parse(process.env);

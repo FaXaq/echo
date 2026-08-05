@@ -15,11 +15,17 @@ export function DynamicBreadcrumb() {
   const matches = useMatches();
 
   const crumbs = matches
-    .filter((m) => m.staticData.breadcrumb)
-    .map((m) => ({
-      label: t(m.staticData.breadcrumb!),
-      pathname: m.pathname,
-    }));
+    .filter(
+      (m) =>
+        (m.loaderData as { breadcrumb?: string } | undefined)?.breadcrumb ??
+        m.staticData.breadcrumb,
+    )
+    .map((m) => {
+      const dynamic = (m.loaderData as { breadcrumb?: string } | undefined)
+        ?.breadcrumb;
+      const label = dynamic ?? t(m.staticData.breadcrumb!);
+      return { label, pathname: m.pathname };
+    });
 
   if (crumbs.length === 0) return null;
 

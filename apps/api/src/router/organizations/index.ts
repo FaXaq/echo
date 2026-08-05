@@ -1,11 +1,12 @@
-import { router } from "../../trpc";
-import { makeSongRouter } from "./song";
-import { makeTrackRouter } from "./track";
-import { makeAudioClipRouter } from "./audio-clip";
+import { authedProcedure, router } from "../../trpc";
+import { listUserOrganizationsQueryFactory } from "@echo/modules/organization/infrastructure";
+import { selfListOrganizations } from "@echo/modules/organization/app";
 
 export const makeOrganizationRouter = () =>
   router({
-    song: makeSongRouter(),
-    track: makeTrackRouter(),
-    audioClip: makeAudioClipRouter(),
+    selfList: authedProcedure
+      .query(({ ctx }) => {
+        const listUserOrganizationsQuery = listUserOrganizationsQueryFactory({ headers: ctx.headers, auth: ctx.auth });
+        return selfListOrganizations({ listUserOrganizationsQuery });
+      }),
   });

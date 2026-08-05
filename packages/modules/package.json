@@ -1,0 +1,121 @@
+{
+  "name": "@echo/modules",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./invitation/domain": {
+      "types": "./src/invitation/domain/index.ts",
+      "default": "./src/invitation/domain/index.ts"
+    },
+    "./invitation/infrastructure": {
+      "types": "./src/invitation/infrastructure/index.ts",
+      "default": "./src/invitation/infrastructure/index.ts"
+    },
+    "./invitation/app": {
+      "types": "./src/invitation/app/index.ts",
+      "default": "./src/invitation/app/index.ts"
+    },
+    "./organization/domain": {
+      "types": "./src/organization/domain/index.ts",
+      "default": "./src/organization/domain/index.ts"
+    },
+    "./organization/infrastructure": {
+      "types": "./src/organization/infrastructure/index.ts",
+      "default": "./src/organization/infrastructure/index.ts"
+    },
+    "./organization/app": {
+      "types": "./src/organization/app/index.ts",
+      "default": "./src/organization/app/index.ts"
+    },
+    "./user/domain": {
+      "types": "./src/user/domain/index.ts",
+      "default": "./src/user/domain/index.ts"
+    },
+    "./user/infrastructure": {
+      "types": "./src/user/infrastructure/index.ts",
+      "default": "./src/user/infrastructure/index.ts"
+    },
+    "./user/app": {
+      "types": "./src/user/app/index.ts",
+      "default": "./src/user/app/index.ts"
+    },
+    "./notification/domain": {
+      "types": "./src/notification/domain/index.ts",
+      "default": "./src/notification/domain/index.ts"
+    },
+    "./notification/infrastructure": {
+      "types": "./src/notification/infrastructure/index.ts",
+      "default": "./src/notification/infrastructure/index.ts"
+    },
+    "./notification/app": {
+      "types": "./src/notification/app/index.ts",
+      "default": "./src/notification/app/index.ts"
+    },
+    "./health/domain": {
+      "types": "./src/health/domain/index.ts",
+      "default": "./src/health/domain/index.ts"
+    },
+    "./health/infrastructure": {
+      "types": "./src/health/infrastructure/index.ts",
+      "default": "./src/health/infrastructure/index.ts"
+    },
+    "./health/app": {
+      "types": "./src/health/app/index.ts",
+      "default": "./src/health/app/index.ts"
+    },
+    "./calendar/domain": {
+      "types": "./src/calendar/domain/index.ts",
+      "default": "./src/calendar/domain/index.ts"
+    },
+    "./calendar/infrastructure": {
+      "types": "./src/calendar/infrastructure/index.ts",
+      "default": "./src/calendar/infrastructure/index.ts"
+    },
+    "./calendar/app": {
+      "types": "./src/calendar/app/index.ts",
+      "default": "./src/calendar/app/index.ts"
+    },
+    "./file/domain": {
+      "types": "./src/file/domain/index.ts",
+      "default": "./src/file/domain/index.ts"
+    },
+    "./file/infrastructure": {
+      "types": "./src/file/infrastructure/index.ts",
+      "default": "./src/file/infrastructure/index.ts"
+    },
+    "./file/app": {
+      "types": "./src/file/app/index.ts",
+      "default": "./src/file/app/index.ts"
+    },
+    "./place/domain": {
+      "types": "./src/place/domain/index.ts",
+      "default": "./src/place/domain/index.ts"
+    },
+    "./place/app": {
+      "types": "./src/place/app/index.ts",
+      "default": "./src/place/app/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@echo/adapters": "workspace:*",
+    "@echo/auth": "workspace:*",
+    "@echo/db": "workspace:*",
+    "@echo/errors": "workspace:*",
+    "@echo/i18n": "workspace:*",
+    "@echo/logger": "workspace:*",
+    "kysely": "^0.27.6",
+    "mjml": "^4.18.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@echo/config": "workspace:*",
+    "@types/mjml": "^4.7.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  }
+}

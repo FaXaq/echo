@@ -27,14 +27,39 @@ export interface Account {
   userId: string;
 }
 
-export interface AudioClip {
-  createdAt: Generated<Timestamp>;
-  durationMs: number | null;
-  filename: string;
+export interface CalendarEvent {
+  all_day: Generated<boolean | null>;
+  color: Generated<string>;
+  created_at: Generated<Timestamp | null>;
+  created_by: string | null;
+  description: string | null;
+  end_date: Timestamp;
   id: string;
-  startMeasure: Generated<number>;
-  storageKey: string;
-  trackId: string;
+  organization_id: string | null;
+  place_address: string | null;
+  place_lat: number | null;
+  place_lng: number | null;
+  place_name: string | null;
+  start_date: Timestamp;
+  title: string;
+  type: string | null;
+  updated_at: Generated<Timestamp | null>;
+  updated_by: string | null;
+}
+
+export interface File {
+  created_at: Generated<Timestamp | null>;
+  event_id: string | null;
+  id: string;
+  kind: string;
+  mime_type: string;
+  organization_id: string | null;
+  original_filename: string;
+  s3_key: string;
+  size_bytes: number;
+  status: Generated<string>;
+  updated_at: Generated<Timestamp | null>;
+  uploaded_by: string;
 }
 
 export interface Invitation {
@@ -79,29 +104,6 @@ export interface Session {
   userId: string;
 }
 
-export interface Song {
-  bpm: number | null;
-  createdAt: Generated<Timestamp>;
-  createdBy: string;
-  description: string | null;
-  id: string;
-  key: string | null;
-  name: string;
-  organizationId: string;
-  updatedAt: Generated<Timestamp>;
-  updatedBy: string | null;
-}
-
-export interface Track {
-  createdAt: Generated<Timestamp>;
-  id: string;
-  name: string;
-  order: number;
-  songId: string;
-  updatedAt: Generated<Timestamp>;
-  volume: Generated<number>;
-}
-
 export interface User {
   banExpires: Timestamp | null;
   banned: boolean | null;
@@ -112,9 +114,10 @@ export interface User {
   emailVerified: boolean;
   id: string;
   image: string | null;
-  locale: Generated<string>;
+  locale: string | null;
   name: string;
   role: string | null;
+  theme: string | null;
   updatedAt: Generated<Timestamp>;
   username: string | null;
 }
@@ -130,13 +133,12 @@ export interface Verification {
 
 export interface DB {
   account: Account;
-  audioClip: AudioClip;
+  calendar_event: CalendarEvent;
+  file: File;
   invitation: Invitation;
   member: Member;
   organization: Organization;
   session: Session;
-  song: Song;
-  track: Track;
   user: User;
   verification: Verification;
 }

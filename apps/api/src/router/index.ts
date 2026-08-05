@@ -3,6 +3,10 @@ import { makeHealthRouter } from "./health";
 import { makeInvitationRouter } from "./invitation";
 import { makeDebugRouter } from "./debug";
 import { makeOrganizationRouter } from "./organizations/index";
+import { makeCalendarRouter } from "./calendar";
+import { makeFileRouter } from "./file";
+import { makePlaceRouter } from "./place";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export const makeAppRouter = () =>
   mergeRouters(
@@ -11,7 +15,12 @@ export const makeAppRouter = () =>
       invitation: makeInvitationRouter(),
       debug: makeDebugRouter(),
       organization: makeOrganizationRouter(),
+      calendar: makeCalendarRouter(),
+      file: makeFileRouter(),
+      place: makePlaceRouter(),
     }),
   );
 
 export type AppRouter = ReturnType<typeof makeAppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
+export type RouterInputs = inferRouterInputs<AppRouter>;

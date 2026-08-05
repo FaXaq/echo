@@ -17,18 +17,20 @@
     "test:api": "turbo test --filter=@echo/api",
     "storybook": "turbo storybook --filter=@echo/web",
     "cli": "pnpm --filter @echo/cli execute --",
+    "db:migration:create": "pnpm --filter @echo/db migration:create",
+    "db:schema:generate": "pnpm --filter @echo/db schema:generate",
     "db:migrate": "pnpm cli db migrate",
     "db:migrate:down": "pnpm cli db migrate-down",
     "create-admin": "pnpm --filter @echo/api create-admin",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.2",
-    "@commitlint/config-conventional": "^20.4.2",
-    "eslint": "^9.39.2",
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
+    "eslint": "^9.39.5",
     "husky": "^9.1.7",
-    "turbo": "^2.4.0",
-    "typescript": "^5.7.0"
+    "turbo": "^2.10.6",
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.30.3",
   "engines": {

@@ -31,10 +31,6 @@ export function VersionSwitcher({
   const { t } = useTranslation("navigation")
   const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion)
 
-  React.useEffect(() => {
-    setSelectedVersion(defaultVersion)
-  }, [defaultVersion])
-
   const handleSelect = (version: string) => {
     setSelectedVersion(version)
     onSelect?.(version)

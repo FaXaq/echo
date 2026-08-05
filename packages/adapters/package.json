@@ -1,0 +1,37 @@
+{
+  "name": "@echo/adapters",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./s3-storage": {
+      "types": "./src/s3-storage/index.ts",
+      "default": "./src/s3-storage/index.ts"
+    },
+    "./mailer": {
+      "types": "./src/mailer/index.ts",
+      "default": "./src/mailer/index.ts"
+    },
+    "./geocoding": {
+      "types": "./src/geocoding/index.ts",
+      "default": "./src/geocoding/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "vitest run",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1093.0",
+    "@aws-sdk/s3-request-presigner": "^3.1093.0",
+    "@echo/errors": "workspace:*",
+    "nodemailer": "^8.0.11"
+  },
+  "devDependencies": {
+    "@echo/config": "workspace:*",
+    "@types/nodemailer": "^7.0.12",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
+  }
+}
