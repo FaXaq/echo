@@ -38,7 +38,8 @@ export interface CalendarEvent {
   place: EventPlace | null;
 }
 
-export type CalendarView = "month" | "week" | "day" | "agenda"
+export const calendarViewSchema = z.enum(["month", "week", "day", "agenda"])
+export type CalendarView = z.infer<typeof calendarViewSchema>
 
 export interface CalendarEventRange {
   start: Date
