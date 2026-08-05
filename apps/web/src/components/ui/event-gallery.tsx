@@ -1,6 +1,13 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ChevronLeft, ChevronRight, Video, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, DownloadIcon, X, XIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import type { EventFile } from "@/services/resources/file"
+import { match } from "ts-pattern";
+import { VideoPlayer } from "../video-player/player"
+import { Attachment, AttachmentAction, AttachmentActions, AttachmentContent, AttachmentDescription, AttachmentGroup, AttachmentMedia, AttachmentTitle } from "./attachment"
+import { filter } from "remeda";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,11 +19,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import type { EventFile } from "@/services/resources/file"
-import { match } from "ts-pattern";
-import { VideoPlayer } from "../video-player/player"
 
 export interface EventGalleryProps {
   files: EventFile[]
@@ -28,66 +30,57 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   const selected = selectedIndex !== null ? files[selectedIndex] : undefined
+  const images = filter(files, f => f.kind === "image");
 
   return (
     <div className="flex flex-col gap-2">
       <h3 className="text-xs font-medium text-muted-foreground">{t("Gallery")}</h3>
 
-      <div className="grid grid-cols-3 gap-2">
-        {files.map((file, index) => (
-          <div
-            key={file.id}
-            className="group relative aspect-square overflow-hidden rounded-md bg-muted"
-          >
-            <button
-              type="button"
-              aria-label={file.originalFilename}
-              onClick={() => setSelectedIndex(index)}
-              className="h-full w-full"
-            >
-              {file.kind === "image" ? (
-                <img src={file.downloadUrl} alt="" className="h-full w-full object-cover" />
-              ) : file.kind === "video" ? (
-                <div className="flex h-full w-full items-center justify-center">
-                  <Video className="size-6 text-muted-foreground" />
-                </div>
-              ) : null}
-            </button>
-
-            {onDelete && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-xs"
-                    aria-label={t("Delete {{filename}}", { filename: file.originalFilename })}
-                    className="absolute right-1 top-1 opacity-0 focus-visible:opacity-100 group-hover:opacity-100"
-                  >
-                    <X className="size-3.5" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {t(
-                        "This will permanently delete the file. This action cannot be undone."
-                      )}
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => onDelete(file)}>
-                      {t("Delete")}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-          </div>
+      <AttachmentGroup>
+        {images.map((file) => (
+          <>
+            <Attachment key={file.originalFilename} orientation="vertical">
+              <AttachmentMedia variant="image">
+                <img src={file.downloadUrl} alt={file.originalFilename} />
+              </AttachmentMedia>
+              <AttachmentContent>
+                <AttachmentTitle>{file.originalFilename}</AttachmentTitle>
+                <AttachmentDescription>{file.sizeBytes}</AttachmentDescription>
+              </AttachmentContent>
+              <AttachmentActions>
+                {onDelete && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <AttachmentAction aria-label={`Remove ${file.originalFilename}`}>
+                        <XIcon />
+                      </AttachmentAction>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {t(
+                            "This will permanently delete the file. This action cannot be undone."
+                          )}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => onDelete(file)}>
+                          {t("Delete")}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+                <AttachmentAction aria-label={`Download ${file.originalFilename}`}>
+                  <DownloadIcon />
+                </AttachmentAction>
+              </AttachmentActions>
+            </Attachment>
+          </>
         ))}
-      </div>
+      </AttachmentGroup>
 
       <Dialog
         open={selected !== undefined}

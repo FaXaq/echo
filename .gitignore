@@ -39,3 +39,8 @@ graphify-out
 
 # ai plans
 docs/superpowers
+
+# claude design
+.design-sync
+.ds-sync
+ds-bundle

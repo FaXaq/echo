@@ -127,9 +127,6 @@ function EventAttachmentsLoader() {
   return (
     <div className="flex flex-col gap-6">
       <Skeleton className="h-8 w-full" />
-      <Skeleton className="h-8 w-full" />
-      <Skeleton className="h-8 w-full" />
-      <Skeleton className="h-8 w-full" />
     </div>
   )
 }
