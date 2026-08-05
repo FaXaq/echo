@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 
 import { useCalendarContext } from "./calendar-context"
 import { eventColorClasses } from "./colors"
+import { EventTypeIcon } from "./event-types"
 import { getEventBlockPosition } from "./helpers"
 import type { CalendarEvent } from "./types"
 import { useEventDrag } from "./use-event-drag"
@@ -67,7 +68,10 @@ export function EventBlock({ event, day, columnRef }: EventBlockProps) {
         (isDragging || isResizing) && "z-10 opacity-70"
       )}
     >
-      <p className="truncate">{event.title}</p>
+      <p className="flex items-center gap-1 truncate">
+        {event.type && <EventTypeIcon type={event.type} className="size-3" />}
+        <span className="truncate">{event.title}</span>
+      </p>
       <p className="truncate tabular-nums opacity-80">
         {dayjs(event.startDate).format("h:mm A")} -{" "}
         {dayjs(previewEndDate ?? event.endDate).format("h:mm A")}

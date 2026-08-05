@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 
 import { useCalendarContext } from "./calendar-context"
 import { eventColorClasses } from "./colors"
+import { EventTypeIcon } from "./event-types"
 import type { CalendarEvent } from "./types"
 import { useEventDrag } from "./use-event-drag"
 
@@ -52,6 +53,7 @@ export function EventCard({ event, className }: EventCardProps) {
           {dayjs(event.startDate).format("h:mm A")}
         </span>
       )}
+      {event.type && <EventTypeIcon type={event.type} className="size-3" />}
       <span className="truncate">{event.title}</span>
     </button>
   )
