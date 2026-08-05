@@ -1,7 +1,13 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../trpc";
 import { createEvent, listEvents, updateEvent, deleteEvent } from "@echo/modules/calendar/app";
-import { EVENT_COLORS, type EventColor } from "@echo/modules/calendar/domain";
+import { EVENT_COLORS, eventTypeSchema, type EventColor } from "@echo/modules/calendar/domain";
+import {
+  insertCalendarEventCommandFactory,
+  updateCalendarEventCommandFactory,
+  deleteCalendarEventCommandFactory,
+  listCalendarEventsQueryFactory,
+} from "@echo/modules/calendar/infrastructure";
 
 const colorSchema = z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]);
 
@@ -12,6 +18,7 @@ const eventInput = {
   endDate: z.coerce.date(),
   allDay: z.boolean().optional(),
   color: colorSchema,
+  type: eventTypeSchema.nullable().optional(),
   place: z
     .object({
       name: z.string().min(1),
@@ -23,6 +30,11 @@ const eventInput = {
     .optional(),
 };
 
+const insertCalendarEventCommand = insertCalendarEventCommandFactory();
+const updateCalendarEventCommand = updateCalendarEventCommandFactory();
+const deleteCalendarEventCommand = deleteCalendarEventCommandFactory();
+const listCalendarEventsQuery = listCalendarEventsQueryFactory();
+
 export const makeCalendarRouter = () =>
   router({
     listEvents: authedProcedure
@@ -32,6 +44,7 @@ export const makeCalendarRouter = () =>
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            listCalendarEventsQuery,
           },
           { organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
@@ -44,6 +57,7 @@ export const makeCalendarRouter = () =>
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            insertCalendarEventCommand,
           },
           { ...input, organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
@@ -56,6 +70,7 @@ export const makeCalendarRouter = () =>
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            updateCalendarEventCommand,
           },
           { ...input, organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
@@ -68,6 +83,7 @@ export const makeCalendarRouter = () =>
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            deleteCalendarEventCommand,
           },
           {
             id: input.id,
