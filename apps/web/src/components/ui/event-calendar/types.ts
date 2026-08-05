@@ -1,3 +1,5 @@
+import { z } from "zod"
+
 export type EventColor =
   | "blue"
   | "green"
@@ -5,6 +7,15 @@ export type EventColor =
   | "yellow"
   | "purple"
   | "orange"
+
+export const eventTypeSchema = z.enum([
+  "unavailability",
+  "rehearsal",
+  "concert",
+  "meeting",
+])
+export type EventType = z.infer<typeof eventTypeSchema>
+export const EVENT_TYPES: EventType[] = eventTypeSchema.options
 
 export interface EventPlace {
   name: string
@@ -21,6 +32,7 @@ export interface CalendarEvent {
   endDate: Date
   allDay?: boolean
   color: EventColor
+  type: EventType | null
   organizationId: string | null;
   place: EventPlace | null;
 }
