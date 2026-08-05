@@ -5,6 +5,7 @@ export const eventTypeSchema = z.enum([
   "rehearsal",
   "concert",
   "meeting",
+  "class",
 ]);
 export type EventType = z.infer<typeof eventTypeSchema>;
 export const EVENT_TYPES: EventType[] = eventTypeSchema.options;

@@ -3,7 +3,7 @@ import { EVENT_TYPES, eventTypeSchema } from "./index.js";
 
 describe("eventTypeSchema", () => {
   it("accepts each known event type", () => {
-    for (const type of ["unavailability", "rehearsal", "concert", "meeting"]) {
+    for (const type of ["unavailability", "rehearsal", "concert", "meeting", "class"]) {
       expect(eventTypeSchema.parse(type)).toBe(type);
     }
   });
@@ -14,7 +14,13 @@ describe("eventTypeSchema", () => {
 });
 
 describe("EVENT_TYPES", () => {
-  it("lists exactly the four known types", () => {
-    expect(EVENT_TYPES).toEqual(["unavailability", "rehearsal", "concert", "meeting"]);
+  it("lists exactly the five known types", () => {
+    expect(EVENT_TYPES).toEqual([
+      "unavailability",
+      "rehearsal",
+      "concert",
+      "meeting",
+      "class",
+    ]);
   });
 });
