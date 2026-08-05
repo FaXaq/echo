@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 import { COLOR_LABELS, eventDotClasses } from "./colors"
+import { EVENT_TYPE_LABELS, EventTypeIcon } from "./event-types"
 import { EventAttachments } from "@/components/event-calendar/event-attachments"
 import type { CalendarEvent } from "./types"
 
@@ -68,6 +69,12 @@ export function EventDetail({
           <span className="text-sm text-muted-foreground">
             {t(COLOR_LABELS[event.color])}
           </span>
+          {event.type && (
+            <span className="flex items-center gap-1 text-sm text-muted-foreground">
+              <EventTypeIcon type={event.type} className="size-3.5" />
+              {t(EVENT_TYPE_LABELS[event.type])}
+            </span>
+          )}
           {event.allDay && <Badge variant="outline">{t("All day")}</Badge>}
         </div>
 

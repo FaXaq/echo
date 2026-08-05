@@ -19,6 +19,7 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     startDate: dayjs().hour(9).minute(0).second(0).millisecond(0).toDate(),
     endDate: dayjs().hour(9).minute(30).second(0).millisecond(0).toDate(),
     color: "blue",
+    type: null,
     organizationId: null,
     place: null,
     ...overrides,
@@ -164,5 +165,27 @@ describe("EventDetail", () => {
     await user.upload(input, file)
 
     expect(uploadSpy).toHaveBeenCalledWith({ eventId: "1", organizationId: "org-1", file })
+  })
+
+  it("shows the event type label when set", () => {
+    renderWithClient(
+      <EventDetail
+        event={makeEvent({ type: "concert" })}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        onBack={vi.fn()}
+      />
+    )
+
+    expect(screen.getByText("Concert")).toBeInTheDocument()
+  })
+
+  it("does not show a type label when the event has no type", () => {
+    renderWithClient(
+      <EventDetail event={makeEvent()} onEdit={vi.fn()} onDelete={vi.fn()} onBack={vi.fn()} />
+    )
+
+    expect(screen.queryByText("Concert")).not.toBeInTheDocument()
+    expect(screen.queryByText("Meeting")).not.toBeInTheDocument()
   })
 })
