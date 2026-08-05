@@ -1,3 +1,14 @@
+import { z } from "zod";
+
+export const eventTypeSchema = z.enum([
+  "unavailability",
+  "rehearsal",
+  "concert",
+  "meeting",
+]);
+export type EventType = z.infer<typeof eventTypeSchema>;
+export const EVENT_TYPES: EventType[] = eventTypeSchema.options;
+
 export type EventColor = "blue" | "green" | "red" | "yellow" | "purple" | "orange";
 
 export const EVENT_COLORS: EventColor[] = [
@@ -24,8 +35,9 @@ export type CalendarEvent = {
   endDate: Date;
   allDay: boolean;
   color: EventColor;
+  type: EventType | null;
   organizationId: string | null;
-  createdBy: string;
+  createdBy: string | null;
   updatedBy: string | null;
   place: EventPlace | null;
 };
