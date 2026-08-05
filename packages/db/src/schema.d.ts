@@ -42,6 +42,7 @@ export interface CalendarEvent {
   place_name: string | null;
   start_date: Timestamp;
   title: string;
+  type: string | null;
   updated_at: Generated<Timestamp | null>;
   updated_by: string | null;
 }
