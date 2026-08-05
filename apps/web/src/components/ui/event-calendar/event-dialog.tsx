@@ -47,7 +47,7 @@ import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
 import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS } from "./event-types"
 import { OrganizationField } from "./organization-field"
 import { PlaceField } from "./place-field"
-import { EVENT_TYPES, eventTypeSchema, type CalendarEvent, type CalendarEventRange, type EventColor, type EventType } from "./types"
+import { EVENT_TYPES, eventTypeSchema, type CalendarEvent, type CalendarEventRange, type EventColor } from "./types"
 
 const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm"
 
@@ -328,7 +328,7 @@ export function EventDialog({
                   <Select
                     value={field.value ?? "none"}
                     onValueChange={(next) =>
-                      field.onChange(next === "none" ? null : (next as EventType))
+                      field.onChange(next === "none" ? null : eventTypeSchema.parse(next))
                     }
                   >
                     <SelectTrigger id="event-type" className="w-full">
