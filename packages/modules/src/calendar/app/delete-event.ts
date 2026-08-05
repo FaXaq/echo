@@ -1,10 +1,14 @@
 import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
-import { deleteCalendarEvent } from "../infrastructure/index.js";
+import type { DeleteCalendarEventCommandPort } from "../infrastructure/delete-calendar-event.command.port.js";
 
 export async function deleteEvent(
-  deps: { db: KyselyDB; userHasPermissionInOrganization: CheckOrganizationPermission },
+  deps: {
+    db: KyselyDB;
+    userHasPermissionInOrganization: CheckOrganizationPermission;
+    deleteCalendarEventCommand: DeleteCalendarEventCommandPort;
+  },
   input: { id: string; organizationId: string | null; userId: string },
 ): Promise<void> {
   if (input.organizationId !== null) {
@@ -15,6 +19,6 @@ export async function deleteEvent(
     if (!success) throw forbidden({ entity: "CalendarEvent", action: "delete" });
   }
 
-  const deleted = await deleteCalendarEvent(deps.db, input);
+  const deleted = await deps.deleteCalendarEventCommand(deps.db, input);
   if (!deleted) throw notFound("CalendarEvent");
 }
