@@ -12,7 +12,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { AudioPlayer } from "@/components/ui/audio-player"
 import { Button } from "@/components/ui/button"
 import { EventGallery } from "@/components/ui/event-gallery"
 import { FileUpload } from "@/components/ui/file-upload"
@@ -23,6 +22,7 @@ import {
   useUploadFileMutation,
   type EventFile,
 } from "@/services/resources/file"
+import WavePlayer from "../waves-cn/wave-player"
 
 export interface EventAttachmentsProps {
   eventId: string
@@ -99,7 +99,7 @@ function EventAttachmentsSuspended({ eventId, organizationId }: EventAttachments
             {audioFiles.map((file) => (
               <li key={file.id} className="flex items-center justify-between gap-2 text-xs ">
                 <div className="w-full">
-                  <AudioPlayer src={file.downloadUrl} filename={file.originalFilename} />
+                  <WavePlayer src={file.downloadUrl} />
                   <p>{file.originalFilename}</p>
                   <p>{t("Uploaded by {{name}}", { name: file.uploadedByName })}</p>
                 </div>

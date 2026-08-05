@@ -26,6 +26,7 @@
     "@ss-components": "https://shadcnstudio.com/r/components/{name}.json",
     "@ss-blocks": "https://shadcnstudio.com/r/blocks/{name}.json",
     "@ss-themes": "https://shadcnstudio.com/r/themes/{name}.json",
-    "@limeplay": "https://limeplay.winoffrg.dev/r/{name}.json"
+    "@limeplay": "https://limeplay.winoffrg.dev/r/{name}.json",
+    "@waves-cn": "https://waves-cn.vercel.app/r/{name}.json"
   }
 }
