@@ -2,6 +2,26 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/nunito-sans";
+@import "@fontsource-variable/instrument-sans";
+@import "@fontsource-variable/jetbrains-mono";
+@import "./typeset.css";
+
+:root {
+  --font-nunito-sans: 'Nunito Sans Variable', sans-serif;
+  --font-instrument-sans: 'Instrument Sans Variable', sans-serif;
+  --font-jetbrains-mono: 'JetBrains Mono Variable', monospace;
+}
+
+
+.typeset-notes {
+  --typeset-font-body: var(--font-nunito-sans);
+  --typeset-font-heading: var(--font-instrument-sans);
+  --typeset-font-mono: var(--font-jetbrains-mono);
+  --typeset-size: 14px;
+  --typeset-leading: 1.6;
+  --typeset-flow: 1em;
+}
 
 @custom-variant dark (&:is(.dark *));
 
