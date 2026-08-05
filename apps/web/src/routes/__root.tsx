@@ -11,21 +11,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "../lib/trpc";
 import { authClient } from "../lib/auth";
-import { AppSidebar } from "@/components/app-sidebar"
-import { Separator } from "@/components/ui/separator"
+import { AppSidebar } from "@/components/app-sidebar";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/ui/tooltip";
 import type { ClientSession } from "@echo/auth";
 import { Landing } from "./-landing";
 import { UserMenu } from "@/components/user-menu";
 import { ThemeProvider } from "@/contexts/theme";
 import { SessionProvider } from "@/hooks/use-session";
+import { Toaster } from "@/components/ui/sonner";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
-
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   loader: async () => {
@@ -51,7 +51,8 @@ function RootLayout() {
     }
   }, [session?.user.locale]);
 
-  const serverTheme = session?.user.theme as "light" | "dark" | "system" | undefined;
+  const serverTheme = session?.user.theme as
+    "light" | "dark" | "system" | undefined;
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -59,6 +60,7 @@ function RootLayout() {
         <TooltipProvider>
           <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
             <RootContent session={session} />
+            <Toaster />
           </ThemeProvider>
         </TooltipProvider>
       </QueryClientProvider>
@@ -67,20 +69,20 @@ function RootLayout() {
 }
 
 function RootContent({ session }: { session: ClientSession | null }) {
-  const router = useRouter()
-  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   if (!session) {
     if (pathname === "/reset-password" || pathname === "/accept-invitation") {
-      return <Outlet />
+      return <Outlet />;
     }
-    return <Landing />
+    return <Landing />;
   }
 
   const handleLogout = async () => {
-    await authClient.signOut()
-    router.invalidate()
-  }
+    await authClient.signOut();
+    router.invalidate();
+  };
 
   return (
     <SessionProvider session={session}>
@@ -110,5 +112,5 @@ function RootContent({ session }: { session: ClientSession | null }) {
         </SidebarInset>
       </SidebarProvider>
     </SessionProvider>
-  )
+  );
 }

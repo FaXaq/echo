@@ -15,6 +15,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import type { EventFile } from "@/services/resources/file"
+import { match } from "ts-pattern";
+import { VideoPlayer } from "../video-player/player"
 
 export interface EventGalleryProps {
   files: EventFile[]
@@ -110,17 +112,20 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
                 </Button>
               )}
 
-              {selected.kind === "image" ? (
+              {match(selected.kind)
+                .with("image", () =>
                 <img
                   src={selected.downloadUrl}
                   alt=""
                   className="max-h-[70vh] w-full object-contain"
-                />
-              ) : selected.kind === "video" ? (
+                  />)
+               .with("video", () =>
                 <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
-                  <Video className="size-12 text-muted-foreground" />
-                </div>
-              ) : null}
+                  <VideoPlayer source={selected.downloadUrl} />
+                </div>)
+                .with("audio", () => null)
+                .exhaustive()
+              }
 
               {selectedIndex < files.length - 1 && (
                 <Button
