@@ -38,6 +38,7 @@ const baseEvent = {
   startDate: new Date("2026-08-03T09:00:00"),
   endDate: new Date("2026-08-03T09:30:00"),
   color: "blue",
+  type: null,
   organizationId: null,
   place: null,
 } as const
