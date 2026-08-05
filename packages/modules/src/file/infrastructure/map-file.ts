@@ -9,7 +9,7 @@ export type FileRow = {
   mime_type: string;
   size_bytes: number;
   original_filename: string;
-  uploadedByName: string | null;
+  uploadedByName?: string | null;
   s3_key: string;
   status: string;
 };
