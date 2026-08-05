@@ -6,11 +6,16 @@ import {
   type CalendarEvent,
   type EventColor,
   type EventPlace,
+  type EventType,
 } from "../domain/index.js";
-import { insertCalendarEvent } from "../infrastructure/index.js";
+import type { InsertCalendarEventCommandPort } from "../infrastructure/insert-calendar-event.command.port.js";
 
 export async function createEvent(
-  deps: { db: KyselyDB; userHasPermissionInOrganization: CheckOrganizationPermission },
+  deps: {
+    db: KyselyDB;
+    userHasPermissionInOrganization: CheckOrganizationPermission;
+    insertCalendarEventCommand: InsertCalendarEventCommandPort;
+  },
   input: {
     organizationId: string | null;
     userId: string;
@@ -20,6 +25,7 @@ export async function createEvent(
     endDate: Date;
     allDay?: boolean;
     color: EventColor;
+    type?: EventType | null;
     place?: EventPlace | null;
   },
 ): Promise<CalendarEvent> {
@@ -35,7 +41,7 @@ export async function createEvent(
     throw conflict("End date must be after start date");
   }
 
-  return insertCalendarEvent(deps.db, {
+  return deps.insertCalendarEventCommand(deps.db, {
     id: crypto.randomUUID(),
     organizationId: input.organizationId,
     userId: input.userId,
@@ -45,6 +51,7 @@ export async function createEvent(
     endDate: input.endDate,
     allDay: input.allDay ?? false,
     color: input.color,
+    type: input.type ?? null,
     place: input.place ?? null,
   });
 }

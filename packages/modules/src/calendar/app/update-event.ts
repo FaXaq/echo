@@ -6,11 +6,16 @@ import {
   type CalendarEvent,
   type EventColor,
   type EventPlace,
+  type EventType,
 } from "../domain/index.js";
-import { updateCalendarEvent } from "../infrastructure/index.js";
+import type { UpdateCalendarEventCommandPort } from "../infrastructure/update-calendar-event.command.port.js";
 
 export async function updateEvent(
-  deps: { db: KyselyDB; userHasPermissionInOrganization: CheckOrganizationPermission },
+  deps: {
+    db: KyselyDB;
+    userHasPermissionInOrganization: CheckOrganizationPermission;
+    updateCalendarEventCommand: UpdateCalendarEventCommandPort;
+  },
   input: {
     id: string;
     organizationId: string | null;
@@ -21,6 +26,7 @@ export async function updateEvent(
     endDate: Date;
     allDay?: boolean;
     color: EventColor;
+    type?: EventType | null;
     place?: EventPlace | null;
   },
 ): Promise<CalendarEvent> {
@@ -29,7 +35,6 @@ export async function updateEvent(
       organizationId: input.organizationId,
       permissions: { calendarEvent: ["update"] },
     });
-    console.log(success);
     if (!success) throw forbidden({ entity: "CalendarEvent", action: "update" });
   }
 
@@ -37,7 +42,7 @@ export async function updateEvent(
     throw conflict("End date must be after start date");
   }
 
-  const updated = await updateCalendarEvent(deps.db, {
+  const updated = await deps.updateCalendarEventCommand(deps.db, {
     id: input.id,
     organizationId: input.organizationId,
     userId: input.userId,
@@ -47,6 +52,7 @@ export async function updateEvent(
     endDate: input.endDate,
     allDay: input.allDay ?? false,
     color: input.color,
+    type: input.type ?? null,
     place: input.place ?? null,
   });
 
