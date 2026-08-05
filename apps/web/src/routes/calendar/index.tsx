@@ -17,7 +17,7 @@ export const Route = createFileRoute("/calendar/")({
   staticData: { breadcrumb: "Calendar" },
   validateSearch: z.object({
     view: calendarViewSchema.optional().catch(undefined),
-    date: z.string().optional(),
+    date: z.string().optional().catch(undefined),
   }),
   component: CalendarPage,
 });
