@@ -38,7 +38,9 @@ export type CalendarEvent = {
   color: EventColor;
   type: EventType | null;
   organizationId: string | null;
-  createdBy: string | null;
+  createdAt: Date;
+  createdBy: string;
+  createdByName: string;
   updatedBy: string | null;
   place: EventPlace | null;
 };

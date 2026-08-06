@@ -1,7 +1,7 @@
 import "@/lib/dayjs"
 import dayjs from "dayjs"
-import { ArrowLeft, Calendar, MapPin } from "lucide-react"
-import { useTranslation } from "react-i18next"
+import { Calendar, MapPin } from "lucide-react"
+import { Trans, useTranslation } from "react-i18next"
 import { capitalize } from "remeda"
 
 import { cn } from "@/lib/utils"
@@ -20,6 +20,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { EVENT_TYPE_LABELS, EventTypeIcon } from "./event-types"
 import type { CalendarEvent } from "./types"
+import { Avatar, AvatarFallback } from "../avatar"
+import { getInitials } from "@/lib/remeda"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip"
 
 export interface EventDetailProps {
   event: CalendarEvent
@@ -104,6 +107,27 @@ export function EventDetail({
               </div>
             </div>
           )}
+
+          <div className="flex flex-row gap-2">
+            <Tooltip>
+                <TooltipTrigger render={
+                    <Avatar size="sm">
+                      <AvatarFallback>{getInitials(event.createdByName)}</AvatarFallback>
+                    </Avatar>
+                  }
+                />
+                <TooltipContent>
+                  <p>{t("Created on {{date}} at {{time}}", { date: dayjs(event.createdAt).format("LL"), time: dayjs(event.createdAt).format("LT") })}</p>
+                </TooltipContent>
+              </Tooltip>
+            <div className="flex flex-col justify-start">
+              <p className="m-0 text-muted-foreground">
+                <Trans t={t} values={{ name: event.createdByName }}>
+                  Organized by <strong>{"{{name}}"}</strong>
+                </Trans>
+              </p>
+            </div>
+          </div>
         </div>
 
         {event.description && (

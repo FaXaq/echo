@@ -28,6 +28,11 @@ import { Toaster } from "@/components/ui/sonner";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: ({ context }) => {
+    return {
+      prefetchedQueryOptions: {}
+    }
+  },
   loader: async () => {
     const { data: session } = await authClient.getSession();
     return { session };

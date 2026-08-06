@@ -202,6 +202,7 @@
   },
 
   "calendar": {
+    "Organized by <strong>{{name}}</strong>": "Organized by <strong>{{name}}</strong>",
     "Month": "Month",
     "Week": "Week",
     "Day": "Day",

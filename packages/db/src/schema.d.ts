@@ -30,8 +30,8 @@ export interface Account {
 export interface CalendarEvent {
   all_day: Generated<boolean | null>;
   color: Generated<string>;
-  created_at: Generated<Timestamp | null>;
-  created_by: string | null;
+  created_at: Generated<Timestamp>;
+  created_by: string;
   description: string | null;
   end_date: Timestamp;
   id: string;

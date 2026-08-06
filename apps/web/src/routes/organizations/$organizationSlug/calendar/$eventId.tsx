@@ -9,9 +9,9 @@ import {
 } from '@/ui/event-calendar'
 import type { CalendarEvent as ViewEvent } from '@/ui/event-calendar'
 import {
-  getEventsQueryOptions,
   useUpdateEventMutation,
   useDeleteEventMutation,
+  getEventQueryOptions,
 } from '@/services/resources/calendar'
 import { toViewEvent, fromViewEvent } from '@/lib/calendar-events'
 import { Button } from '@/components/ui/button'
@@ -28,12 +28,8 @@ function OrganizationEventDetailPage() {
   const { organizationSlug, eventId } = Route.useParams()
   const { organizationId } = Route.useRouteContext()
   const navigate = useNavigate()
-  const { data: events = [] } = useQuery(
-    getEventsQueryOptions({ organizationId }),
-  )
+  const { data: event } = useQuery(getEventQueryOptions({ eventId, organizationId }));
   const [dialogState, setDialogState] = useState<EventDialogState>(null)
-
-  const event = events.find((e) => e.id === eventId)
 
   const goBack = () =>
     navigate({

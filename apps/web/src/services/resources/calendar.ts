@@ -19,6 +19,16 @@ export function getEventsQueryOptions(opts: { organizationId?: string } = {}) {
   });
 }
 
+export function getEventQueryOptions(opts: { eventId: string, organizationId?: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("listEvents", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.calendar.getEventById.query(params, { signal });
+    },
+  });
+}
+
 export type CreateEventInput = RouterInputs["calendar"]["createEvent"];
 export function useCreateEventMutation({
   organizationId,

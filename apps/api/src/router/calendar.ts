@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../trpc";
-import { createEvent, listEvents, updateEvent, deleteEvent } from "@echo/modules/calendar/app";
+import { createEvent, listEvents, updateEvent, deleteEvent, getEventById } from "@echo/modules/calendar/app";
 import { EVENT_COLORS, eventTypeSchema, type EventColor } from "@echo/modules/calendar/domain";
 import {
   insertCalendarEventCommandFactory,
   updateCalendarEventCommandFactory,
   deleteCalendarEventCommandFactory,
   listCalendarEventsQueryFactory,
+  getCalendarEventByIdFactory,
 } from "@echo/modules/calendar/infrastructure";
 
 const colorSchema = z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]);
@@ -34,9 +35,23 @@ const insertCalendarEventCommand = insertCalendarEventCommandFactory();
 const updateCalendarEventCommand = updateCalendarEventCommandFactory();
 const deleteCalendarEventCommand = deleteCalendarEventCommandFactory();
 const listCalendarEventsQuery = listCalendarEventsQueryFactory();
+const getCalendarEventById = getCalendarEventByIdFactory();
 
 export const makeCalendarRouter = () =>
   router({
+    getEventById: authedProcedure
+      .input(z.object({ eventId: z.string(), organizationId: z.string().optional() }))
+      .query(({ ctx, input }) =>
+        getEventById(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            getCalendarEventById,
+          },
+          { organizationId: input.organizationId ?? null, eventId: input.eventId },
+        ),
+      ),
+
     listEvents: authedProcedure
       .input(z.object({ organizationId: z.string().optional() }))
       .query(({ ctx, input }) =>

@@ -34,8 +34,11 @@ export interface CalendarEvent {
   allDay?: boolean
   color: EventColor
   type: EventType | null
-  organizationId: string | null;
-  place: EventPlace | null;
+  organizationId: string | null
+  place: EventPlace | null
+  createdBy: string
+  createdByName: string
+  createdAt: Date
 }
 
 export const calendarViewSchema = z.enum(["month", "week", "day", "agenda"])

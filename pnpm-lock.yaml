@@ -561,6 +561,9 @@ importers:
       mjml:
         specifier: ^4.18.0
         version: 4.18.0
+      ts-pattern:
+        specifier: ^5.9.0
+        version: 5.9.0
       zod:
         specifier: ^4.4.3
         version: 4.4.3

@@ -13,6 +13,9 @@ export function toViewEvent(event: ApiEvent): ViewEvent {
     type: event.type,
     organizationId: event.organizationId,
     place: event.place,
+    createdBy: event.createdBy,
+    createdByName: event.createdByName,
+    createdAt: new Date(event.createdAt)
   };
 }
 
