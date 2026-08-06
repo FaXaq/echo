@@ -199,7 +199,7 @@ export function EventDialog({
 
   return (
     <Dialog open={state !== null} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md overflow-auto">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? t("Edit event") : t("New event")}
