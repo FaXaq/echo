@@ -1,16 +1,15 @@
 "use client"
 
-import { composeRefs } from "@radix-ui/react-compose-refs"
-import { Slot } from "@radix-ui/react-slot"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
 import React from "react"
 
-import { cn } from "@/lib/utils"
+import { cn, mergeRefs } from "@/lib/utils"
 import { useMediaStore } from "@/hooks/limeplay/use-media"
 import { usePlaybackStore } from "@/hooks/limeplay/use-playback"
 import { usePlayerStore } from "@/hooks/limeplay/use-player"
 
-export interface RootContainerProps extends React.ComponentPropsWithoutRef<"div"> {
-  asChild?: boolean
+export interface RootContainerProps extends useRender.ComponentProps<"div"> {
   /**
    * Aspect ratio for the player root. Pass false for players that should size
    * from their content, such as compact audio controls.
@@ -21,7 +20,6 @@ export interface RootContainerProps extends React.ComponentPropsWithoutRef<"div"
    * Used only if aspectRatio prop is not provided.
    */
   height?: number
-  render?: React.ReactElement
   /**
    * Width in pixels for aspect ratio calculation.
    * Used only if aspectRatio prop is not provided.
@@ -31,20 +29,16 @@ export interface RootContainerProps extends React.ComponentPropsWithoutRef<"div"
 
 export type RootContainerPropsDocs = Pick<
   RootContainerProps,
-  "asChild" | "aspectRatio" | "height" | "render" | "width"
+  "aspectRatio" | "height" | "render" | "width"
 >
 
-export const RootContainer = React.forwardRef<
-  HTMLDivElement,
-  RootContainerProps
->((props, forwardedRef) => {
+export function RootContainer(props: RootContainerProps) {
   const {
-    asChild = false,
     aspectRatio: aspectRatioProp,
-    children,
     className,
     height = 1080,
     render,
+    ref,
     style,
     width = 1920,
     ...etc
@@ -59,38 +53,43 @@ export const RootContainer = React.forwardRef<
     () => resolveAspectRatio(aspectRatioProp, width, height),
     [aspectRatioProp, height, width]
   )
-  const Component = render ? Slot : asChild ? Slot : "div"
-
-  return (
-    <Component
-      aria-label="Media player"
-      className={cn(
-        `
-          group/root @container/root
-          focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/50
-        `,
-        aspectRatio ? "aspect-(--aspect-ratio)" : "",
-        className
-      )}
-      data-idle={debug || forceIdle ? "false" : idle}
-      data-layout-type="root-container"
-      data-status={status}
-      ref={composeRefs(forwardedRef, setPlayerContainerRef)}
-      role="region"
-      style={{
-        ...style,
-        ["--aspect-ratio" as string]: aspectRatio,
-        ["--height" as string]: height,
-        ["--width" as string]: width,
-      }}
-      {...etc}
-    >
-      {render ? React.cloneElement(render, undefined, children) : children}
-    </Component>
+  const composedRef = React.useMemo(
+    () => mergeRefs(ref, setPlayerContainerRef),
+    [ref, setPlayerContainerRef]
   )
-})
 
-RootContainer.displayName = "RootContainer"
+  return useRender({
+    defaultTagName: "div",
+    ref: composedRef,
+    render,
+    props: {
+      "data-idle": debug || forceIdle ? "false" : idle,
+      "data-layout-type": "root-container",
+      "data-status": status,
+      ...mergeProps<"div">(
+        {
+          "aria-label": "Media player",
+          className: cn(
+            `
+              group/root @container/root
+              focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/50
+            `,
+            aspectRatio ? "aspect-(--aspect-ratio)" : "",
+            className
+          ),
+          role: "region",
+          style: {
+            ...style,
+            ["--aspect-ratio" as string]: aspectRatio,
+            ["--height" as string]: height,
+            ["--width" as string]: width,
+          },
+        },
+        etc
+      ),
+    },
+  })
+}
 
 function calculateAspectRatio(width?: number, height?: number) {
   if (width && height) {

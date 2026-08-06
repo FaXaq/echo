@@ -1,22 +1,16 @@
-import { composeRefs } from "@radix-ui/react-compose-refs"
-import { Slot } from "@radix-ui/react-slot"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
 import React, { useEffect } from "react"
 
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { cn, mergeRefs } from "@/lib/utils"
 import {
   useCaptions,
   useCaptionsStore,
 } from "@/hooks/limeplay/use-captions"
 import { usePlayerStore } from "@/hooks/limeplay/use-player"
 
-export interface CaptionsControlProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /**
-   * Render as child component using Radix Slot
-   * @default false
-   */
-  asChild?: boolean
-  render?: React.ReactElement
+export interface CaptionsControlProps extends useRender.ComponentProps<"button"> {
   /**
    * Keyboard shortcut hint displayed in aria-label
    * @example "C"
@@ -26,28 +20,21 @@ export interface CaptionsControlProps extends React.ButtonHTMLAttributes<HTMLBut
 
 export type CaptionsControlPropsDocs = Pick<
   CaptionsControlProps,
-  "asChild" | "render" | "shortcut"
+  "render" | "shortcut"
 >
 
-export const CaptionsControl = React.forwardRef<
-  HTMLButtonElement,
-  CaptionsControlProps
->((props, forwardedRef) => {
+export function CaptionsControl(props: CaptionsControlProps) {
   const textTracks = useCaptionsStore((state) => state.tracks)
   const { toggleVisibility } = useCaptions()
 
   const {
     "aria-label": ariaLabelProp,
-    asChild = false,
-    children,
     disabled: userDisabled,
     onClick,
     render,
     shortcut,
     ...restProps
   } = props
-
-  const Comp = render ? Slot : asChild ? Slot : Button
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)
@@ -63,22 +50,22 @@ export const CaptionsControl = React.forwardRef<
     return `Captions${shortcutText}`
   }
 
-  return (
-    <Comp
-      aria-keyshortcuts={shortcut}
-      aria-label={ariaLabelProp ?? getDefaultAriaLabel()}
-      data-label="lp-captions-control"
-      disabled={isDisabled}
-      {...restProps}
-      onClick={handleClick}
-      ref={forwardedRef}
-    >
-      {render ? React.cloneElement(render, undefined, children) : children}
-    </Comp>
-  )
-})
-
-CaptionsControl.displayName = "CaptionsControl"
+  return useRender({
+    render: render ?? <Button />,
+    props: {
+      "data-label": "lp-captions-control",
+      ...mergeProps<"button">(
+        {
+          "aria-keyshortcuts": shortcut,
+          "aria-label": ariaLabelProp ?? getDefaultAriaLabel(),
+          disabled: isDisabled,
+          onClick: handleClick,
+        },
+        restProps
+      ),
+    },
+  })
+}
 
 export type CaptionsContainerPropsDocs = Pick<
   CaptionsContainerProps,
@@ -113,13 +100,18 @@ export const CaptionsContainer = React.forwardRef<
     }
   }, [player, fontScale])
 
+  const composedRef = React.useMemo(
+    () => mergeRefs(ref, setContainerElement),
+    [ref, setContainerElement]
+  )
+
   return (
     <div
       className={cn(
         "relative flex w-full grow flex-col justify-end text-lg",
         className
       )}
-      ref={composeRefs(ref, setContainerElement)}
+      ref={composedRef}
       {...etc}
     />
   )

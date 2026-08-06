@@ -119,10 +119,8 @@ export function EventDetail({
           {t("Edit")}
         </Button>
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button type="button" variant="destructive">
-              {t("Delete")}
-            </Button>
+          <AlertDialogTrigger render={<Button type="button" variant="destructive" />}>
+            {t("Delete")}
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

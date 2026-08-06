@@ -1,7 +1,8 @@
 "use client"
 
-import { Slot } from "@radix-ui/react-slot"
-import * as React from "react"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import type * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import { usePictureInPictureStore } from "@/hooks/limeplay/use-picture-in-picture"
@@ -10,13 +11,7 @@ import {
   usePlaybackStore,
 } from "@/hooks/limeplay/use-playback"
 
-export interface PictureInPictureControlProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /**
-   * Render as child component using Radix Slot
-   * @default false
-   */
-  asChild?: boolean
-  render?: React.ReactElement
+export interface PictureInPictureControlProps extends useRender.ComponentProps<"button"> {
   /**
    * Keyboard shortcut hint displayed in aria-label
    * @example "P"
@@ -26,13 +21,10 @@ export interface PictureInPictureControlProps extends React.ButtonHTMLAttributes
 
 export type PictureInPictureControlPropsDocs = Pick<
   PictureInPictureControlProps,
-  "asChild" | "render" | "shortcut"
+  "render" | "shortcut"
 >
 
-export const PictureInPictureControl = React.forwardRef<
-  HTMLButtonElement,
-  PictureInPictureControlProps
->((props, forwardedRef) => {
+export function PictureInPictureControl(props: PictureInPictureControlProps) {
   const readyState = usePlaybackStore((state) => state.readyState)
   const isPictureInPictureActive = usePictureInPictureStore(
     (state) => state.active
@@ -44,16 +36,12 @@ export const PictureInPictureControl = React.forwardRef<
 
   const {
     "aria-label": ariaLabelProp,
-    asChild = false,
-    children,
     disabled: userDisabled,
     onClick,
     render,
     shortcut,
     ...restProps
   } = props
-
-  const Comp = render ? Slot : asChild ? Slot : Button
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)
@@ -75,19 +63,19 @@ export const PictureInPictureControl = React.forwardRef<
     return `${label}${shortcutText}`
   }
 
-  return (
-    <Comp
-      aria-keyshortcuts={shortcut}
-      aria-label={ariaLabelProp ?? getDefaultAriaLabel()}
-      data-label="lp-picture-in-picture-control"
-      disabled={isDisabled}
-      {...restProps}
-      onClick={handleClick}
-      ref={forwardedRef}
-    >
-      {render ? React.cloneElement(render, undefined, children) : children}
-    </Comp>
-  )
-})
-
-PictureInPictureControl.displayName = "PictureInPictureControl"
+  return useRender({
+    render: render ?? <Button />,
+    props: {
+      "data-label": "lp-picture-in-picture-control",
+      ...mergeProps<"button">(
+        {
+          "aria-keyshortcuts": shortcut,
+          "aria-label": ariaLabelProp ?? getDefaultAriaLabel(),
+          disabled: isDisabled,
+          onClick: handleClick,
+        },
+        restProps
+      ),
+    },
+  })
+}

@@ -10,12 +10,13 @@ export function PictureInPictureControl() {
   )
 
   return (
-    <PictureInPictureControlPrimitive asChild shortcut="P">
-      <Button className="cursor-pointer" size="icon" variant="glass">
-        <PictureInPictureIcon
-          weight={isPictureInPictureActive ? "fill" : "bold"}
-        />
-      </Button>
+    <PictureInPictureControlPrimitive
+      render={<Button className="cursor-pointer" size="icon" variant="glass" />}
+      shortcut="P"
+    >
+      <PictureInPictureIcon
+        weight={isPictureInPictureActive ? "fill" : "bold"}
+      />
     </PictureInPictureControlPrimitive>
   )
 }

@@ -299,7 +299,19 @@ export function EventDialog({
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger id="event-color" className="w-full">
-                      <SelectValue />
+                      <SelectValue>
+                        {() => (
+                          <>
+                            <span
+                              className={cn(
+                                "mr-1.5 inline-block size-2 rounded-full",
+                                eventDotClasses[field.value]
+                              )}
+                            />
+                            {t(COLOR_LABELS[field.value])}
+                          </>
+                        )}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {EVENT_COLORS.map((color) => (
@@ -332,7 +344,18 @@ export function EventDialog({
                     }
                   >
                     <SelectTrigger id="event-type" className="w-full">
-                      <SelectValue />
+                      <SelectValue>
+                        {() => {
+                          if (field.value === null) return t("None")
+                          const Icon = EVENT_TYPE_ICONS[field.value]
+                          return (
+                            <>
+                              <Icon className="mr-1.5 inline-block size-3.5" />
+                              {t(EVENT_TYPE_LABELS[field.value])}
+                            </>
+                          )
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">{t("None")}</SelectItem>
@@ -355,15 +378,17 @@ export function EventDialog({
           <DialogFooter className="items-center sm:justify-between">
             {isEdit ? (
               <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    disabled={isSubmitting}
-                  >
-                    {t("Delete")}
-                  </Button>
+                <AlertDialogTrigger
+                  render={
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      disabled={isSubmitting}
+                    />
+                  }
+                >
+                  {t("Delete")}
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -391,10 +416,16 @@ export function EventDialog({
               <span />
             )}
             <div className="flex gap-2">
-              <DialogClose asChild>
-                <Button type="button" variant="outline" disabled={isSubmitting}>
-                  {t("Cancel")}
-                </Button>
+              <DialogClose
+                render={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={isSubmitting}
+                  />
+                }
+              >
+                {t("Cancel")}
               </DialogClose>
               <Button type="submit" isLoading={isSubmitting}>
                 {isEdit ? t("Save changes") : t("Save")}

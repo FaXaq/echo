@@ -34,15 +34,17 @@ function DeleteFileButton({ file, onConfirm }: { file: EventFile; onConfirm: () 
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-xs"
-          aria-label={t("Delete {{filename}}", { filename: file.originalFilename })}
-        >
-          ×
-        </Button>
+      <AlertDialogTrigger
+        render={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            aria-label={t("Delete {{filename}}", { filename: file.originalFilename })}
+          />
+        }
+      >
+        ×
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

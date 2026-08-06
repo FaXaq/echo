@@ -131,14 +131,16 @@ export function MembersTable({
                 <TableCell>
                   {canCancelInvitation(currentMemberRole) ? (
                     <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          disabled={isLoading}
-                        >
-                          {t("Cancel")}
-                        </Button>
+                      <AlertDialogTrigger
+                        render={
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            disabled={isLoading}
+                          />
+                        }
+                      >
+                        {t("Cancel")}
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
@@ -185,7 +187,7 @@ export function MembersTable({
                       disabled={isLoading}
                     >
                       <SelectTrigger className="w-28">
-                        <SelectValue />
+                        <SelectValue>{(role: OrganizationRole) => t(role)}</SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="member">{t("member")}</SelectItem>
@@ -206,14 +208,16 @@ export function MembersTable({
                   ) &&
                     member.userId !== currentUserId ? (
                     <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          disabled={isLoading}
-                        >
-                          {t("Revoke")}
-                        </Button>
+                      <AlertDialogTrigger
+                        render={
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            disabled={isLoading}
+                          />
+                        }
+                      >
+                        {t("Revoke")}
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>

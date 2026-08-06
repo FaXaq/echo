@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import {
   ContextMenu,
   ContextMenuContent,
+  ContextMenuGroup,
   ContextMenuItem,
   ContextMenuLabel,
   ContextMenuSeparator,
@@ -32,7 +33,9 @@ export const Default: Story = {
         Right-click here
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuLabel>Actions</ContextMenuLabel>
+        <ContextMenuGroup>
+          <ContextMenuLabel>Actions</ContextMenuLabel>
+        </ContextMenuGroup>
         <ContextMenuSeparator />
         <ContextMenuItem>
           Open
@@ -60,7 +63,9 @@ export const WithCheckboxes: Story = {
         Right-click for view options
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuLabel>View</ContextMenuLabel>
+        <ContextMenuGroup>
+          <ContextMenuLabel>View</ContextMenuLabel>
+        </ContextMenuGroup>
         <ContextMenuSeparator />
         <ContextMenuCheckboxItem checked>Show grid</ContextMenuCheckboxItem>
         <ContextMenuCheckboxItem>Show rulers</ContextMenuCheckboxItem>

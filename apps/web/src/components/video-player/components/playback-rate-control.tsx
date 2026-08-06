@@ -8,19 +8,20 @@ import { Button } from "./button"
 export function PlaybackRateControl() {
   return (
     <PlaybackRate.SelectRoot>
-      <Button
-        asChild
-        className="
-          border-none bg-transparent shadow-none
-          hover:bg-foreground/10
-          dark:bg-transparent dark:shadow-none
-        "
-        variant="glass"
+      <Select.SelectTrigger
+        render={
+          <Button
+            className="
+              border-none bg-transparent shadow-none
+              hover:bg-foreground/10
+              dark:bg-transparent dark:shadow-none
+            "
+            variant="glass"
+          />
+        }
       >
-        <Select.SelectTrigger>
-          <Select.SelectValue />
-        </Select.SelectTrigger>
-      </Button>
+        <Select.SelectValue>{(val: string) => `${val}x`}</Select.SelectValue>
+      </Select.SelectTrigger>
       <Select.SelectContent
         align="start"
         className={`min-w-28 border border-border backdrop-blur-lg`}

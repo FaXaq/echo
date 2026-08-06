@@ -9,6 +9,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -64,24 +65,24 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-md px-2 py-1 text-sm outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring">
-          <Avatar size="sm">
-            {image && <AvatarImage src={image} alt={`${username}-profile-picture`} />}
-            <AvatarFallback>{getInitials(name)}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col items-start leading-tight">
-            <span className="font-medium">{username}</span>
-          </div>
-        </button>
+      <DropdownMenuTrigger className="flex items-center gap-2 rounded-md px-2 py-1 text-sm outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring">
+        <Avatar size="sm">
+          {image && <AvatarImage src={image} alt={`${username}-profile-picture`} />}
+          <AvatarFallback>{getInitials(name)}</AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col items-start leading-tight">
+          <span className="font-medium">{username}</span>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
-        <DropdownMenuLabel>
-          <div className="flex flex-col">
-            <span>{name}</span>
-            <span className="text-xs font-normal text-muted-foreground">{email}</span>
-          </div>
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>
+            <div className="flex flex-col">
+              <span>{name}</span>
+              <span className="text-xs font-normal text-muted-foreground">{email}</span>
+            </div>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <div className="px-2 py-1.5 flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground"><Trans t={t}>Theme</Trans></span>

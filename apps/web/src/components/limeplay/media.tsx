@@ -1,6 +1,6 @@
-import { useComposedRefs } from "@radix-ui/react-compose-refs"
 import * as React from "react"
 
+import { mergeRefs } from "@/lib/utils"
 import { useMediaStore } from "@/hooks/limeplay/use-media"
 import { usePlaybackStore } from "@/hooks/limeplay/use-playback"
 
@@ -22,7 +22,10 @@ export const Media = React.forwardRef<HTMLMediaElement, MediaProps>(
     const { as: Element = "video", ...etc } = props
     const setMediaElement = useMediaStore((state) => state.setMediaElement)
     const status = usePlaybackStore((state) => state.status)
-    const composedRef = useComposedRefs(forwardedRef, setMediaElement)
+    const composedRef = React.useMemo(
+      () => mergeRefs(forwardedRef, setMediaElement),
+      [forwardedRef, setMediaElement]
+    )
 
     return (
       <Element

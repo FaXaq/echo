@@ -50,10 +50,14 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
               <AttachmentActions>
                 {onDelete && (
                   <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <AttachmentAction aria-label={`Remove ${file.originalFilename}`}>
-                        <XIcon />
-                      </AttachmentAction>
+                    <AlertDialogTrigger
+                      render={
+                        <AttachmentAction
+                          aria-label={`Remove ${file.originalFilename}`}
+                        />
+                      }
+                    >
+                      <XIcon />
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>

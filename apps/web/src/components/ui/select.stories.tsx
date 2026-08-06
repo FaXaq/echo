@@ -26,7 +26,7 @@ export const Default: Story = {
     const [value, setValue] = useState<string>("");
 
     return (
-      <Select value={value} onValueChange={setValue}>
+      <Select value={value} onValueChange={(next) => setValue(next ?? "")}>
         <SelectTrigger>
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>
@@ -45,7 +45,7 @@ export const WithGroups: Story = {
     const [value, setValue] = useState<string>("");
 
     return (
-      <Select value={value} onValueChange={setValue}>
+      <Select value={value} onValueChange={(next) => setValue(next ?? "")}>
         <SelectTrigger>
           <SelectValue placeholder="Select a fruit" />
         </SelectTrigger>
@@ -74,7 +74,7 @@ export const Disabled: Story = {
     const [value, setValue] = useState<string>("");
 
     return (
-      <Select value={value} onValueChange={setValue} disabled>
+      <Select value={value} onValueChange={(next) => setValue(next ?? "")} disabled>
         <SelectTrigger>
           <SelectValue placeholder="Disabled select" />
         </SelectTrigger>
@@ -92,7 +92,7 @@ export const DisabledItem: Story = {
     const [value, setValue] = useState<string>("");
 
     return (
-      <Select value={value} onValueChange={setValue}>
+      <Select value={value} onValueChange={(next) => setValue(next ?? "")}>
         <SelectTrigger>
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>
@@ -113,7 +113,7 @@ export const Small: Story = {
     const [value, setValue] = useState<string>("");
 
     return (
-      <Select value={value} onValueChange={setValue}>
+      <Select value={value} onValueChange={(next) => setValue(next ?? "")}>
         <SelectTrigger size="sm">
           <SelectValue placeholder="Small select" />
         </SelectTrigger>
@@ -132,7 +132,7 @@ export const WithDefault: Story = {
     const [value, setValue] = useState<string>("option-2");
 
     return (
-      <Select value={value} onValueChange={setValue}>
+      <Select value={value} onValueChange={(next) => setValue(next ?? "")}>
         <SelectTrigger>
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>

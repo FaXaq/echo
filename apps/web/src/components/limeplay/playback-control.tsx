@@ -1,5 +1,6 @@
-import { Slot } from "@radix-ui/react-slot"
-import * as React from "react"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import type * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -7,13 +8,7 @@ import {
   usePlaybackStore,
 } from "@/hooks/limeplay/use-playback"
 
-interface PlaybackControlProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  /**
-   * Render as child component using Radix Slot
-   * @default false
-   */
-  asChild?: boolean
-  render?: React.ReactElement
+interface PlaybackControlProps extends useRender.ComponentProps<"button"> {
   /**
    * Keyboard shortcut hint displayed in aria-label
    * @example "Space"
@@ -21,26 +16,19 @@ interface PlaybackControlProps extends React.ButtonHTMLAttributes<HTMLButtonElem
   shortcut?: string
 }
 
-export const PlaybackControl = React.forwardRef<
-  HTMLButtonElement,
-  PlaybackControlProps
->((props, forwardedRef) => {
+export function PlaybackControl(props: PlaybackControlProps) {
   const status = usePlaybackStore((state) => state.status)
   const readyState = usePlaybackStore((state) => state.readyState)
   const togglePaused = usePlaybackStore((state) => state.togglePaused)
 
   const {
     "aria-label": ariaLabelProp,
-    asChild = false,
-    children,
     disabled: userDisabled,
     onClick,
     render,
     shortcut,
     ...restProps
   } = props
-
-  const Comp = render ? Slot : asChild ? Slot : Button
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)
@@ -69,19 +57,19 @@ export const PlaybackControl = React.forwardRef<
     return `${label}${shortcutText}`
   }
 
-  return (
-    <Comp
-      aria-keyshortcuts={shortcut}
-      aria-label={ariaLabelProp ?? getDefaultAriaLabel()}
-      data-label="lp-playback-control"
-      disabled={isDisabled}
-      {...restProps}
-      onClick={handleClick}
-      ref={forwardedRef}
-    >
-      {render ? React.cloneElement(render, undefined, children) : children}
-    </Comp>
-  )
-})
-
-PlaybackControl.displayName = "PlaybackControl"
+  return useRender({
+    render: render ?? <Button />,
+    props: {
+      "data-label": "lp-playback-control",
+      ...mergeProps<"button">(
+        {
+          "aria-keyshortcuts": shortcut,
+          "aria-label": ariaLabelProp ?? getDefaultAriaLabel(),
+          disabled: isDisabled,
+          onClick: handleClick,
+        },
+        restProps
+      ),
+    },
+  })
+}

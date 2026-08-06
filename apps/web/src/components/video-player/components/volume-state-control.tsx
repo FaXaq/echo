@@ -15,16 +15,16 @@ export function VolumeStateControl() {
   const volume = useVolumeStore((state) => state.level)
 
   return (
-    <MuteControl asChild>
-      <Button className="cursor-pointer" size="icon" variant="glass">
-        {muted || volume === 0 ? (
-          <SpeakerXIcon weight="fill" />
-        ) : volume < 0.5 ? (
-          <SpeakerLowIcon weight="fill" />
-        ) : (
-          <SpeakerHighIcon weight="fill" />
-        )}
-      </Button>
+    <MuteControl
+      render={<Button className="cursor-pointer" size="icon" variant="glass" />}
+    >
+      {muted || volume === 0 ? (
+        <SpeakerXIcon weight="fill" />
+      ) : volume < 0.5 ? (
+        <SpeakerLowIcon weight="fill" />
+      ) : (
+        <SpeakerHighIcon weight="fill" />
+      )}
     </MuteControl>
   )
 }

@@ -65,11 +65,12 @@ export function Playlist() {
 
   return (
     <DropdownMenu onOpenChange={setForceIdle}>
-      <Button aria-label="Open Playlist" asChild size="icon" variant="glass">
-        <DropdownMenuTrigger>
-          <CardsThreeIcon weight="fill" />
-        </DropdownMenuTrigger>
-      </Button>
+      <DropdownMenuTrigger
+        aria-label="Open Playlist"
+        render={<Button size="icon" variant="glass" />}
+      >
+        <CardsThreeIcon weight="fill" />
+      </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
         alignOffset={-12}

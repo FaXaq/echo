@@ -10,10 +10,10 @@ export function CaptionsStateControl() {
   const textTrackVisible = useCaptionsStore((state) => state.visible)
 
   return (
-    <CaptionsControl asChild>
-      <Button className="cursor-pointer" size="icon" variant="glass">
-        <ClosedCaptioningIcon weight={textTrackVisible ? "fill" : "bold"} />
-      </Button>
+    <CaptionsControl
+      render={<Button className="cursor-pointer" size="icon" variant="glass" />}
+    >
+      <ClosedCaptioningIcon weight={textTrackVisible ? "fill" : "bold"} />
     </CaptionsControl>
   )
 }

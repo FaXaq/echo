@@ -94,8 +94,8 @@ export function WavePlayer({
     wavesurferRef.current.play();
   }, [isReady]);
 
-  const handleVolume = React.useCallback((v: number[]) => {
-    const value = v[0];
+  const handleVolume = React.useCallback((v: number | readonly number[]) => {
+    const value = Array.isArray(v) ? v[0] : v;
     setVolume(value);
     setIsMuted(value === 0);
     wavesurferRef.current?.setVolume(value);
@@ -109,9 +109,9 @@ export function WavePlayer({
   }, [isMuted, volume]);
 
   const handleSeek = React.useCallback(
-    ([v]: number[]) => {
+    (v: number | readonly number[]) => {
       if (!wavesurferRef.current || !isReady) return;
-      wavesurferRef.current.seekTo(v);
+      wavesurferRef.current.seekTo(Array.isArray(v) ? v[0] : v);
     },
     [isReady],
   );

@@ -1,5 +1,6 @@
-import { Slot } from "@radix-ui/react-slot"
-import * as React from "react"
+import { mergeProps } from "@base-ui/react/merge-props"
+import { useRender } from "@base-ui/react/use-render"
+import type * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -8,37 +9,28 @@ import {
 } from "@/hooks/limeplay/use-playback"
 import { useVolumeStore } from "@/hooks/limeplay/use-volume"
 
-export interface MuteControlProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean
-  render?: React.ReactElement
+export interface MuteControlProps extends useRender.ComponentProps<"button"> {
   shortcut?: string
 }
 
 export type MuteControlPropsDocs = Pick<
   MuteControlProps,
-  "asChild" | "render" | "shortcut"
+  "render" | "shortcut"
 >
 
-export const MuteControl = React.forwardRef<
-  HTMLButtonElement,
-  MuteControlProps
->((props, forwardedRef) => {
+export function MuteControl(props: MuteControlProps) {
   const readyState = usePlaybackStore((state) => state.readyState)
   const muted = useVolumeStore((state) => state.muted)
   const toggleMute = useVolumeStore((state) => state.toggleMute)
 
   const {
     "aria-label": ariaLabelProp,
-    asChild = false,
-    children,
     disabled: userDisabled,
     onClick,
     render,
     shortcut,
     ...restProps
   } = props
-
-  const Comp = render ? Slot : asChild ? Slot : Button
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick?.(event)
@@ -55,19 +47,19 @@ export const MuteControl = React.forwardRef<
     return `${label}${shortcutText}`
   }
 
-  return (
-    <Comp
-      aria-keyshortcuts={shortcut}
-      aria-label={ariaLabelProp ?? getDefaultAriaLabel()}
-      data-label="lp-mute-control"
-      disabled={isDisabled}
-      {...restProps}
-      onClick={handleClick}
-      ref={forwardedRef}
-    >
-      {render ? React.cloneElement(render, undefined, children) : children}
-    </Comp>
-  )
-})
-
-MuteControl.displayName = "MuteControl"
+  return useRender({
+    render: render ?? <Button />,
+    props: {
+      "data-label": "lp-mute-control",
+      ...mergeProps<"button">(
+        {
+          "aria-keyshortcuts": shortcut,
+          "aria-label": ariaLabelProp ?? getDefaultAriaLabel(),
+          disabled: isDisabled,
+          onClick: handleClick,
+        },
+        restProps
+      ),
+    },
+  })
+}
