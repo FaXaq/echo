@@ -39,8 +39,8 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
   const { t } = useTranslation("calendar")
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
-  const selected = selectedIndex !== null ? files[selectedIndex] : undefined
   const items = filter(files, (f) => f.kind === "image" || f.kind === "video")
+  const selected = selectedIndex !== null ? items[selectedIndex] : undefined
 
   return (
     <div className="flex flex-col gap-2">

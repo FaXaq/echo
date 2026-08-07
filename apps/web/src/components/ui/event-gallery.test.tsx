@@ -44,4 +44,24 @@ describe("EventGallery", () => {
     const link = screen.getByRole("link", { name: "Download cover.png" })
     expect(link).toHaveAttribute("href", "https://example.com/cover.png")
   })
+
+  it("opens the correct file when files contains non-gallery kinds interleaved with images", async () => {
+    const user = userEvent.setup()
+    const first = makeFile({ id: "f1", originalFilename: "first.png", downloadUrl: "https://example.com/first.png" })
+    const audio = makeFile({
+      id: "f2",
+      kind: "audio",
+      originalFilename: "voice.mp3",
+      downloadUrl: "https://example.com/voice.mp3",
+    })
+    const second = makeFile({ id: "f3", originalFilename: "second.png", downloadUrl: "https://example.com/second.png" })
+
+    render(<EventGallery files={[first, audio, second]} />)
+
+    await user.click(screen.getByRole("button", { name: "Open second.png" }))
+
+    const dialog = await screen.findByRole("dialog")
+    const image = dialog.querySelector("img")
+    expect(image).toHaveAttribute("src", "https://example.com/second.png")
+  })
 })
