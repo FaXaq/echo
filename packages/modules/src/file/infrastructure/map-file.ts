@@ -15,7 +15,9 @@ export type FileRow = {
 };
 
 function toFileKind(value: string): FileKind {
-  if (value === "audio" || value === "video" || value === "image") return value;
+  if (value === "audio" || value === "video" || value === "image" || value === "document") {
+    return value;
+  }
   throw new Error(`Unknown file kind: ${value}`);
 }
 

@@ -14,8 +14,18 @@ describe("kindForMimeType", () => {
     expect(kindForMimeType("image/png")).toBe("image");
   });
 
+  it("maps known document mime types to the document kind", () => {
+    expect(kindForMimeType("application/pdf")).toBe("document");
+    expect(kindForMimeType("application/msword")).toBe("document");
+    expect(
+      kindForMimeType(
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ),
+    ).toBe("document");
+  });
+
   it("returns null for an unsupported mime type", () => {
-    expect(kindForMimeType("application/pdf")).toBeNull();
+    expect(kindForMimeType("application/zip")).toBeNull();
   });
 });
 
