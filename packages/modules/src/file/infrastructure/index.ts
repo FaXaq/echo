@@ -3,3 +3,4 @@ export { markFileUploaded } from "./mark-file-uploaded.js";
 export { findFileById } from "./find-file-by-id.js";
 export { listFilesByEvent } from "./list-files-by-event.js";
 export { deleteFileById } from "./delete-file-by-id.js";
+export { renameFileById } from "./rename-file-by-id.js";
