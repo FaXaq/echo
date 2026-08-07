@@ -63,7 +63,7 @@ export function VersionSwitcher({
             {versions.map((version) => (
               <DropdownMenuItem
                 key={version}
-                onSelect={() => handleSelect(version)}
+                onClick={() => handleSelect(version)}
               >
                 {version}
                 {version === selectedVersion && (
@@ -74,7 +74,7 @@ export function VersionSwitcher({
             {onCreateNew && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={onCreateNew}>
+                <DropdownMenuItem onClick={onCreateNew}>
                   <Plus className="size-4" />
                   <Trans t={t}>New project</Trans>
                 </DropdownMenuItem>

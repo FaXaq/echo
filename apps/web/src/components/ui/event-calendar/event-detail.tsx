@@ -1,7 +1,7 @@
 import "@/lib/dayjs"
 import dayjs from "dayjs"
-import { Calendar, MapPin } from "lucide-react"
-import { Trans, useTranslation } from "react-i18next"
+import { Calendar, MapPin, Pen, Trash } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { capitalize } from "remeda"
 
 import { cn } from "@/lib/utils"
@@ -18,11 +18,13 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { EVENT_TYPE_LABELS, EventTypeIcon } from "./event-types"
+import { getEventLabel, EventTypeIcon } from "./event-types"
 import type { CalendarEvent } from "./types"
 import { Avatar, AvatarFallback } from "../avatar"
 import { getInitials } from "@/lib/remeda"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../tooltip"
+import { eventColorClasses } from "./colors"
+import { Link } from "@tanstack/react-router"
 
 export interface EventDetailProps {
   event: CalendarEvent
@@ -57,24 +59,68 @@ export function EventDetail({
       data-slot="event-detail"
       className={cn("flex flex-col gap-4", className)}
     >
-      <div className="typeset typeset-notes rounded border p-4">
-        {(event.type || event.allDay) && (
-          <div className="flex flex-wrap items-center gap-1.5">
-            {event.type && (
-              <Badge variant="secondary">
-                <EventTypeIcon
-                  type={event.type}
-                  className="size-3.5"
-                  data-icon="inline-start"
+      <div className="rounded border p-4 relative">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Badge variant="secondary">
+            <EventTypeIcon
+              type={event.type}
+              className="size-3.5"
+              data-icon="inline-start"
+            />
+            {t(getEventLabel(event.type))}
+          </Badge>
+          {event.allDay && <Badge variant="outline">{t("All day")}</Badge>}
+        </div>
+        <div className="absolute top-4 right-4 flex flex-row gap-1">
+          <Tooltip>
+            <TooltipTrigger render={
+              <Button type="button" size="icon" onClick={onEdit}>
+                <Pen />
+              </Button>
+            }
+            />
+            <TooltipContent>
+              <p>{t("Edit")}</p>
+            </TooltipContent>
+          </Tooltip>
+          <AlertDialog>
+            <AlertDialogTrigger render={
+              <Tooltip>
+                <TooltipTrigger render={
+                  <Button size="icon" variant="destructive" onClick={onEdit}>
+                    <Trash />
+                  </Button>
+                  }
                 />
-                {t(EVENT_TYPE_LABELS[event.type])}
-              </Badge>
-            )}
-            {event.allDay && <Badge variant="outline">{t("All day")}</Badge>}
-          </div>
-        )}
+                <TooltipContent>
+                  <p>{t("Delete")}</p>
+                </TooltipContent>
+              </Tooltip>
+            } />
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("Delete event?")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {t(
+                    "This will permanently delete this event. This action cannot be undone."
+                  )}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
+                <AlertDialogAction onClick={onDelete}>
+                  {t("Delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
 
-        <h1 className="my-4">{event.title}</h1>
+        <div className="flex flex-row gap-2 items-center">
+          <div className={cn("w-4 h-4 rounded-full block", eventColorClasses[event.color])}></div>
+          <h1 className="my-4">{event.title}</h1>
+        </div>
+        {"name" in event.organization && (<Link to="/organizations/$organizationSlug" params={{ organizationSlug: event.organization.slug }}>{event.organization.name}</Link>)}
 
         <div className="flex flex-col gap-3">
           <div className="flex flex-row gap-2">
@@ -87,44 +133,45 @@ export function EventDetail({
             </div>
           </div>
 
-          {event.place && (
-            <div className="flex flex-row gap-2">
-              <MapPin className="text-muted-foreground shrink-0" size={18} />
-              <div className="flex flex-col justify-start">
-                <p className="m-0">
-                  <b>{event.place.name}</b>
-                </p>
-                <p className="m-0 text-muted-foreground">
-                  {event.place.address}{" "}
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${event.place.lat},${event.place.lng}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {t("Open in Maps")}
-                  </a>
-                </p>
-              </div>
+          <div className="flex flex-row gap-2">
+            <MapPin className="text-muted-foreground shrink-0" size={18} />
+            <div className="flex flex-col justify-start">
+              {!event.place && <p className="m-0"><b>-</b></p>}
+              {event.place && (
+                <>
+                  <p className="m-0">
+                    <b>{event.place.name}</b>
+                  </p>
+                  <p className="m-0 text-muted-foreground">
+                    {event.place.address}{" "}
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${event.place.lat},${event.place.lng}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t("Open in Maps")}
+                    </a>
+                  </p>
+                </>
+              )}
             </div>
-          )}
+          </div>
 
           <div className="flex flex-row gap-2">
             <Tooltip>
-                <TooltipTrigger render={
-                    <Avatar size="sm">
-                      <AvatarFallback>{getInitials(event.createdByName)}</AvatarFallback>
-                    </Avatar>
-                  }
-                />
-                <TooltipContent>
-                  <p>{t("Created on {{date}} at {{time}}", { date: dayjs(event.createdAt).format("LL"), time: dayjs(event.createdAt).format("LT") })}</p>
-                </TooltipContent>
-              </Tooltip>
+              <TooltipTrigger render={
+                  <Avatar size="sm">
+                    <AvatarFallback>{getInitials(event.createdByName)}</AvatarFallback>
+                  </Avatar>
+                }
+              />
+              <TooltipContent>
+                <p>{t("Created on {{date}} at {{time}}", { date: dayjs(event.createdAt).format("LL"), time: dayjs(event.createdAt).format("LT") })}</p>
+              </TooltipContent>
+            </Tooltip>
             <div className="flex flex-col justify-start">
               <p className="m-0 text-muted-foreground">
-                <Trans t={t} values={{ name: event.createdByName }}>
-                  Organized by <strong>{"{{name}}"}</strong>
-                </Trans>
+                {t("Organized by {{name}}", { name: event.createdByName })}
               </p>
             </div>
           </div>
@@ -136,33 +183,6 @@ export function EventDetail({
             <p className="whitespace-pre-wrap">{event.description}</p>
           </>
         )}
-      </div>
-
-      <div className="flex gap-2">
-        <Button type="button" onClick={onEdit}>
-          {t("Edit")}
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger render={<Button type="button" variant="destructive" />}>
-            {t("Delete")}
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{t("Delete event?")}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {t(
-                  "This will permanently delete this event. This action cannot be undone."
-                )}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
-              <AlertDialogAction onClick={onDelete}>
-                {t("Delete")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
       </div>
     </div>
   )

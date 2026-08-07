@@ -4,6 +4,8 @@ import type { Selectable } from "kysely";
 
 export type CalendarEventRow = Selectable<DB["calendar_event"]> & {
   created_by_name: string;
+  organization_name: string | null;
+  organization_slug: string | null;
 };
 
 function toEventPlace(row: CalendarEventRow): EventPlace | null {
@@ -38,7 +40,11 @@ export function toCalendarEvent(row: CalendarEventRow): CalendarEvent {
     allDay: row.all_day ?? false,
     color: row.color as EventColor,
     type: toEventType(row.type),
-    organizationId: row.organization_id,
+    organization: row.organization_id && row.organization_name && row.organization_slug ? {
+      id: row.organization_id,
+      name: row.organization_name,
+      slug: row.organization_name,
+    } : undefined,
     createdAt: row.created_at,
     createdBy: row.created_by,
     createdByName: row.created_by_name,

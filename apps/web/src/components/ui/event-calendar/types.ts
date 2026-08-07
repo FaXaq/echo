@@ -34,12 +34,20 @@ export interface CalendarEvent {
   allDay?: boolean
   color: EventColor
   type: EventType | null
-  organizationId: string | null
+  organization: {
+    id: string,
+    name: string,
+    slug: string,
+  } | {
+    id: string | null
+  },
   place: EventPlace | null
   createdBy: string
   createdByName: string
   createdAt: Date
 }
+
+export type EventPayload = Omit<CalendarEvent, "createdBy" | "createdByName" |"createdAt">
 
 export const calendarViewSchema = z.enum(["month", "week", "day", "agenda"])
 export type CalendarView = z.infer<typeof calendarViewSchema>

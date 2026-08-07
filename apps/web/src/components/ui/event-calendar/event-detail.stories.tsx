@@ -39,8 +39,15 @@ const baseEvent = {
   endDate: new Date("2026-08-03T09:30:00"),
   color: "blue",
   type: null,
-  organizationId: null,
   place: null,
+  organization: {
+    id: "test",
+    name: "test",
+    slug: "test"
+  },
+  createdBy: "XXX",
+  createdByName: "Mr Me",
+  createdAt: new Date("2026-08-02T09:30:00"),
 } as const
 
 export const Default: Story = {

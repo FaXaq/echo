@@ -44,7 +44,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
-import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS } from "./event-types"
+import { getEventLabel, EventTypeIcon } from "./event-types"
 import { OrganizationField } from "./organization-field"
 import { PlaceField } from "./place-field"
 import { EVENT_TYPES, eventTypeSchema, type CalendarEvent, type CalendarEventRange, type EventColor } from "./types"
@@ -96,7 +96,7 @@ function stateToDefaultValues(
       allDay: !!event.allDay,
       color: event.color,
       type: event.type,
-      organizationId: event.organizationId,
+      organizationId: event.organization.id,
       place: event.place,
     }
   }
@@ -181,8 +181,12 @@ export function EventDialog({
       allDay: values.allDay,
       color: values.color,
       type: values.type,
-      organizationId: values.organizationId,
       place: values.place,
+      organization: isEdit ? content.event.organization : { id: values.organizationId },
+      // Those are mock values only to have a single interface between this component & others
+      createdAt: isEdit ? content.event.createdAt : new Date(),
+      createdBy: isEdit ? content.event.createdBy : "",
+      createdByName: isEdit ? content.event.createdByName : ""
     })
   }
 
@@ -209,7 +213,7 @@ export function EventDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(submit)}>
-          <FieldGroup>
+          <FieldGroup className="pb-4">
             <Field>
               <FieldLabel htmlFor="event-title">{t("Title")}</FieldLabel>
               <Input id="event-title" {...register("title")} />
@@ -347,11 +351,10 @@ export function EventDialog({
                       <SelectValue>
                         {() => {
                           if (field.value === null) return t("None")
-                          const Icon = EVENT_TYPE_ICONS[field.value]
                           return (
                             <>
-                              <Icon className="mr-1.5 inline-block size-3.5" />
-                              {t(EVENT_TYPE_LABELS[field.value])}
+                              <EventTypeIcon type={field.value} className="mr-1.5 inline-block size-3.5" />
+                              {t(getEventLabel(field.value))}
                             </>
                           )
                         }}
@@ -360,11 +363,10 @@ export function EventDialog({
                     <SelectContent>
                       <SelectItem value="none">{t("None")}</SelectItem>
                       {EVENT_TYPES.map((type) => {
-                        const Icon = EVENT_TYPE_ICONS[type]
                         return (
                           <SelectItem key={type} value={type}>
-                            <Icon className="mr-1.5 inline-block size-3.5" />
-                            {t(EVENT_TYPE_LABELS[type])}
+                            <EventTypeIcon type={type} className="mr-1.5 inline-block size-3.5" />
+                            {t(getEventLabel(type))}
                           </SelectItem>
                         )
                       })}

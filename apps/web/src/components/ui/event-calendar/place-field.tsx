@@ -21,6 +21,7 @@ export interface PlaceFieldProps {
 export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
   const { t } = useTranslation("calendar")
   const [inputValue, setInputValue] = useState(value?.name ?? "")
+  const [prevValue, setPrevValue] = useState(value)
   const [results, setResults] = useState<EventPlace[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [open, setOpen] = useState(false)
@@ -39,9 +40,10 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
     )
   }
 
-  useEffect(() => {
+  if (value !== prevValue) {
+    setPrevValue(value)
     setInputValue(value?.name ?? "")
-  }, [value])
+  }
 
   useEffect(() => {
     return () => {

@@ -18,14 +18,14 @@ export async function getEventById(
   });
 
   if (input.organizationId
-    && eventForPermissions?.organizationId
-    && input.organizationId !== eventForPermissions?.organizationId) {
+    && eventForPermissions?.organization?.id
+    && input.organizationId !== eventForPermissions.organization.id) {
     throw notFound("CalendarEvent")
   }
 
-  if (eventForPermissions && eventForPermissions.organizationId) {
+  if (eventForPermissions?.organization?.id) {
     const { success } = await deps.userHasPermissionInOrganization({
-      organizationId: eventForPermissions.organizationId,
+      organizationId: eventForPermissions.organization.id,
       permissions: { calendarEvent: ["read"] },
     });
     if (!success) throw forbidden({ entity: "CalendarEvent", action: "list" });

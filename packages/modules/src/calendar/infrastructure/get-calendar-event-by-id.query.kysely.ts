@@ -8,6 +8,8 @@ export const getCalendarEventByIdFactory: GetCalendarEventByIdQueryPortFactory =
       .innerJoin("user", "user.id", "created_by")
       .selectAll("calendar_event")
       .select("user.name as created_by_name")
+      .leftJoin("organization", "calendar_event.organization_id", "organization.id")
+      .select(["organization.name as organization_name", "organization.slug as organization_slug"])
       .where("calendar_event.id", "=", input.eventId);
 
     if (input.organizationId === null) {

@@ -133,7 +133,8 @@
   },
 
   "calendar": {
-    "Organized by <strong>{{name}}</strong>": "Organisé par <strong>{{name}}</strong>",
+    "Created on {{date}} at {{time}}": "Créé le {{date}} à {{time}}",
+    "Organized by {{name}}": "Organisé par {{name}}",
     "Month": "Mois",
     "Week": "Semaine",
     "Day": "Jour",
@@ -155,6 +156,7 @@
     "Type": "Type",
     "None": "Aucun",
     "Unavailability": "Indisponibilité",
+    "Event": "Événement",
     "Rehearsal": "Répétition",
     "Concert": "Concert",
     "Meeting": "Réunion",
