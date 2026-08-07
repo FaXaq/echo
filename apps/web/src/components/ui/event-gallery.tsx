@@ -1,13 +1,23 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ChevronLeft, ChevronRight, DownloadIcon, X, XIcon } from "lucide-react"
+import { ChevronLeft, ChevronRight, DownloadIcon, Play, XIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import type { EventFile } from "@/services/resources/file"
-import { match } from "ts-pattern";
+import { match } from "ts-pattern"
 import { VideoPlayer } from "../video-player/player"
-import { Attachment, AttachmentAction, AttachmentActions, AttachmentContent, AttachmentDescription, AttachmentGroup, AttachmentMedia, AttachmentTitle } from "./attachment"
-import { filter } from "remeda";
+import {
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentTitle,
+  AttachmentTrigger,
+} from "./attachment"
+import { filter } from "remeda"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,59 +40,67 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   const selected = selectedIndex !== null ? files[selectedIndex] : undefined
-  const images = filter(files, f => f.kind === "image");
+  const items = filter(files, (f) => f.kind === "image" || f.kind === "video")
 
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="text-xs font-medium text-muted-foreground">{t("Gallery")}</h3>
-
       <AttachmentGroup>
-        {images.map((file) => (
-          <>
-            <Attachment key={file.originalFilename} orientation="vertical">
-              <AttachmentMedia variant="image">
-                <img src={file.downloadUrl} alt={file.originalFilename} />
-              </AttachmentMedia>
-              <AttachmentContent>
-                <AttachmentTitle>{file.originalFilename}</AttachmentTitle>
-                <AttachmentDescription>{file.sizeBytes}</AttachmentDescription>
-              </AttachmentContent>
-              <AttachmentActions>
-                {onDelete && (
-                  <AlertDialog>
-                    <AlertDialogTrigger
-                      render={
-                        <AttachmentAction
-                          aria-label={`Remove ${file.originalFilename}`}
-                        />
-                      }
-                    >
-                      <XIcon />
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {t(
-                            "This will permanently delete the file. This action cannot be undone."
-                          )}
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => onDelete(file)}>
-                          {t("Delete")}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
-                <AttachmentAction aria-label={`Download ${file.originalFilename}`}>
-                  <DownloadIcon />
-                </AttachmentAction>
-              </AttachmentActions>
-            </Attachment>
-          </>
+        {items.map((file, index) => (
+          <Attachment key={file.id} orientation="vertical">
+            <AttachmentTrigger
+              aria-label={t("Open {{filename}}", { filename: file.originalFilename })}
+              onClick={() => setSelectedIndex(index)}
+            />
+            <AttachmentMedia variant="image">
+              {match(file.kind)
+                .with("image", () => (
+                  <img src={file.downloadUrl} alt={file.originalFilename} />
+                ))
+                .with("video", () => (
+                  <div className="relative flex h-full w-full items-center justify-center bg-muted">
+                    <video src={file.downloadUrl} muted preload="metadata" className="h-full w-full object-cover" />
+                    <Play className="absolute size-5 text-white" fill="white" />
+                  </div>
+                ))
+                .with("audio", "document", () => null)
+                .exhaustive()}
+            </AttachmentMedia>
+            <AttachmentContent>
+              <AttachmentTitle>{file.originalFilename}</AttachmentTitle>
+              <AttachmentDescription>{file.sizeBytes}</AttachmentDescription>
+            </AttachmentContent>
+            <AttachmentActions>
+              {onDelete && (
+                <AlertDialog>
+                  <AlertDialogTrigger
+                    render={<AttachmentAction aria-label={t("Remove {{filename}}", { filename: file.originalFilename })} />}
+                  >
+                    <XIcon />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {t("This will permanently delete the file. This action cannot be undone.")}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => onDelete(file)}>
+                        {t("Delete")}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              <AttachmentAction
+                aria-label={t("Download {{filename}}", { filename: file.originalFilename })}
+                render={<a href={file.downloadUrl} download={file.originalFilename} target="_blank" rel="noreferrer" />}
+              >
+                <DownloadIcon />
+              </AttachmentAction>
+            </AttachmentActions>
+          </Attachment>
         ))}
       </AttachmentGroup>
 
@@ -110,21 +128,18 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
               )}
 
               {match(selected.kind)
-                .with("image", () =>
-                <img
-                  src={selected.downloadUrl}
-                  alt=""
-                  className="max-h-[70vh] w-full object-contain"
-                  />)
-               .with("video", () =>
-                <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
-                  <VideoPlayer source={selected.downloadUrl} />
-                </div>)
-                .with("audio", () => null)
-                .exhaustive()
-              }
+                .with("image", () => (
+                  <img src={selected.downloadUrl} alt="" className="max-h-[70vh] w-full object-contain" />
+                ))
+                .with("video", () => (
+                  <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
+                    <VideoPlayer source={selected.downloadUrl} />
+                  </div>
+                ))
+                .with("audio", "document", () => null)
+                .exhaustive()}
 
-              {selectedIndex < files.length - 1 && (
+              {selectedIndex < items.length - 1 && (
                 <Button
                   type="button"
                   variant="ghost"
