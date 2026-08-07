@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { EventAttachments } from "./event-attachments"
+import { SuspendedEventAttachments } from "./suspended-event-attachments"
 import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/file"
 
 function withSeededFiles(files: EventFile[]) {
@@ -10,11 +10,9 @@ function withSeededFiles(files: EventFile[]) {
 }
 
 const meta = {
-  title: "EventCalendar/EventAttachments",
-  component: EventAttachments,
-  parameters: {
-    layout: "centered",
-  },
+  title: "EventCalendar/SuspendedEventAttachments",
+  component: SuspendedEventAttachments,
+  parameters: { layout: "centered" },
   tags: ["autodocs"],
   decorators: [
     (Story) => (
@@ -23,7 +21,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof EventAttachments>
+} satisfies Meta<typeof SuspendedEventAttachments>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -45,24 +43,10 @@ export const WithMixedFiles: Story = {
     (Story) => (
       <QueryClientProvider
         client={withSeededFiles([
-          {
-            id: "file-1",
-            kind: "audio",
-            originalFilename: "demo.mp3",
-            downloadUrl: "https://example.com/demo.mp3",
-          } as EventFile,
-          {
-            id: "file-2",
-            kind: "image",
-            originalFilename: "cover.png",
-            downloadUrl: "https://example.com/cover.png",
-          } as EventFile,
-          {
-            id: "file-3",
-            kind: "video",
-            originalFilename: "clip.mp4",
-            downloadUrl: "https://example.com/clip.mp4",
-          } as EventFile,
+          { id: "file-1", kind: "audio", originalFilename: "demo.mp3", downloadUrl: "https://example.com/demo.mp3", sizeBytes: 6_400_000, uploadedByName: "Priya" } as EventFile,
+          { id: "file-2", kind: "image", originalFilename: "cover.png", downloadUrl: "https://example.com/cover.png", sizeBytes: 245_000, uploadedByName: "Jamie" } as EventFile,
+          { id: "file-3", kind: "video", originalFilename: "clip.mp4", downloadUrl: "https://example.com/clip.mp4", sizeBytes: 18_200_000, uploadedByName: "Marcus" } as EventFile,
+          { id: "file-4", kind: "document", originalFilename: "setlist.pdf", downloadUrl: "https://example.com/setlist.pdf", sizeBytes: 86_000, uploadedByName: "Jamie" } as EventFile,
         ])}
       >
         <Story />
