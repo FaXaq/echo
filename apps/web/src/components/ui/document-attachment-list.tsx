@@ -10,7 +10,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {
   Attachment,
@@ -164,7 +163,7 @@ export function DocumentAttachmentList({ files, onDelete, onRename }: DocumentAt
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => { if (fileToDelete) { onDelete(fileToDelete); setDeleteFileId(null); } }}>
+            <AlertDialogAction onClick={() => { if (fileToDelete) { onDelete?.(fileToDelete); setDeleteFileId(null); } }}>
               {t("Delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
