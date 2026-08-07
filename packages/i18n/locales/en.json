@@ -202,7 +202,9 @@
   },
 
   "calendar": {
+    "Created on {{date}} at {{time}}": "Created on {{date}} at {{time}}",
     "Organized by <strong>{{name}}</strong>": "Organized by <strong>{{name}}</strong>",
+    "Organized by {{name}}": "Organized by {{name}}",
     "Month": "Month",
     "Week": "Week",
     "Day": "Day",
@@ -271,7 +273,32 @@
     "Clear place": "Clear place",
     "Open in Maps": "Open in Maps",
     "Organization": "Organization",
-    "No organization": "No organization"
+    "No organization": "No organization",
+    "Share": "Share",
+    "Event actions": "Event actions",
+    "Update": "Update",
+    "Organizer": "Organizer",
+    "Location": "Location",
+    "Category": "Category",
+    "Link copied to clipboard": "Link copied to clipboard",
+    "Event deleted": "Event deleted",
+    "Something went wrong": "Something went wrong",
+    "Linked files": "Linked files",
+    "{{count}} file": "{{count}} file",
+    "{{count}} files": "{{count}} files",
+    "No files linked yet.": "No files linked yet.",
+    "Couldn't load attachments": "Couldn't load attachments",
+    "Audio": "Audio",
+    "Photos & videos": "Photos & videos",
+    "Documents": "Documents",
+    "Rename": "Rename",
+    "Rename {{filename}}": "Rename {{filename}}",
+    "Save name": "Save name",
+    "Download {{filename}}": "Download {{filename}}",
+    "Remove {{filename}}": "Remove {{filename}}",
+    "Open {{filename}}": "Open {{filename}}",
+    "Actions for {{filename}}": "Actions for {{filename}}",
+    "Preview unavailable for this file": "Preview unavailable for this file"
   },
 
   "emails": {

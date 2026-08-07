@@ -134,6 +134,7 @@
 
   "calendar": {
     "Created on {{date}} at {{time}}": "Créé le {{date}} à {{time}}",
+    "Organized by <strong>{{name}}</strong>": "Organisé par <strong>{{name}}</strong>",
     "Organized by {{name}}": "Organisé par {{name}}",
     "Month": "Mois",
     "Week": "Semaine",
@@ -203,7 +204,32 @@
     "Clear place": "Effacer le lieu",
     "Open in Maps": "Ouvrir dans Maps",
     "Organization": "Organisation",
-    "No organization": "Aucune organisation"
+    "No organization": "Aucune organisation",
+    "Share": "Partager",
+    "Event actions": "Actions de l'événement",
+    "Update": "Modifier",
+    "Organizer": "Organisateur",
+    "Location": "Lieu",
+    "Category": "Catégorie",
+    "Link copied to clipboard": "Lien copié dans le presse-papiers",
+    "Event deleted": "Événement supprimé",
+    "Something went wrong": "Une erreur est survenue",
+    "Linked files": "Fichiers liés",
+    "{{count}} file": "{{count}} fichier",
+    "{{count}} files": "{{count}} fichiers",
+    "No files linked yet.": "Aucun fichier lié pour le moment.",
+    "Couldn't load attachments": "Impossible de charger les pièces jointes",
+    "Audio": "Audio",
+    "Photos & videos": "Photos et vidéos",
+    "Documents": "Documents",
+    "Rename": "Renommer",
+    "Rename {{filename}}": "Renommer {{filename}}",
+    "Save name": "Enregistrer le nom",
+    "Download {{filename}}": "Télécharger {{filename}}",
+    "Remove {{filename}}": "Supprimer {{filename}}",
+    "Open {{filename}}": "Ouvrir {{filename}}",
+    "Actions for {{filename}}": "Actions pour {{filename}}",
+    "Preview unavailable for this file": "Aperçu indisponible pour ce fichier"
   },
 
   "emails": {
