@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { ChevronLeft, ChevronRight, DownloadIcon, Play, XIcon } from "lucide-react"
+import { ChevronLeft, ChevronRight, DownloadIcon, FileWarning, Play, XIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import type { EventFile } from "@/services/resources/file"
@@ -38,6 +38,10 @@ export interface EventGalleryProps {
 export function EventGallery({ files, onDelete }: EventGalleryProps) {
   const { t } = useTranslation("calendar")
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const [failedIds, setFailedIds] = useState<Set<string>>(new Set())
+
+  const markFailed = (id: string) =>
+    setFailedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)))
 
   const items = filter(files, (f) => f.kind === "image" || f.kind === "video")
   const selected = selectedIndex !== null ? items[selectedIndex] : undefined
@@ -45,29 +49,47 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
   return (
     <div className="flex flex-col gap-2">
       <AttachmentGroup>
-        {items.map((file, index) => (
-          <Attachment key={file.id} orientation="vertical">
+        {items.map((file, index) => {
+          const failed = failedIds.has(file.id)
+          return (
+          <Attachment key={file.id} orientation="vertical" state={failed ? "error" : "done"}>
             <AttachmentTrigger
               aria-label={t("Open {{filename}}", { filename: file.originalFilename })}
               onClick={() => setSelectedIndex(index)}
             />
             <AttachmentMedia variant="image">
-              {match(file.kind)
-                .with("image", () => (
-                  <img src={file.downloadUrl} alt={file.originalFilename} />
-                ))
-                .with("video", () => (
-                  <div className="relative flex h-full w-full items-center justify-center bg-muted">
-                    <video src={file.downloadUrl} muted preload="metadata" className="h-full w-full object-cover" />
-                    <Play className="absolute size-5 text-white" fill="white" />
-                  </div>
-                ))
-                .with("audio", "document", () => null)
-                .exhaustive()}
+              {failed ? (
+                <FileWarning />
+              ) : (
+                match(file.kind)
+                  .with("image", () => (
+                    <img
+                      src={file.downloadUrl}
+                      alt={file.originalFilename}
+                      onError={() => markFailed(file.id)}
+                    />
+                  ))
+                  .with("video", () => (
+                    <div className="relative flex h-full w-full items-center justify-center bg-muted">
+                      <video
+                        src={file.downloadUrl}
+                        muted
+                        preload="metadata"
+                        className="h-full w-full object-cover"
+                        onError={() => markFailed(file.id)}
+                      />
+                      <Play className="absolute size-5 text-white" fill="white" />
+                    </div>
+                  ))
+                  .with("audio", "document", () => null)
+                  .exhaustive()
+              )}
             </AttachmentMedia>
             <AttachmentContent>
               <AttachmentTitle>{file.originalFilename}</AttachmentTitle>
-              <AttachmentDescription>{file.sizeBytes}</AttachmentDescription>
+              <AttachmentDescription>
+                {failed ? t("Couldn't load this file") : file.sizeBytes}
+              </AttachmentDescription>
             </AttachmentContent>
             <AttachmentActions>
               {onDelete && (
@@ -101,7 +123,8 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
               </AttachmentAction>
             </AttachmentActions>
           </Attachment>
-        ))}
+          )
+        })}
       </AttachmentGroup>
 
       <Dialog
@@ -127,17 +150,29 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
                 </Button>
               )}
 
-              {match(selected.kind)
-                .with("image", () => (
-                  <img src={selected.downloadUrl} alt="" className="max-h-[70vh] w-full object-contain" />
-                ))
-                .with("video", () => (
-                  <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
-                    <VideoPlayer source={selected.downloadUrl} />
-                  </div>
-                ))
-                .with("audio", "document", () => null)
-                .exhaustive()}
+              {selected.kind === "image" && failedIds.has(selected.id) ? (
+                <div className="flex h-64 w-full flex-col items-center justify-center gap-2 rounded-md bg-muted text-sm text-destructive">
+                  <FileWarning className="size-6" />
+                  <span>{t("Couldn't load this file")}</span>
+                </div>
+              ) : (
+                match(selected.kind)
+                  .with("image", () => (
+                    <img
+                      src={selected.downloadUrl}
+                      alt=""
+                      className="max-h-[70vh] w-full object-contain"
+                      onError={() => markFailed(selected.id)}
+                    />
+                  ))
+                  .with("video", () => (
+                    <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
+                      <VideoPlayer source={selected.downloadUrl} />
+                    </div>
+                  ))
+                  .with("audio", "document", () => null)
+                  .exhaustive()
+              )}
 
               {selectedIndex < items.length - 1 && (
                 <Button

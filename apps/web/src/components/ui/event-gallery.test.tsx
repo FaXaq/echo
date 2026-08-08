@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it } from "vitest"
 import { EventGallery } from "./event-gallery"
 import type { EventFile } from "@/services/resources/file"
 
@@ -63,5 +63,20 @@ describe("EventGallery", () => {
     const dialog = await screen.findByRole("dialog")
     const image = dialog.querySelector("img")
     expect(image).toHaveAttribute("src", "https://example.com/second.png")
+  })
+
+  it("shows an error state on the thumbnail and in the lightbox when an image fails to load", async () => {
+    const user = userEvent.setup()
+    render(<EventGallery files={[makeFile()]} />)
+
+    const img = document.querySelector("img") as HTMLImageElement
+    fireEvent.error(img)
+
+    expect(await screen.findAllByText("Couldn't load this file")).not.toHaveLength(0)
+
+    await user.click(screen.getByRole("button", { name: "Open cover.png" }))
+
+    const dialog = await screen.findByRole("dialog")
+    expect(dialog.querySelector("img")).not.toBeInTheDocument()
   })
 })

@@ -117,12 +117,10 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
           <ul className="flex w-full flex-col gap-2">
             {audioFiles.map((file) => (
               <li key={file.id} className="flex items-center justify-between gap-2 text-xs">
-                <div className="w-full">
-                  <WavePlayer src={file.downloadUrl} />
-                  <p>{file.originalFilename}</p>
-                  <p>{t("Uploaded by {{name}}", { name: file.uploadedByName })}</p>
+                <div className="w-full rounded border-subtle-foreground border-solid border-1 p-4">
+                  <WavePlayer src={file.downloadUrl} errorMessage={t("Couldn't load this file")} />
+                  <DeleteFileButton file={file} onConfirm={() => deleteMutation.mutate({ id: file.id })} />
                 </div>
-                <DeleteFileButton file={file} onConfirm={() => deleteMutation.mutate({ id: file.id })} />
               </li>
             ))}
           </ul>

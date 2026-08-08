@@ -289,6 +289,7 @@
     "{{count}} files": "{{count}} files",
     "No files linked yet.": "No files linked yet.",
     "Couldn't load attachments": "Couldn't load attachments",
+    "Couldn't load this file": "Couldn't load this file",
     "Audio": "Audio",
     "Photos & videos": "Photos & videos",
     "Documents": "Documents",

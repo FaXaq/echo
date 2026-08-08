@@ -220,6 +220,7 @@
     "{{count}} files": "{{count}} fichiers",
     "No files linked yet.": "Aucun fichier lié pour le moment.",
     "Couldn't load attachments": "Impossible de charger les pièces jointes",
+    "Couldn't load this file": "Impossible de charger ce fichier",
     "Audio": "Audio",
     "Photos & videos": "Photos et vidéos",
     "Documents": "Documents",

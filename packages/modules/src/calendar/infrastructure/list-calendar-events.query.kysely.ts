@@ -9,7 +9,7 @@ export const listCalendarEventsQueryFactory: ListCalendarEventsQueryPortFactory 
         .innerJoin("user", "user.id", "created_by")
         .selectAll("calendar_event")
         .select("user.name as created_by_name")
-        .leftJoin("organization", "organization.id", "organization.id")
+        .leftJoin("organization", "organization.id", "calendar_event.organization_id")
         .select(["organization.name as organization_name", "organization.slug as organization_slug"])
         .where("organization_id", "=", input.organizationId)
         .execute();
@@ -21,9 +21,8 @@ export const listCalendarEventsQueryFactory: ListCalendarEventsQueryPortFactory 
       .selectFrom("calendar_event")
       .innerJoin("user", "user.id", "created_by")
       .selectAll("calendar_event")
-      .select("user.name as created_by_name")
-      .leftJoin("organization", "organization.id", "organization.id")
-      .select(["organization.name as organization_name", "organization.slug as organization_slug"])
+      .leftJoin("organization", "organization.id", "calendar_event.organization_id")
+      .select(["organization.name as organization_name", "organization.slug as organization_slug", "user.name as created_by_name"])
       .where((wb) =>
         wb.or([
           wb.and([

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { DownloadIcon, FileText, MoreVertical } from "lucide-react"
+import { DownloadIcon, FileText, FileWarning, MoreVertical } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,6 +48,10 @@ export function DocumentAttachmentList({ files, onDelete, onRename }: DocumentAt
   const [renameValue, setRenameValue] = useState("")
   const [previewId, setPreviewId] = useState<string | null>(null)
   const [deleteFileId, setDeleteFileId] = useState<string | null>(null)
+  const [failedIds, setFailedIds] = useState<Set<string>>(new Set())
+
+  const markFailed = (id: string) =>
+    setFailedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)))
 
   const previewFile = files.find((file) => file.id === previewId)
 
@@ -62,15 +66,17 @@ export function DocumentAttachmentList({ files, onDelete, onRename }: DocumentAt
   return (
     <>
       <ul className="flex flex-col gap-2.5">
-        {files.map((file) => (
+        {files.map((file) => {
+          const failed = failedIds.has(file.id)
+          return (
           <li key={file.id}>
-            <Attachment orientation="horizontal" className="w-full">
+            <Attachment orientation="horizontal" className="w-full" state={failed ? "error" : "done"}>
               <AttachmentTrigger
                 aria-label={t("Open {{filename}}", { filename: file.originalFilename })}
                 onClick={() => setPreviewId(file.id)}
               />
               <AttachmentMedia>
-                <FileText />
+                {failed ? <FileWarning /> : <FileText />}
               </AttachmentMedia>
               <AttachmentContent>
                 {renamingId === file.id ? (
@@ -89,7 +95,9 @@ export function DocumentAttachmentList({ files, onDelete, onRename }: DocumentAt
                 ) : (
                   <AttachmentTitle>{file.originalFilename}</AttachmentTitle>
                 )}
-                <AttachmentDescription>{formatSize(file.sizeBytes)}</AttachmentDescription>
+                <AttachmentDescription>
+                  {failed ? t("Couldn't load this file") : formatSize(file.sizeBytes)}
+                </AttachmentDescription>
               </AttachmentContent>
               <AttachmentActions>
                 <a
@@ -137,19 +145,32 @@ export function DocumentAttachmentList({ files, onDelete, onRename }: DocumentAt
               </AttachmentActions>
             </Attachment>
           </li>
-        ))}
+          )
+        })}
       </ul>
 
       <Dialog open={previewFile !== undefined} onOpenChange={(open) => !open && setPreviewId(null)}>
         <DialogContent className="max-w-2xl">
           <DialogTitle>{previewFile?.originalFilename}</DialogTitle>
-          {previewFile && (
-            <iframe
-              src={previewFile.downloadUrl}
-              title={previewFile.originalFilename}
-              className="h-[60vh] w-full rounded-md border border-border"
-            />
-          )}
+          {previewFile &&
+            (failedIds.has(previewFile.id) ? (
+              <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-2 rounded-md border border-border bg-muted text-sm text-destructive">
+                <FileWarning className="size-6" />
+                <span>{t("Couldn't load this file")}</span>
+              </div>
+            ) : (
+              <iframe
+                ref={(node) => {
+                  if (!node) return
+                  const handleError = () => markFailed(previewFile.id)
+                  node.addEventListener("error", handleError)
+                  return () => node.removeEventListener("error", handleError)
+                }}
+                src={previewFile.downloadUrl}
+                title={previewFile.originalFilename}
+                className="h-[60vh] w-full rounded-md border border-border"
+              />
+            ))}
         </DialogContent>
       </Dialog>
 

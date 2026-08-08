@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 import { DocumentAttachmentList } from "./document-attachment-list"
@@ -55,5 +55,17 @@ describe("DocumentAttachmentList", () => {
     await user.click(deleteButton)
 
     expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }))
+  })
+
+  it("shows an error state in the row and preview dialog when the file fails to load", async () => {
+    const user = userEvent.setup()
+    render(<DocumentAttachmentList files={[makeFile()]} />)
+
+    await user.click(screen.getByRole("button", { name: "Open setlist.pdf" }))
+    const iframe = await screen.findByTitle("setlist.pdf")
+    fireEvent.error(iframe)
+
+    expect(await screen.findAllByText("Couldn't load this file")).not.toHaveLength(0)
+    expect(screen.queryByTitle("setlist.pdf")).not.toBeInTheDocument()
   })
 })

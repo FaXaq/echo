@@ -43,7 +43,7 @@ export function toCalendarEvent(row: CalendarEventRow): CalendarEvent {
     organization: row.organization_id && row.organization_name && row.organization_slug ? {
       id: row.organization_id,
       name: row.organization_name,
-      slug: row.organization_name,
+      slug: row.organization_slug,
     } : undefined,
     createdAt: row.created_at,
     createdBy: row.created_by,

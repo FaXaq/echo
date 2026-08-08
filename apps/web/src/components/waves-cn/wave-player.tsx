@@ -12,6 +12,7 @@ import {
   VolumeX,
   Loader2,
   RotateCcw,
+  FileWarning,
 } from "lucide-react";
 import WavesurferPlayer from "@/lib/wave-cn";
 import type WaveSurfer from "wavesurfer.js";
@@ -47,6 +48,10 @@ export interface WavePlayerProps {
   onFinish?: () => void;
   /** Called with current time on every audio process tick */
   onTimeUpdate?: (currentTime: number, duration: number) => void;
+  /** Called when the audio source fails to load, decode, or play */
+  onError?: (error: Error) => void;
+  /** Message shown in place of the player when the audio source fails to load */
+  errorMessage?: string;
   className?: string;
 }
 
@@ -72,6 +77,8 @@ export function WavePlayer({
   onPause,
   onFinish,
   onTimeUpdate,
+  onError,
+  errorMessage = "Unable to load audio",
   className,
 }: WavePlayerProps) {
   const wavesurferRef = React.useRef<WaveSurfer | null>(null);
@@ -82,6 +89,7 @@ export function WavePlayer({
   const [isMuted, setIsMuted] = React.useState(false);
   const [duration, setDuration] = React.useState(0);
   const [currentTime, setCurrentTime] = React.useState(0);
+  const [hasError, setHasError] = React.useState(false);
 
   const togglePlay = React.useCallback(
     () => wavesurferRef.current?.playPause(),
@@ -164,7 +172,17 @@ export function WavePlayer({
     setIsPlaying(false);
     setCurrentTime(0);
     setDuration(0);
+    setHasError(false);
   }, []);
+
+  const handleError = React.useCallback(
+    (_ws: WaveSurfer, error: Error) => {
+      setHasError(true);
+      setIsReady(false);
+      onError?.(error);
+    },
+    [onError],
+  );
 
   // ── Derived
   const progress = duration > 0 ? currentTime / duration : 0;
@@ -178,97 +196,110 @@ export function WavePlayer({
         </p>
       )}
 
-      <div className="relative w-full rounded-sm overflow-hidden bg-muted/40">
-        {!isReady && (
-          <div
-            className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-[2px]"
-            style={{ height: waveHeight ?? 64 }}
-          >
-            <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+      {hasError ? (
+        <div
+          className="flex w-full items-center justify-center gap-2 rounded-sm bg-destructive/10 text-xs text-destructive"
+          style={{ height: waveHeight ?? 64 }}
+        >
+          <FileWarning className="h-4 w-4" />
+          <span>{errorMessage}</span>
+        </div>
+      ) : (
+        <>
+          <div className="relative w-full rounded-sm overflow-hidden bg-muted/40">
+            {!isReady && (
+              <div
+                className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-[2px]"
+                style={{ height: waveHeight ?? 64 }}
+              >
+                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+            <WavesurferPlayer
+              url={src}
+              waveColor={waveColor}
+              progressColor={progressColor}
+              height={waveHeight}
+              barWidth={barWidth}
+              barGap={barGap}
+              barRadius={barRadius}
+              minPxPerSec={minPxPerSec}
+              dragToSeek
+              onReady={handleReady}
+              onPlay={handlePlay}
+              onPause={handlePause}
+              onFinish={handleFinish}
+              onTimeupdate={handleTimeupdate}
+              onSeeking={handleSeeking}
+              onDestroy={handleDestroy}
+              onError={handleError}
+            />
           </div>
-        )}
-        <WavesurferPlayer
-          url={src}
-          waveColor={waveColor}
-          progressColor={progressColor}
-          height={waveHeight}
-          barWidth={barWidth}
-          barGap={barGap}
-          barRadius={barRadius}
-          minPxPerSec={minPxPerSec}
-          dragToSeek
-          onReady={handleReady}
-          onPlay={handlePlay}
-          onPause={handlePause}
-          onFinish={handleFinish}
-          onTimeupdate={handleTimeupdate}
-          onSeeking={handleSeeking}
-          onDestroy={handleDestroy}
-        />
-      </div>
 
-      <div className="flex items-center gap-2">
-        <span className="text-[11px] tabular-nums text-muted-foreground w-10 text-right shrink-0">
-          {formatTime(currentTime)}
-        </span>
-        <Slider
-          className="flex-1"
-          value={[progress]}
-          min={0}
-          max={1}
-          step={0.001}
-          disabled={!isReady}
-          onValueChange={handleSeek}
-        />
-        <span className="text-[11px] tabular-nums text-muted-foreground w-10 shrink-0">
-          {formatTime(duration)}
-        </span>
-      </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] tabular-nums text-muted-foreground w-10 text-right shrink-0">
+              {formatTime(currentTime)}
+            </span>
+            <Slider
+              className="flex-1"
+              value={[progress]}
+              min={0}
+              max={1}
+              step={0.001}
+              disabled={!isReady}
+              onValueChange={handleSeek}
+            />
+            <span className="text-[11px] tabular-nums text-muted-foreground w-10 shrink-0">
+              {formatTime(duration)}
+            </span>
+          </div>
 
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5">
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
-            disabled={!isReady}
-            onClick={restart}
-            aria-label="Restart"
-          >
-            <RotateCcw size={15} />
-          </Button>
-          <Button
-            size="icon"
-            variant="secondary"
-            className="h-9 w-9"
-            disabled={!isReady}
-            onClick={togglePlay}
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            {isPlaying ? <Pause size={17} /> : <Play size={17} />}
-          </Button>
-        </div>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                disabled={!isReady}
+                onClick={restart}
+                aria-label="Restart"
+              >
+                <RotateCcw size={15} />
+              </Button>
+              <Button
+                size="icon"
+                variant="secondary"
+                className="h-9 w-9"
+                disabled={!isReady}
+                onClick={togglePlay}
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                {isPlaying ? <Pause size={17} /> : <Play size={17} />}
+              </Button>
+            </div>
 
-        <div className="flex items-center gap-2 w-36">
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
-            onClick={toggleMute}
-            aria-label={isMuted ? "Unmute" : "Mute"}
-          >
-            {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
-          </Button>
-          <Slider
-            value={[isMuted ? 0 : volume]}
-            min={0}
-            max={1}
-            step={0.01}
-            onValueChange={handleVolume}
-            aria-label="Volume"
-          />
-        </div>
-      </div>
+            <div className="flex items-center gap-2 w-36">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+                onClick={toggleMute}
+                aria-label={isMuted ? "Unmute" : "Mute"}
+              >
+                {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+              </Button>
+              <Slider
+                value={[isMuted ? 0 : volume]}
+                min={0}
+                max={1}
+                step={0.01}
+                onValueChange={handleVolume}
+                aria-label="Volume"
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
