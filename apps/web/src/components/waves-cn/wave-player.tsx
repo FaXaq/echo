@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { Popover, PopoverContent } from "@/components/ui/popover";
 import {
   Play,
   Pause,
+  Volume1,
   Volume2,
   VolumeX,
   Loader2,
@@ -16,12 +16,13 @@ import {
 } from "lucide-react";
 import WavesurferPlayer from "@/lib/wave-cn";
 import type WaveSurfer from "wavesurfer.js";
+import { ButtonGroup } from "@/ui/button-group";
 
 export interface WavePlayerProps {
   /** Audio source URL */
   src: string;
   /** Optional title shown above the waveform */
-  title?: string;
+  title: string;
   /** Initial volume (0–1) */
   defaultVolume?: number;
   /** Audio bar color. Accepts any CSS value including var(--*) tokens @default "var(--muted-foreground)" */
@@ -82,6 +83,10 @@ export function WavePlayer({
   className,
 }: WavePlayerProps) {
   const wavesurferRef = React.useRef<WaveSurfer | null>(null);
+  const volumeButtonRef = React.useRef<HTMLButtonElement | null>(null);
+  const volumeCloseTimeoutRef = React.useRef<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   const [isReady, setIsReady] = React.useState(false);
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -90,6 +95,29 @@ export function WavePlayer({
   const [duration, setDuration] = React.useState(0);
   const [currentTime, setCurrentTime] = React.useState(0);
   const [hasError, setHasError] = React.useState(false);
+  const [isVolumeSliderOpen, setIsVolumeSliderOpen] = React.useState(false);
+
+  const openVolumeSlider = React.useCallback(() => {
+    if (volumeCloseTimeoutRef.current) {
+      clearTimeout(volumeCloseTimeoutRef.current);
+      volumeCloseTimeoutRef.current = null;
+    }
+    setIsVolumeSliderOpen(true);
+  }, []);
+
+  const scheduleCloseVolumeSlider = React.useCallback(() => {
+    volumeCloseTimeoutRef.current = setTimeout(() => {
+      setIsVolumeSliderOpen(false);
+    }, 150);
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (volumeCloseTimeoutRef.current) {
+        clearTimeout(volumeCloseTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const togglePlay = React.useCallback(
     () => wavesurferRef.current?.playPause(),
@@ -185,17 +213,12 @@ export function WavePlayer({
   );
 
   // ── Derived
-  const progress = duration > 0 ? currentTime / duration : 0;
+  const VolumeIcon =
+    isMuted || volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
 
   // ── Render
   return (
-    <div>
-      {title && (
-        <p className="text-sm font-medium text-foreground truncate">
-          {title}
-        </p>
-      )}
-
+    <div className={className}>
       {hasError ? (
         <div
           className="flex w-full items-center justify-center gap-2 rounded-sm bg-destructive/10 text-xs text-destructive"
@@ -206,96 +229,109 @@ export function WavePlayer({
         </div>
       ) : (
         <>
-          <div className="relative w-full rounded-sm overflow-hidden bg-muted/40">
-            {!isReady && (
-              <div
-                className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-[2px]"
-                style={{ height: waveHeight ?? 64 }}
-              >
-                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-              </div>
-            )}
-            <WavesurferPlayer
-              url={src}
-              waveColor={waveColor}
-              progressColor={progressColor}
-              height={waveHeight}
-              barWidth={barWidth}
-              barGap={barGap}
-              barRadius={barRadius}
-              minPxPerSec={minPxPerSec}
-              dragToSeek
-              onReady={handleReady}
-              onPlay={handlePlay}
-              onPause={handlePause}
-              onFinish={handleFinish}
-              onTimeupdate={handleTimeupdate}
-              onSeeking={handleSeeking}
-              onDestroy={handleDestroy}
-              onError={handleError}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] tabular-nums text-muted-foreground w-10 text-right shrink-0">
-              {formatTime(currentTime)}
-            </span>
-            <Slider
-              className="flex-1"
-              value={[progress]}
-              min={0}
-              max={1}
-              step={0.001}
-              disabled={!isReady}
-              onValueChange={handleSeek}
-            />
-            <span className="text-[11px] tabular-nums text-muted-foreground w-10 shrink-0">
-              {formatTime(duration)}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5">
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                disabled={!isReady}
-                onClick={restart}
-                aria-label="Restart"
-              >
-                <RotateCcw size={15} />
-              </Button>
-              <Button
-                size="icon"
-                variant="secondary"
-                className="h-9 w-9"
-                disabled={!isReady}
-                onClick={togglePlay}
-                aria-label={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? <Pause size={17} /> : <Play size={17} />}
-              </Button>
+          <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row gap-1.5">
+              <ButtonGroup>
+                <Button
+                  size="icon-lg"
+                  variant="secondary"
+                  className="text-muted-foreground hover:text-foreground"
+                  disabled={!isReady}
+                  onClick={restart}
+                  aria-label="Restart"
+                >
+                  <RotateCcw size={15} />
+                </Button>
+                <Button
+                  size="icon-lg"
+                  variant="secondary"
+                  disabled={!isReady}
+                  onClick={togglePlay}
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? <Pause size={17} /> : <Play size={17} />}
+                </Button>
+              </ButtonGroup>
             </div>
+            <div className="w-full flex flex-col gap-1">
+              <div className="relative w-full rounded-sm h-fit">
+                {!isReady && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-[2px] h-fit">
+                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                  </div>
+                )}
+                <WavesurferPlayer
+                  url={src}
+                  waveColor={waveColor}
+                  progressColor={progressColor}
+                  height={waveHeight}
+                  barWidth={barWidth}
+                  barGap={barGap}
+                  barRadius={barRadius}
+                  minPxPerSec={minPxPerSec}
+                  dragToSeek
+                  onReady={handleReady}
+                  onPlay={handlePlay}
+                  onPause={handlePause}
+                  onFinish={handleFinish}
+                  onTimeupdate={handleTimeupdate}
+                  onSeeking={handleSeeking}
+                  onDestroy={handleDestroy}
+                  onError={handleError}
+                />
+              </div>
 
-            <div className="flex items-center gap-2 w-36">
+              <div className="flex flex-row items-center justify-between gap-2 text-muted-foreground">
+                <span className="text-xs">
+                  {title}
+                </span>
+                <div className="flex flex-row gap-1">
+                  <span className="text-xs tabular-nums text-right shrink-0">
+                    {formatTime(currentTime)}
+                  </span>
+                    :
+                  <span className="text-xs tabular-nums shrink-0">
+                    {formatTime(duration)}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1.5">
               <Button
-                size="icon"
-                variant="ghost"
-                className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+                ref={volumeButtonRef}
+                size="icon-lg"
+                variant="secondary"
+                className="shrink-0 text-muted-foreground hover:text-foreground"
                 onClick={toggleMute}
+                onMouseEnter={openVolumeSlider}
+                onMouseLeave={scheduleCloseVolumeSlider}
                 aria-label={isMuted ? "Unmute" : "Mute"}
               >
-                {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+                <VolumeIcon size={15} />
               </Button>
-              <Slider
-                value={[isMuted ? 0 : volume]}
-                min={0}
-                max={1}
-                step={0.01}
-                onValueChange={handleVolume}
-                aria-label="Volume"
-              />
+              <Popover
+                open={isVolumeSliderOpen}
+                onOpenChange={setIsVolumeSliderOpen}
+              >
+                <PopoverContent
+                  anchor={volumeButtonRef}
+                  side="top"
+                  sideOffset={8}
+                  className="w-auto items-center p-2.5"
+                  onMouseEnter={openVolumeSlider}
+                  onMouseLeave={scheduleCloseVolumeSlider}
+                >
+                  <Slider
+                    orientation="vertical"
+                    value={[isMuted ? 0 : volume]}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    onValueChange={handleVolume}
+                    aria-label="Volume"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </>

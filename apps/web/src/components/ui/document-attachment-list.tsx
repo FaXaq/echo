@@ -29,17 +29,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { EventFile } from "@/services/resources/file"
+import { formatSize } from "@/lib/file"
 
 export interface DocumentAttachmentListProps {
   files: EventFile[]
   onDelete?: (file: EventFile) => void
   onRename?: (file: EventFile, filename: string) => void
-}
-
-function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 export function DocumentAttachmentList({ files, onDelete, onRename }: DocumentAttachmentListProps) {
@@ -65,11 +60,11 @@ export function DocumentAttachmentList({ files, onDelete, onRename }: DocumentAt
 
   return (
     <>
-      <ul className="flex flex-col gap-2.5">
+      <ul className="flex flex-col gap-2.5 m-0 p-0">
         {files.map((file) => {
           const failed = failedIds.has(file.id)
           return (
-          <li key={file.id}>
+          <li key={file.id} className="m-0 p-0 list-none">
             <Attachment orientation="horizontal" className="w-full" state={failed ? "error" : "done"}>
               <AttachmentTrigger
                 aria-label={t("Open {{filename}}", { filename: file.originalFilename })}

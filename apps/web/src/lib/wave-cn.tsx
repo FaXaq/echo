@@ -34,7 +34,7 @@ export type WavesurferProps = PartialWavesurferOptions &
 export const WAVESURFER_DEFAULTS = {
   waveColor: "var(--muted-foreground)",
   progressColor: "var(--primary)",
-  height: 64,
+  height: 24,
   barWidth: 3,
   barGap: 2,
   barRadius: 2,
@@ -193,6 +193,7 @@ const WavesurferPlayer = memo(
       <div className={className} style={{ position: "relative" }}>
         {!isReady && (
           <div
+            className="shimmer"
             style={{
               height,
               width: "100%",
@@ -200,7 +201,6 @@ const WavesurferPlayer = memo(
               inset: 0,
               borderRadius: 4,
               background: "hsl(var(--muted))",
-              animation: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite",
             }}
           />
         )}

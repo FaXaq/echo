@@ -1,4 +1,5 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
+import type React from "react"
 import { ErrorBoundary } from "react-error-boundary"
 import { useTranslation } from "react-i18next"
 import { useSuspenseQuery } from "@tanstack/react-query"
@@ -11,14 +12,23 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { DocumentAttachmentList } from "@/components/ui/document-attachment-list"
 import { EventGallery } from "@/components/ui/event-gallery"
 import { FileUpload } from "@/components/ui/file-upload"
+import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { downloadFile } from "@/lib/file"
 import {
   getEventFilesQueryOptions,
   useDeleteFileMutation,
@@ -27,42 +37,62 @@ import {
   type EventFile,
 } from "@/services/resources/file"
 import WavePlayer from "@/components/waves-cn/wave-player"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu"
+import { MoreVertical } from "lucide-react"
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string
   organizationId?: string
 }
 
-function DeleteFileButton({ file, onConfirm }: { file: EventFile; onConfirm: () => void }) {
+function RenameFileForm({
+  file,
+  onOpenChange,
+  onConfirm,
+}: {
+  file: EventFile
+  onOpenChange: (open: boolean) => void
+  onConfirm: (filename: string) => void
+}) {
   const { t } = useTranslation("calendar")
+  const [value, setValue] = useState(file.originalFilename)
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    const trimmed = value.trim()
+    if (trimmed && trimmed !== file.originalFilename) onConfirm(trimmed)
+    onOpenChange(false)
+  }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger
-        render={
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            aria-label={t("Remove {{filename}}", { filename: file.originalFilename })}
-          />
-        }
-      >
-        ×
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t("This will permanently delete the file. This action cannot be undone.")}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>{t("Delete")}</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <DialogHeader>
+        <DialogTitle>{t("Rename file")}</DialogTitle>
+      </DialogHeader>
+      <Input autoFocus value={value} onChange={(event) => setValue(event.target.value)} />
+      <DialogFooter>
+        <DialogClose render={<Button type="button" variant="outline" />}>{t("Cancel")}</DialogClose>
+        <Button type="submit">{t("Save")}</Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
+function RenameFileDialog({
+  file,
+  onOpenChange,
+  onConfirm,
+}: {
+  file: EventFile | null
+  onOpenChange: (open: boolean) => void
+  onConfirm: (filename: string) => void
+}) {
+  return (
+    <Dialog open={file !== null} onOpenChange={onOpenChange}>
+      <DialogContent>
+        {file && <RenameFileForm key={file.id} file={file} onOpenChange={onOpenChange} onConfirm={onConfirm} />}
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -72,6 +102,8 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const uploadMutation = useUploadFileMutation()
   const deleteMutation = useDeleteFileMutation()
   const renameMutation = useRenameFileMutation()
+  const [renamingFile, setRenamingFile] = useState<EventFile | null>(null)
+  const [deletingFileId, setDeletingFileId] = useState<string | null>(null)
 
   const audioFiles = files.filter((file) => file.kind === "audio")
   const galleryFiles = files.filter((file) => file.kind === "image" || file.kind === "video")
@@ -114,12 +146,39 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
           <h3 className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
             {t("Audio")}
           </h3>
-          <ul className="flex w-full flex-col gap-2">
+          <ul className="flex w-full flex-col gap-2 m-0 p-0">
             {audioFiles.map((file) => (
-              <li key={file.id} className="flex items-center justify-between gap-2 text-xs">
-                <div className="w-full rounded border-subtle-foreground border-solid border-1 p-4">
-                  <WavePlayer src={file.downloadUrl} errorMessage={t("Couldn't load this file")} />
-                  <DeleteFileButton file={file} onConfirm={() => deleteMutation.mutate({ id: file.id })} />
+              <li key={file.id} className="flex items-center justify-between gap-2 text-xs m-0 p-0">
+                <div className="w-full flex flex-row rounded border-subtle-foreground border-solid border-1 p-2 items-center">
+                  <WavePlayer className="flex-1" src={file.downloadUrl} errorMessage={t("Couldn't load this file")} title={file.originalFilename} />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-xs"
+                          aria-label={t("Actions for {{filename}}", { filename: file.originalFilename })}
+                        />
+                      }
+                    >
+                      <MoreVertical />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setRenamingFile(file)}>
+                        {t("Rename")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => setDeletingFileId(file.id)}
+                      >
+                        {t("Delete")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => downloadFile(file.downloadUrl, file.originalFilename)}>
+                        {t("Download")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </li>
             ))}
@@ -152,6 +211,36 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
       {files.length === 0 && (
         <p className="py-5 text-center text-[13px] text-muted-foreground">{t("No files linked yet.")}</p>
       )}
+
+      <AlertDialog open={deletingFileId !== null} onOpenChange={(open) => !open && setDeletingFileId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("This will permanently delete the file. This action cannot be undone.")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deletingFileId) deleteMutation.mutate({ id: deletingFileId })
+                setDeletingFileId(null)
+              }}
+            >
+              {t("Delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <RenameFileDialog
+        file={renamingFile}
+        onOpenChange={(open) => !open && setRenamingFile(null)}
+        onConfirm={(filename) => {
+          if (renamingFile) renameMutation.mutate({ id: renamingFile.id, filename })
+        }}
+      />
     </div>
   )
 }
