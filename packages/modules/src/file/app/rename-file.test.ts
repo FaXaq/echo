@@ -17,6 +17,7 @@ function stubFile(file: { organizationId: string | null; uploadedBy: string } | 
           mimeType: "application/pdf",
           sizeBytes: 100,
           originalFilename: "old.pdf",
+          filename: "old.pdf",
           s3Key: "key",
           status: "uploaded",
         }
@@ -47,6 +48,7 @@ describe("renameFile", () => {
       mimeType: "application/pdf",
       sizeBytes: 100,
       originalFilename: "renamed.pdf",
+      filename: "old.pdf",
       s3Key: "key",
       status: "uploaded",
     });
@@ -60,7 +62,7 @@ describe("renameFile", () => {
       },
       { id: "f1", userId: "user-1", filename: "renamed.pdf" },
     );
-    expect(result.originalFilename).toBe("renamed.pdf");
+    expect(result.filename).toBe("renamed.pdf");
   });
 
   it("rejects a non-owner organization member without file:update permission", async () => {

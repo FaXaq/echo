@@ -23,8 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { DocumentAttachmentList } from "@/components/ui/document-attachment-list"
-import { EventGallery } from "@/components/ui/event-gallery"
+import { AttachmentList } from "@/ui/attachment-list"
 import { FileUpload } from "@/components/ui/file-upload"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -36,9 +35,6 @@ import {
   useUploadFileMutation,
   type EventFile,
 } from "@/services/resources/file"
-import WavePlayer from "@/components/waves-cn/wave-player"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu"
-import { MoreVertical } from "lucide-react"
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string
@@ -55,12 +51,12 @@ function RenameFileForm({
   onConfirm: (filename: string) => void
 }) {
   const { t } = useTranslation("calendar")
-  const [value, setValue] = useState(file.originalFilename)
+  const [value, setValue] = useState(file.filename)
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     const trimmed = value.trim()
-    if (trimmed && trimmed !== file.originalFilename) onConfirm(trimmed)
+    if (trimmed && trimmed !== file.filename) onConfirm(trimmed)
     onOpenChange(false)
   }
 
@@ -105,10 +101,6 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const [renamingFile, setRenamingFile] = useState<EventFile | null>(null)
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null)
 
-  const audioFiles = files.filter((file) => file.kind === "audio")
-  const galleryFiles = files.filter((file) => file.kind === "image" || file.kind === "video")
-  const documentFiles = files.filter((file) => file.kind === "document")
-
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
       uploadMutation.mutate({ eventId, organizationId, file })
@@ -127,7 +119,6 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
       </div>
 
       <FileUpload
-        accept="audio/*,video/*,image/*,.pdf,.doc,.docx"
         onFilesSelected={handleFilesSelected}
         disabled={uploadMutation.isPending}
       />
@@ -141,71 +132,13 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         </p>
       )}
 
-      {audioFiles.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <h3 className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-            {t("Audio")}
-          </h3>
-          <ul className="flex w-full flex-col gap-2 m-0 p-0">
-            {audioFiles.map((file) => (
-              <li key={file.id} className="flex items-center justify-between gap-2 text-xs m-0 p-0">
-                <div className="w-full flex flex-row rounded border-subtle-foreground border-solid border-1 p-2 items-center">
-                  <WavePlayer className="flex-1" src={file.downloadUrl} errorMessage={t("Couldn't load this file")} title={file.originalFilename} />
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      render={
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-xs"
-                          aria-label={t("Actions for {{filename}}", { filename: file.originalFilename })}
-                        />
-                      }
-                    >
-                      <MoreVertical />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setRenamingFile(file)}>
-                        {t("Rename")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() => setDeletingFileId(file.id)}
-                      >
-                        {t("Delete")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => downloadFile(file.downloadUrl, file.originalFilename)}>
-                        {t("Download")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {galleryFiles.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <h3 className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-            {t("Photos & videos")}
-          </h3>
-          <EventGallery files={galleryFiles} onDelete={(file) => deleteMutation.mutate({ id: file.id })} />
-        </div>
-      )}
-
-      {documentFiles.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <h3 className="text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-            {t("Documents")}
-          </h3>
-          <DocumentAttachmentList
-            files={documentFiles}
-            onDelete={(file) => deleteMutation.mutate({ id: file.id })}
-            onRename={(file, filename) => renameMutation.mutate({ id: file.id, filename })}
-          />
-        </div>
+      {files.length > 0 && (
+        <AttachmentList
+          files={files}
+          onDelete={(file) => setDeletingFileId(file.id)}
+          onRename={(file) => setRenamingFile(file)}
+          onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
+        />
       )}
 
       {files.length === 0 && (

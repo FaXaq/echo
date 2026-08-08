@@ -50,6 +50,7 @@ export interface CalendarEvent {
 export interface File {
   created_at: Generated<Timestamp | null>;
   event_id: string | null;
+  filename: string;
   id: string;
   kind: string;
   mime_type: string;

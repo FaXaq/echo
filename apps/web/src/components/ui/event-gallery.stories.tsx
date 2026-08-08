@@ -7,18 +7,21 @@ const files: EventFile[] = [
     id: "file-1",
     kind: "image",
     originalFilename: "cover.png",
+    filename: "cover.png",
     downloadUrl: "https://example.com/cover.png",
   } as EventFile,
   {
     id: "file-2",
     kind: "video",
     originalFilename: "clip.mp4",
+    filename: "clip.mp4",
     downloadUrl: "https://example.com/clip.mp4",
   } as EventFile,
   {
     id: "file-3",
     kind: "image",
     originalFilename: "poster.jpg",
+    filename: "poster.jpg",
     downloadUrl: "https://example.com/poster.jpg",
   } as EventFile,
 ]

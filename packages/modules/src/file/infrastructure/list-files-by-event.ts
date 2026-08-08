@@ -7,10 +7,10 @@ export async function listFilesByEvent(db: KyselyDB, eventId: string): Promise<F
     .selectFrom("file")
     .innerJoin("user", "file.uploaded_by", "user.id")
     .selectAll("file")
-    .select("user.name as uploadedByName")
+    .select("user.name as uploaded_by_name")
     .where("event_id", "=", eventId)
     .where("status", "=", "uploaded")
     .execute();
 
-  return rows.map(row => toFileRecord({ ...row, uploadedByName: row.uploadedByName }));
+  return rows.map(row => toFileRecord({ ...row, uploaded_by_name: row.uploaded_by_name }));
 }

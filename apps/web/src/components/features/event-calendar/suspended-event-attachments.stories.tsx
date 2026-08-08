@@ -43,10 +43,10 @@ export const WithMixedFiles: Story = {
     (Story) => (
       <QueryClientProvider
         client={withSeededFiles([
-          { id: "file-1", kind: "audio", originalFilename: "demo.mp3", downloadUrl: "https://example.com/demo.mp3", sizeBytes: 6_400_000, uploadedByName: "Priya" } as EventFile,
-          { id: "file-2", kind: "image", originalFilename: "cover.png", downloadUrl: "https://example.com/cover.png", sizeBytes: 245_000, uploadedByName: "Jamie" } as EventFile,
-          { id: "file-3", kind: "video", originalFilename: "clip.mp4", downloadUrl: "https://example.com/clip.mp4", sizeBytes: 18_200_000, uploadedByName: "Marcus" } as EventFile,
-          { id: "file-4", kind: "document", originalFilename: "setlist.pdf", downloadUrl: "https://example.com/setlist.pdf", sizeBytes: 86_000, uploadedByName: "Jamie" } as EventFile,
+          { id: "file-1", kind: "audio", originalFilename: "demo.mp3", filename: "demo.mp3", downloadUrl: "https://example.com/demo.mp3", sizeBytes: 6_400_000, uploadedByName: "Priya" } as EventFile,
+          { id: "file-2", kind: "image", originalFilename: "cover.png", filename: "cover.png", downloadUrl: "https://example.com/cover.png", sizeBytes: 245_000, uploadedByName: "Jamie" } as EventFile,
+          { id: "file-3", kind: "video", originalFilename: "clip.mp4", filename: "clip.mp4", downloadUrl: "https://example.com/clip.mp4", sizeBytes: 18_200_000, uploadedByName: "Marcus" } as EventFile,
+          { id: "file-4", kind: "document", originalFilename: "setlist.pdf", filename: "setlist.pdf", downloadUrl: "https://example.com/setlist.pdf", sizeBytes: 86_000, uploadedByName: "Jamie" } as EventFile,
         ])}
       >
         <Story />

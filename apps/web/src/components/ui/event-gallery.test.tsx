@@ -9,6 +9,7 @@ function makeFile(overrides: Partial<EventFile> = {}): EventFile {
     id: "f1",
     kind: "image",
     originalFilename: "cover.png",
+    filename: "cover.png",
     downloadUrl: "https://example.com/cover.png",
     sizeBytes: 1024,
     mimeType: "image/png",
@@ -21,7 +22,7 @@ describe("EventGallery", () => {
   it("renders a thumbnail for both image and video files", () => {
     render(
       <EventGallery
-        files={[makeFile(), makeFile({ id: "f2", kind: "video", originalFilename: "clip.mp4" })]}
+        files={[makeFile(), makeFile({ id: "f2", kind: "video", originalFilename: "clip.mp4", filename: "clip.mp4" })]}
       />
     )
 
@@ -47,14 +48,15 @@ describe("EventGallery", () => {
 
   it("opens the correct file when files contains non-gallery kinds interleaved with images", async () => {
     const user = userEvent.setup()
-    const first = makeFile({ id: "f1", originalFilename: "first.png", downloadUrl: "https://example.com/first.png" })
+    const first = makeFile({ id: "f1", originalFilename: "first.png", filename: "first.png", downloadUrl: "https://example.com/first.png" })
     const audio = makeFile({
       id: "f2",
       kind: "audio",
       originalFilename: "voice.mp3",
+      filename: "voice.mp3",
       downloadUrl: "https://example.com/voice.mp3",
     })
-    const second = makeFile({ id: "f3", originalFilename: "second.png", downloadUrl: "https://example.com/second.png" })
+    const second = makeFile({ id: "f3", originalFilename: "second.png", filename: "second.png", downloadUrl: "https://example.com/second.png" })
 
     render(<EventGallery files={[first, audio, second]} />)
 

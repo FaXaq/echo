@@ -42,7 +42,7 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
           return (
           <Attachment key={file.id} orientation="vertical" state={failed ? "error" : "done"}>
             <AttachmentTrigger
-              aria-label={t("Open {{filename}}", { filename: file.originalFilename })}
+              aria-label={t("Open {{filename}}", { filename: file.filename })}
               onClick={() => {
                 setStartIndex(index)
                 setOpenCarousel(true)
@@ -56,7 +56,7 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
                   .with("image", () => (
                     <img
                       src={file.downloadUrl}
-                      alt={file.originalFilename}
+                      alt={file.filename}
                       onError={() => markFailed(file.id)}
                     />
                   ))
@@ -77,7 +77,7 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
               )}
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle>{file.originalFilename}</AttachmentTitle>
+              <AttachmentTitle>{file.filename}</AttachmentTitle>
               <AttachmentDescription>
                 {failed ? t("Couldn't load this file") : formatSize(file.sizeBytes)}
               </AttachmentDescription>
@@ -95,7 +95,7 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
           <Carousel
             opts={{
               align: "start",
-              loop: true,
+              loop: false,
               startIndex,
             }}
           >
