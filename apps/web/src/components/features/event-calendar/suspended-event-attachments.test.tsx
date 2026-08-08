@@ -4,10 +4,6 @@ import { describe, expect, it, vi } from "vitest"
 import { SuspendedEventAttachments } from "./suspended-event-attachments"
 import * as fileResource from "@/services/resources/file"
 
-vi.mock("@/components/waves-cn/wave-player", () => ({
-  default: ({ src }: { src: string }) => <div>Player: {src}</div>,
-}))
-
 function renderWithFiles(files: fileResource.EventFile[]) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   client.setQueryData(fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, files)

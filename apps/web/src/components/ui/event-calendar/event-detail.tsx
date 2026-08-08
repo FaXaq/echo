@@ -1,7 +1,7 @@
 import { useState } from "react"
 import "@/lib/dayjs"
 import dayjs from "dayjs"
-import { MoreVertical, Share2 } from "lucide-react"
+import { MapPin, MoreVertical, Share2, Timer, User } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { capitalize } from "remeda"
 import { Link } from "@tanstack/react-router"
@@ -31,6 +31,7 @@ import { getInitials } from "@/lib/remeda"
 import { eventDotClasses } from "./colors"
 import { getEventLabel, EventTypeIcon } from "./event-types"
 import type { CalendarEvent } from "./types"
+import { ScrollArea, ScrollBar } from "../scroll-area"
 
 export interface EventDetailProps {
   event: CalendarEvent
@@ -64,64 +65,90 @@ export function EventDetail({
 
   return (
     <>
-    <div data-slot="event-detail" className={cn("flex flex-wrap-reverse gap-9", className)}>
-      <div className="flex min-w-[280px] flex-[999_1_400px] flex-col gap-5">
-        <div className="flex items-center justify-between gap-2.5">
-          <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
-            {"name" in event.organization && (
-              <Link
-                to="/organizations/$organizationSlug"
-                params={{ organizationSlug: event.organization.slug }}
-                className="flex items-center gap-1.5 font-medium text-foreground"
-              >
-                <Avatar size="sm" className="h-5 w-5">
-                  <AvatarFallback className="text-[10px]">
-                    {getInitials(event.organization.name)}
-                  </AvatarFallback>
-                </Avatar>
-                {event.organization.name}
-              </Link>
-            )}
+    <div data-slot="event-detail" className={cn("flex flex-wrap-reverse gap-9 h-full", className)}>
+      <ScrollArea className="h-full min-w-70 flex-[999_1_400px] pr-4">
+        <div className="flex flex-col gap-5">
+          <div className="flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
+              {"name" in event.organization && (
+                <Link
+                  to="/organizations/$organizationSlug"
+                  params={{ organizationSlug: event.organization.slug }}
+                  className="flex items-center gap-1.5 font-medium text-foreground"
+                >
+                  <Avatar size="sm" className="h-5 w-5">
+                    <AvatarFallback className="text-[10px]">
+                      {getInitials(event.organization.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {event.organization.name}
+                </Link>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Button type="button" variant="ghost" size="icon-sm" aria-label={t("Share")} onClick={onShare}>
+                <Share2 />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button type="button" variant="outline" size="icon-sm" aria-label={t("Event actions")} />
+                  }
+                >
+                  <MoreVertical />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={onEdit}>{t("Update")}</DropdownMenuItem>
+                  <DropdownMenuItem variant="destructive" onClick={() => setDeleteConfirmOpen(true)}>
+                    {t("Delete")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Button type="button" variant="ghost" size="icon-sm" aria-label={t("Share")} onClick={onShare}>
-              <Share2 />
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button type="button" variant="outline" size="icon-sm" aria-label={t("Event actions")} />
-                }
-              >
-                <MoreVertical />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onEdit}>{t("Update")}</DropdownMenuItem>
-                <DropdownMenuItem variant="destructive" onClick={() => setDeleteConfirmOpen(true)}>
-                  {t("Delete")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+
+          <div className="flex items-center gap-2.5">
+            <span className={cn("block size-2.5 shrink-0 rounded-[3px]", eventDotClasses[event.color])} />
+            <h1 className="m-0 text-[clamp(22px,4vw,26px)] leading-tight font-semibold tracking-tight">
+              {event.title}
+            </h1>
           </div>
+
+          {event.description && (
+            <p className="m-0 whitespace-pre-wrap text-sm leading-relaxed">{event.description}</p>
+          )}
+
+          <Separator />
+
+          <ScrollArea className="w-full shrink-0 pb-4 lg:hidden">
+            <div className="flex flex-row gap-1.5">
+              <Badge variant="secondary">
+                <User data-icon="inline-start" />
+                {event.createdByName}
+              </Badge>
+              <Badge variant="secondary">
+                <Timer data-icon="inline-start" />
+                {dayjs(event.startDate).format("LLL")}
+              </Badge>
+              {event.place && (
+                <Badge variant="secondary">
+                  <MapPin data-icon="inline-start" />
+                  {event.place.name}
+                </Badge>
+              )}
+              <Badge variant="secondary">
+                <EventTypeIcon type={event.type} className="size-3.5" data-icon="inline-start" />
+                {t(getEventLabel(event.type))}
+              </Badge>
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+
+          {attachments}
         </div>
+      </ScrollArea>
 
-        <div className="flex items-center gap-2.5">
-          <span className={cn("block size-2.5 shrink-0 rounded-[3px]", eventDotClasses[event.color])} />
-          <h1 className="m-0 text-[clamp(22px,4vw,26px)] leading-tight font-semibold tracking-tight">
-            {event.title}
-          </h1>
-        </div>
-
-        {event.description && (
-          <p className="m-0 whitespace-pre-wrap text-sm leading-relaxed">{event.description}</p>
-        )}
-
-        <Separator />
-
-        {attachments}
-      </div>
-
-      <div className="flex min-w-[200px] max-w-[280px] flex-[1_1_220px] flex-col">
+      <div className="flex w-280px flex-[1_1_220px] flex-col hidden lg:block">
         <div className="flex items-center justify-between gap-2 px-1 py-2.5">
           <span className="text-xs font-medium text-muted-foreground">{t("Organizer")}</span>
           <div className="flex min-w-0 items-center gap-1.5">

@@ -11,7 +11,7 @@ function EventDetailPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-full">
       <SuspendedEventDetail eventId={eventId} onBack={() => navigate({ to: "/calendar" })} />
     </div>
   );

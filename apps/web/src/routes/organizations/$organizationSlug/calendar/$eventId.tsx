@@ -20,7 +20,7 @@ function OrganizationEventDetailPage() {
     })
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-full">
       <SuspendedEventDetail eventId={eventId} organizationId={organizationId} onBack={goBack} />
     </div>
   )
