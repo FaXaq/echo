@@ -2,10 +2,6 @@ import { sql, type Kysely } from "kysely";
 import { randomUUID } from "node:crypto";
 import { generateOrgSlug } from "../src/generate-org-slug";
 
-function isUniqueSlugViolation(error: unknown): boolean {
-  return typeof error === "object" && error !== null && "code" in error && error.code === "23505";
-}
-
 const MAX_SLUG_ATTEMPTS = 5;
 
 export async function up(db: Kysely<unknown>): Promise<void> {
@@ -27,15 +23,13 @@ export async function up(db: Kysely<unknown>): Promise<void> {
       const organizationId = randomUUID();
       const slug = generateOrgSlug();
 
-      try {
-        await sql`
-          INSERT INTO "organization" ("id", "name", "slug", "isPersonal", "createdBy", "createdAt")
-          VALUES (${organizationId}, ${`${user.name}'s organization`}, ${slug}, true, ${user.id}, now())
-        `.execute(db);
-      } catch (error) {
-        if (isUniqueSlugViolation(error)) continue;
-        throw error;
-      }
+      const insertResult = await sql`
+        INSERT INTO "organization" ("id", "name", "slug", "isPersonal", "createdBy", "createdAt")
+        VALUES (${organizationId}, ${`${user.name}'s organization`}, ${slug}, true, ${user.id}, now())
+        ON CONFLICT ("slug") DO NOTHING
+      `.execute(db);
+
+      if (insertResult.numAffectedRows !== 1n) continue;
 
       await sql`
         INSERT INTO "member" ("id", "organizationId", "userId", "role", "createdAt")

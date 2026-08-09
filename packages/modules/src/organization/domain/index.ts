@@ -3,4 +3,4 @@ export type Organization = {
   name: string;
 };
 
-export { generateOrgSlug } from "@echo/db";
+export { generateOrgSlug } from "@echo/db/generate-org-slug";

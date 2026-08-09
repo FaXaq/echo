@@ -5,7 +5,6 @@ export type CreateOrganizationInput = {
   name: string;
   slug: string;
   userId: string;
-  isPersonal?: boolean;
 };
 
 export type CreateOrganizationResult =

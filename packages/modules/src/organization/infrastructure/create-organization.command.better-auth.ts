@@ -18,7 +18,6 @@ export const createOrganizationCommandFactory: CreateOrganizationCommandPortFact
           name: input.name,
           slug: input.slug,
           userId: input.userId,
-          isPersonal: input.isPersonal,
         },
       });
 

@@ -6,14 +6,13 @@ const MAX_SLUG_ATTEMPTS = 5;
 
 export async function createOrganization(
   deps: { createOrganizationCommand: CreateOrganizationCommandPort },
-  input: { name: string; userId: string; isPersonal?: boolean },
+  input: { name: string; userId: string },
 ): Promise<Organization> {
   for (let attempt = 0; attempt < MAX_SLUG_ATTEMPTS; attempt++) {
     const result = await deps.createOrganizationCommand({
       name: input.name,
       slug: generateOrgSlug(),
       userId: input.userId,
-      isPersonal: input.isPersonal,
     });
     if (result.status === "created") return result.organization;
   }

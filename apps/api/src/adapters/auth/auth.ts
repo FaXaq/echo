@@ -10,6 +10,7 @@ import { deleteOrganizationFiles } from "@echo/modules/file/app";
 import {
   createOrganizationCommandFactory,
   getPersonalOrganizationQuery,
+  markOrganizationPersonal,
 } from "@echo/modules/organization/infrastructure";
 import { createOrganization } from "@echo/modules/organization/app";
 import { makeMailer } from "@echo/adapters/mailer";
@@ -31,11 +32,16 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
     return organization?.id;
   },
   onUserCreated: async (user) => {
-    const createOrganizationCommand = createOrganizationCommandFactory({ auth });
-    await createOrganization(
-      { createOrganizationCommand },
-      { name: `${user.name}'s organization`, userId: user.id, isPersonal: true },
-    );
+    try {
+      const createOrganizationCommand = createOrganizationCommandFactory({ auth });
+      const organization = await createOrganization(
+        { createOrganizationCommand },
+        { name: `${user.name}'s organization`, userId: user.id },
+      );
+      await markOrganizationPersonal(db, organization.id, user.id);
+    } catch (error) {
+      logger.error({ error, userId: user.id }, "Failed to create personal organization on signup");
+    }
   },
   onOrganizationDeleted: async (organization) => {
     const failures = await deleteOrganizationFiles(
