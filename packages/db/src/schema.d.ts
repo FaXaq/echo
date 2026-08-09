@@ -86,6 +86,7 @@ export interface Organization {
   createdAt: Timestamp;
   createdBy: string | null;
   id: string;
+  isPersonal: boolean | null;
   logo: string | null;
   metadata: string | null;
   name: string;
