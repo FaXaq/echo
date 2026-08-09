@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
-import { useTranslation } from "react-i18next"
+import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import {
   Select,
@@ -7,25 +7,25 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Skeleton } from "@/components/ui/skeleton"
-import { selfListOrganizations } from "@/services/resources/organization"
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { selfListOrganizations } from "@/services/resources/organization";
 
-const NONE_VALUE = "none"
+const NONE_VALUE = "none";
 
 export interface OrganizationFieldProps {
-  id?: string
-  value: string | null
-  onChange: (value: string | null) => void
-  disabled?: boolean
+  id?: string;
+  value: string | null;
+  onChange: (value: string | null) => void;
+  disabled?: boolean;
 }
 
 export function OrganizationField({ id, value, onChange, disabled }: OrganizationFieldProps) {
-  const { t } = useTranslation("calendar")
-  const { data: organizations, isPending } = useQuery(selfListOrganizations())
+  const { t } = useTranslation("calendar");
+  const { data: organizations, isPending } = useQuery(selfListOrganizations());
 
   if (isPending) {
-    return <Skeleton className="h-7 w-full" />
+    return <Skeleton className="h-7 w-full" />;
   }
 
   return (
@@ -46,5 +46,5 @@ export function OrganizationField({ id, value, onChange, disabled }: Organizatio
         ))}
       </SelectContent>
     </Select>
-  )
+  );
 }

@@ -1,37 +1,33 @@
-import dayjs from "dayjs"
-import { Plus } from "lucide-react"
-import { useTranslation } from "react-i18next"
+import dayjs from "dayjs";
+import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
-import { useCalendarContext } from "./calendar-context"
-import { EventCard } from "./event-card"
-import { currentHourRange } from "./helpers"
-import type { CalendarEvent } from "./types"
+import { useCalendarContext } from "./calendar-context";
+import { EventCard } from "./event-card";
+import { currentHourRange } from "./helpers";
+import type { CalendarEvent } from "./types";
 
 interface DayEventsDialogProps {
-  day: Date | null
-  events: CalendarEvent[]
-  onOpenChange: (open: boolean) => void
+  day: Date | null;
+  events: CalendarEvent[];
+  onOpenChange: (open: boolean) => void;
 }
 
-export function DayEventsDialog({
-  day,
-  events,
-  onOpenChange,
-}: DayEventsDialogProps) {
-  const { t } = useTranslation("calendar")
-  const { requestEventCreate } = useCalendarContext()
+export function DayEventsDialog({ day, events, onOpenChange }: DayEventsDialogProps) {
+  const { t } = useTranslation("calendar");
+  const { requestEventCreate } = useCalendarContext();
   const title = t("Events on {{date}}", {
     date: day ? dayjs(day).format("MMMM D, YYYY") : "",
-  })
+  });
 
   return (
     <Dialog open={day !== null} onOpenChange={onOpenChange}>
@@ -56,5 +52,5 @@ export function DayEventsDialog({
         </Button>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

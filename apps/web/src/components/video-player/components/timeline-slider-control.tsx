@@ -1,29 +1,29 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Button } from "@/components/video-player/components/button"
-import { usePlayerStore } from "@/hooks/limeplay/use-player"
-import { useTimelineStore } from "@/hooks/limeplay/use-timeline"
-import * as TimelineSlider from "@/components/limeplay/timeline-control"
+import { Button } from "@/components/video-player/components/button";
+import { usePlayerStore } from "@/hooks/limeplay/use-player";
+import { useTimelineStore } from "@/hooks/limeplay/use-timeline";
+import * as TimelineSlider from "@/components/limeplay/timeline-control";
 import {
   Duration,
   Elapsed,
   HoverTime,
   LiveLatency,
   Remaining,
-} from "@/components/limeplay/timeline-labels"
+} from "@/components/limeplay/timeline-labels";
 
-const LIVE_DELAY_VISIBLE_SEC = 3
+const LIVE_DELAY_VISIBLE_SEC = 3;
 
 export function TimelineSliderControl() {
-  const [showRemaining, setShowRemaining] = useState(false)
-  const liveLatency = useTimelineStore((state) => state.liveLatency)
-  const isLive = useTimelineStore((state) => state.isLive)
-  const player = usePlayerStore((state) => state.instance)
-  const hasLiveLatency = liveLatency != null
-  const showGoToLive = hasLiveLatency && liveLatency >= LIVE_DELAY_VISIBLE_SEC
-  const showLiveBadge = hasLiveLatency && liveLatency < LIVE_DELAY_VISIBLE_SEC
+  const [showRemaining, setShowRemaining] = useState(false);
+  const liveLatency = useTimelineStore((state) => state.liveLatency);
+  const isLive = useTimelineStore((state) => state.isLive);
+  const player = usePlayerStore((state) => state.instance);
+  const hasLiveLatency = liveLatency != null;
+  const showGoToLive = hasLiveLatency && liveLatency >= LIVE_DELAY_VISIBLE_SEC;
+  const showLiveBadge = hasLiveLatency && liveLatency < LIVE_DELAY_VISIBLE_SEC;
 
   return (
     <div
@@ -72,16 +72,14 @@ export function TimelineSliderControl() {
       </div>
       {!isLive && (
         <button
-          aria-label={
-            showRemaining ? "Show total duration" : "Show remaining time"
-          }
+          aria-label={showRemaining ? "Show total duration" : "Show remaining time"}
           aria-pressed={showRemaining}
           className="
             inline-flex h-7 w-[6ch] cursor-pointer items-center justify-center rounded-sm
             focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/50 focus-visible:outline-solid
           "
           onClick={() => {
-            setShowRemaining(!showRemaining)
+            setShowRemaining(!showRemaining);
           }}
           tabIndex={0}
           type="button"
@@ -109,9 +107,7 @@ export function TimelineSliderControl() {
                 size="sm"
                 variant="glass"
               >
-                <span className="text-xs font-medium text-primary">
-                  Go to live
-                </span>
+                <span className="text-xs font-medium text-primary">Go to live</span>
               </Button>
             </>
           )}
@@ -123,5 +119,5 @@ export function TimelineSliderControl() {
         </>
       )}
     </div>
-  )
+  );
 }

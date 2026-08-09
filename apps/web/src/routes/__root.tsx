@@ -13,11 +13,7 @@ import { trpc } from "../lib/trpc";
 import { authClient } from "../lib/auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/ui/tooltip";
 import type { ClientSession } from "@echo/auth";
 import { Landing } from "./-landing";
@@ -51,8 +47,7 @@ function RootLayout() {
     }
   }, [session?.user.locale]);
 
-  const serverTheme = session?.user.theme as
-    "light" | "dark" | "system" | undefined;
+  const serverTheme = session?.user.theme as "light" | "dark" | "system" | undefined;
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -91,10 +86,7 @@ function RootContent({ session }: { session: ClientSession | null }) {
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-full"
-            />
+            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-full" />
             <DynamicBreadcrumb />
             <div className="ml-auto">
               <UserMenu

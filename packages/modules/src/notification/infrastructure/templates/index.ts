@@ -60,8 +60,7 @@ export async function renderResetPasswordEmail(
       </mj-body>
     </mjml>
   `);
-  if (errors.length)
-    throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
+  if (errors.length) throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
   return html;
 }
 
@@ -77,7 +76,6 @@ export async function renderExampleEmail(data: { name: string }): Promise<string
       </mj-body>
     </mjml>
   `);
-  if (errors.length)
-    throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
+  if (errors.length) throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
   return html;
 }

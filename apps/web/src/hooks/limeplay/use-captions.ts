@@ -1,35 +1,26 @@
-import type shaka from "shaka-player"
+import type shaka from "shaka-player";
 
-import { useEffect } from "react"
+import { useEffect } from "react";
 
-import type {
-  MediaFeature,
-  MediaStore,
-} from "@/components/limeplay/media-provider"
+import type { MediaFeature, MediaStore } from "@/components/limeplay/media-provider";
 
-import { useMediaStore } from "@/hooks/limeplay/use-media"
-import { usePlaybackStore } from "@/hooks/limeplay/use-playback"
-import {
-  type PlayerStore,
-  usePlayerStore,
-} from "@/hooks/limeplay/use-player"
-import { getDeviceLanguage, off, on } from "@/lib/utils"
-import {
-  useMediaFeatureApi,
-  useMediaFeatureStore,
-} from "@/components/limeplay/media-provider"
+import { useMediaStore } from "@/hooks/limeplay/use-media";
+import { usePlaybackStore } from "@/hooks/limeplay/use-playback";
+import { type PlayerStore, usePlayerStore } from "@/hooks/limeplay/use-player";
+import { getDeviceLanguage, off, on } from "@/lib/utils";
+import { useMediaFeatureApi, useMediaFeatureStore } from "@/components/limeplay/media-provider";
 
-export const CAPTIONS_FEATURE_KEY = "captions"
+export const CAPTIONS_FEATURE_KEY = "captions";
 
 export interface CaptionsStore {
   [CAPTIONS_FEATURE_KEY]: {
-    activeTrack: null | shaka.extern.TextTrack
-    containerElement: HTMLDivElement | null
-    setContainerElement: (ref: HTMLDivElement | null) => void
-    toggleVisibility: () => void
-    tracks?: shaka.extern.TextTrack[]
-    visible: boolean
-  }
+    activeTrack: null | shaka.extern.TextTrack;
+    containerElement: HTMLDivElement | null;
+    setContainerElement: (ref: HTMLDivElement | null) => void;
+    toggleVisibility: () => void;
+    tracks?: shaka.extern.TextTrack[];
+    visible: boolean;
+  };
 }
 
 export function captionsFeature(): MediaFeature<
@@ -43,33 +34,33 @@ export function captionsFeature(): MediaFeature<
         containerElement: null,
         setContainerElement: (element) => {
           set(({ captions }) => {
-            captions.containerElement = element
-          })
+            captions.containerElement = element;
+          });
         },
         toggleVisibility: () => {
-          const player = get().player.instance
+          const player = get().player.instance;
           if (!player) {
-            return
+            return;
           }
 
-          const captions = get().captions
+          const captions = get().captions;
 
           if (!captions.activeTrack) {
-            const defaultTrack = findDefaultTrack(captions.tracks)
+            const defaultTrack = findDefaultTrack(captions.tracks);
             if (defaultTrack) {
-              player.selectTextTrack(defaultTrack)
+              player.selectTextTrack(defaultTrack);
 
               const activeTrack = player
                 .getTextTracks()
-                .find((track: shaka.extern.TextTrack) => track.active)
+                .find((track: shaka.extern.TextTrack) => track.active);
 
               set(({ captions }) => {
-                captions.activeTrack = activeTrack ?? null
-              })
+                captions.activeTrack = activeTrack ?? null;
+              });
             }
           }
 
-          player.setTextTrackVisibility(!captions.visible)
+          player.setTextTrackVisibility(!captions.visible);
         },
         tracks: undefined,
         visible: false,
@@ -77,103 +68,102 @@ export function captionsFeature(): MediaFeature<
     }),
     key: CAPTIONS_FEATURE_KEY,
     Setup: CaptionsSetup,
-  }
+  };
 }
 
 export function useCaptions() {
-  return useCaptionsStore((state) => state)
+  return useCaptionsStore((state) => state);
 }
 
 export function useCaptionsStore<TSelected>(
-  selector: (state: CaptionsStore["captions"]) => TSelected
+  selector: (state: CaptionsStore["captions"]) => TSelected,
 ): TSelected {
-  return useMediaFeatureStore<CaptionsStore, TSelected>(
-    CAPTIONS_FEATURE_KEY,
-    (state) => selector(state.captions)
-  )
+  return useMediaFeatureStore<CaptionsStore, TSelected>(CAPTIONS_FEATURE_KEY, (state) =>
+    selector(state.captions),
+  );
 }
 
 function CaptionsSetup() {
-  const store = useMediaFeatureApi<CaptionsStore>(CAPTIONS_FEATURE_KEY)
-  const player = usePlayerStore((state) => state.instance)
-  const containerElement = useCaptionsStore((state) => state.containerElement)
-  const mediaElement = useMediaStore((state) => state.mediaElement)
-  const canPlay = usePlaybackStore((state) => state.canPlay)
+  const store = useMediaFeatureApi<CaptionsStore>(CAPTIONS_FEATURE_KEY);
+  const player = usePlayerStore((state) => state.instance);
+  const containerElement = useCaptionsStore((state) => state.containerElement);
+  const mediaElement = useMediaStore((state) => state.mediaElement);
+  const canPlay = usePlaybackStore((state) => state.canPlay);
 
   const onTextTrackChanged = () => {
     if (!player) {
-      return
+      return;
     }
 
     const activeTrack = player
       .getTextTracks()
-      .find((track: shaka.extern.TextTrack) => track.active)
+      .find((track: shaka.extern.TextTrack) => track.active);
 
     store.setState(({ captions }) => {
-      captions.activeTrack = activeTrack ?? null
-    })
-  }
+      captions.activeTrack = activeTrack ?? null;
+    });
+  };
 
   const onTracksChanged = () => {
     if (!player) {
-      return
+      return;
     }
 
     store.setState(({ captions }) => {
-      captions.tracks = player.getTextTracks()
-    })
-  }
+      captions.tracks = player.getTextTracks();
+    });
+  };
 
   const onTextTrackVisibility = () => {
     if (!player) {
-      return
+      return;
     }
 
     store.setState(({ captions }) => {
-      captions.visible = player.isTextTrackVisible()
-    })
-  }
+      captions.visible = player.isTextTrackVisible();
+    });
+  };
 
   useEffect(() => {
     if (!player || !containerElement) {
-      return
+      return;
     }
 
-    player.setVideoContainer(containerElement)
-  }, [containerElement, player])
+    player.setVideoContainer(containerElement);
+  }, [containerElement, player]);
 
   useEffect(() => {
-    if (!mediaElement || !player) return
+    if (!mediaElement || !player) return;
 
     if (canPlay) {
-      onTracksChanged()
+      onTracksChanged();
     }
 
-    on(player, "textchanged", onTextTrackChanged)
-    on(player, ["trackschanged", "loading"], onTracksChanged)
-    on(player, "texttrackvisibility", onTextTrackVisibility)
+    on(player, "textchanged", onTextTrackChanged);
+    on(player, ["trackschanged", "loading"], onTracksChanged);
+    on(player, "texttrackvisibility", onTextTrackVisibility);
 
     return () => {
-      off(player, "textchanged", onTextTrackChanged)
-      off(player, ["trackschanged", "loading"], onTracksChanged)
-      off(player, "texttrackvisibility", onTextTrackVisibility)
-    }
-  }, [canPlay, mediaElement, player])
+      off(player, "textchanged", onTextTrackChanged);
+      off(player, ["trackschanged", "loading"], onTracksChanged);
+      off(player, "texttrackvisibility", onTextTrackVisibility);
+    };
+  }, [canPlay, mediaElement, player]);
 
-  return null
+  return null;
 }
 
 function findDefaultTrack(tracks?: shaka.extern.TextTrack[]) {
   if (!tracks || tracks.length === 0) {
-    console.warn("No text tracks found")
-    return
+    console.warn("No text tracks found");
+    return;
   }
 
   if (tracks.length === 1) {
-    return tracks[0]
+    return tracks[0];
   }
 
-  const deviceLanguage = getDeviceLanguage()
+  const deviceLanguage = getDeviceLanguage();
 
-  return tracks.find((track) => track.language === deviceLanguage) ?? tracks[0]
+  return tracks.find((track) => track.language === deviceLanguage) ?? tracks[0];
 }

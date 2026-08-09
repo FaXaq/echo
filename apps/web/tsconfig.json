@@ -5,13 +5,13 @@
     "paths": {
       "@/ui": ["./src/components/ui"],
       "@/ui/*": ["./src/components/ui/*"],
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"]
     },
     "outDir": "dist",
     "noEmit": true,
     "composite": false,
     "declaration": false,
-    "declarationMap": false,
+    "declarationMap": false
   },
-  "include": ["src"],
+  "include": ["src"]
 }

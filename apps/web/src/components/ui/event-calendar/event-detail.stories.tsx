@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import type { Meta, StoryObj } from "@storybook/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { EventDetail } from "./event-detail"
-import { getEventFilesQueryOptions } from "@/services/resources/file"
+import { EventDetail } from "./event-detail";
+import { getEventFilesQueryOptions } from "@/services/resources/file";
 
 function withEmptyFiles() {
-  const queryClient = new QueryClient()
-  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "1" }).queryKey, [])
-  return queryClient
+  const queryClient = new QueryClient();
+  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "1" }).queryKey, []);
+  return queryClient;
 }
 
 const meta = {
@@ -26,10 +26,10 @@ const meta = {
       </QueryClientProvider>
     ),
   ],
-} satisfies Meta<typeof EventDetail>
+} satisfies Meta<typeof EventDetail>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const baseEvent = {
   id: "1",
@@ -41,7 +41,7 @@ const baseEvent = {
   type: null,
   organizationId: null,
   place: null,
-} as const
+} as const;
 
 export const Default: Story = {
   args: {
@@ -50,7 +50,7 @@ export const Default: Story = {
     onDelete: () => {},
     onBack: () => {},
   },
-}
+};
 
 export const AllDay: Story = {
   args: {
@@ -65,7 +65,7 @@ export const AllDay: Story = {
     onDelete: () => {},
     onBack: () => {},
   },
-}
+};
 
 export const NoDescription: Story = {
   args: {
@@ -74,7 +74,7 @@ export const NoDescription: Story = {
     onDelete: () => {},
     onBack: () => {},
   },
-}
+};
 
 export const WithPlace: Story = {
   args: {
@@ -91,4 +91,4 @@ export const WithPlace: Story = {
     onDelete: () => {},
     onBack: () => {},
   },
-}
+};

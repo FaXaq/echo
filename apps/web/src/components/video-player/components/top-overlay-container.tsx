@@ -1,19 +1,19 @@
-import type { VideoPlayerAsset } from "@/components/video-player/player"
+import type { VideoPlayerAsset } from "@/components/video-player/player";
 
-import { useAsset } from "@/hooks/limeplay/use-asset"
-import { ControlsTopContainer } from "@/components/limeplay/player-layout"
+import { useAsset } from "@/hooks/limeplay/use-asset";
+import { ControlsTopContainer } from "@/components/limeplay/player-layout";
 
 export interface TopOverlayContainerProps {
-  className?: string
+  className?: string;
 }
 
 export function TopOverlayContainer({ className }: TopOverlayContainerProps) {
-  const { currentItem } = useAsset<VideoPlayerAsset>()
-  const asset = currentItem?.properties
-  const description = asset?.description
-  const title = asset?.title?.trim()
+  const { currentItem } = useAsset<VideoPlayerAsset>();
+  const asset = currentItem?.properties;
+  const description = asset?.description;
+  const title = asset?.title?.trim();
 
-  if (!title && !description) return null
+  if (!title && !description) return null;
 
   return (
     <ControlsTopContainer className={className}>
@@ -45,5 +45,5 @@ export function TopOverlayContainer({ className }: TopOverlayContainerProps) {
         )}
       </div>
     </ControlsTopContainer>
-  )
+  );
 }

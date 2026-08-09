@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Layout, ChevronDown, Check, Plus } from "lucide-react"
+import * as React from "react";
+import { Layout, ChevronDown, Check, Plus } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -9,13 +9,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { Trans, useTranslation } from "react-i18next"
+} from "@/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { Trans, useTranslation } from "react-i18next";
 
 export function VersionSwitcher({
   versions,
@@ -23,18 +19,18 @@ export function VersionSwitcher({
   onSelect,
   onCreateNew,
 }: {
-  versions: string[]
-  defaultVersion: string
-  onSelect?: (version: string) => void
-  onCreateNew?: () => void
+  versions: string[];
+  defaultVersion: string;
+  onSelect?: (version: string) => void;
+  onCreateNew?: () => void;
 }) {
-  const { t } = useTranslation("navigation")
-  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion)
+  const { t } = useTranslation("navigation");
+  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion);
 
   const handleSelect = (version: string) => {
-    setSelectedVersion(version)
-    onSelect?.(version)
-  }
+    setSelectedVersion(version);
+    onSelect?.(version);
+  };
 
   return (
     <SidebarMenu>
@@ -54,19 +50,11 @@ export function VersionSwitcher({
               <ChevronDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width)"
-            align="start"
-          >
+          <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width)" align="start">
             {versions.map((version) => (
-              <DropdownMenuItem
-                key={version}
-                onSelect={() => handleSelect(version)}
-              >
+              <DropdownMenuItem key={version} onSelect={() => handleSelect(version)}>
                 {version}
-                {version === selectedVersion && (
-                  <Check className="ml-auto size-4" />
-                )}
+                {version === selectedVersion && <Check className="ml-auto size-4" />}
               </DropdownMenuItem>
             ))}
             {onCreateNew && (
@@ -82,5 +70,5 @@ export function VersionSwitcher({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

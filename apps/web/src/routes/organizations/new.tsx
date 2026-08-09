@@ -1,22 +1,17 @@
-import { useState } from "react"
-import { createFileRoute, useRouter } from "@tanstack/react-router"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Trans, useTranslation } from "react-i18next"
-import { authClient } from "@/lib/auth"
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Trans, useTranslation } from "react-i18next";
+import { authClient } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/organizations/new")({
   component: NewOrganizationPage,
-})
+});
 
 const schema = z.object({
   name: z.string().min(1, "Project name is required"),
@@ -24,14 +19,14 @@ const schema = z.object({
     .string()
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and hyphens only"),
-})
+});
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof schema>;
 
 function NewOrganizationPage() {
-  const { t } = useTranslation("projects")
-  const router = useRouter()
-  const [serverError, setServerError] = useState<string | undefined>()
+  const { t } = useTranslation("projects");
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | undefined>();
 
   const {
     register,
@@ -40,29 +35,29 @@ function NewOrganizationPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-  })
+  });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slug = e.target.value
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
-    setValue("slug", slug)
-  }
+      .replace(/^-|-$/g, "");
+    setValue("slug", slug);
+  };
 
   const onSubmit = async (values: FormValues) => {
-    setServerError(undefined)
+    setServerError(undefined);
     const result = await authClient.organization.create({
       name: values.name,
       slug: values.slug,
-    })
+    });
 
     if (result.error) {
-      setServerError(result.error.message ?? "Failed to create organization")
+      setServerError(result.error.message ?? "Failed to create organization");
     } else {
-      router.navigate({ to: "/" })
+      router.navigate({ to: "/" });
     }
-  }
+  };
 
   return (
     <div className="flex flex-1 items-center justify-center p-6">
@@ -91,9 +86,7 @@ function NewOrganizationPage() {
                 className="bg-background"
                 {...register("name", { onChange: handleNameChange })}
               />
-              {errors.name && (
-                <FieldError>{t(errors.name.message!)}</FieldError>
-              )}
+              {errors.name && <FieldError>{t(errors.name.message!)}</FieldError>}
             </Field>
 
             <Field>
@@ -107,9 +100,7 @@ function NewOrganizationPage() {
                 className="bg-background"
                 {...register("slug")}
               />
-              {errors.slug && (
-                <FieldError>{t(errors.slug.message!)}</FieldError>
-              )}
+              {errors.slug && <FieldError>{t(errors.slug.message!)}</FieldError>}
             </Field>
 
             <Field>
@@ -121,5 +112,5 @@ function NewOrganizationPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }

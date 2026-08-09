@@ -2,7 +2,10 @@ import { makeServerAuth } from "@echo/auth";
 import { makeServerI18n } from "@echo/i18n";
 import { makeDbAdapter } from "../db/index";
 import { appConfig } from "../config/index";
-import { renderResetPasswordEmail, renderInvitationEmail } from "@echo/modules/notification/infrastructure";
+import {
+  renderResetPasswordEmail,
+  renderInvitationEmail,
+} from "@echo/modules/notification/infrastructure";
 import { makeMailer } from "@echo/adapters/mailer";
 
 const { pool } = makeDbAdapter(appConfig.db);

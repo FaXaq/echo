@@ -1,71 +1,56 @@
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react";
 
-import type {
-  GetAssetId,
-  PlayerSource,
-  TAsset,
-  UseAssetOptions,
-} from "@/hooks/limeplay/use-asset"
+import type { GetAssetId, PlayerSource, TAsset, UseAssetOptions } from "@/hooks/limeplay/use-asset";
 
-import {
-  AssetSourceOrigin,
-  AssetSourceType,
-  useAsset,
-} from "@/hooks/limeplay/use-asset"
-import { usePlayerStore } from "@/hooks/limeplay/use-player"
+import { AssetSourceOrigin, AssetSourceType, useAsset } from "@/hooks/limeplay/use-asset";
+import { usePlayerStore } from "@/hooks/limeplay/use-player";
 
 export interface PlaybackSourceControllerProps<TItem extends TAsset> {
-  autoLoad?: boolean
-  initialIndex?: number
-  loading?: UseAssetOptions<TItem>
-  source?: PlayerSource<TItem>
-  sourceKey?: string
+  autoLoad?: boolean;
+  initialIndex?: number;
+  loading?: UseAssetOptions<TItem>;
+  source?: PlayerSource<TItem>;
+  sourceKey?: string;
 }
 
 export function PlaybackSourceController<TItem extends TAsset>(
-  props: PlaybackSourceControllerProps<TItem>
+  props: PlaybackSourceControllerProps<TItem>,
 ) {
-  usePlaybackSource(props)
+  usePlaybackSource(props);
 
-  return null
+  return null;
 }
 
 function getSourceOrigin<TItem extends TAsset>(
-  source: PlayerSource<TItem> | undefined
+  source: PlayerSource<TItem> | undefined,
 ): Parameters<GetAssetId<TItem>>[1]["origin"] {
-  if (Array.isArray(source)) return AssetSourceOrigin.Playlist
-  if (typeof source === "string") return AssetSourceOrigin.MediaProps
-  return AssetSourceOrigin.Asset
+  if (Array.isArray(source)) return AssetSourceOrigin.Playlist;
+  if (typeof source === "string") return AssetSourceOrigin.MediaProps;
+  return AssetSourceOrigin.Asset;
 }
 
 function usePlaybackSource<TItem extends TAsset>(
-  options: PlaybackSourceControllerProps<TItem>
+  options: PlaybackSourceControllerProps<TItem>,
 ): void {
-  const {
-    autoLoad = true,
-    initialIndex = 0,
-    loading,
-    source,
-    sourceKey,
-  } = options
+  const { autoLoad = true, initialIndex = 0, loading, source, sourceKey } = options;
 
   const assets = useMemo(() => {
-    if (Array.isArray(source)) return [...source]
-    if (typeof source === "string") return [{ src: source } as TItem]
-    if (source) return [source]
+    if (Array.isArray(source)) return [...source];
+    if (typeof source === "string") return [{ src: source } as TItem];
+    if (source) return [source];
 
-    return []
-  }, [source])
-  const player = usePlayerStore((state) => state.instance)
-  const { loadSource } = useAsset<TItem>()
-  const loadedSourceKeyRef = useRef<null | string>(null)
+    return [];
+  }, [source]);
+  const player = usePlayerStore((state) => state.instance);
+  const { loadSource } = useAsset<TItem>();
+  const loadedSourceKeyRef = useRef<null | string>(null);
 
   useEffect(() => {
-    loadedSourceKeyRef.current = null
-  }, [player])
+    loadedSourceKeyRef.current = null;
+  }, [player]);
 
   const resolvedSourceKey = useMemo(() => {
-    if (sourceKey) return sourceKey
+    if (sourceKey) return sourceKey;
 
     return assets
       .map((item, index) => {
@@ -75,39 +60,36 @@ function usePlaybackSource<TItem extends TAsset>(
             index,
             origin: getSourceOrigin(source),
           }) ??
-          item.src
+          item.src;
 
-        return id ?? `item:${index}`
+        return id ?? `item:${index}`;
       })
-      .join("|")
-  }, [assets, loading, source, sourceKey])
+      .join("|");
+  }, [assets, loading, source, sourceKey]);
   const sourceType = useMemo<AssetSourceType>(() => {
-    return Array.isArray(source)
-      ? AssetSourceType.Playlist
-      : AssetSourceType.Asset
-  }, [source])
+    return Array.isArray(source) ? AssetSourceType.Playlist : AssetSourceType.Asset;
+  }, [source]);
   const requestKey = useMemo(
     () => `${resolvedSourceKey}::${sourceType}::${initialIndex}`,
-    [initialIndex, resolvedSourceKey, sourceType]
-  )
+    [initialIndex, resolvedSourceKey, sourceType],
+  );
 
   useEffect(() => {
-    loadedSourceKeyRef.current = null
-  }, [requestKey])
+    loadedSourceKeyRef.current = null;
+  }, [requestKey]);
 
   useEffect(() => {
-    if (!autoLoad || !player || source === undefined || assets.length === 0)
-      return
+    if (!autoLoad || !player || source === undefined || assets.length === 0) return;
 
-    if (loadedSourceKeyRef.current === requestKey) return
-    loadedSourceKeyRef.current = requestKey
+    if (loadedSourceKeyRef.current === requestKey) return;
+    loadedSourceKeyRef.current = requestKey;
 
     loadSource(source, {
       initialIndex,
       loading,
       sourceKey,
       sourceType,
-    })
+    });
   }, [
     assets,
     autoLoad,
@@ -120,5 +102,5 @@ function usePlaybackSource<TItem extends TAsset>(
     sourceKey,
     sourceType,
     loading,
-  ])
+  ]);
 }

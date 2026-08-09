@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { EventGallery } from "./event-gallery"
-import type { EventFile } from "@/services/resources/file"
+import type { Meta, StoryObj } from "@storybook/react";
+import { EventGallery } from "./event-gallery";
+import type { EventFile } from "@/services/resources/file";
 
 const files: EventFile[] = [
   {
@@ -21,7 +21,7 @@ const files: EventFile[] = [
     originalFilename: "poster.jpg",
     downloadUrl: "https://example.com/poster.jpg",
   } as EventFile,
-]
+];
 
 const meta = {
   title: "UI/EventGallery",
@@ -37,11 +37,11 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof EventGallery>
+} satisfies Meta<typeof EventGallery>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: { files },
-}
+};

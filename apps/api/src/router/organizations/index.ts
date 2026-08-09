@@ -4,9 +4,11 @@ import { selfListOrganizations } from "@echo/modules/organization/app";
 
 export const makeOrganizationRouter = () =>
   router({
-    selfList: authedProcedure
-      .query(({ ctx }) => {
-        const listUserOrganizationsQuery = listUserOrganizationsQueryFactory({ headers: ctx.headers, auth: ctx.auth });
-        return selfListOrganizations({ listUserOrganizationsQuery });
-      }),
+    selfList: authedProcedure.query(({ ctx }) => {
+      const listUserOrganizationsQuery = listUserOrganizationsQueryFactory({
+        headers: ctx.headers,
+        auth: ctx.auth,
+      });
+      return selfListOrganizations({ listUserOrganizationsQuery });
+    }),
   });

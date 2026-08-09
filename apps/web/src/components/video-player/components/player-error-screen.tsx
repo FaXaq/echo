@@ -10,10 +10,7 @@ import type { PlayerSource, UseAssetOptions } from "@/hooks/limeplay/use-asset";
 import { Button } from "@/components/video-player/components/button";
 import { useAsset } from "@/hooks/limeplay/use-asset";
 import { usePlaybackStore } from "@/hooks/limeplay/use-playback";
-import {
-  ErrorScreen,
-  getErrorDetails,
-} from "@/components/limeplay/error-screen";
+import { ErrorScreen, getErrorDetails } from "@/components/limeplay/error-screen";
 
 export interface PlayerErrorScreenProps {
   initialIndex?: number;
@@ -45,15 +42,7 @@ export function PlayerErrorScreen({
       loading,
       sourceKey,
     });
-  }, [
-    currentItem,
-    initialIndex,
-    loadAsset,
-    loading,
-    loadSource,
-    source,
-    sourceKey,
-  ]);
+  }, [currentItem, initialIndex, loadAsset, loading, loadSource, source, sourceKey]);
 
   React.useEffect(() => {
     if (status !== "error") return;

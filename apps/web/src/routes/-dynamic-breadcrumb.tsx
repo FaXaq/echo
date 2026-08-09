@@ -21,8 +21,7 @@ export function DynamicBreadcrumb() {
         m.staticData.breadcrumb,
     )
     .map((m) => {
-      const dynamic = (m.loaderData as { breadcrumb?: string } | undefined)
-        ?.breadcrumb;
+      const dynamic = (m.loaderData as { breadcrumb?: string } | undefined)?.breadcrumb;
       const label = dynamic ?? t(m.staticData.breadcrumb!);
       return { label, pathname: m.pathname };
     });

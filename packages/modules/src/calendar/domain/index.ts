@@ -12,14 +12,7 @@ export const EVENT_TYPES: EventType[] = eventTypeSchema.options;
 
 export type EventColor = "blue" | "green" | "red" | "yellow" | "purple" | "orange";
 
-export const EVENT_COLORS: EventColor[] = [
-  "blue",
-  "green",
-  "red",
-  "yellow",
-  "purple",
-  "orange",
-];
+export const EVENT_COLORS: EventColor[] = ["blue", "green", "red", "yellow", "purple", "orange"];
 
 export type EventPlace = {
   name: string;

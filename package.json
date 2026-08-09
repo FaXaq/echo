@@ -7,7 +7,12 @@
     "dev:apps": "pnpm services:start && turbo dev --filter=@echo/web --filter=@echo/api",
     "build": "turbo build",
     "test": "turbo test",
-    "lint": "turbo lint",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt --check .",
+    "format:fix": "oxfmt .",
+    "quality": "turbo quality",
+    "quality:fix": "turbo quality:fix",
     "typecheck": "turbo typecheck",
     "dev:web": "turbo dev --filter=@echo/web",
     "dev:api": "turbo dev --filter=@echo/api",
@@ -27,13 +32,14 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
-    "eslint": "^9.39.5",
     "husky": "^9.1.7",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
     "turbo": "^2.10.6",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.30.3",
   "engines": {
     "node": ">=20"
-  }
+  },
+  "packageManager": "pnpm@10.30.3"
 }

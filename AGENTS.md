@@ -42,7 +42,7 @@ Architectural goals:
 - `/packages/auth` – Auth configuration: `makeServerAuth` and `makeClientAuth` factories, better-auth plugin setup (admin + organization RBAC), permission definitions, and generated auth schema. Single source of truth for all authentication concerns.
 - `/packages/db` – Shared database package: Kysely `Database` interface, migrations, and `makeDbAdapter` factory. Single source of truth for all DB schema and migration concerns.
 - `/packages/modules` – Business modules (DDD + functional). Each module under `src/<name>/` has its own `domain/` (pure model), `app/` (use cases, one file per use case), and `infrastructure/` (port + adapter, one pair of files per repository/service).
-- `/packages/config` – Shared TS/ESLint/Vite/Turbo config, etc.
+- `/packages/config` – Shared TS/Vite/Turbo config, etc. Linting (`oxlint`) and formatting (`oxfmt`) are configured at the repo root via `.oxlintrc.json` and `.oxfmtrc.jsonc`.
 
 Agents must respect this layering: **web → app → domain**, and adapters in `apps/api` depend on ports defined in `packages/modules/src/<name>/infrastructure`, never the other way.
 

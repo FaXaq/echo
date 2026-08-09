@@ -1,10 +1,10 @@
 {
   "name": "@echo/cli",
   "private": true,
-  "type": "module",
   "bin": {
     "echo": "./dist/main.js"
   },
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "execute": "tsx src/main.ts",

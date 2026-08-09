@@ -1,9 +1,9 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import {
   HorizontalVolumeSliderControl,
   VerticalVolumeSliderControl,
-} from "@/components/video-player/components/volume-slider-control"
-import { VolumeStateControl } from "@/components/video-player/components/volume-state-control"
+} from "@/components/video-player/components/volume-slider-control";
+import { VolumeStateControl } from "@/components/video-player/components/volume-state-control";
 
 export function VolumeGroupControl() {
   return (
@@ -28,5 +28,5 @@ export function VolumeGroupControl() {
       <HorizontalVolumeSliderControl />
       <VerticalVolumeSliderControl />
     </div>
-  )
+  );
 }

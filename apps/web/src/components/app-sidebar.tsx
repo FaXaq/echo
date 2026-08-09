@@ -1,6 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 
-import { VersionSwitcher } from "@/components/version-switcher"
+import { VersionSwitcher } from "@/components/version-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -12,21 +12,21 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { useNavigation } from "@/hooks/use-navigation"
-import { Link, useNavigate } from "@tanstack/react-router"
+} from "@/components/ui/sidebar";
+import { useNavigation } from "@/hooks/use-navigation";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { orgOptions, activeOrganization, setActiveOrganization, navGroups } = useNavigation()
-  const navigate = useNavigate()
+  const { orgOptions, activeOrganization, setActiveOrganization, navGroups } = useNavigation();
+  const navigate = useNavigate();
 
-  const activeOrgName = activeOrganization?.name ?? orgOptions[0]?.name ?? ""
-  const orgNames = orgOptions.map((o) => o.name)
+  const activeOrgName = activeOrganization?.name ?? orgOptions[0]?.name ?? "";
+  const orgNames = orgOptions.map((o) => o.name);
 
   const handleOrgSelect = (name: string) => {
-    const org = orgOptions.find((o) => o.name === name)
-    if (org) setActiveOrganization(org)
-  }
+    const org = orgOptions.find((o) => o.name === name);
+    if (org) setActiveOrganization(org);
+  };
 
   return (
     <Sidebar {...props}>
@@ -47,7 +47,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {group.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={item.isActive}>
-                      <Link to={item.to} params={item.params}>{item.title}</Link>
+                      <Link to={item.to} params={item.params}>
+                        {item.title}
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -58,5 +60,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

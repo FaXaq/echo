@@ -1,30 +1,25 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Trans, useTranslation } from "react-i18next"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Trans, useTranslation } from "react-i18next";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
-})
+});
 
-export type ForgotPasswordFormValues = z.infer<typeof schema>
+export type ForgotPasswordFormValues = z.infer<typeof schema>;
 
 export interface ForgotPasswordFormProps {
-  onSubmit: (values: ForgotPasswordFormValues) => Promise<void> | void
-  onBackToLogin?: () => void
-  isLoading?: boolean
-  serverError?: string
-  serverSuccess?: string
-  className?: string
+  onSubmit: (values: ForgotPasswordFormValues) => Promise<void> | void;
+  onBackToLogin?: () => void;
+  isLoading?: boolean;
+  serverError?: string;
+  serverSuccess?: string;
+  className?: string;
 }
 
 export function ForgotPasswordForm({
@@ -35,7 +30,7 @@ export function ForgotPasswordForm({
   serverSuccess,
   className,
 }: ForgotPasswordFormProps) {
-  const { t } = useTranslation("auth")
+  const { t } = useTranslation("auth");
 
   const {
     register,
@@ -43,13 +38,10 @@ export function ForgotPasswordForm({
     formState: { errors },
   } = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(schema),
-  })
+  });
 
   return (
-    <form
-      className={cn("flex flex-col gap-6", className)}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">
@@ -79,9 +71,7 @@ export function ForgotPasswordForm({
               className="bg-background"
               {...register("email")}
             />
-            {errors.email && (
-              <FieldError>{t(errors.email.message!)}</FieldError>
-            )}
+            {errors.email && <FieldError>{t(errors.email.message!)}</FieldError>}
           </Field>
         )}
 
@@ -108,5 +98,5 @@ export function ForgotPasswordForm({
         )}
       </FieldGroup>
     </form>
-  )
+  );
 }

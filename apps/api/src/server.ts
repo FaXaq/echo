@@ -1,9 +1,6 @@
 import Fastify, { type FastifyBaseLogger } from "fastify";
 import cors from "@fastify/cors";
-import {
-  fastifyTRPCPlugin,
-  type FastifyTRPCPluginOptions,
-} from "@trpc/server/adapters/fastify";
+import { fastifyTRPCPlugin, type FastifyTRPCPluginOptions } from "@trpc/server/adapters/fastify";
 import { makeLogger, stdSerializers } from "@echo/logger";
 import { makeAppRouter, type AppRouter } from "./router/index";
 import { appConfig } from "./adapters/config/index";
@@ -14,9 +11,7 @@ import { makeCreateContext } from "./context";
 // Build router at composition root
 const appRouter = makeAppRouter();
 
-function toFastifyLogger(
-  base: ReturnType<typeof makeLogger>,
-): FastifyBaseLogger {
+function toFastifyLogger(base: ReturnType<typeof makeLogger>): FastifyBaseLogger {
   const adapted: FastifyBaseLogger = {
     ...base,
     level: "info",

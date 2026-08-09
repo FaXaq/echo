@@ -1,7 +1,7 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export function LimeplayLogo(props: React.SVGProps<SVGSVGElement>) {
-  const { className, ...etc } = props
+  const { className, ...etc } = props;
 
   return (
     <svg
@@ -24,5 +24,5 @@ export function LimeplayLogo(props: React.SVGProps<SVGSVGElement>) {
         <path d="M444.22 266.765C450.383 267.24 456.65 267.219 462.832 267.312Q456.029 268.907 449.686 271.836C428.622 281.489 415.432 298.348 407.602 319.721Q405.583 325.87 404.123 332.175C403.569 328.37 402.75 324.649 402.381 320.81C400.671 303.034 401.368 284.884 401.509 267.045L426.14 266.971C432.15 266.982 438.224 267.19 444.22 266.765Z" />
       </g>
     </svg>
-  )
+  );
 }

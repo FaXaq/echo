@@ -1,68 +1,62 @@
-"use client"
+"use client";
 
-import React, { useRef } from "react"
-import shaka from "shaka-player"
+import React, { useRef } from "react";
+import shaka from "shaka-player";
 
-import type { PlaybackStore } from "@/hooks/limeplay/use-playback"
-import type {
-  MediaEventSlice,
-  MediaFeature,
-} from "@/components/limeplay/media-provider"
+import type { PlaybackStore } from "@/hooks/limeplay/use-playback";
+import type { MediaEventSlice, MediaFeature } from "@/components/limeplay/media-provider";
 
-import { useMediaStore } from "@/hooks/limeplay/use-media"
-import { noop, off, on } from "@/lib/utils"
+import { useMediaStore } from "@/hooks/limeplay/use-media";
+import { noop, off, on } from "@/lib/utils";
 import {
   useMediaEvents,
   useMediaFeatureApi,
   useMediaFeatureStore,
-} from "@/components/limeplay/media-provider"
+} from "@/components/limeplay/media-provider";
 
 declare global {
   interface HTMLMediaElement {
-    player: null | shaka.Player
+    player: null | shaka.Player;
   }
   interface Window {
     shaka: {
-      Player: typeof shaka.Player
-    }
+      Player: typeof shaka.Player;
+    };
   }
 }
 
-export const PLAYER_FEATURE_KEY = "player"
+export const PLAYER_FEATURE_KEY = "player";
 
 export interface PlayerEvents {
-  bufferingchange: { isBuffering: boolean }
-  playbackerror: { currentTime: number; error: Error }
-  playererror: { error: Error }
-  playerready: void
+  bufferingchange: { isBuffering: boolean };
+  playbackerror: { currentTime: number; error: Error };
+  playererror: { error: Error };
+  playerready: void;
 }
 
 export interface PlayerStore extends MediaEventSlice<PlayerEvents> {
   [PLAYER_FEATURE_KEY]: {
-    containerRef: HTMLDivElement | null
-    instance: null | shaka.Player
-    preloadManagers: Map<string, shaka.media.PreloadManager>
-    setContainerRef: (instance: HTMLDivElement | null) => void
-    setInstance: (player: null | shaka.Player) => void
-  }
+    containerRef: HTMLDivElement | null;
+    instance: null | shaka.Player;
+    preloadManagers: Map<string, shaka.media.PreloadManager>;
+    setContainerRef: (instance: HTMLDivElement | null) => void;
+    setInstance: (player: null | shaka.Player) => void;
+  };
 }
 
 export interface UsePlayerOptions<TAsset> {
-  onError: (error: Error, asset?: TAsset) => void
+  onError: (error: Error, asset?: TAsset) => void;
   onLoad: (
     asset: TAsset,
     player: shaka.Player,
     media: HTMLMediaElement,
     preloadManager?: shaka.media.PreloadManager,
-    startTime?: number
-  ) => Promise<void>
-  onPreload?: (
-    asset: TAsset,
-    player: shaka.Player
-  ) => Promise<null | shaka.media.PreloadManager>
+    startTime?: number,
+  ) => Promise<void>;
+  onPreload?: (asset: TAsset, player: shaka.Player) => Promise<null | shaka.media.PreloadManager>;
 }
 
-export const RECOMMENDED_PLAYER_BUFFERING_THROTTLE_MS = 250
+export const RECOMMENDED_PLAYER_BUFFERING_THROTTLE_MS = 250;
 
 export function isLoadInterrupted(error: unknown): boolean {
   if (
@@ -71,10 +65,10 @@ export function isLoadInterrupted(error: unknown): boolean {
     "code" in error &&
     (error as { code: number }).code === shaka.util.Error.Code.LOAD_INTERRUPTED
   ) {
-    return true
+    return true;
   }
 
-  return false
+  return false;
 }
 
 export function playerFeature(): MediaFeature<PlayerStore> {
@@ -86,19 +80,19 @@ export function playerFeature(): MediaFeature<PlayerStore> {
         preloadManagers: new Map(),
         setContainerRef: (instance) => {
           _set(({ player }) => {
-            player.containerRef = instance
-          })
+            player.containerRef = instance;
+          });
         },
         setInstance: (instance) => {
           _set(({ player }) => {
-            player.instance = instance
-          })
+            player.instance = instance;
+          });
         },
       },
     }),
     key: PLAYER_FEATURE_KEY,
     Setup: PlayerSetup,
-  }
+  };
 }
 
 /**
@@ -108,111 +102,97 @@ export function playerFeature(): MediaFeature<PlayerStore> {
  * Using both `usePlayer.load` and `useAsset.loadAsset` on the same
  * content will cause split state in `preloadManagers` and retry counters.
  */
-export function usePlayer<TAsset extends { id: string }>(
-  options?: UsePlayerOptions<TAsset>
-) {
-  const store = useMediaFeatureApi<PlayerStore>(PLAYER_FEATURE_KEY)
-  const player = usePlayerStore((state) => state.instance)
-  const mediaElement = useMediaStore((state) => state.mediaElement)
+export function usePlayer<TAsset extends { id: string }>(options?: UsePlayerOptions<TAsset>) {
+  const store = useMediaFeatureApi<PlayerStore>(PLAYER_FEATURE_KEY);
+  const player = usePlayerStore((state) => state.instance);
+  const mediaElement = useMediaStore((state) => state.mediaElement);
 
   const load = React.useCallback(
     async (asset: TAsset, startTime?: number): Promise<boolean> => {
-      if (!options) return false
+      if (!options) return false;
 
-      const currentPlayer = store.getState().player.instance
-      const currentMedia = store.getState().media.mediaElement
+      const currentPlayer = store.getState().player.instance;
+      const currentMedia = store.getState().media.mediaElement;
 
       if (!currentPlayer || !currentMedia) {
-        console.warn("[usePlayer] Player or media element not initialized")
-        return false
+        console.warn("[usePlayer] Player or media element not initialized");
+        return false;
       }
 
       try {
-        const preloadManagers = store.getState().player.preloadManagers
-        const preloadManager = preloadManagers.get(asset.id)
+        const preloadManagers = store.getState().player.preloadManagers;
+        const preloadManager = preloadManagers.get(asset.id);
 
         if (preloadManager) {
-          await options.onLoad(
-            asset,
-            currentPlayer,
-            currentMedia,
-            preloadManager,
-            startTime
-          )
-          preloadManagers.delete(asset.id)
+          await options.onLoad(asset, currentPlayer, currentMedia, preloadManager, startTime);
+          preloadManagers.delete(asset.id);
           store.setState(({ player }) => {
-            player.preloadManagers = new Map(preloadManagers)
-          })
+            player.preloadManagers = new Map(preloadManagers);
+          });
         } else {
-          await options.onLoad(
-            asset,
-            currentPlayer,
-            currentMedia,
-            undefined,
-            startTime
-          )
+          await options.onLoad(asset, currentPlayer, currentMedia, undefined, startTime);
         }
 
-        return true
+        return true;
       } catch (error) {
         if (isLoadInterrupted(error)) {
-          return false
+          return false;
         }
 
-        const err = error instanceof Error ? error : new Error(String(error))
-        options.onError(err, asset)
-        return false
+        const err = error instanceof Error ? error : new Error(String(error));
+        options.onError(err, asset);
+        return false;
       }
     },
-    [mediaElement, options, store]
-  )
+    [mediaElement, options, store],
+  );
 
   const preload = React.useCallback(
     async (asset: TAsset): Promise<void> => {
-      if (!options?.onPreload) return
+      if (!options?.onPreload) return;
 
-      const currentPlayer = store.getState().player.instance
-      if (!currentPlayer) return
+      const currentPlayer = store.getState().player.instance;
+      if (!currentPlayer) return;
 
       try {
-        const manager = await options.onPreload(asset, currentPlayer)
+        const manager = await options.onPreload(asset, currentPlayer);
         if (manager) {
-          const preloadManagers = store.getState().player.preloadManagers
-          preloadManagers.set(asset.id, manager)
+          const preloadManagers = store.getState().player.preloadManagers;
+          preloadManagers.set(asset.id, manager);
           store.setState(({ player }) => {
-            player.preloadManagers = new Map(preloadManagers)
-          })
+            player.preloadManagers = new Map(preloadManagers);
+          });
         }
       } catch (error) {
-        const err = error instanceof Error ? error : new Error(String(error))
-        options.onError(err, asset)
-        console.error("[usePlayer] Preload error:", error)
+        const err = error instanceof Error ? error : new Error(String(error));
+        options.onError(err, asset);
+        console.error("[usePlayer] Preload error:", error);
       }
     },
-    [options, store]
-  )
+    [options, store],
+  );
 
   const cancelPreload = React.useCallback(
     (assetId: string): void => {
-      const preloadManagers = store.getState().player.preloadManagers
-      const manager = preloadManagers.get(assetId)
+      const preloadManagers = store.getState().player.preloadManagers;
+      const manager = preloadManagers.get(assetId);
       if (manager) {
-        manager.destroy()
-        preloadManagers.delete(assetId)
+        manager.destroy();
+        preloadManagers.delete(assetId);
         store.setState(({ player }) => {
-          player.preloadManagers = new Map(preloadManagers)
-        })
+          player.preloadManagers = new Map(preloadManagers);
+        });
       }
     },
-    [store]
-  )
+    [store],
+  );
 
   const isPreloaded = React.useCallback(
     (assetId: string): boolean => {
-      return store.getState().player.preloadManagers.has(assetId)
+      return store.getState().player.preloadManagers.has(assetId);
     },
-    [store]
-  )
+    [store],
+  );
 
   return {
     cancelPreload,
@@ -220,166 +200,160 @@ export function usePlayer<TAsset extends { id: string }>(
     load,
     player,
     preload,
-  }
+  };
 }
 
 export function usePlayerStore<TSelected>(
-  selector: (state: PlayerStore["player"]) => TSelected
+  selector: (state: PlayerStore["player"]) => TSelected,
 ): TSelected {
-  return useMediaFeatureStore<PlayerStore, TSelected>(
-    PLAYER_FEATURE_KEY,
-    (state) => selector(state.player)
-  )
+  return useMediaFeatureStore<PlayerStore, TSelected>(PLAYER_FEATURE_KEY, (state) =>
+    selector(state.player),
+  );
 }
 
 function PlayerSetup() {
-  const store = useMediaFeatureApi<PlaybackStore & PlayerStore>(
-    PLAYER_FEATURE_KEY
-  )
-  const events = useMediaEvents<PlayerEvents>()
-  const setPlayer = usePlayerStore((state) => state.setInstance)
-  const mediaElement = useMediaStore((state) => state.mediaElement)
-  const debug = useMediaStore((state) => state.debug)
-  const player = usePlayerStore((state) => state.instance)
+  const store = useMediaFeatureApi<PlaybackStore & PlayerStore>(PLAYER_FEATURE_KEY);
+  const events = useMediaEvents<PlayerEvents>();
+  const setPlayer = usePlayerStore((state) => state.setInstance);
+  const mediaElement = useMediaStore((state) => state.mediaElement);
+  const debug = useMediaStore((state) => state.debug);
+  const player = usePlayerStore((state) => state.instance);
 
-  const playerInstance = useRef<null | shaka.Player>(null)
+  const playerInstance = useRef<null | shaka.Player>(null);
 
   React.useLayoutEffect(() => {
-    let aborted = false
+    let aborted = false;
 
     async function loadPlayer() {
       const shakaLib = (
         debug
           ? await import("shaka-player/dist/shaka-player.compiled.debug")
           : await import("shaka-player")
-      ).default
+      ).default;
 
       if (!mediaElement || aborted) {
-        return
+        return;
       }
 
-      const localPlayer = new shakaLib.Player() as shaka.Player
+      const localPlayer = new shakaLib.Player() as shaka.Player;
 
       try {
         // DEV: initializeMediaSource is false, otherwise player is in loaded status by default
-        await localPlayer.attach(mediaElement, false)
+        await localPlayer.attach(mediaElement, false);
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- mutated by cleanup closure during await
         if (aborted) {
-          void localPlayer.destroy().catch(noop)
-          return
+          void localPlayer.destroy().catch(noop);
+          return;
         }
 
-        setPlayer(localPlayer)
-        playerInstance.current = localPlayer
+        setPlayer(localPlayer);
+        playerInstance.current = localPlayer;
 
-        mediaElement.player = playerInstance.current
-        window.shaka = shakaLib as unknown as Window["shaka"]
+        mediaElement.player = playerInstance.current;
+        window.shaka = shakaLib as unknown as Window["shaka"];
 
-        events.emit("playerready")
+        events.emit("playerready");
       } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- mutated by cleanup closure during await
         if (aborted) {
-          void localPlayer.destroy().catch(noop)
-          return
+          void localPlayer.destroy().catch(noop);
+          return;
         }
 
-        const err = error instanceof Error ? error : new Error(String(error))
-        console.error(
-          "[usePlayer] Failed to attach player to media element:",
-          err
-        )
+        const err = error instanceof Error ? error : new Error(String(error));
+        console.error("[usePlayer] Failed to attach player to media element:", err);
 
-        events.emit("playererror", { error: err })
+        events.emit("playererror", { error: err });
       }
     }
 
     if (!playerInstance.current) {
-      void loadPlayer()
+      void loadPlayer();
     }
 
     return () => {
-      aborted = true
+      aborted = true;
       if (playerInstance.current) {
-        void playerInstance.current.destroy().catch(noop)
-        setPlayer(null)
-        playerInstance.current = null
+        void playerInstance.current.destroy().catch(noop);
+        setPlayer(null);
+        playerInstance.current = null;
       }
-    }
-  }, [debug, mediaElement, setPlayer, events])
+    };
+  }, [debug, mediaElement, setPlayer, events]);
 
   React.useEffect(() => {
-    if (!player) return noop
-    let bufferingTimeout: null | ReturnType<typeof setTimeout> = null
+    if (!player) return noop;
+    let bufferingTimeout: null | ReturnType<typeof setTimeout> = null;
 
     const clearBufferingTimeout = () => {
       if (bufferingTimeout) {
-        clearTimeout(bufferingTimeout)
-        bufferingTimeout = null
+        clearTimeout(bufferingTimeout);
+        bufferingTimeout = null;
       }
-    }
+    };
 
     const setInitialState = () => {
       if (player.isBuffering()) {
         store.setState(({ playback }) => {
-          playback.status = "buffering"
-        })
+          playback.status = "buffering";
+        });
       }
-    }
+    };
 
     const bufferingHandler = () => {
-      const isBuffering = player.isBuffering()
+      const isBuffering = player.isBuffering();
 
       if (isBuffering) {
         store.setState(({ playback }) => {
-          playback.status = "buffering"
-        })
+          playback.status = "buffering";
+        });
       } else {
-        clearBufferingTimeout()
-        const media = store.getState().media.mediaElement
+        clearBufferingTimeout();
+        const media = store.getState().media.mediaElement;
         if (media) {
           store.setState(({ playback }) => {
-            playback.status = media.paused ? "paused" : "playing"
-          })
+            playback.status = media.paused ? "paused" : "playing";
+          });
         }
       }
 
-      events.emit("bufferingchange", { isBuffering })
-    }
+      events.emit("bufferingchange", { isBuffering });
+    };
 
     const loadingHandler = () => {
       store.setState(({ playback }) => {
-        playback.status = "loading"
-      })
-    }
+        playback.status = "loading";
+      });
+    };
 
-    on(player, "buffering", bufferingHandler)
-    on(player, "loading", loadingHandler)
+    on(player, "buffering", bufferingHandler);
+    on(player, "loading", loadingHandler);
 
     const errorHandler = (event: Event) => {
-      const detail = (event as CustomEvent).detail as shaka.util.Error
-      if (isLoadInterrupted(detail)) return
-      const media = store.getState().media.mediaElement
-      const currentTime = media?.currentTime ?? 0
+      const detail = (event as CustomEvent).detail as shaka.util.Error;
+      if (isLoadInterrupted(detail)) return;
+      const media = store.getState().media.mediaElement;
+      const currentTime = media?.currentTime ?? 0;
 
-      store.getState().playback.setError(detail)
+      store.getState().playback.setError(detail);
       events.emit("playbackerror", {
         currentTime,
         error: detail as unknown as Error,
-      })
-    }
+      });
+    };
 
-    player.addEventListener("error", errorHandler)
+    player.addEventListener("error", errorHandler);
 
-    setInitialState()
+    setInitialState();
 
     return () => {
-      off(player, "buffering", bufferingHandler)
-      off(player, "loading", loadingHandler)
-      player.removeEventListener("error", errorHandler)
-      clearBufferingTimeout()
-    }
-  }, [events, mediaElement, player, store])
+      off(player, "buffering", bufferingHandler);
+      off(player, "loading", loadingHandler);
+      player.removeEventListener("error", errorHandler);
+      clearBufferingTimeout();
+    };
+  }, [events, mediaElement, player, store]);
 
-  return null
+  return null;
 }

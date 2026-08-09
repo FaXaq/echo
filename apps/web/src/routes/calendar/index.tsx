@@ -33,9 +33,7 @@ function CalendarPage() {
   const deleteEventMutation = useDeleteEventMutation();
 
   const view = search.view ?? "month";
-  const date = search.date
-    ? (parseCalendarDate(search.date) ?? new Date())
-    : new Date();
+  const date = search.date ? (parseCalendarDate(search.date) ?? new Date()) : new Date();
 
   const handleEventCreate = async (event: ViewEvent) => {
     createEventMutation.mutate(fromViewEvent(event));

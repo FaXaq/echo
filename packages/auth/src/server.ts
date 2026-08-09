@@ -2,18 +2,12 @@ import { betterAuth } from "better-auth";
 import type { OrganizationOptions } from "better-auth/plugins";
 import { admin as adminPlugin, organization, username } from "better-auth/plugins";
 import type { Pool } from "pg";
-import {
-  ac as adminAc,
-  roles as adminRoles,
-} from "./plugins/admin/permissions";
+import { ac as adminAc, roles as adminRoles } from "./plugins/admin/permissions";
 import {
   ac as organizationsAc,
   roles as organizationsRoles,
 } from "./plugins/organization/permissions";
-import {
-  organizationAdditionalFields,
-  userAdditionalFields,
-} from "./additional-fields";
+import { organizationAdditionalFields, userAdditionalFields } from "./additional-fields";
 
 export type ServerAuthConfig = {
   secret: string;
@@ -39,8 +33,7 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
           before: async (session) => {
             try {
               const organizationId =
-                (await config.getInitialOrganizationId?.(session.userId)) ??
-                undefined;
+                (await config.getInitialOrganizationId?.(session.userId)) ?? undefined;
 
               return {
                 data: {
@@ -93,21 +86,15 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
         },
         sendInvitationEmail: config.sendOrganizationInvitation,
       }),
-      username()
+      username(),
     ],
   });
 };
 
 export type ServerAuth = ReturnType<typeof makeServerAuth>;
-export type ServerSession = ReturnType<
-  typeof makeServerAuth
->["$Infer"]["Session"];
-export type ServerOrganization = ReturnType<
-  typeof makeServerAuth
->["$Infer"]["Organization"];
-export type ServerOrganizationMember = ReturnType<
-  typeof makeServerAuth
->["$Infer"]["Member"];
+export type ServerSession = ReturnType<typeof makeServerAuth>["$Infer"]["Session"];
+export type ServerOrganization = ReturnType<typeof makeServerAuth>["$Infer"]["Organization"];
+export type ServerOrganizationMember = ReturnType<typeof makeServerAuth>["$Infer"]["Member"];
 export type ServerOrganizationInvitation = ReturnType<
   typeof makeServerAuth
 >["$Infer"]["Invitation"];

@@ -1,6 +1,6 @@
-import { Suspense } from "react"
-import { useTranslation } from "react-i18next"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { Suspense } from "react";
+import { useTranslation } from "react-i18next";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,26 +11,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { EventGallery } from "@/components/ui/event-gallery"
-import { FileUpload } from "@/components/ui/file-upload"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { EventGallery } from "@/components/ui/event-gallery";
+import { FileUpload } from "@/components/ui/file-upload";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   getEventFilesQueryOptions,
   useDeleteFileMutation,
   useUploadFileMutation,
   type EventFile,
-} from "@/services/resources/file"
-import WavePlayer from "../waves-cn/wave-player"
+} from "@/services/resources/file";
+import WavePlayer from "../waves-cn/wave-player";
 
 export interface EventAttachmentsProps {
-  eventId: string
-  organizationId?: string
+  eventId: string;
+  organizationId?: string;
 }
 
 function DeleteFileButton({ file, onConfirm }: { file: EventFile; onConfirm: () => void }) {
-  const { t } = useTranslation("calendar")
+  const { t } = useTranslation("calendar");
 
   return (
     <AlertDialog>
@@ -57,23 +57,23 @@ function DeleteFileButton({ file, onConfirm }: { file: EventFile; onConfirm: () 
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }
 
 function EventAttachmentsSuspended({ eventId, organizationId }: EventAttachmentsProps) {
-  const { t } = useTranslation("calendar")
-  const { data: files = [] } = useSuspenseQuery(getEventFilesQueryOptions({ eventId }))
-  const uploadMutation = useUploadFileMutation()
-  const deleteMutation = useDeleteFileMutation()
+  const { t } = useTranslation("calendar");
+  const { data: files = [] } = useSuspenseQuery(getEventFilesQueryOptions({ eventId }));
+  const uploadMutation = useUploadFileMutation();
+  const deleteMutation = useDeleteFileMutation();
 
-  const audioFiles = files.filter((file) => file.kind === "audio")
-  const galleryFiles = files.filter((file) => file.kind === "image" || file.kind === "video")
+  const audioFiles = files.filter((file) => file.kind === "audio");
+  const galleryFiles = files.filter((file) => file.kind === "image" || file.kind === "video");
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
-      uploadMutation.mutate({ eventId, organizationId, file })
-    })
-  }
+      uploadMutation.mutate({ eventId, organizationId, file });
+    });
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -87,7 +87,7 @@ function EventAttachmentsSuspended({ eventId, organizationId }: EventAttachments
           {t(
             uploadMutation.error instanceof Error && uploadMutation.error.message
               ? uploadMutation.error.message
-              : "Upload failed"
+              : "Upload failed",
           )}
         </p>
       )}
@@ -120,7 +120,7 @@ function EventAttachmentsSuspended({ eventId, organizationId }: EventAttachments
         />
       )}
     </div>
-  )
+  );
 }
 
 function EventAttachmentsLoader() {
@@ -128,7 +128,7 @@ function EventAttachmentsLoader() {
     <div className="flex flex-col gap-6">
       <Skeleton className="h-8 w-full" />
     </div>
-  )
+  );
 }
 
 export function EventAttachments({ eventId, organizationId }: EventAttachmentsProps) {
@@ -136,5 +136,5 @@ export function EventAttachments({ eventId, organizationId }: EventAttachmentsPr
     <Suspense fallback={<EventAttachmentsLoader />}>
       <EventAttachmentsSuspended eventId={eventId} organizationId={organizationId} />
     </Suspense>
-  )
+  );
 }

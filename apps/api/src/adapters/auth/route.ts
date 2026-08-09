@@ -31,8 +31,7 @@ export const makeAuthRoute = (fastify: FastifyInstance) => {
         response.headers.forEach((value, key) => reply.header(key, value));
         reply.send(response.body ? await response.text() : null);
       } catch (error) {
-        const errorString =
-          error instanceof Error ? error.toString() : String(error);
+        const errorString = error instanceof Error ? error.toString() : String(error);
         fastify.log.error({ error: errorString }, "Authentication Error");
         reply.status(500).send({
           error: "Internal authentication error",

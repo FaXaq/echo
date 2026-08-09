@@ -1,4 +1,4 @@
-import { authClient } from "@/lib/auth"
+import { authClient } from "@/lib/auth";
 import { useSession } from "./use-session";
 
 export const useActiveOrganization = () => {
@@ -7,5 +7,5 @@ export const useActiveOrganization = () => {
   const activeOrganizationId = session.session.activeOrganizationId;
   const activeOrganization = organizations?.find((o) => o.id === activeOrganizationId) ?? null;
 
-  return { activeOrganization, setActiveOrganization: authClient.organization.setActive }
-}
+  return { activeOrganization, setActiveOrganization: authClient.organization.setActive };
+};

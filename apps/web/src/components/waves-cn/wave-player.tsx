@@ -2,17 +2,9 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Loader2,
-  RotateCcw,
-} from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, Loader2, RotateCcw } from "lucide-react";
 import WavesurferPlayer from "@/lib/wave-cn";
 import type WaveSurfer from "wavesurfer.js";
 
@@ -83,10 +75,7 @@ export function WavePlayer({
   const [duration, setDuration] = React.useState(0);
   const [currentTime, setCurrentTime] = React.useState(0);
 
-  const togglePlay = React.useCallback(
-    () => wavesurferRef.current?.playPause(),
-    [],
-  );
+  const togglePlay = React.useCallback(() => wavesurferRef.current?.playPause(), []);
 
   const restart = React.useCallback(() => {
     if (!wavesurferRef.current || !isReady) return;
@@ -138,7 +127,7 @@ export function WavePlayer({
   }, [onPause]);
 
   const handleFinish = React.useCallback(
-    (ws: WaveSurfer) => {
+    (_ws: WaveSurfer) => {
       setIsPlaying(false);
       onFinish?.();
     },
@@ -171,12 +160,8 @@ export function WavePlayer({
 
   // ── Render
   return (
-    <div>
-      {title && (
-        <p className="text-sm font-medium text-foreground truncate">
-          {title}
-        </p>
-      )}
+    <div className={cn(className)}>
+      {title && <p className="text-sm font-medium text-foreground truncate">{title}</p>}
 
       <div className="relative w-full rounded-sm overflow-hidden bg-muted/40">
         {!isReady && (

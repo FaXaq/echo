@@ -1,9 +1,9 @@
-import React from "react"
+import React from "react";
 
-import * as Select from "@/components/ui/select"
-import * as PlaybackRate from "@/components/limeplay/playback-rate"
+import * as Select from "@/components/ui/select";
+import * as PlaybackRate from "@/components/limeplay/playback-rate";
 
-import { Button } from "./button"
+import { Button } from "./button";
 
 export function PlaybackRateControl() {
   return (
@@ -32,11 +32,9 @@ export function PlaybackRateControl() {
         } as React.ComponentProps<typeof Select.SelectContent>)}
       >
         <PlaybackRate.SelectGroup className={`tracking-wider`}>
-          <Select.SelectLabel className="whitespace-nowrap">
-            Playback Rate
-          </Select.SelectLabel>
+          <Select.SelectLabel className="whitespace-nowrap">Playback Rate</Select.SelectLabel>
         </PlaybackRate.SelectGroup>
       </Select.SelectContent>
     </PlaybackRate.SelectRoot>
-  )
+  );
 }

@@ -1,15 +1,15 @@
-import { CaptionsStateControl } from "@/components/video-player/components/captions-state-control"
-import { PictureInPictureControl } from "@/components/video-player/components/pip-control"
-import { PlaybackStateControl } from "@/components/video-player/components/playback-state-control"
-import { Playlist } from "@/components/video-player/components/playlist"
-import { PlaylistNextControl } from "@/components/video-player/components/playlist-navigation-controls"
-import { TimelineSliderControl } from "@/components/video-player/components/timeline-slider-control"
-import { VolumeGroupControl } from "@/components/video-player/components/volume-group-control"
-import { CONTROLS_FORCE_VISIBLE_ATTRIBUTE } from "@/hooks/limeplay/use-controls-visibility"
-import * as Layout from "@/components/limeplay/player-layout"
+import { CaptionsStateControl } from "@/components/video-player/components/captions-state-control";
+import { PictureInPictureControl } from "@/components/video-player/components/pip-control";
+import { PlaybackStateControl } from "@/components/video-player/components/playback-state-control";
+import { Playlist } from "@/components/video-player/components/playlist";
+import { PlaylistNextControl } from "@/components/video-player/components/playlist-navigation-controls";
+import { TimelineSliderControl } from "@/components/video-player/components/timeline-slider-control";
+import { VolumeGroupControl } from "@/components/video-player/components/volume-group-control";
+import { CONTROLS_FORCE_VISIBLE_ATTRIBUTE } from "@/hooks/limeplay/use-controls-visibility";
+import * as Layout from "@/components/limeplay/player-layout";
 
 export interface BottomControlsProps {
-  className?: string
+  className?: string;
 }
 
 export function BottomControls({ className }: BottomControlsProps) {
@@ -56,5 +56,5 @@ export function BottomControls({ className }: BottomControlsProps) {
         </div>
       </div>
     </Layout.ControlsBottomContainer>
-  )
+  );
 }

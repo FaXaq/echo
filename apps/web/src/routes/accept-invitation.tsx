@@ -1,82 +1,88 @@
-import { useState } from "react"
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router"
-import { z } from "zod"
-import { GalleryVerticalEnd } from "lucide-react"
-import { authClient } from "@/lib/auth"
-import { Trans, useTranslation } from "react-i18next"
-import { trpcLoader } from "@/lib/trpc"
-import dayjs from "dayjs"
-import { Landing } from "./-landing"
-import { Button } from "@/components/ui/button"
-import { FieldError } from "@/components/ui/field"
+import { useState } from "react";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { z } from "zod";
+import { GalleryVerticalEnd } from "lucide-react";
+import { authClient } from "@/lib/auth";
+import { Trans, useTranslation } from "react-i18next";
+import { trpcLoader } from "@/lib/trpc";
+import dayjs from "dayjs";
+import { Landing } from "./-landing";
+import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field";
 
 const searchSchema = z.object({
   id: z.string().optional(),
-})
+});
 
 export const Route = createFileRoute("/accept-invitation")({
   validateSearch: searchSchema,
   beforeLoad: ({ search }) => {
     if (!search.id) {
-      throw redirect({ to: "/" })
+      throw redirect({ to: "/" });
     }
   },
   loaderDeps: ({ search: { id } }) => ({ id }),
   loader: async ({ deps }) => {
     if (!deps.id) {
-      return { invitation: null }
+      return { invitation: null };
     }
 
     const invitation = await trpcLoader.invitation.get.query({
-      id: deps.id
-    })
+      id: deps.id,
+    });
 
     const { data: session } = await authClient.getSession();
 
     return { invitation, session };
   },
   component: AcceptInvitationPage,
-})
+});
 
 function AcceptInvitationPage() {
-  const { invitation, session } = Route.useLoaderData()
-  const { t } = useTranslation("members")
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [serverError, setServerError] = useState<string | undefined>()
+  const { invitation, session } = Route.useLoaderData();
+  const { t } = useTranslation("members");
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | undefined>();
 
   if (!invitation) {
-    return <p>
-      <Trans t={t}>Cannot find the invitation you're looking for</Trans>
-    </p>
+    return (
+      <p>
+        <Trans t={t}>Cannot find the invitation you're looking for</Trans>
+      </p>
+    );
   }
 
   if (invitation.status !== "pending" || dayjs(invitation.expiresAt).isBefore(dayjs())) {
-    return <p>
-      <Trans t={t}>Invitation has expired or already been processed. Please, request a new one.</Trans>
-    </p>
+    return (
+      <p>
+        <Trans t={t}>
+          Invitation has expired or already been processed. Please, request a new one.
+        </Trans>
+      </p>
+    );
   }
 
   if (!session) {
-    return <Landing />
+    return <Landing />;
   }
 
   const handleAccept = async () => {
-    setIsLoading(true)
-    setServerError(undefined)
+    setIsLoading(true);
+    setServerError(undefined);
     try {
       const result = await authClient.organization.acceptInvitation({
         invitationId: invitation.id,
-      })
+      });
       if (result.error) {
-        setServerError(result.error.message ?? t("Failed to accept invitation"))
+        setServerError(result.error.message ?? t("Failed to accept invitation"));
       } else {
-        router.navigate({ to: "/" })
+        router.navigate({ to: "/" });
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -111,5 +117,5 @@ function AcceptInvitationPage() {
         />
       </div>
     </div>
-  )
+  );
 }

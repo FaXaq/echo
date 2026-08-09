@@ -1,16 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useStore } from "zustand"
-import { immer } from "zustand/middleware/immer"
-import { createStore, type StoreApi } from "zustand/vanilla"
+import * as React from "react";
+import { useStore } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { createStore, type StoreApi } from "zustand/vanilla";
 
-import {
-  type MediaProviderProps,
-  type MediaStore,
-} from "@/hooks/limeplay/use-media"
+import { type MediaProviderProps, type MediaStore } from "@/hooks/limeplay/use-media";
 
-export type { MediaProviderProps, MediaStore }
+export type { MediaProviderProps, MediaStore };
 
 /**
  * A Zustand store API extended with Immer-style `setState`.
@@ -25,12 +22,12 @@ export type { MediaProviderProps, MediaStore }
  * ```
  */
 export type ImmerStoreApi<T> = StoreApi<T> & {
-  setState: (updater: (state: T) => void) => void
-}
+  setState: (updater: (state: T) => void) => void;
+};
 
 // ── Event bridge ──────────────────────────────────────────────────────
 
-export declare const mediaEventMap: unique symbol
+export declare const mediaEventMap: unique symbol;
 
 /**
  * Typed event emitter interface. Features call `emit()`, consumers call `on()` / `once()`.
@@ -40,15 +37,15 @@ export interface MediaEvents<TEvents extends {} = {}> {
   emit: <TName extends Extract<keyof TEvents, string>>(
     name: TName,
     ...args: EventArgs<TEvents[TName]>
-  ) => void
+  ) => void;
   on: <TName extends Extract<keyof TEvents, string>>(
     name: TName,
-    listener: EventListener<TEvents[TName]>
-  ) => () => void
+    listener: EventListener<TEvents[TName]>,
+  ) => () => void;
   once: <TName extends Extract<keyof TEvents, string>>(
     name: TName,
-    listener: EventListener<TEvents[TName]>
-  ) => () => void
+    listener: EventListener<TEvents[TName]>,
+  ) => () => void;
 }
 
 /**
@@ -68,7 +65,7 @@ export interface MediaEventSlice<
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   TEvents extends {} = {},
 > {
-  readonly [mediaEventMap]?: TEvents
+  readonly [mediaEventMap]?: TEvents;
 }
 
 /**
@@ -98,10 +95,10 @@ export interface MediaFeature<
     get: StoreApi<TStore>["getState"],
     store: ImmerStoreApi<TStore>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    events: MediaEvents<any>
-  ) => TSlice
-  key: keyof TSlice & string
-  Setup?: React.ComponentType
+    events: MediaEvents<any>,
+  ) => TSlice;
+  key: keyof TSlice & string;
+  Setup?: React.ComponentType;
 }
 
 /**
@@ -112,117 +109,108 @@ export interface MediaFeature<
  * // MediaStore & VolumeStore & PlaybackStore & ...
  * ```
  */
-export type MediaStoreFromFeatures<
-  TFeatures extends readonly MediaFeature<any, any>[],
-> = Simplify<
+export type MediaStoreFromFeatures<TFeatures extends readonly MediaFeature<any, any>[]> = Simplify<
   MediaStore & UnionToIntersection<SliceFromFeature<TFeatures[number]>>
->
+>;
 
 // ── Event bridge internal types ───────────────────────────────────────
 
-type AnyEventListener = (payload?: unknown) => void
+type AnyEventListener = (payload?: unknown) => void;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-type AnyEvents = {}
+type AnyEvents = {};
 
-type AnyMediaStore = MediaShape & MediaStore
+type AnyMediaStore = MediaShape & MediaStore;
 
 type EventArgs<TPayload> = 0 extends 1 & TPayload
   ? [payload?: TPayload]
   : [TPayload] extends [void]
     ? []
-    : [payload: TPayload]
+    : [payload: TPayload];
 
-type EventListener<TPayload> = [TPayload] extends [void]
-  ? () => void
-  : (payload: TPayload) => void
+type EventListener<TPayload> = [TPayload] extends [void] ? () => void : (payload: TPayload) => void;
 
-type EventsFromStore<TStore> =
-  TStore extends MediaEventSlice<infer TEvents> ? TEvents : AnyEvents
+type EventsFromStore<TStore> = TStore extends MediaEventSlice<infer TEvents> ? TEvents : AnyEvents;
 
 interface MediaRuntimeContextValue {
-  events: MediaEvents<AnyEvents>
-  featureKeys: Set<string>
-  store: ImmerStoreApi<AnyMediaStore>
+  events: MediaEvents<AnyEvents>;
+  featureKeys: Set<string>;
+  store: ImmerStoreApi<AnyMediaStore>;
 }
 
-type MediaShape = Record<string, any>
+type MediaShape = Record<string, any>;
 
-type Simplify<T> = { [Key in keyof T]: T[Key] } & {}
+type Simplify<T> = { [Key in keyof T]: T[Key] } & {};
 
-type SliceFromFeature<TFeature> =
-  TFeature extends MediaFeature<infer TSlice, any> ? TSlice : never
+type SliceFromFeature<TFeature> = TFeature extends MediaFeature<infer TSlice, any> ? TSlice : never;
 
 type UnionToIntersection<TUnion> = (
   TUnion extends unknown ? (value: TUnion) => void : never
 ) extends (value: infer TIntersection) => void
   ? TIntersection
-  : never
+  : never;
 
 // ── Event bridge class ───────────────────────────────────────────────
 
-class MediaEventEmitter<
-  TEvents extends AnyEvents,
-> implements MediaEvents<TEvents> {
-  private listeners = new Map<string, Set<AnyEventListener>>()
+class MediaEventEmitter<TEvents extends AnyEvents> implements MediaEvents<TEvents> {
+  private listeners = new Map<string, Set<AnyEventListener>>();
 
   emit = <TName extends Extract<keyof TEvents, string>>(
     name: TName,
     ...args: EventArgs<TEvents[TName]>
   ) => {
-    const listeners = this.listeners.get(name)
-    if (!listeners) return
+    const listeners = this.listeners.get(name);
+    if (!listeners) return;
 
     for (const listener of [...listeners]) {
       try {
-        listener(args[0])
+        listener(args[0]);
       } catch (err) {
-        console.error(`[MediaEvents] Error in "${name}" listener:`, err)
+        console.error(`[MediaEvents] Error in "${name}" listener:`, err);
       }
     }
-  }
+  };
 
   on = <TName extends Extract<keyof TEvents, string>>(
     name: TName,
-    listener: EventListener<TEvents[TName]>
+    listener: EventListener<TEvents[TName]>,
   ) => {
-    let listeners = this.listeners.get(name)
+    let listeners = this.listeners.get(name);
 
     if (!listeners) {
-      listeners = new Set()
-      this.listeners.set(name, listeners)
+      listeners = new Set();
+      this.listeners.set(name, listeners);
     }
 
-    listeners.add(listener as AnyEventListener)
+    listeners.add(listener as AnyEventListener);
 
-    let removed = false
+    let removed = false;
     return () => {
-      if (removed) return
-      removed = true
+      if (removed) return;
+      removed = true;
 
-      listeners.delete(listener as AnyEventListener)
+      listeners.delete(listener as AnyEventListener);
 
       if (listeners.size === 0 && this.listeners.get(name) === listeners) {
-        this.listeners.delete(name)
+        this.listeners.delete(name);
       }
-    }
-  }
+    };
+  };
 
   once = <TName extends Extract<keyof TEvents, string>>(
     name: TName,
-    listener: EventListener<TEvents[TName]>
+    listener: EventListener<TEvents[TName]>,
   ) => {
     const off = this.on(name, ((...args: unknown[]) => {
-      off()
-      ;(listener as AnyEventListener)(...args)
-    }) as EventListener<TEvents[TName]>)
+      off();
+      (listener as AnyEventListener)(...args);
+    }) as EventListener<TEvents[TName]>);
 
-    return off
-  }
+    return off;
+  };
 }
 
-const MediaRuntimeContext =
-  React.createContext<MediaRuntimeContextValue | null>(null)
+const MediaRuntimeContext = React.createContext<MediaRuntimeContextValue | null>(null);
 
 /**
  * Creates a fully-typed media runtime from a list of feature slices.
@@ -249,14 +237,13 @@ const MediaRuntimeContext =
  * ```
  */
 export function createMediaKit<
-  const TFeatures extends readonly MediaFeature<any, any>[] =
-    readonly MediaFeature<any, any>[],
+  const TFeatures extends readonly MediaFeature<any, any>[] = readonly MediaFeature<any, any>[],
 >({ features }: { features: TFeatures }) {
-  type RuntimeStore = MediaStoreFromFeatures<TFeatures>
-  type RuntimeEvents = EventsFromStore<RuntimeStore>
+  type RuntimeStore = MediaStoreFromFeatures<TFeatures>;
+  type RuntimeEvents = EventsFromStore<RuntimeStore>;
 
   function createMediaStore() {
-    const events = new MediaEventEmitter<RuntimeEvents>()
+    const events = new MediaEventEmitter<RuntimeEvents>();
 
     const store = createStore<RuntimeStore>()(
       immer((set, get, store) =>
@@ -267,45 +254,40 @@ export function createMediaKit<
               set as ImmerStoreApi<RuntimeStore>["setState"],
               get as StoreApi<RuntimeStore>["getState"],
               store as ImmerStoreApi<RuntimeStore>,
-              events as unknown as MediaEvents<EventsFromStore<RuntimeStore>>
-            )
-          )
-        )
-      )
-    )
+              events as unknown as MediaEvents<EventsFromStore<RuntimeStore>>,
+            ),
+          ),
+        ),
+      ),
+    );
 
     return {
       events: events as MediaEvents<RuntimeEvents>,
       store: store as unknown as ImmerStoreApi<RuntimeStore>,
-    }
+    };
   }
 
-  function MediaProvider({
-    children,
-    debug,
-  }: React.PropsWithChildren<MediaProviderProps>) {
+  function MediaProvider({ children, debug }: React.PropsWithChildren<MediaProviderProps>) {
     const runtimeRef = React.useRef<null | {
-      events: MediaEvents<RuntimeEvents>
-      store: ImmerStoreApi<RuntimeStore>
-    }>(null)
-    const featureKeysRef = React.useRef(
-      new Set<string>(features.map((feature) => feature.key))
-    )
+      events: MediaEvents<RuntimeEvents>;
+      store: ImmerStoreApi<RuntimeStore>;
+    }>(null);
+    const featureKeysRef = React.useRef(new Set<string>(features.map((feature) => feature.key)));
 
     if (!runtimeRef.current) {
-      runtimeRef.current = createMediaStore()
+      runtimeRef.current = createMediaStore();
       if (typeof debug === "boolean") {
-        setMediaDebug(runtimeRef.current.store, debug)
+        setMediaDebug(runtimeRef.current.store, debug);
       }
     }
 
-    const runtime = runtimeRef.current
+    const runtime = runtimeRef.current;
 
     React.useLayoutEffect(() => {
-      if (typeof debug !== "boolean") return
+      if (typeof debug !== "boolean") return;
 
-      setMediaDebug(runtime.store, debug)
-    }, [debug, runtime.store])
+      setMediaDebug(runtime.store, debug);
+    }, [debug, runtime.store]);
 
     return (
       <MediaRuntimeContext.Provider
@@ -318,35 +300,33 @@ export function createMediaKit<
         {children}
         {features.map((feature) => {
           if (!feature.Setup) {
-            return null
+            return null;
           }
 
-          const Setup = feature.Setup
+          const Setup = feature.Setup;
 
-          return <Setup key={feature.key} />
+          return <Setup key={feature.key} />;
         })}
       </MediaRuntimeContext.Provider>
-    )
+    );
   }
 
-  function useTypedMediaStore<TSelected>(
-    selector: (state: RuntimeStore) => TSelected
-  ): TSelected {
-    const { store } = useMediaRuntime()
+  function useTypedMediaStore<TSelected>(selector: (state: RuntimeStore) => TSelected): TSelected {
+    const { store } = useMediaRuntime();
 
-    return useStore(store as unknown as StoreApi<RuntimeStore>, selector)
+    return useStore(store as unknown as StoreApi<RuntimeStore>, selector);
   }
 
   function useTypedMediaApi(): ImmerStoreApi<RuntimeStore> {
-    const { store } = useMediaRuntime()
+    const { store } = useMediaRuntime();
 
-    return store as unknown as ImmerStoreApi<RuntimeStore>
+    return store as unknown as ImmerStoreApi<RuntimeStore>;
   }
 
   function useTypedMediaEvents(): MediaEvents<RuntimeEvents> {
-    const { events } = useMediaRuntime()
+    const { events } = useMediaRuntime();
 
-    return events as unknown as MediaEvents<RuntimeEvents>
+    return events as unknown as MediaEvents<RuntimeEvents>;
   }
 
   return {
@@ -355,7 +335,7 @@ export function createMediaKit<
     useMediaApi: useTypedMediaApi,
     useMediaEvents: useTypedMediaEvents,
     useMediaStore: useTypedMediaStore,
-  }
+  };
 }
 
 /**
@@ -374,9 +354,9 @@ export function createMediaKit<
  * ```
  */
 export function useMediaApi<TStore extends AnyMediaStore = AnyMediaStore>() {
-  const { store } = useMediaRuntime()
+  const { store } = useMediaRuntime();
 
-  return store as unknown as ImmerStoreApi<TStore>
+  return store as unknown as ImmerStoreApi<TStore>;
 }
 
 /**
@@ -392,12 +372,10 @@ export function useMediaApi<TStore extends AnyMediaStore = AnyMediaStore>() {
  * }, [events])
  * ```
  */
-export function useMediaEvents<
-  TEvents extends AnyEvents = AnyEvents,
->(): MediaEvents<TEvents> {
-  const { events } = useMediaRuntime()
+export function useMediaEvents<TEvents extends AnyEvents = AnyEvents>(): MediaEvents<TEvents> {
+  const { events } = useMediaRuntime();
 
-  return events as unknown as MediaEvents<TEvents>
+  return events as unknown as MediaEvents<TEvents>;
 }
 
 /**
@@ -413,13 +391,13 @@ export function useMediaEvents<
  * ```
  */
 export function useMediaFeatureApi<TSlice extends MediaShape>(
-  featureKey: string
+  featureKey: string,
 ): ImmerStoreApi<MediaStore & TSlice> {
-  const { featureKeys, store } = useMediaRuntime()
+  const { featureKeys, store } = useMediaRuntime();
 
-  assertFeature(featureKey, featureKeys)
+  assertFeature(featureKey, featureKeys);
 
-  return store as unknown as ImmerStoreApi<MediaStore & TSlice>
+  return store as unknown as ImmerStoreApi<MediaStore & TSlice>;
 }
 
 /**
@@ -438,43 +416,43 @@ export function useMediaFeatureApi<TSlice extends MediaShape>(
  */
 export function useMediaFeatureStore<TSlice extends MediaShape, TSelected>(
   featureKey: string,
-  selector: (state: MediaStore & TSlice) => TSelected
+  selector: (state: MediaStore & TSlice) => TSelected,
 ): TSelected {
-  const { featureKeys, store } = useMediaRuntime()
+  const { featureKeys, store } = useMediaRuntime();
 
-  assertFeature(featureKey, featureKeys)
+  assertFeature(featureKey, featureKeys);
 
-  return useStore(store as StoreApi<MediaStore & TSlice>, selector)
+  return useStore(store as StoreApi<MediaStore & TSlice>, selector);
 }
 
 function assertFeature(featureKey: string, featureKeys: Set<string>) {
   if (!featureKeys.has(featureKey)) {
     throw new Error(
-      `Missing "${featureKey}" feature in MediaProvider. Add ${featureKey}Feature() to createMediaKit({ features }).`
-    )
+      `Missing "${featureKey}" feature in MediaProvider. Add ${featureKey}Feature() to createMediaKit({ features }).`,
+    );
   }
 }
 
 function setMediaDebug(store: ImmerStoreApi<AnyMediaStore>, debug: boolean) {
-  const state = store.getState()
+  const state = store.getState();
 
   if (!("media" in state) || typeof state.media !== "object") {
-    return
+    return;
   }
 
   store.setState((state) => {
     if ("media" in state && typeof state.media === "object") {
-      ;(state.media as MediaStore["media"]).debug = debug
+      (state.media as MediaStore["media"]).debug = debug;
     }
-  })
+  });
 }
 
 function useMediaRuntime() {
-  const context = React.useContext(MediaRuntimeContext)
+  const context = React.useContext(MediaRuntimeContext);
 
   if (!context) {
-    throw new Error("Missing MediaProvider in root")
+    throw new Error("Missing MediaProvider in root");
   }
 
-  return context
+  return context;
 }

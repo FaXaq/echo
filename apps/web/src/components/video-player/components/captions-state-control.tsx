@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { ClosedCaptioningIcon } from "@phosphor-icons/react"
+import { ClosedCaptioningIcon } from "@phosphor-icons/react";
 
-import { Button } from "@/components/video-player/components/button"
-import { useCaptionsStore } from "@/hooks/limeplay/use-captions"
-import { CaptionsControl } from "@/components/limeplay/captions"
+import { Button } from "@/components/video-player/components/button";
+import { useCaptionsStore } from "@/hooks/limeplay/use-captions";
+import { CaptionsControl } from "@/components/limeplay/captions";
 
 export function CaptionsStateControl() {
-  const textTrackVisible = useCaptionsStore((state) => state.visible)
+  const textTrackVisible = useCaptionsStore((state) => state.visible);
 
   return (
     <CaptionsControl asChild>
@@ -15,5 +15,5 @@ export function CaptionsStateControl() {
         <ClosedCaptioningIcon weight={textTrackVisible ? "fill" : "bold"} />
       </Button>
     </CaptionsControl>
-  )
+  );
 }

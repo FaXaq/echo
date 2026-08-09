@@ -1,5 +1,5 @@
 import { makeDbMigrator } from "@echo/db";
-import { Command } from "commander";
+import type { Command } from "commander";
 import { cliConfig } from "../../config/index";
 
 export const registerMigrateDownCommand = (parent: Command) => {

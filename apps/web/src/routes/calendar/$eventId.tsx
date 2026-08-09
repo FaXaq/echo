@@ -2,11 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import {
-  EventDetail,
-  EventDialog,
-  type EventDialogState,
-} from "@/ui/event-calendar";
+import { EventDetail, EventDialog, type EventDialogState } from "@/ui/event-calendar";
 import type { CalendarEvent as ViewEvent } from "@/ui/event-calendar";
 import {
   getEventsQueryOptions,

@@ -1,39 +1,39 @@
-"use client"
+"use client";
 
-import React from "react"
+import React from "react";
 
-import type { PlaybackSourceControllerProps } from "@/hooks/limeplay/use-playback-source"
+import type { PlaybackSourceControllerProps } from "@/hooks/limeplay/use-playback-source";
 
-import { cn } from "@/lib/utils"
-import { BottomControls } from "@/components/video-player/components/bottom-controls"
-import { PlayerErrorScreen } from "@/components/video-player/components/player-error-screen"
+import { cn } from "@/lib/utils";
+import { BottomControls } from "@/components/video-player/components/bottom-controls";
+import { PlayerErrorScreen } from "@/components/video-player/components/player-error-screen";
 import {
   PlayerRootContainer,
   type PlayerRootContainerLayout,
-} from "@/components/video-player/components/player-root-container"
-import { TopOverlayContainer } from "@/components/video-player/components/top-overlay-container"
-import { MediaProvider } from "@/components/video-player/lib/media-kit"
-import { type TAsset, useAsset } from "@/hooks/limeplay/use-asset"
-import { PlaybackSourceController } from "@/hooks/limeplay/use-playback-source"
-import { CaptionsContainer } from "@/components/limeplay/captions"
-import { FallbackPoster } from "@/components/limeplay/fallback-poster"
-import { LimeplayLogo } from "@/components/limeplay/limeplay-logo"
-import { Media } from "@/components/limeplay/media"
-import * as Layout from "@/components/limeplay/player-layout"
+} from "@/components/video-player/components/player-root-container";
+import { TopOverlayContainer } from "@/components/video-player/components/top-overlay-container";
+import { MediaProvider } from "@/components/video-player/lib/media-kit";
+import { type TAsset, useAsset } from "@/hooks/limeplay/use-asset";
+import { PlaybackSourceController } from "@/hooks/limeplay/use-playback-source";
+import { CaptionsContainer } from "@/components/limeplay/captions";
+import { FallbackPoster } from "@/components/limeplay/fallback-poster";
+import { LimeplayLogo } from "@/components/limeplay/limeplay-logo";
+import { Media } from "@/components/limeplay/media";
+import * as Layout from "@/components/limeplay/player-layout";
 
-import "./styles.css"
+import "./styles.css";
 
 export interface VideoPlayerAsset extends TAsset {
-  description?: string
-  poster?: string
-  title?: string
-  year?: string
+  description?: string;
+  poster?: string;
+  title?: string;
+  year?: string;
 }
 
 export interface VideoPlayerProps extends PlaybackSourceControllerProps<VideoPlayerAsset> {
-  children?: React.ReactNode
-  className?: string
-  debug?: boolean
+  children?: React.ReactNode;
+  className?: string;
+  debug?: boolean;
   /**
    * Controls how the player frame gets its size.
    *
@@ -42,87 +42,86 @@ export interface VideoPlayerProps extends PlaybackSourceControllerProps<VideoPla
    *
    * @default "aspect"
    */
-  layout?: PlayerRootContainerLayout
+  layout?: PlayerRootContainerLayout;
   /**
    * Props to pass to the underlying video element.
    */
-  mediaProps?: Omit<React.VideoHTMLAttributes<HTMLVideoElement>, "as" | "src">
+  mediaProps?: Omit<React.VideoHTMLAttributes<HTMLVideoElement>, "as" | "src">;
   /**
    * @default dark
    */
-  theme?: "dark" | "light"
+  theme?: "dark" | "light";
 }
 
-export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
-  function VideoPlayer(
-    {
-      autoLoad,
-      children,
-      className,
-      debug,
-      initialIndex,
-      layout = "aspect",
-      loading,
-      mediaProps,
-      source,
-      sourceKey,
-      theme = "auto",
-    },
-    ref
-  ) {
-    return (
-      <MediaProvider debug={debug}>
-        <PlayerRootContainer
-          className={cn(className, theme === "dark" && "dark")}
-          layout={layout}
-          ref={ref}
-        >
-          <PlaybackSourceController
-            autoLoad={autoLoad}
-            initialIndex={initialIndex}
-            loading={loading}
-            source={source}
-            sourceKey={sourceKey}
-          />
-          <PlayerErrorScreen
-            initialIndex={initialIndex}
-            loading={loading}
-            source={source}
-            sourceKey={sourceKey}
-          />
-          <Layout.PlayerContainer className="size-full min-h-0">
-            <FallbackPoster>
-              <LimeplayLogo />
-            </FallbackPoster>
-            <CurrentAssetMedia {...(mediaProps ?? {})} />
-            {children}
-            <Layout.ControlsOverlayContainer
-              className="
+export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(function VideoPlayer(
+  {
+    autoLoad,
+    children,
+    className,
+    debug,
+    initialIndex,
+    layout = "aspect",
+    loading,
+    mediaProps,
+    source,
+    sourceKey,
+    theme = "auto",
+  },
+  ref,
+) {
+  return (
+    <MediaProvider debug={debug}>
+      <PlayerRootContainer
+        className={cn(className, theme === "dark" && "dark")}
+        layout={layout}
+        ref={ref}
+      >
+        <PlaybackSourceController
+          autoLoad={autoLoad}
+          initialIndex={initialIndex}
+          loading={loading}
+          source={source}
+          sourceKey={sourceKey}
+        />
+        <PlayerErrorScreen
+          initialIndex={initialIndex}
+          loading={loading}
+          source={source}
+          sourceKey={sourceKey}
+        />
+        <Layout.PlayerContainer className="size-full min-h-0">
+          <FallbackPoster>
+            <LimeplayLogo />
+          </FallbackPoster>
+          <CurrentAssetMedia {...(mediaProps ?? {})} />
+          {children}
+          <Layout.ControlsOverlayContainer
+            className="
                 bg-linear-[to_top,var(--lp-controls-fade-stops)] bg-size-[100%_80%] bg-top bg-no-repeat transition-opacity duration-300 ease-out
                 group-data-[idle=true]/root:opacity-0
                 group-data-[status=buffering]/root:opacity-100
                 group-data-[status=error]/root:opacity-100
                 group-data-[status=paused]/root:opacity-100
               "
-            />
-            <Layout.ControlsOverlayContainer
-              className="
+          />
+          <Layout.ControlsOverlayContainer
+            className="
                 bg-linear-[to_bottom,var(--lp-controls-fade-stops)] bg-size-[100%_45%] bg-bottom bg-no-repeat transition-opacity duration-300 ease-out
                 group-data-[idle=true]/root:opacity-0
                 group-data-[status=buffering]/root:opacity-100
                 group-data-[status=error]/root:opacity-100
                 group-data-[status=paused]/root:opacity-100
               "
-            />
-            <Layout.ControlsContainer
-              className={`
+          />
+          <Layout.ControlsContainer
+            className={`
                 mx-auto w-full
                 @3xl/root:max-w-6xl
                 @5xl/root:max-w-[1728px]
               `}
-            >
-              <TopOverlayContainer
-                className="
+          >
+            <TopOverlayContainer
+              className="
                   px-[5%] pt-[clamp(0.75rem,7svh,2.5rem)] transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
                   group-data-[idle=false]/root:translate-y-0 group-data-[idle=false]/root:opacity-100
                   group-data-[idle=true]/root:-translate-y-4 group-data-[idle=true]/root:opacity-0
@@ -131,15 +130,15 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
                   group-data-[status=paused]/root:translate-y-0 group-data-[status=paused]/root:opacity-100
                   @3xl/root:px-[min(80px,10%)]
                 "
-              />
-              <CaptionsContainer
-                className="
+            />
+            <CaptionsContainer
+              className="
                   px-[5%] pb-[clamp(0.5rem,4svh,1.5rem)]
                   @3xl/root:px-[min(80px,10%)]
                 "
-              />
-              <BottomControls
-                className="
+            />
+            <BottomControls
+              className="
                   px-[5%] pb-[clamp(0.75rem,7svh,2.5rem)] transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]
                   group-data-[idle=false]/root:translate-y-0 group-data-[idle=false]/root:opacity-100
                   group-data-[idle=true]/root:translate-y-4 group-data-[idle=true]/root:opacity-0
@@ -148,24 +147,23 @@ export const VideoPlayer = React.forwardRef<HTMLDivElement, VideoPlayerProps>(
                   group-data-[status=paused]/root:translate-y-0 group-data-[status=paused]/root:opacity-100
                   @3xl/root:px-[min(80px,10%)]
                 "
-              />
-            </Layout.ControlsContainer>
-          </Layout.PlayerContainer>
-        </PlayerRootContainer>
-      </MediaProvider>
-    )
-  }
-)
+            />
+          </Layout.ControlsContainer>
+        </Layout.PlayerContainer>
+      </PlayerRootContainer>
+    </MediaProvider>
+  );
+});
 
-VideoPlayer.displayName = "VideoPlayer"
+VideoPlayer.displayName = "VideoPlayer";
 
 function CurrentAssetMedia({
   className,
   poster,
   ...mediaProps
 }: NonNullable<VideoPlayerProps["mediaProps"]>) {
-  const { currentItem } = useAsset<VideoPlayerAsset>()
-  const currentPoster = currentItem?.properties.poster
+  const { currentItem } = useAsset<VideoPlayerAsset>();
+  const currentPoster = currentItem?.properties.poster;
 
   return (
     <Media
@@ -174,5 +172,5 @@ function CurrentAssetMedia({
       className={cn("size-full object-contain", className)}
       poster={poster ?? currentPoster}
     />
-  )
+  );
 }

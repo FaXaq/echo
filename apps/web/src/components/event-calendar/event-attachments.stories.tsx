@@ -1,12 +1,12 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { EventAttachments } from "./event-attachments"
-import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/file"
+import type { Meta, StoryObj } from "@storybook/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { EventAttachments } from "./event-attachments";
+import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/file";
 
 function withSeededFiles(files: EventFile[]) {
-  const queryClient = new QueryClient()
-  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, files)
-  return queryClient
+  const queryClient = new QueryClient();
+  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, files);
+  return queryClient;
 }
 
 const meta = {
@@ -23,10 +23,10 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof EventAttachments>
+} satisfies Meta<typeof EventAttachments>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Empty: Story = {
   args: { eventId: "event-1" },
@@ -37,7 +37,7 @@ export const Empty: Story = {
       </QueryClientProvider>
     ),
   ],
-}
+};
 
 export const WithMixedFiles: Story = {
   args: { eventId: "event-1" },
@@ -69,4 +69,4 @@ export const WithMixedFiles: Story = {
       </QueryClientProvider>
     ),
   ],
-}
+};

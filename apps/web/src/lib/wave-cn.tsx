@@ -1,22 +1,9 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useRef,
-  memo,
-  type ReactElement,
-  type RefObject,
-} from "react";
-import WaveSurfer, {
-  type WaveSurferEvents,
-  type WaveSurferOptions,
-} from "wavesurfer.js";
+import { useState, useEffect, useRef, memo, type ReactElement, type RefObject } from "react";
+import WaveSurfer, { type WaveSurferEvents, type WaveSurferOptions } from "wavesurfer.js";
 
-type WavesurferEventHandler<T extends unknown[]> = (
-  wavesurfer: WaveSurfer,
-  ...args: T
-) => void;
+type WavesurferEventHandler<T extends unknown[]> = (wavesurfer: WaveSurfer, ...args: T) => void;
 
 type OnWavesurferEvents = {
   [K in keyof WaveSurferEvents as `on${Capitalize<K>}`]?: WavesurferEventHandler<
@@ -45,9 +32,7 @@ export const WAVESURFER_DEFAULTS = {
 const EVENT_PROP_RE = /^on([A-Z])/;
 const isEventProp = (key: string) => EVENT_PROP_RE.test(key);
 const getEventName = (key: string) =>
-  key.replace(EVENT_PROP_RE, (_, $1) =>
-    $1.toLowerCase(),
-  ) as keyof WaveSurferEvents;
+  key.replace(EVENT_PROP_RE, (_, $1) => $1.toLowerCase()) as keyof WaveSurferEvents;
 
 // ─── Component ───────────────────────────────────────────────────────────────
 const WavesurferPlayer = memo(
@@ -61,22 +46,14 @@ const WavesurferPlayer = memo(
     const eventProps: OnWavesurferEvents = {};
     for (const key in rest) {
       if (isEventProp(key))
-        eventProps[key as keyof OnWavesurferEvents] = rest[
-          key as keyof typeof rest
-        ] as never;
-      else
-        options[key as keyof PartialWavesurferOptions] = rest[
-          key as keyof typeof rest
-        ] as never;
+        eventProps[key as keyof OnWavesurferEvents] = rest[key as keyof typeof rest] as never;
+      else options[key as keyof PartialWavesurferOptions] = rest[key as keyof typeof rest] as never;
     }
 
     // ── Resolve CSS vars
-    const waveColor =
-      (options.waveColor as string | undefined) ??
-      WAVESURFER_DEFAULTS.waveColor;
+    const waveColor = (options.waveColor as string | undefined) ?? WAVESURFER_DEFAULTS.waveColor;
     const progressColor =
-      (options.progressColor as string | undefined) ??
-      WAVESURFER_DEFAULTS.progressColor;
+      (options.progressColor as string | undefined) ?? WAVESURFER_DEFAULTS.progressColor;
     const resolvedWaveColor = useCssVar(waveColor);
     const resolvedProgressColor = useCssVar(progressColor);
 
@@ -90,21 +67,14 @@ const WavesurferPlayer = memo(
 
     // ── Create instance only when url or structural options change
     const url = options.url as string | undefined;
-    const height =
-      (options.height as number | undefined) ?? WAVESURFER_DEFAULTS.height;
-    const barWidth =
-      (options.barWidth as number | undefined) ?? WAVESURFER_DEFAULTS.barWidth;
-    const barGap =
-      (options.barGap as number | undefined) ?? WAVESURFER_DEFAULTS.barGap;
-    const barRadius =
-      (options.barRadius as number | undefined) ??
-      WAVESURFER_DEFAULTS.barRadius;
+    const height = (options.height as number | undefined) ?? WAVESURFER_DEFAULTS.height;
+    const barWidth = (options.barWidth as number | undefined) ?? WAVESURFER_DEFAULTS.barWidth;
+    const barGap = (options.barGap as number | undefined) ?? WAVESURFER_DEFAULTS.barGap;
+    const barRadius = (options.barRadius as number | undefined) ?? WAVESURFER_DEFAULTS.barRadius;
     const minPxPerSec =
-      (options.minPxPerSec as number | undefined) ??
-      WAVESURFER_DEFAULTS.minPxPerSec;
+      (options.minPxPerSec as number | undefined) ?? WAVESURFER_DEFAULTS.minPxPerSec;
     const cursorWidth =
-      (options.cursorWidth as number | undefined) ??
-      WAVESURFER_DEFAULTS.cursorWidth;
+      (options.cursorWidth as number | undefined) ?? WAVESURFER_DEFAULTS.cursorWidth;
     const dragToSeek = options.dragToSeek as boolean | undefined;
     const media = options.media as HTMLMediaElement | undefined;
 
@@ -136,9 +106,9 @@ const WavesurferPlayer = memo(
         const event = getEventName(name);
         return ws.on(event, (...args) =>
           (
-            eventsRef.current[
-              name as keyof OnWavesurferEvents
-            ] as WavesurferEventHandler<WaveSurferEvents[typeof event]>
+            eventsRef.current[name as keyof OnWavesurferEvents] as WavesurferEventHandler<
+              WaveSurferEvents[typeof event]
+            >
           )?.(ws, ...args),
         );
       });
@@ -150,16 +120,7 @@ const WavesurferPlayer = memo(
       };
       // Only remount when these primitive options change — NOT handlers, NOT colors
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-      url,
-      height,
-      barWidth,
-      barGap,
-      barRadius,
-      minPxPerSec,
-      cursorWidth,
-      dragToSeek,
-    ]);
+    }, [url, height, barWidth, barGap, barRadius, minPxPerSec, cursorWidth, dragToSeek]);
 
     // ── Apply color changes imperatively — zero remount on theme switch
     useEffect(() => {
@@ -223,8 +184,7 @@ const WavesurferPlayer = memo(
       "progressColor",
     ];
     return STRUCTURAL_KEYS.every(
-      (k) =>
-        prev[k as keyof WavesurferProps] === next[k as keyof WavesurferProps],
+      (k) => prev[k as keyof WavesurferProps] === next[k as keyof WavesurferProps],
     );
   },
 );
@@ -248,17 +208,12 @@ export function useWavesurfer({
   const [currentTime, setCurrentTime] = useState(0);
 
   const url = options.url as string | undefined;
-  const height =
-    (options.height as number | undefined) ?? WAVESURFER_DEFAULTS.height;
-  const barWidth =
-    (options.barWidth as number | undefined) ?? WAVESURFER_DEFAULTS.barWidth;
-  const barGap =
-    (options.barGap as number | undefined) ?? WAVESURFER_DEFAULTS.barGap;
-  const barRadius =
-    (options.barRadius as number | undefined) ?? WAVESURFER_DEFAULTS.barRadius;
+  const height = (options.height as number | undefined) ?? WAVESURFER_DEFAULTS.height;
+  const barWidth = (options.barWidth as number | undefined) ?? WAVESURFER_DEFAULTS.barWidth;
+  const barGap = (options.barGap as number | undefined) ?? WAVESURFER_DEFAULTS.barGap;
+  const barRadius = (options.barRadius as number | undefined) ?? WAVESURFER_DEFAULTS.barRadius;
   const minPxPerSec =
-    (options.minPxPerSec as number | undefined) ??
-    WAVESURFER_DEFAULTS.minPxPerSec;
+    (options.minPxPerSec as number | undefined) ?? WAVESURFER_DEFAULTS.minPxPerSec;
 
   useEffect(() => {
     if (!container.current) return;
@@ -323,9 +278,7 @@ export function useCssVar(value: string): string {
 
     const varName = match[1];
     const resolve = () => {
-      const raw = getComputedStyle(document.documentElement)
-        .getPropertyValue(varName)
-        .trim();
+      const raw = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
       const isHsl = /^[\d.]+ [\d.]+% [\d.]+%$/.test(raw);
       setResolved(raw ? (isHsl ? `hsl(${raw})` : raw) : value);
     };

@@ -23,9 +23,7 @@ export const updateCalendarEventCommandFactory: UpdateCalendarEventCommandPortFa
       .where("id", "=", input.id);
 
     if (input.organizationId === null) {
-      query = query
-        .where("organization_id", "is", null)
-        .where("created_by", "=", input.userId);
+      query = query.where("organization_id", "is", null).where("created_by", "=", input.userId);
     } else {
       query = query.where("organization_id", "=", input.organizationId);
     }

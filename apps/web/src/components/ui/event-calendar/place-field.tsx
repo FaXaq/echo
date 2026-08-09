@@ -1,98 +1,104 @@
-import { useEffect, useRef, useState } from "react"
-import { Loader2, X } from "lucide-react"
-import { useTranslation } from "react-i18next"
+import { useEffect, useRef, useState } from "react";
+import { Loader2, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui/button"
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover"
-import { searchPlaces } from "@/services/resources/place"
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
+import { searchPlaces } from "@/services/resources/place";
 
-import type { EventPlace } from "./types"
+import type { EventPlace } from "./types";
 
-const SEARCH_DEBOUNCE_MS = 300
+const SEARCH_DEBOUNCE_MS = 300;
 
 export interface PlaceFieldProps {
-  id?: string
-  value: EventPlace | null
-  onChange: (value: EventPlace | null) => void
+  id?: string;
+  value: EventPlace | null;
+  onChange: (value: EventPlace | null) => void;
 }
 
 export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
-  const { t } = useTranslation("calendar")
-  const [inputValue, setInputValue] = useState(value?.name ?? "")
-  const [results, setResults] = useState<EventPlace[]>([])
-  const [isSearching, setIsSearching] = useState(false)
-  const [open, setOpen] = useState(false)
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const abortRef = useRef<AbortController | null>(null)
-  const commandRef = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation("calendar");
+  const [inputValue, setInputValue] = useState(value?.name ?? "");
+  const [results, setResults] = useState<EventPlace[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [open, setOpen] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const commandRef = useRef<HTMLDivElement>(null);
 
-  const NAVIGATION_KEYS = ["ArrowDown", "ArrowUp", "Home", "End", "Enter"]
+  const NAVIGATION_KEYS = ["ArrowDown", "ArrowUp", "Home", "End", "Enter"];
 
   function forwardKeyToCommand(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!NAVIGATION_KEYS.includes(e.key)) return
-    e.preventDefault()
+    if (!NAVIGATION_KEYS.includes(e.key)) return;
+    e.preventDefault();
     commandRef.current?.dispatchEvent(
       new KeyboardEvent("keydown", { key: e.key, bubbles: true, cancelable: true }),
-    )
+    );
   }
 
   useEffect(() => {
-    setInputValue(value?.name ?? "")
-  }, [value])
+    setInputValue(value?.name ?? "");
+  }, [value]);
 
   useEffect(() => {
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-      abortRef.current?.abort()
-    }
-  }, [])
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
+    };
+  }, []);
 
   function handleInputValueChange(nextInputValue: string) {
-    setInputValue(nextInputValue)
+    setInputValue(nextInputValue);
 
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    abortRef.current?.abort()
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    abortRef.current?.abort();
 
-    const query = nextInputValue.trim()
+    const query = nextInputValue.trim();
     if (!query) {
-      setResults([])
-      setIsSearching(false)
-      setOpen(false)
-      return
+      setResults([]);
+      setIsSearching(false);
+      setOpen(false);
+      return;
     }
 
-    setOpen(true)
-    setIsSearching(true)
+    setOpen(true);
+    setIsSearching(true);
     debounceRef.current = setTimeout(() => {
-      const controller = new AbortController()
-      abortRef.current = controller
+      const controller = new AbortController();
+      abortRef.current = controller;
       searchPlaces(query, { signal: controller.signal })
         .then((places) => {
-          if (controller.signal.aborted) return
-          setResults(places)
-          setIsSearching(false)
+          if (controller.signal.aborted) return;
+          setResults(places);
+          setIsSearching(false);
         })
         .catch(() => {
-          if (controller.signal.aborted) return
-          setResults([])
-          setIsSearching(false)
-        })
-    }, SEARCH_DEBOUNCE_MS)
+          if (controller.signal.aborted) return;
+          setResults([]);
+          setIsSearching(false);
+        });
+    }, SEARCH_DEBOUNCE_MS);
   }
 
   function handleSelect(place: EventPlace) {
-    onChange(place)
-    setResults([])
-    setOpen(false)
+    onChange(place);
+    setResults([]);
+    setOpen(false);
   }
 
   function handleClear() {
-    onChange(null)
-    setInputValue("")
-    setResults([])
-    setOpen(false)
+    onChange(null);
+    setInputValue("");
+    setResults([]);
+    setOpen(false);
   }
 
   return (
@@ -109,7 +115,7 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
             placeholder={t("Search for a place")}
             onChange={(e) => handleInputValueChange(e.target.value)}
             onFocus={() => {
-              if (results.length > 0 || isSearching) setOpen(true)
+              if (results.length > 0 || isSearching) setOpen(true);
             }}
             onKeyDown={forwardKeyToCommand}
             className={value ? "pr-6" : undefined}
@@ -165,5 +171,5 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

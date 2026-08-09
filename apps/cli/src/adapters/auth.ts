@@ -1,5 +1,5 @@
 import { makeServerAuth } from "@echo/auth";
-import { pool, db } from "./db";
+import { pool } from "./db";
 import { cliConfig } from "../config/index";
 
 export const auth = makeServerAuth({

@@ -2,7 +2,7 @@
   "extends": "@echo/config/tsconfig.node.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src"]
 }

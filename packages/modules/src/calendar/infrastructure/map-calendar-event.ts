@@ -1,4 +1,10 @@
-import { eventTypeSchema, type CalendarEvent, type EventColor, type EventPlace, type EventType } from "../domain/index.js";
+import {
+  eventTypeSchema,
+  type CalendarEvent,
+  type EventColor,
+  type EventPlace,
+  type EventType,
+} from "../domain/index.js";
 
 export type CalendarEventRow = {
   id: string;

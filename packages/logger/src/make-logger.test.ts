@@ -13,9 +13,7 @@ function createTestStream() {
   return {
     stream,
     getLogs(): Record<string, unknown>[] {
-      return chunks
-        .filter(Boolean)
-        .map((line) => JSON.parse(line) as Record<string, unknown>);
+      return chunks.filter(Boolean).map((line) => JSON.parse(line) as Record<string, unknown>);
     },
   };
 }

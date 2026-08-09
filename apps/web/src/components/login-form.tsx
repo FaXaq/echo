@@ -1,31 +1,26 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Trans, useTranslation } from "react-i18next"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Trans, useTranslation } from "react-i18next";
 
 const schema = z.object({
   login: z.string().min(1, "Email or username is required"),
   password: z.string().min(1, "Password is required"),
-})
+});
 
-export type LoginFormValues = z.infer<typeof schema>
+export type LoginFormValues = z.infer<typeof schema>;
 
 export interface LoginFormProps {
-  onSubmit: (values: LoginFormValues) => Promise<void> | void
-  onSignupClick?: () => void
-  onForgotPasswordClick?: () => void
-  isLoading?: boolean
-  serverError?: string
-  className?: string
+  onSubmit: (values: LoginFormValues) => Promise<void> | void;
+  onSignupClick?: () => void;
+  onForgotPasswordClick?: () => void;
+  isLoading?: boolean;
+  serverError?: string;
+  className?: string;
 }
 
 export function LoginForm({
@@ -36,7 +31,7 @@ export function LoginForm({
   serverError,
   className,
 }: LoginFormProps) {
-  const { t } = useTranslation("auth")
+  const { t } = useTranslation("auth");
 
   const {
     register,
@@ -44,13 +39,10 @@ export function LoginForm({
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
-  })
+  });
 
   return (
-    <form
-      className={cn("flex flex-col gap-6", className)}
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <form className={cn("flex flex-col gap-6", className)} onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">
@@ -92,10 +84,7 @@ export function LoginForm({
                 <Trans t={t}>Forgot your password?</Trans>
               </button>
             ) : (
-              <a
-                href="#"
-                className="ml-auto text-sm underline-offset-4 hover:underline"
-              >
+              <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
                 <Trans t={t}>Forgot your password?</Trans>
               </a>
             )}
@@ -107,9 +96,7 @@ export function LoginForm({
             className="bg-background"
             {...register("password")}
           />
-          {errors.password && (
-            <FieldError>{t(errors.password.message!)}</FieldError>
-          )}
+          {errors.password && <FieldError>{t(errors.password.message!)}</FieldError>}
         </Field>
 
         <Field>
@@ -134,5 +121,5 @@ export function LoginForm({
         )}
       </FieldGroup>
     </form>
-  )
+  );
 }

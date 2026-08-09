@@ -6,7 +6,7 @@ import { trpc } from "../src/lib/trpc";
 import "../src/i18n";
 import "../src/index.css";
 
-const withTRPC: Decorator = (Story) => {
+const WithTRPC: Decorator = (Story) => {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -29,7 +29,7 @@ const withTRPC: Decorator = (Story) => {
 };
 
 const preview: Preview = {
-  decorators: [withTRPC],
+  decorators: [WithTRPC],
   parameters: {
     controls: {
       matchers: {

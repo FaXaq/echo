@@ -100,9 +100,7 @@ function makeOverflowEvents(): CalendarEvent[] {
     title: `Meeting ${i + 1}`,
     startDate: today.add(i, "hour").toDate(),
     endDate: today.add(i, "hour").add(45, "minute").toDate(),
-    color: (["blue", "green", "red", "yellow", "purple", "orange"] as const)[
-      i % 6
-    ],
+    color: (["blue", "green", "red", "yellow", "purple", "orange"] as const)[i % 6],
     type: null,
     organizationId: null,
     place: null,
@@ -130,13 +128,9 @@ function CalendarDemo({
         onDateChange={setDate}
         onEventCreate={(event) => setEvents((prev) => [...prev, event])}
         onEventUpdate={(event) =>
-          setEvents((prev) =>
-            prev.map((e) => (e.id === event.id ? event : e))
-          )
+          setEvents((prev) => prev.map((e) => (e.id === event.id ? event : e)))
         }
-        onEventDelete={(id) =>
-          setEvents((prev) => prev.filter((e) => e.id !== id))
-        }
+        onEventDelete={(id) => setEvents((prev) => prev.filter((e) => e.id !== id))}
       />
     </div>
   );
@@ -147,21 +141,15 @@ export const MonthView: Story = {
 };
 
 export const WeekView: Story = {
-  render: () => (
-    <CalendarDemo initialEvents={makeSampleEvents()} initialView="week" />
-  ),
+  render: () => <CalendarDemo initialEvents={makeSampleEvents()} initialView="week" />,
 };
 
 export const DayView: Story = {
-  render: () => (
-    <CalendarDemo initialEvents={makeSampleEvents()} initialView="day" />
-  ),
+  render: () => <CalendarDemo initialEvents={makeSampleEvents()} initialView="day" />,
 };
 
 export const AgendaView: Story = {
-  render: () => (
-    <CalendarDemo initialEvents={makeSampleEvents()} initialView="agenda" />
-  ),
+  render: () => <CalendarDemo initialEvents={makeSampleEvents()} initialView="agenda" />,
 };
 
 export const Empty: Story = {

@@ -10,9 +10,9 @@ export const MIME_TYPES_BY_KIND: Record<FileKind, readonly string[]> = {
 };
 
 export function kindForMimeType(mimeType: string): FileKind | null {
-  const entry = (
-    Object.entries(MIME_TYPES_BY_KIND) as [FileKind, readonly string[]][]
-  ).find(([, mimeTypes]) => mimeTypes.includes(mimeType));
+  const entry = (Object.entries(MIME_TYPES_BY_KIND) as [FileKind, readonly string[]][]).find(
+    ([, mimeTypes]) => mimeTypes.includes(mimeType),
+  );
   return entry ? entry[0] : null;
 }
 

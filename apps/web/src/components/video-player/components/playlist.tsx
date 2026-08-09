@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { CardsThreeIcon, PlayIcon } from "@phosphor-icons/react"
-import { useEffect, useMemo } from "react"
+import { CardsThreeIcon, PlayIcon } from "@phosphor-icons/react";
+import { useEffect, useMemo } from "react";
 
-import type { VideoPlayerAsset } from "@/components/video-player/player"
+import type { VideoPlayerAsset } from "@/components/video-player/player";
 
 import {
   DropdownMenu,
@@ -13,55 +13,52 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/video-player/components/button"
-import { useMediaStore } from "@/hooks/limeplay/use-media"
-import { usePlayerStore } from "@/hooks/limeplay/use-player"
-import { usePlaylistStore } from "@/hooks/limeplay/use-playlist"
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/video-player/components/button";
+import { useMediaStore } from "@/hooks/limeplay/use-media";
+import { usePlayerStore } from "@/hooks/limeplay/use-player";
+import { usePlaylistStore } from "@/hooks/limeplay/use-playlist";
 
 export function Playlist() {
   const currentItem = usePlaylistStore(
-    (state) =>
-      state.currentItem as null | { id: string; properties: VideoPlayerAsset }
-  )
-  const containerRef = usePlayerStore((state) => state.containerRef)
-  const setForceIdle = useMediaStore((state) => state.setForceIdle)
+    (state) => state.currentItem as null | { id: string; properties: VideoPlayerAsset },
+  );
+  const containerRef = usePlayerStore((state) => state.containerRef);
+  const setForceIdle = useMediaStore((state) => state.setForceIdle);
   const queue = usePlaylistStore(
-    (state) => state.queue as { id: string; properties: VideoPlayerAsset }[]
-  )
-  const shuffle = usePlaylistStore((state) => state.shuffle)
-  const shuffleOrder = usePlaylistStore((state) => state.shuffleOrder)
-  const skipToId = usePlaylistStore((state) => state.skipToId)
+    (state) => state.queue as { id: string; properties: VideoPlayerAsset }[],
+  );
+  const shuffle = usePlaylistStore((state) => state.shuffle);
+  const shuffleOrder = usePlaylistStore((state) => state.shuffleOrder);
+  const skipToId = usePlaylistStore((state) => state.skipToId);
 
   const orderedItems = useMemo(() => {
-    if (!shuffle || shuffleOrder.length === 0) return queue
+    if (!shuffle || shuffleOrder.length === 0) return queue;
 
     return shuffleOrder
       .map((index) => queue[index])
-      .filter((item): item is { id: string; properties: VideoPlayerAsset } =>
-        Boolean(item)
-      )
-  }, [queue, shuffle, shuffleOrder])
+      .filter((item): item is { id: string; properties: VideoPlayerAsset } => Boolean(item));
+  }, [queue, shuffle, shuffleOrder]);
 
   useEffect(() => {
     return () => {
-      setForceIdle(false)
-    }
-  }, [setForceIdle])
+      setForceIdle(false);
+    };
+  }, [setForceIdle]);
 
-  if (orderedItems.length < 2) return null
+  if (orderedItems.length < 2) return null;
 
   const handleAssetSelect = async (assetId: string) => {
-    await skipToId(assetId)
-  }
+    await skipToId(assetId);
+  };
 
   const dropdownCollisionProps: {
-    collisionBoundary?: Element
-    collisionPadding?: number
+    collisionBoundary?: Element;
+    collisionPadding?: number;
   } = {
     collisionBoundary: containerRef ?? undefined,
     collisionPadding: 12,
-  }
+  };
 
   return (
     <DropdownMenu onOpenChange={setForceIdle}>
@@ -83,19 +80,15 @@ export function Playlist() {
           <DropdownMenuSeparator />
           <div className="space-y-1">
             {orderedItems.map((item) => {
-              const asset = item.properties
-              const isCurrentAsset = currentItem?.id === item.id
+              const asset = item.properties;
+              const isCurrentAsset = currentItem?.id === item.id;
 
               return (
                 <DropdownMenuItem
                   className={`
                     dark cursor-pointer rounded-md p-0 transition-colors
                     focus:bg-accent/50 focus:outline-none
-                    ${
-                      isCurrentAsset
-                        ? "border-primary/20 bg-primary/10"
-                        : "hover:bg-accent/50"
-                    }
+                    ${isCurrentAsset ? "border-primary/20 bg-primary/10" : "hover:bg-accent/50"}
                   `}
                   key={item.id}
                   onClick={() => handleAssetSelect(item.id)}
@@ -111,10 +104,7 @@ export function Playlist() {
                       />
                       {isCurrentAsset && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                          <PlayIcon
-                            className="size-6 text-white"
-                            weight="fill"
-                          />
+                          <PlayIcon className="size-6 text-white" weight="fill" />
                         </div>
                       )}
                     </div>
@@ -141,11 +131,11 @@ export function Playlist() {
                     </div>
                   </div>
                 </DropdownMenuItem>
-              )
+              );
             })}
           </div>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

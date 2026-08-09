@@ -2,15 +2,15 @@
   "name": "@echo/db",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "build": "tsc --build",
     "typecheck": "tsc --noEmit",
     "schema:generate": "pnpm exec kysely-codegen --env-file .env --out-file src/schema.d.ts",
     "migration:create": "node src/migration-create.ts",
     "migration:down": "node src/migrate-down.ts"
-  },
-  "exports": {
-    ".": "./src/index.ts"
   },
   "dependencies": {
     "@echo/auth": "workspace:*",

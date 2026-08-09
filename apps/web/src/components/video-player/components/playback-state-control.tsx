@@ -1,16 +1,11 @@
-import {
-  CircleNotchIcon,
-  PauseIcon,
-  PlayIcon,
-  RepeatIcon,
-} from "@phosphor-icons/react"
+import { CircleNotchIcon, PauseIcon, PlayIcon, RepeatIcon } from "@phosphor-icons/react";
 
-import { Button } from "@/components/video-player/components/button"
-import { usePlaybackStore } from "@/hooks/limeplay/use-playback"
-import { PlaybackControl } from "@/components/limeplay/playback-control"
+import { Button } from "@/components/video-player/components/button";
+import { usePlaybackStore } from "@/hooks/limeplay/use-playback";
+import { PlaybackControl } from "@/components/limeplay/playback-control";
 
 export function PlaybackStateControl() {
-  const status = usePlaybackStore((state) => state.status)
+  const status = usePlaybackStore((state) => state.status);
 
   return (
     <PlaybackControl asChild>
@@ -26,5 +21,5 @@ export function PlaybackStateControl() {
         )}
       </Button>
     </PlaybackControl>
-  )
+  );
 }

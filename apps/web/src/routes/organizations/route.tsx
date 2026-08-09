@@ -1,16 +1,16 @@
-import { useSession } from '@/hooks/use-session';
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { useSession } from "@/hooks/use-session";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/organizations')({
+export const Route = createFileRoute("/organizations")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const { session } = useSession();
 
   if (!session) {
-    throw redirect({ to: "/" })
+    throw redirect({ to: "/" });
   }
 
-  return <Outlet />
+  return <Outlet />;
 }

@@ -1,12 +1,21 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { ChevronLeft, ChevronRight, DownloadIcon, X, XIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import type { EventFile } from "@/services/resources/file"
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ChevronLeft, ChevronRight, DownloadIcon, XIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import type { EventFile } from "@/services/resources/file";
 import { match } from "ts-pattern";
-import { VideoPlayer } from "../video-player/player"
-import { Attachment, AttachmentAction, AttachmentActions, AttachmentContent, AttachmentDescription, AttachmentGroup, AttachmentMedia, AttachmentTitle } from "./attachment"
+import { VideoPlayer } from "../video-player/player";
+import {
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentTitle,
+} from "./attachment";
 import { filter } from "remeda";
 import {
   AlertDialog,
@@ -18,19 +27,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 export interface EventGalleryProps {
-  files: EventFile[]
-  onDelete?: (file: EventFile) => void
+  files: EventFile[];
+  onDelete?: (file: EventFile) => void;
 }
 
 export function EventGallery({ files, onDelete }: EventGalleryProps) {
-  const { t } = useTranslation("calendar")
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const { t } = useTranslation("calendar");
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const selected = selectedIndex !== null ? files[selectedIndex] : undefined
-  const images = filter(files, f => f.kind === "image");
+  const selected = selectedIndex !== null ? files[selectedIndex] : undefined;
+  const images = filter(files, (f) => f.kind === "image");
 
   return (
     <div className="flex flex-col gap-2">
@@ -60,7 +69,7 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
                         <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
                         <AlertDialogDescription>
                           {t(
-                            "This will permanently delete the file. This action cannot be undone."
+                            "This will permanently delete the file. This action cannot be undone.",
                           )}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
@@ -85,7 +94,7 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
       <Dialog
         open={selected !== undefined}
         onOpenChange={(open) => {
-          if (!open) setSelectedIndex(null)
+          if (!open) setSelectedIndex(null);
         }}
       >
         <DialogContent className="max-w-2xl">
@@ -106,19 +115,20 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
               )}
 
               {match(selected.kind)
-                .with("image", () =>
-                <img
-                  src={selected.downloadUrl}
-                  alt=""
-                  className="max-h-[70vh] w-full object-contain"
-                  />)
-               .with("video", () =>
-                <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
-                  <VideoPlayer source={selected.downloadUrl} />
-                </div>)
+                .with("image", () => (
+                  <img
+                    src={selected.downloadUrl}
+                    alt=""
+                    className="max-h-[70vh] w-full object-contain"
+                  />
+                ))
+                .with("video", () => (
+                  <div className="flex h-64 w-full items-center justify-center rounded-md bg-muted">
+                    <VideoPlayer source={selected.downloadUrl} />
+                  </div>
+                ))
                 .with("audio", () => null)
-                .exhaustive()
-              }
+                .exhaustive()}
 
               {selectedIndex < files.length - 1 && (
                 <Button
@@ -137,5 +147,5 @@ export function EventGallery({ files, onDelete }: EventGalleryProps) {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

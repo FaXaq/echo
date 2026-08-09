@@ -1,18 +1,14 @@
-"use client"
+"use client";
 
-import {
-  SpeakerHighIcon,
-  SpeakerLowIcon,
-  SpeakerXIcon,
-} from "@phosphor-icons/react"
+import { SpeakerHighIcon, SpeakerLowIcon, SpeakerXIcon } from "@phosphor-icons/react";
 
-import { Button } from "@/components/video-player/components/button"
-import { useVolumeStore } from "@/hooks/limeplay/use-volume"
-import { MuteControl } from "@/components/limeplay/mute-control"
+import { Button } from "@/components/video-player/components/button";
+import { useVolumeStore } from "@/hooks/limeplay/use-volume";
+import { MuteControl } from "@/components/limeplay/mute-control";
 
 export function VolumeStateControl() {
-  const muted = useVolumeStore((state) => state.muted)
-  const volume = useVolumeStore((state) => state.level)
+  const muted = useVolumeStore((state) => state.muted);
+  const volume = useVolumeStore((state) => state.level);
 
   return (
     <MuteControl asChild>
@@ -26,5 +22,5 @@ export function VolumeStateControl() {
         )}
       </Button>
     </MuteControl>
-  )
+  );
 }

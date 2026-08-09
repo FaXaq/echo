@@ -16,5 +16,8 @@ export type {
 } from "./delete-calendar-event.command.port.js";
 export { deleteCalendarEventCommandFactory } from "./delete-calendar-event.command.kysely.js";
 
-export type { ListCalendarEventsInput, ListCalendarEventsQueryPort } from "./list-calendar-events.query.port.js";
+export type {
+  ListCalendarEventsInput,
+  ListCalendarEventsQueryPort,
+} from "./list-calendar-events.query.port.js";
 export { listCalendarEventsQueryFactory } from "./list-calendar-events.query.kysely.js";
