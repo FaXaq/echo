@@ -45,9 +45,6 @@
     "turbo": "^2.10.6",
     "typescript": "^5.9.3"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css}": "oxfmt"
-  },
   "engines": {
     "node": ">=20"
   },
