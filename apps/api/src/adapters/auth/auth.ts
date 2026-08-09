@@ -7,7 +7,10 @@ import {
   renderInvitationEmail,
 } from "@echo/modules/notification/infrastructure";
 import { deleteOrganizationFiles } from "@echo/modules/file/app";
-import { createOrganizationCommandFactory } from "@echo/modules/organization/infrastructure";
+import {
+  createOrganizationCommandFactory,
+  getPersonalOrganizationQuery,
+} from "@echo/modules/organization/infrastructure";
 import { createOrganization } from "@echo/modules/organization/app";
 import { makeMailer } from "@echo/adapters/mailer";
 import { makeS3Storage } from "@echo/adapters/s3-storage";
@@ -23,8 +26,9 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   pool,
   baseUrl: appConfig.auth.baseUrl,
   trustedOrigins: appConfig.auth.trustedOrigins,
-  getInitialOrganizationId: async () => {
-    return undefined;
+  getInitialOrganizationId: async (userId) => {
+    const organization = await getPersonalOrganizationQuery(db, userId);
+    return organization?.id;
   },
   onUserCreated: async (user) => {
     const createOrganizationCommand = createOrganizationCommandFactory({ auth });
