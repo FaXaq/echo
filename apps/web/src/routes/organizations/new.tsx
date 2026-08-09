@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { authClient } from "@/lib/auth";
+import { TRPCClientError } from "@trpc/client";
+import { useCreateOrganizationMutation } from "@/services/resources/organization";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -17,10 +18,6 @@ export const Route = createFileRoute("/organizations/new")({
 
 const schema = z.object({
   name: z.string().min(1, "Project name is required"),
-  slug: z
-    .string()
-    .min(1, "Slug is required")
-    .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and hyphens only"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -29,35 +26,25 @@ function NewOrganizationPage() {
   const { t } = useLingui();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | undefined>();
+  const createOrganizationMutation = useCreateOrganizationMutation();
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const slug = e.target.value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-    setValue("slug", slug);
-  };
-
   const onSubmit = async (values: FormValues) => {
     setServerError(undefined);
-    const result = await authClient.organization.create({
-      name: values.name,
-      slug: values.slug,
-    });
-
-    if (result.error) {
-      setServerError(result.error.message ?? "Failed to create organization");
-    } else {
+    try {
+      await createOrganizationMutation.mutateAsync(values);
       router.navigate({ to: "/" });
+    } catch (error) {
+      setServerError(
+        error instanceof TRPCClientError ? error.message : "Failed to create organization",
+      );
     }
   };
 
@@ -86,23 +73,9 @@ function NewOrganizationPage() {
                 type="text"
                 placeholder="My Project"
                 className="bg-background"
-                {...register("name", { onChange: handleNameChange })}
+                {...register("name")}
               />
               {errors.name && <FieldError>{translateDynamic(t, errors.name.message!)}</FieldError>}
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="slug">
-                <Trans>Slug</Trans>
-              </FieldLabel>
-              <Input
-                id="slug"
-                type="text"
-                placeholder="my-project"
-                className="bg-background"
-                {...register("slug")}
-              />
-              {errors.slug && <FieldError>{translateDynamic(t, errors.slug.message!)}</FieldError>}
             </Field>
 
             <Field>

@@ -2,6 +2,8 @@ import { authClient } from "@/lib/auth";
 import type { FileRouteTypes } from "@/routeTree.gen";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useLingui } from "@lingui/react/macro";
+import { organizationRoleSchema } from "@echo/auth";
+import { isOrganizationAdmin } from "@echo/modules/user/domain";
 
 type NavItem = {
   title: string;
@@ -22,6 +24,7 @@ type OrganizationOption = Omit<
 export function useNavigation() {
   const { t } = useLingui();
   const { data: organizations } = authClient.useListOrganizations();
+  const { data: activeMemberRole } = authClient.useActiveMemberRole();
   const navigate = useNavigate();
 
   const params = useParams({ strict: false });
@@ -29,6 +32,12 @@ export function useNavigation() {
   const activeOrganization = currentSlug
     ? ((organizations ?? []).find((o) => o.slug === currentSlug) ?? null)
     : null;
+
+  const parsedActiveMemberRole = organizationRoleSchema.safeParse(activeMemberRole?.role);
+  const currentMemberRole = parsedActiveMemberRole.success ? parsedActiveMemberRole.data : null;
+
+  const isActiveOrganizationAdmin =
+    activeOrganization !== null && isOrganizationAdmin(currentMemberRole);
 
   const orgOptions: OrganizationOption[] = [
     { id: PERSONAL_ID, name: t`Personal`, createdAt: new Date(), slug: "" },
@@ -74,11 +83,15 @@ export function useNavigation() {
           to: "/organizations/$organizationSlug",
           params: { organizationSlug: slug },
         },
-        {
-          title: t`Members`,
-          to: "/organizations/$organizationSlug/members",
-          params: { organizationSlug: slug },
-        },
+        ...(isActiveOrganizationAdmin
+          ? [
+              {
+                title: t`Settings`,
+                to: "/organizations/$organizationSlug/settings" as const,
+                params: { organizationSlug: slug },
+              },
+            ]
+          : []),
       ],
     },
   ];

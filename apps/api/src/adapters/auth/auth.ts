@@ -6,10 +6,15 @@ import {
   renderResetPasswordEmail,
   renderInvitationEmail,
 } from "@echo/modules/notification/infrastructure";
+import { deleteOrganizationFiles } from "@echo/modules/file/app";
 import { makeMailer } from "@echo/adapters/mailer";
+import { makeS3Storage } from "@echo/adapters/s3-storage";
+import { makeLogger } from "@echo/logger";
 
-const { pool } = makeDbAdapter(appConfig.db);
+const { db, pool } = makeDbAdapter(appConfig.db);
 const mailer = makeMailer(appConfig.mailer);
+const s3Storage = makeS3Storage(appConfig.s3);
+const logger = makeLogger();
 
 const auth = makeServerAuth({
   secret: appConfig.auth.secret,
@@ -18,6 +23,18 @@ const auth = makeServerAuth({
   trustedOrigins: appConfig.auth.trustedOrigins,
   getInitialOrganizationId: async () => {
     return undefined;
+  },
+  onOrganizationDeleted: async (organization) => {
+    const failures = await deleteOrganizationFiles(
+      { db, s3Storage },
+      { organizationId: organization.id },
+    );
+    for (const failure of failures) {
+      logger.error(
+        { error: failure.error, fileId: failure.fileId, organizationId: organization.id },
+        "Failed to delete S3 object during organization deletion",
+      );
+    }
   },
   sendResetPasswordEmail: async ({ email, locale }, token) => {
     const i18n = makeServerI18n(toLocale(locale));

@@ -22,7 +22,7 @@ import { Route as OrganizationsOrganizationSlugIndexRouteImport } from './routes
 import { Route as OrganizationsOrganizationSlugCalendarRouteRouteImport } from './routes/organizations/$organizationSlug/calendar/route'
 import { Route as OrganizationsOrganizationSlugCalendarIndexRouteImport } from './routes/organizations/$organizationSlug/calendar/index'
 import { Route as OrganizationsOrganizationSlugCalendarEventIdRouteImport } from './routes/organizations/$organizationSlug/calendar/$eventId'
-import { Route as OrganizationsOrganizationSlugMembersIndexRouteImport } from './routes/organizations/$organizationSlug/members/index'
+import { Route as OrganizationsOrganizationSlugSettingsIndexRouteImport } from './routes/organizations/$organizationSlug/settings/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,10 +94,10 @@ const OrganizationsOrganizationSlugCalendarEventIdRoute =
     path: '/$eventId',
     getParentRoute: () => OrganizationsOrganizationSlugCalendarRouteRoute,
   } as any)
-const OrganizationsOrganizationSlugMembersIndexRoute =
-  OrganizationsOrganizationSlugMembersIndexRouteImport.update({
-    id: '/members/',
-    path: '/members/',
+const OrganizationsOrganizationSlugSettingsIndexRoute =
+  OrganizationsOrganizationSlugSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
     getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
   } as any)
 
@@ -115,7 +115,7 @@ export interface FileRoutesByFullPath {
   '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
   '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
   '/organizations/$organizationSlug/calendar/': typeof OrganizationsOrganizationSlugCalendarIndexRoute
-  '/organizations/$organizationSlug/members/': typeof OrganizationsOrganizationSlugMembersIndexRoute
+  '/organizations/$organizationSlug/settings/': typeof OrganizationsOrganizationSlugSettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -128,7 +128,7 @@ export interface FileRoutesByTo {
   '/organizations/$organizationSlug': typeof OrganizationsOrganizationSlugIndexRoute
   '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
   '/organizations/$organizationSlug/calendar': typeof OrganizationsOrganizationSlugCalendarIndexRoute
-  '/organizations/$organizationSlug/members': typeof OrganizationsOrganizationSlugMembersIndexRoute
+  '/organizations/$organizationSlug/settings': typeof OrganizationsOrganizationSlugSettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -145,7 +145,7 @@ export interface FileRoutesById {
   '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
   '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
   '/organizations/$organizationSlug/calendar/': typeof OrganizationsOrganizationSlugCalendarIndexRoute
-  '/organizations/$organizationSlug/members/': typeof OrganizationsOrganizationSlugMembersIndexRoute
+  '/organizations/$organizationSlug/settings/': typeof OrganizationsOrganizationSlugSettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -163,7 +163,7 @@ export interface FileRouteTypes {
     | '/organizations/$organizationSlug/'
     | '/organizations/$organizationSlug/calendar/$eventId'
     | '/organizations/$organizationSlug/calendar/'
-    | '/organizations/$organizationSlug/members/'
+    | '/organizations/$organizationSlug/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -176,7 +176,7 @@ export interface FileRouteTypes {
     | '/organizations/$organizationSlug'
     | '/organizations/$organizationSlug/calendar/$eventId'
     | '/organizations/$organizationSlug/calendar'
-    | '/organizations/$organizationSlug/members'
+    | '/organizations/$organizationSlug/settings'
   id:
     | '__root__'
     | '/'
@@ -192,7 +192,7 @@ export interface FileRouteTypes {
     | '/organizations/$organizationSlug/'
     | '/organizations/$organizationSlug/calendar/$eventId'
     | '/organizations/$organizationSlug/calendar/'
-    | '/organizations/$organizationSlug/members/'
+    | '/organizations/$organizationSlug/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -296,11 +296,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationsOrganizationSlugCalendarEventIdRouteImport
       parentRoute: typeof OrganizationsOrganizationSlugCalendarRouteRoute
     }
-    '/organizations/$organizationSlug/members/': {
-      id: '/organizations/$organizationSlug/members/'
-      path: '/members'
-      fullPath: '/organizations/$organizationSlug/members/'
-      preLoaderRoute: typeof OrganizationsOrganizationSlugMembersIndexRouteImport
+    '/organizations/$organizationSlug/settings/': {
+      id: '/organizations/$organizationSlug/settings/'
+      path: '/settings'
+      fullPath: '/organizations/$organizationSlug/settings/'
+      preLoaderRoute: typeof OrganizationsOrganizationSlugSettingsIndexRouteImport
       parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
     }
   }
@@ -341,7 +341,7 @@ const OrganizationsOrganizationSlugCalendarRouteRouteWithChildren =
 interface OrganizationsOrganizationSlugRouteRouteChildren {
   OrganizationsOrganizationSlugCalendarRouteRoute: typeof OrganizationsOrganizationSlugCalendarRouteRouteWithChildren
   OrganizationsOrganizationSlugIndexRoute: typeof OrganizationsOrganizationSlugIndexRoute
-  OrganizationsOrganizationSlugMembersIndexRoute: typeof OrganizationsOrganizationSlugMembersIndexRoute
+  OrganizationsOrganizationSlugSettingsIndexRoute: typeof OrganizationsOrganizationSlugSettingsIndexRoute
 }
 
 const OrganizationsOrganizationSlugRouteRouteChildren: OrganizationsOrganizationSlugRouteRouteChildren =
@@ -350,8 +350,8 @@ const OrganizationsOrganizationSlugRouteRouteChildren: OrganizationsOrganization
       OrganizationsOrganizationSlugCalendarRouteRouteWithChildren,
     OrganizationsOrganizationSlugIndexRoute:
       OrganizationsOrganizationSlugIndexRoute,
-    OrganizationsOrganizationSlugMembersIndexRoute:
-      OrganizationsOrganizationSlugMembersIndexRoute,
+    OrganizationsOrganizationSlugSettingsIndexRoute:
+      OrganizationsOrganizationSlugSettingsIndexRoute,
   }
 
 const OrganizationsOrganizationSlugRouteRouteWithChildren =

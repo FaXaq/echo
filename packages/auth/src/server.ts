@@ -20,6 +20,7 @@ export type ServerAuthConfig = {
     user: { email: string; locale: string },
     token: string,
   ) => Promise<void>;
+  onOrganizationDeleted?: (organization: { id: string }) => Promise<void>;
 };
 
 export const makeServerAuth = (config: ServerAuthConfig) => {
@@ -85,6 +86,11 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
           },
         },
         sendInvitationEmail: config.sendOrganizationInvitation,
+        organizationHooks: {
+          beforeDeleteOrganization: async ({ organization }) => {
+            await config.onOrganizationDeleted?.(organization);
+          },
+        },
       }),
       username(),
     ],
