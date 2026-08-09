@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SuspendedEventDetail } from "@/components/features/event-calendar/suspended-event-detail";
 
 export const Route = createFileRoute("/calendar/$eventId")({
-  staticData: { breadcrumb: "Event details" },
+  staticData: { title: "Event details", breadcrumb: "Event details" },
   component: EventDetailPage,
 });
 
@@ -12,7 +12,11 @@ function EventDetailPage() {
 
   return (
     <div className="p-6 h-full">
-      <SuspendedEventDetail eventId={eventId} onBack={() => navigate({ to: "/calendar" })} />
+      <SuspendedEventDetail
+        eventId={eventId}
+        pathname={`/calendar/${eventId}`}
+        onBack={() => navigate({ to: "/calendar" })}
+      />
     </div>
   );
 }

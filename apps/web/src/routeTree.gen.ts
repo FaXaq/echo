@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
+import { Route as CalendarRouteRouteImport } from './routes/calendar/route'
 import { Route as OrganizationsRouteRouteImport } from './routes/organizations/route'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as CalendarIndexRouteImport } from './routes/calendar/index'
@@ -18,6 +19,7 @@ import { Route as CalendarEventIdRouteImport } from './routes/calendar/$eventId'
 import { Route as OrganizationsOrganizationSlugRouteRouteImport } from './routes/organizations/$organizationSlug/route'
 import { Route as OrganizationsNewRouteImport } from './routes/organizations/new'
 import { Route as OrganizationsOrganizationSlugIndexRouteImport } from './routes/organizations/$organizationSlug/index'
+import { Route as OrganizationsOrganizationSlugCalendarRouteRouteImport } from './routes/organizations/$organizationSlug/calendar/route'
 import { Route as OrganizationsOrganizationSlugCalendarIndexRouteImport } from './routes/organizations/$organizationSlug/calendar/index'
 import { Route as OrganizationsOrganizationSlugCalendarEventIdRouteImport } from './routes/organizations/$organizationSlug/calendar/$eventId'
 import { Route as OrganizationsOrganizationSlugMembersIndexRouteImport } from './routes/organizations/$organizationSlug/members/index'
@@ -32,6 +34,11 @@ const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
   path: '/accept-invitation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CalendarRouteRoute = CalendarRouteRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrganizationsRouteRoute = OrganizationsRouteRouteImport.update({
   id: '/organizations',
   path: '/organizations',
@@ -43,14 +50,14 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalendarIndexRoute = CalendarIndexRouteImport.update({
-  id: '/calendar/',
-  path: '/calendar/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => CalendarRouteRoute,
 } as any)
 const CalendarEventIdRoute = CalendarEventIdRouteImport.update({
-  id: '/calendar/$eventId',
-  path: '/calendar/$eventId',
-  getParentRoute: () => rootRouteImport,
+  id: '/$eventId',
+  path: '/$eventId',
+  getParentRoute: () => CalendarRouteRoute,
 } as any)
 const OrganizationsOrganizationSlugRouteRoute =
   OrganizationsOrganizationSlugRouteRouteImport.update({
@@ -69,17 +76,23 @@ const OrganizationsOrganizationSlugIndexRoute =
     path: '/',
     getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
   } as any)
+const OrganizationsOrganizationSlugCalendarRouteRoute =
+  OrganizationsOrganizationSlugCalendarRouteRouteImport.update({
+    id: '/calendar',
+    path: '/calendar',
+    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
+  } as any)
 const OrganizationsOrganizationSlugCalendarIndexRoute =
   OrganizationsOrganizationSlugCalendarIndexRouteImport.update({
-    id: '/calendar/',
-    path: '/calendar/',
-    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => OrganizationsOrganizationSlugCalendarRouteRoute,
   } as any)
 const OrganizationsOrganizationSlugCalendarEventIdRoute =
   OrganizationsOrganizationSlugCalendarEventIdRouteImport.update({
-    id: '/calendar/$eventId',
-    path: '/calendar/$eventId',
-    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
+    id: '/$eventId',
+    path: '/$eventId',
+    getParentRoute: () => OrganizationsOrganizationSlugCalendarRouteRoute,
   } as any)
 const OrganizationsOrganizationSlugMembersIndexRoute =
   OrganizationsOrganizationSlugMembersIndexRouteImport.update({
@@ -90,6 +103,7 @@ const OrganizationsOrganizationSlugMembersIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRouteRouteWithChildren
   '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -97,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/calendar/$eventId': typeof CalendarEventIdRoute
   '/organizations/new': typeof OrganizationsNewRoute
   '/calendar/': typeof CalendarIndexRoute
+  '/organizations/$organizationSlug/calendar': typeof OrganizationsOrganizationSlugCalendarRouteRouteWithChildren
   '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
   '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
   '/organizations/$organizationSlug/calendar/': typeof OrganizationsOrganizationSlugCalendarIndexRoute
@@ -118,6 +133,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/calendar': typeof CalendarRouteRouteWithChildren
   '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -125,6 +141,7 @@ export interface FileRoutesById {
   '/calendar/$eventId': typeof CalendarEventIdRoute
   '/organizations/new': typeof OrganizationsNewRoute
   '/calendar/': typeof CalendarIndexRoute
+  '/organizations/$organizationSlug/calendar': typeof OrganizationsOrganizationSlugCalendarRouteRouteWithChildren
   '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
   '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
   '/organizations/$organizationSlug/calendar/': typeof OrganizationsOrganizationSlugCalendarIndexRoute
@@ -134,6 +151,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/calendar'
     | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
@@ -141,6 +159,7 @@ export interface FileRouteTypes {
     | '/calendar/$eventId'
     | '/organizations/new'
     | '/calendar/'
+    | '/organizations/$organizationSlug/calendar'
     | '/organizations/$organizationSlug/'
     | '/organizations/$organizationSlug/calendar/$eventId'
     | '/organizations/$organizationSlug/calendar/'
@@ -161,6 +180,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/calendar'
     | '/organizations'
     | '/accept-invitation'
     | '/reset-password'
@@ -168,6 +188,7 @@ export interface FileRouteTypes {
     | '/calendar/$eventId'
     | '/organizations/new'
     | '/calendar/'
+    | '/organizations/$organizationSlug/calendar'
     | '/organizations/$organizationSlug/'
     | '/organizations/$organizationSlug/calendar/$eventId'
     | '/organizations/$organizationSlug/calendar/'
@@ -176,11 +197,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CalendarRouteRoute: typeof CalendarRouteRouteWithChildren
   OrganizationsRouteRoute: typeof OrganizationsRouteRouteWithChildren
   AcceptInvitationRoute: typeof AcceptInvitationRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  CalendarEventIdRoute: typeof CalendarEventIdRoute
-  CalendarIndexRoute: typeof CalendarIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -199,6 +219,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcceptInvitationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/organizations': {
       id: '/organizations'
       path: '/organizations'
@@ -215,17 +242,17 @@ declare module '@tanstack/react-router' {
     }
     '/calendar/': {
       id: '/calendar/'
-      path: '/calendar'
+      path: '/'
       fullPath: '/calendar/'
       preLoaderRoute: typeof CalendarIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof CalendarRouteRoute
     }
     '/calendar/$eventId': {
       id: '/calendar/$eventId'
-      path: '/calendar/$eventId'
+      path: '/$eventId'
       fullPath: '/calendar/$eventId'
       preLoaderRoute: typeof CalendarEventIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof CalendarRouteRoute
     }
     '/organizations/$organizationSlug': {
       id: '/organizations/$organizationSlug'
@@ -248,19 +275,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationsOrganizationSlugIndexRouteImport
       parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
     }
+    '/organizations/$organizationSlug/calendar': {
+      id: '/organizations/$organizationSlug/calendar'
+      path: '/calendar'
+      fullPath: '/organizations/$organizationSlug/calendar'
+      preLoaderRoute: typeof OrganizationsOrganizationSlugCalendarRouteRouteImport
+      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
+    }
     '/organizations/$organizationSlug/calendar/': {
       id: '/organizations/$organizationSlug/calendar/'
-      path: '/calendar'
+      path: '/'
       fullPath: '/organizations/$organizationSlug/calendar/'
       preLoaderRoute: typeof OrganizationsOrganizationSlugCalendarIndexRouteImport
-      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
+      parentRoute: typeof OrganizationsOrganizationSlugCalendarRouteRoute
     }
     '/organizations/$organizationSlug/calendar/$eventId': {
       id: '/organizations/$organizationSlug/calendar/$eventId'
-      path: '/calendar/$eventId'
+      path: '/$eventId'
       fullPath: '/organizations/$organizationSlug/calendar/$eventId'
       preLoaderRoute: typeof OrganizationsOrganizationSlugCalendarEventIdRouteImport
-      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
+      parentRoute: typeof OrganizationsOrganizationSlugCalendarRouteRoute
     }
     '/organizations/$organizationSlug/members/': {
       id: '/organizations/$organizationSlug/members/'
@@ -272,21 +306,50 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface OrganizationsOrganizationSlugRouteRouteChildren {
-  OrganizationsOrganizationSlugIndexRoute: typeof OrganizationsOrganizationSlugIndexRoute
+interface CalendarRouteRouteChildren {
+  CalendarEventIdRoute: typeof CalendarEventIdRoute
+  CalendarIndexRoute: typeof CalendarIndexRoute
+}
+
+const CalendarRouteRouteChildren: CalendarRouteRouteChildren = {
+  CalendarEventIdRoute: CalendarEventIdRoute,
+  CalendarIndexRoute: CalendarIndexRoute,
+}
+
+const CalendarRouteRouteWithChildren = CalendarRouteRoute._addFileChildren(
+  CalendarRouteRouteChildren,
+)
+
+interface OrganizationsOrganizationSlugCalendarRouteRouteChildren {
   OrganizationsOrganizationSlugCalendarEventIdRoute: typeof OrganizationsOrganizationSlugCalendarEventIdRoute
   OrganizationsOrganizationSlugCalendarIndexRoute: typeof OrganizationsOrganizationSlugCalendarIndexRoute
+}
+
+const OrganizationsOrganizationSlugCalendarRouteRouteChildren: OrganizationsOrganizationSlugCalendarRouteRouteChildren =
+  {
+    OrganizationsOrganizationSlugCalendarEventIdRoute:
+      OrganizationsOrganizationSlugCalendarEventIdRoute,
+    OrganizationsOrganizationSlugCalendarIndexRoute:
+      OrganizationsOrganizationSlugCalendarIndexRoute,
+  }
+
+const OrganizationsOrganizationSlugCalendarRouteRouteWithChildren =
+  OrganizationsOrganizationSlugCalendarRouteRoute._addFileChildren(
+    OrganizationsOrganizationSlugCalendarRouteRouteChildren,
+  )
+
+interface OrganizationsOrganizationSlugRouteRouteChildren {
+  OrganizationsOrganizationSlugCalendarRouteRoute: typeof OrganizationsOrganizationSlugCalendarRouteRouteWithChildren
+  OrganizationsOrganizationSlugIndexRoute: typeof OrganizationsOrganizationSlugIndexRoute
   OrganizationsOrganizationSlugMembersIndexRoute: typeof OrganizationsOrganizationSlugMembersIndexRoute
 }
 
 const OrganizationsOrganizationSlugRouteRouteChildren: OrganizationsOrganizationSlugRouteRouteChildren =
   {
+    OrganizationsOrganizationSlugCalendarRouteRoute:
+      OrganizationsOrganizationSlugCalendarRouteRouteWithChildren,
     OrganizationsOrganizationSlugIndexRoute:
       OrganizationsOrganizationSlugIndexRoute,
-    OrganizationsOrganizationSlugCalendarEventIdRoute:
-      OrganizationsOrganizationSlugCalendarEventIdRoute,
-    OrganizationsOrganizationSlugCalendarIndexRoute:
-      OrganizationsOrganizationSlugCalendarIndexRoute,
     OrganizationsOrganizationSlugMembersIndexRoute:
       OrganizationsOrganizationSlugMembersIndexRoute,
   }
@@ -312,11 +375,10 @@ const OrganizationsRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CalendarRouteRoute: CalendarRouteRouteWithChildren,
   OrganizationsRouteRoute: OrganizationsRouteRouteWithChildren,
   AcceptInvitationRoute: AcceptInvitationRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  CalendarEventIdRoute: CalendarEventIdRoute,
-  CalendarIndexRoute: CalendarIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

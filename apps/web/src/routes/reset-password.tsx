@@ -10,6 +10,7 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/reset-password")({
+  staticData: { title: "Reset password" },
   validateSearch: searchSchema,
   beforeLoad: ({ search }) => {
     if (!search.token) {

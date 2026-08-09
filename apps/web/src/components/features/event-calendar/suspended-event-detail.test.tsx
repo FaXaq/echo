@@ -28,7 +28,7 @@ function makeEvent(): calendarResource.CalendarEvent {
 function renderWithClient(client: QueryClient) {
   return render(
     <QueryClientProvider client={client}>
-      <SuspendedEventDetail eventId="event-1" onBack={vi.fn()} />
+      <SuspendedEventDetail eventId="event-1" pathname="/calendar/event-1" onBack={vi.fn()} />
     </QueryClientProvider>,
   );
 }

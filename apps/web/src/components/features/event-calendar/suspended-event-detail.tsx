@@ -13,19 +13,28 @@ import {
   useUpdateEventMutation,
 } from "@/services/resources/calendar";
 import { fromViewEvent, toViewEvent } from "@/lib/calendar-events";
+import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
 
 export interface SuspendedEventDetailProps {
   eventId: string;
   organizationId?: string;
+  pathname: string;
   onBack: () => void;
 }
 
-function EventDetailContent({ eventId, organizationId, onBack }: SuspendedEventDetailProps) {
+function EventDetailContent({
+  eventId,
+  organizationId,
+  pathname,
+  onBack,
+}: SuspendedEventDetailProps) {
   const { t } = useLingui();
   const { data: event } = useSuspenseQuery(getEventQueryOptions({ eventId, organizationId }));
   const viewEvent = toViewEvent(event);
   const [dialogState, setDialogState] = useState<EventDialogState>(null);
+
+  useSyncPageMeta(pathname, viewEvent.title, viewEvent.title);
 
   const updateEventMutation = useUpdateEventMutation({
     organizationId,
@@ -109,6 +118,7 @@ function EventDetailError({ error, onBack }: { error: unknown; onBack: () => voi
 export function SuspendedEventDetail({
   eventId,
   organizationId,
+  pathname,
   onBack,
 }: SuspendedEventDetailProps) {
   return (
@@ -116,7 +126,12 @@ export function SuspendedEventDetail({
       fallbackRender={({ error }) => <EventDetailError error={error} onBack={onBack} />}
     >
       <Suspense fallback={<EventDetailSkeleton />}>
-        <EventDetailContent eventId={eventId} organizationId={organizationId} onBack={onBack} />
+        <EventDetailContent
+          eventId={eventId}
+          organizationId={organizationId}
+          pathname={pathname}
+          onBack={onBack}
+        />
       </Suspense>
     </ErrorBoundary>
   );

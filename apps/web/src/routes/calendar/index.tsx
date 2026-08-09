@@ -14,7 +14,6 @@ import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
 import { formatCalendarDate, parseCalendarDate } from "@/lib/calendar-date";
 
 export const Route = createFileRoute("/calendar/")({
-  staticData: { breadcrumb: "Calendar" },
   validateSearch: z.object({
     view: calendarViewSchema.optional().catch(undefined),
     date: z.string().optional().catch(undefined),

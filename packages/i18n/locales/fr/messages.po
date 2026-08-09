@@ -22,7 +22,8 @@ msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
 
-#: apps/web/src/routes/accept-invitation.tsx:105
+#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/routes/accept-invitation.tsx:106
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
 
@@ -43,7 +44,7 @@ msgstr "Ajouter un nouveau membre à votre organisation"
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
-#: apps/web/src/lib/dynamic-messages.ts:44
+#: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -89,11 +90,11 @@ msgstr "Au moins un caractère spécial"
 msgid "At least one uppercase letter"
 msgstr "Au moins une lettre majuscule"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:103
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:112
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
-#: apps/web/src/routes/accept-invitation.tsx:107
+#: apps/web/src/routes/accept-invitation.tsx:108
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
@@ -108,7 +109,7 @@ msgstr "Bleu"
 #: apps/web/src/hooks/use-navigation.ts:51
 #: apps/web/src/hooks/use-navigation.ts:63
 #: apps/web/src/lib/dynamic-messages.ts:39
-#: apps/web/src/routes/calendar/index.tsx:73
+#: apps/web/src/routes/calendar/index.tsx:72
 msgid "Calendar"
 msgstr "Agenda"
 
@@ -125,7 +126,7 @@ msgstr "Annuler"
 msgid "Cancel invitation"
 msgstr "Annuler l'invitation"
 
-#: apps/web/src/routes/accept-invitation.tsx:52
+#: apps/web/src/routes/accept-invitation.tsx:53
 msgid "Cannot find the invitation you're looking for"
 msgstr "Impossible de trouver l’invitation que vous recherchez"
 
@@ -171,7 +172,7 @@ msgstr "Impossible de charger les pièces jointes"
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
-#: apps/web/src/routes/organizations/new.tsx:73
+#: apps/web/src/routes/organizations/new.tsx:74
 msgid "Create a space for your project"
 msgstr "Créez un espace pour votre projet"
 
@@ -183,7 +184,7 @@ msgstr "Créer un compte"
 msgid "Create an account"
 msgstr "Créer un compte"
 
-#: apps/web/src/routes/organizations/new.tsx:109
+#: apps/web/src/routes/organizations/new.tsx:110
 msgid "Create organization"
 msgstr "Créer le groupe"
 
@@ -281,7 +282,7 @@ msgstr "Événement"
 msgid "Event actions"
 msgstr "Actions de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:37
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:46
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
@@ -289,7 +290,7 @@ msgstr "Événement supprimé"
 msgid "Event details"
 msgstr "Détails de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:97
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
 msgid "Event not found"
 msgstr "Événement introuvable"
 
@@ -298,7 +299,7 @@ msgstr "Événement introuvable"
 msgid "Events on {0}"
 msgstr "Événements du {0}"
 
-#: apps/web/src/routes/accept-invitation.tsx:77
+#: apps/web/src/routes/accept-invitation.tsx:78
 msgid "Failed to accept invitation"
 msgstr "Échec de l'acceptation de l'invitation"
 
@@ -340,7 +341,7 @@ msgstr "Vert"
 msgid "Invalid email address"
 msgstr "Adresse email invalide"
 
-#: apps/web/src/routes/accept-invitation.tsx:60
+#: apps/web/src/routes/accept-invitation.tsx:61
 msgid "Invitation has expired or already been processed. Please, request a new one."
 msgstr "L’invitation a expiré ou a déjà été traitée. Merci d’en demander une nouvelle."
 
@@ -365,7 +366,7 @@ msgstr "Langue"
 msgid "Letters, numbers, _ and - only"
 msgstr "Lettres, chiffres, _ et - uniquement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:44
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:53
 msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
 
@@ -401,7 +402,7 @@ msgstr "Lettres minuscules, chiffres et tirets uniquement"
 msgid "Manage members and invitations for your project"
 msgstr "Gérez les membres et les invitations de votre projet"
 
-#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:80
+#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:79
 msgid "Manage your organization's events and schedule"
 msgstr "Gérez les événements et le planning de votre organisation"
 
@@ -413,7 +414,7 @@ msgstr "Maximum 72 caractères"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Member"
 msgstr "Membre"
 
@@ -428,7 +429,7 @@ msgid "Month"
 msgstr "Mois"
 
 #: apps/web/src/routes/organizations/$organizationSlug/members/-members-table.tsx:98
-#: apps/web/src/routes/organizations/new.tsx:81
+#: apps/web/src/routes/organizations/new.tsx:82
 msgid "Name"
 msgstr "Nom"
 
@@ -444,7 +445,8 @@ msgid "New password"
 msgstr "Nouveau mot de passe"
 
 #: apps/web/src/components/version-switcher.tsx:66
-#: apps/web/src/routes/organizations/new.tsx:70
+#: apps/web/src/lib/dynamic-messages.ts:42
+#: apps/web/src/routes/organizations/new.tsx:71
 msgid "New project"
 msgstr "Nouveau projet"
 
@@ -511,7 +513,7 @@ msgstr "Organisation introuvable"
 msgid "Organizer"
 msgstr "Organisateur"
 
-#: apps/web/src/lib/dynamic-messages.ts:45
+#: apps/web/src/lib/dynamic-messages.ts:48
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -582,6 +584,7 @@ msgid "Rename file"
 msgstr "Renommer le fichier"
 
 #: apps/web/src/components/reset-password-form.tsx:103
+#: apps/web/src/lib/dynamic-messages.ts:44
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -607,7 +610,7 @@ msgstr "Enregistrer"
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:79
+#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:78
 msgid "Schedule"
 msgstr "Planning"
 
@@ -639,7 +642,7 @@ msgstr "Partager"
 msgid "Sign up failed"
 msgstr "Échec de l'inscription"
 
-#: apps/web/src/routes/organizations/new.tsx:95
+#: apps/web/src/routes/organizations/new.tsx:96
 msgid "Slug"
 msgstr "Slug"
 
@@ -647,7 +650,7 @@ msgstr "Slug"
 msgid "Slug is required"
 msgstr "Le slug est requis"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:97
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
 
@@ -659,7 +662,7 @@ msgstr "Début"
 msgid "Theme"
 msgstr "Thème"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:100
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:109
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
@@ -724,6 +727,6 @@ msgstr "Oui, annuler"
 msgid "Yes, remove"
 msgstr "Oui, retirer"
 
-#: apps/web/src/routes/accept-invitation.tsx:100
+#: apps/web/src/routes/accept-invitation.tsx:101
 msgid "You have been invited to join"
 msgstr "Vous avez été invité(e) à rejoindre"

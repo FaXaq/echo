@@ -39,6 +39,9 @@ export const DYNAMIC_MESSAGES: Record<string, MessageDescriptor> = {
   Calendar: msg`Calendar`,
   "Event details": msg`Event details`,
   Members: msg`Members`,
+  "New project": msg`New project`,
+  "Accept invitation": msg`Accept invitation`,
+  "Reset password": msg`Reset password`,
 
   member: msg`Member`,
   admin: msg`Admin`,

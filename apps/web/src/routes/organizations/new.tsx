@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { translateDynamic } from "@/lib/dynamic-messages";
 
 export const Route = createFileRoute("/organizations/new")({
+  staticData: { title: "New project", breadcrumb: "New project" },
   component: NewOrganizationPage,
 });
 

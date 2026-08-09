@@ -16,6 +16,7 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/accept-invitation")({
+  staticData: { title: "Accept invitation" },
   validateSearch: searchSchema,
   beforeLoad: ({ search }) => {
     if (!search.id) {

@@ -24,6 +24,8 @@ import { ThemeProvider } from "@/contexts/theme";
 import { SessionProvider } from "@/hooks/use-session";
 import { Toaster } from "@/components/ui/sonner";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
+import { DynamicTitle } from "./-dynamic-title";
+import { PageMetaProvider } from "@/contexts/page-meta";
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: () => {
@@ -56,8 +58,11 @@ function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
-            <RootContent session={session} />
-            <Toaster />
+            <PageMetaProvider>
+              <DynamicTitle />
+              <RootContent session={session} />
+              <Toaster />
+            </PageMetaProvider>
           </ThemeProvider>
         </TooltipProvider>
       </QueryClientProvider>
