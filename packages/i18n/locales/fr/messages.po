@@ -22,7 +22,8 @@ msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
 
-#: apps/web/src/routes/accept-invitation.tsx:105
+#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/routes/accept-invitation.tsx:106
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
 
@@ -43,7 +44,7 @@ msgstr "Ajouter un nouveau membre à votre organisation"
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
-#: apps/web/src/lib/dynamic-messages.ts:44
+#: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -52,7 +53,7 @@ msgid "Agenda"
 msgstr "Agenda"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:60
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:281
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:285
 #: apps/web/src/components/ui/event-calendar/time-grid-view.tsx:158
 msgid "All day"
 msgstr "Toute la journée"
@@ -89,11 +90,11 @@ msgstr "Au moins un caractère spécial"
 msgid "At least one uppercase letter"
 msgstr "Au moins une lettre majuscule"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:103
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:112
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
-#: apps/web/src/routes/accept-invitation.tsx:107
+#: apps/web/src/routes/accept-invitation.tsx:108
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
@@ -108,15 +109,15 @@ msgstr "Bleu"
 #: apps/web/src/hooks/use-navigation.ts:51
 #: apps/web/src/hooks/use-navigation.ts:63
 #: apps/web/src/lib/dynamic-messages.ts:39
-#: apps/web/src/routes/calendar/index.tsx:73
+#: apps/web/src/routes/calendar/index.tsx:72
 msgid "Calendar"
 msgstr "Agenda"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:71
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:166
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:238
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:388
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:402
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:393
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:407
 #: apps/web/src/routes/organizations/$organizationSlug/members/-members-table.tsx:122
 msgid "Cancel"
 msgstr "Annuler"
@@ -125,7 +126,7 @@ msgstr "Annuler"
 msgid "Cancel invitation"
 msgstr "Annuler l'invitation"
 
-#: apps/web/src/routes/accept-invitation.tsx:52
+#: apps/web/src/routes/accept-invitation.tsx:53
 msgid "Cannot find the invitation you're looking for"
 msgstr "Impossible de trouver l’invitation que vous recherchez"
 
@@ -149,7 +150,7 @@ msgstr "Cours"
 msgid "Clear place"
 msgstr "Effacer le lieu"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:286
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:290
 msgid "Color"
 msgstr "Couleur"
 
@@ -171,7 +172,7 @@ msgstr "Impossible de charger les pièces jointes"
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
-#: apps/web/src/routes/organizations/new.tsx:73
+#: apps/web/src/routes/organizations/new.tsx:74
 msgid "Create a space for your project"
 msgstr "Créez un espace pour votre projet"
 
@@ -183,7 +184,7 @@ msgstr "Créer un compte"
 msgid "Create an account"
 msgstr "Créer un compte"
 
-#: apps/web/src/routes/organizations/new.tsx:109
+#: apps/web/src/routes/organizations/new.tsx:110
 msgid "Create organization"
 msgstr "Créer le groupe"
 
@@ -199,13 +200,13 @@ msgstr "Jour"
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:120
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:245
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:378
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:390
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:383
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
 msgid "Delete"
 msgstr "Supprimer"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:232
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:382
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:387
 msgid "Delete event?"
 msgstr "Supprimer l'événement ?"
 
@@ -213,7 +214,7 @@ msgstr "Supprimer l'événement ?"
 msgid "Delete this file?"
 msgstr "Supprimer ce fichier ?"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:219
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:223
 msgid "Description"
 msgstr "Description"
 
@@ -233,8 +234,8 @@ msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 msgid "Drive"
 msgstr "Drive"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:205
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:207
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:206
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:208
 msgid "Edit event"
 msgstr "Modifier l'événement"
 
@@ -253,7 +254,7 @@ msgstr "Email ou nom d'utilisateur"
 msgid "Email or username is required"
 msgstr "Email ou nom d'utilisateur requis"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:261
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:265
 msgid "End"
 msgstr "Fin"
 
@@ -281,7 +282,7 @@ msgstr "Événement"
 msgid "Event actions"
 msgstr "Actions de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:37
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:46
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
@@ -289,7 +290,7 @@ msgstr "Événement supprimé"
 msgid "Event details"
 msgstr "Détails de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:97
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
 msgid "Event not found"
 msgstr "Événement introuvable"
 
@@ -298,7 +299,7 @@ msgstr "Événement introuvable"
 msgid "Events on {0}"
 msgstr "Événements du {0}"
 
-#: apps/web/src/routes/accept-invitation.tsx:77
+#: apps/web/src/routes/accept-invitation.tsx:78
 msgid "Failed to accept invitation"
 msgstr "Échec de l'acceptation de l'invitation"
 
@@ -340,7 +341,7 @@ msgstr "Vert"
 msgid "Invalid email address"
 msgstr "Adresse email invalide"
 
-#: apps/web/src/routes/accept-invitation.tsx:60
+#: apps/web/src/routes/accept-invitation.tsx:61
 msgid "Invitation has expired or already been processed. Please, request a new one."
 msgstr "L’invitation a expiré ou a déjà été traitée. Merci d’en demander une nouvelle."
 
@@ -365,7 +366,7 @@ msgstr "Langue"
 msgid "Letters, numbers, _ and - only"
 msgstr "Lettres, chiffres, _ et - uniquement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:44
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:53
 msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
 
@@ -401,7 +402,7 @@ msgstr "Lettres minuscules, chiffres et tirets uniquement"
 msgid "Manage members and invitations for your project"
 msgstr "Gérez les membres et les invitations de votre projet"
 
-#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:80
+#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:79
 msgid "Manage your organization's events and schedule"
 msgstr "Gérez les événements et le planning de votre organisation"
 
@@ -413,7 +414,7 @@ msgstr "Maximum 72 caractères"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Member"
 msgstr "Membre"
 
@@ -428,14 +429,14 @@ msgid "Month"
 msgstr "Mois"
 
 #: apps/web/src/routes/organizations/$organizationSlug/members/-members-table.tsx:98
-#: apps/web/src/routes/organizations/new.tsx:81
+#: apps/web/src/routes/organizations/new.tsx:82
 msgid "Name"
 msgstr "Nom"
 
 #: apps/web/src/components/ui/event-calendar/day-events-dialog.tsx:49
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:182
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:205
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:207
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:206
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:208
 msgid "New event"
 msgstr "Nouvel événement"
 
@@ -444,7 +445,8 @@ msgid "New password"
 msgstr "Nouveau mot de passe"
 
 #: apps/web/src/components/version-switcher.tsx:66
-#: apps/web/src/routes/organizations/new.tsx:70
+#: apps/web/src/lib/dynamic-messages.ts:42
+#: apps/web/src/routes/organizations/new.tsx:71
 msgid "New project"
 msgstr "Nouveau projet"
 
@@ -481,8 +483,8 @@ msgstr "Non, la conserver"
 msgid "No, keep them"
 msgstr "Non, le garder"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:340
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:354
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:344
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:358
 msgid "None"
 msgstr "Aucun"
 
@@ -499,7 +501,7 @@ msgstr "Ouvrir dans Maps"
 msgid "Orange"
 msgstr "Orange"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:235
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:239
 msgid "Organization"
 msgstr "Organisation"
 
@@ -511,7 +513,7 @@ msgstr "Organisation introuvable"
 msgid "Organizer"
 msgstr "Organisateur"
 
-#: apps/web/src/lib/dynamic-messages.ts:45
+#: apps/web/src/lib/dynamic-messages.ts:48
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -541,7 +543,7 @@ msgstr "En attente"
 msgid "Personal"
 msgstr "Personnel"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:224
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:228
 msgid "Place"
 msgstr "Lieu"
 
@@ -582,6 +584,7 @@ msgid "Rename file"
 msgstr "Renommer le fichier"
 
 #: apps/web/src/components/reset-password-form.tsx:103
+#: apps/web/src/lib/dynamic-messages.ts:44
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -599,15 +602,15 @@ msgid "Role"
 msgstr "Rôle"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:72
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:405
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:410
 msgid "Save"
 msgstr "Enregistrer"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:405
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:410
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:79
+#: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:78
 msgid "Schedule"
 msgstr "Planning"
 
@@ -639,7 +642,7 @@ msgstr "Partager"
 msgid "Sign up failed"
 msgstr "Échec de l'inscription"
 
-#: apps/web/src/routes/organizations/new.tsx:95
+#: apps/web/src/routes/organizations/new.tsx:96
 msgid "Slug"
 msgstr "Slug"
 
@@ -647,11 +650,11 @@ msgstr "Slug"
 msgid "Slug is required"
 msgstr "Le slug est requis"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:97
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:251
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:255
 msgid "Start"
 msgstr "Début"
 
@@ -659,7 +662,7 @@ msgstr "Début"
 msgid "Theme"
 msgstr "Thème"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:100
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:109
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
@@ -668,11 +671,11 @@ msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:234
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:384
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "Cette action supprimera définitivement cet événement. Cette action est irréversible."
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:213
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:215
 msgid "Title"
 msgstr "Titre"
 
@@ -684,7 +687,7 @@ msgstr "Le titre est requis"
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:326
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:330
 msgid "Type"
 msgstr "Type"
 
@@ -724,6 +727,6 @@ msgstr "Oui, annuler"
 msgid "Yes, remove"
 msgstr "Oui, retirer"
 
-#: apps/web/src/routes/accept-invitation.tsx:100
+#: apps/web/src/routes/accept-invitation.tsx:101
 msgid "You have been invited to join"
 msgstr "Vous avez été invité(e) à rejoindre"

@@ -155,7 +155,7 @@ export function EventCalendar({
                 <ChevronRight className="size-4" />
               </Button>
             </div>
-            <h2 className="text-sm font-medium">{titleForView(view, date)}</h2>
+            <h2 className="text-sm font-medium m-0">{titleForView(view, date)}</h2>
           </div>
 
           <div className="flex items-center gap-2">

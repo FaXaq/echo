@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -200,172 +201,176 @@ export function EventDialog({
 
   return (
     <Dialog open={state !== null} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md overflow-auto">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? t`Edit event` : t`New event`}</DialogTitle>
           <DialogDescription className="sr-only">
             {isEdit ? t`Edit event` : t`New event`}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(submit)}>
-          <FieldGroup className="pb-4">
-            <Field>
-              <FieldLabel htmlFor="event-title">{t`Title`}</FieldLabel>
-              <Input id="event-title" {...register("title")} />
-              <FieldError>{errors.title && translateDynamic(t, errors.title.message!)}</FieldError>
-            </Field>
+        <form onSubmit={handleSubmit(submit)} className="grid min-h-0 flex-1 grid-rows-[1fr_auto]">
+          <ScrollArea className="-mx-4 min-h-0 px-4">
+            <FieldGroup className="pb-4">
+              <Field>
+                <FieldLabel htmlFor="event-title">{t`Title`}</FieldLabel>
+                <Input id="event-title" {...register("title")} />
+                <FieldError>
+                  {errors.title && translateDynamic(t, errors.title.message!)}
+                </FieldError>
+              </Field>
 
-            <Field>
-              <FieldLabel htmlFor="event-description">{t`Description`}</FieldLabel>
-              <Textarea id="event-description" {...register("description")} />
-            </Field>
+              <Field>
+                <FieldLabel htmlFor="event-description">{t`Description`}</FieldLabel>
+                <Textarea id="event-description" {...register("description")} />
+              </Field>
 
-            <Field>
-              <FieldLabel htmlFor="event-place">{t`Place`}</FieldLabel>
-              <Controller
-                name="place"
-                control={control}
-                render={({ field }) => (
-                  <PlaceField id="event-place" value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="event-organization">{t`Organization`}</FieldLabel>
-              <Controller
-                name="organizationId"
-                control={control}
-                render={({ field }) => (
-                  <OrganizationField
-                    disabled={isEdit}
-                    id="event-organization"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-            </Field>
-
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor="event-start">{t`Start`}</FieldLabel>
-              <Input
-                disabled={allDay}
-                id="event-start"
-                type="datetime-local"
-                {...register("startDate")}
-              />
-            </Field>
-
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor="event-end">{t`End`}</FieldLabel>
-              <Input
-                disabled={allDay}
-                id="event-end"
-                type="datetime-local"
-                {...register("endDate")}
-              />
-            </Field>
-            <FieldError>
-              {errors.endDate && translateDynamic(t, errors.endDate.message!)}
-            </FieldError>
-
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor="event-all-day" className="gap-2">
-                <input
-                  id="event-all-day"
-                  type="checkbox"
-                  className="size-3.5"
-                  {...register("allDay")}
+              <Field>
+                <FieldLabel htmlFor="event-place">{t`Place`}</FieldLabel>
+                <Controller
+                  name="place"
+                  control={control}
+                  render={({ field }) => (
+                    <PlaceField id="event-place" value={field.value} onChange={field.onChange} />
+                  )}
                 />
-                {t`All day`}
-              </FieldLabel>
-            </Field>
+              </Field>
 
-            <Field>
-              <FieldLabel htmlFor="event-color">{t`Color`}</FieldLabel>
-              <Controller
-                name="color"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="event-color" className="w-full">
-                      <SelectValue>
-                        {() => (
-                          <>
+              <Field>
+                <FieldLabel htmlFor="event-organization">{t`Organization`}</FieldLabel>
+                <Controller
+                  name="organizationId"
+                  control={control}
+                  render={({ field }) => (
+                    <OrganizationField
+                      disabled={isEdit}
+                      id="event-organization"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+              </Field>
+
+              <Field orientation="horizontal">
+                <FieldLabel htmlFor="event-start">{t`Start`}</FieldLabel>
+                <Input
+                  disabled={allDay}
+                  id="event-start"
+                  type="datetime-local"
+                  {...register("startDate")}
+                />
+              </Field>
+
+              <Field orientation="horizontal">
+                <FieldLabel htmlFor="event-end">{t`End`}</FieldLabel>
+                <Input
+                  disabled={allDay}
+                  id="event-end"
+                  type="datetime-local"
+                  {...register("endDate")}
+                />
+              </Field>
+              <FieldError>
+                {errors.endDate && translateDynamic(t, errors.endDate.message!)}
+              </FieldError>
+
+              <Field orientation="horizontal">
+                <FieldLabel htmlFor="event-all-day" className="gap-2">
+                  <input
+                    id="event-all-day"
+                    type="checkbox"
+                    className="size-3.5"
+                    {...register("allDay")}
+                  />
+                  {t`All day`}
+                </FieldLabel>
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="event-color">{t`Color`}</FieldLabel>
+                <Controller
+                  name="color"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger id="event-color" className="w-full">
+                        <SelectValue>
+                          {() => (
+                            <>
+                              <span
+                                className={cn(
+                                  "mr-1.5 inline-block size-2 rounded-full",
+                                  eventDotClasses[field.value],
+                                )}
+                              />
+                              {t(COLOR_LABELS[field.value])}
+                            </>
+                          )}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {EVENT_COLORS.map((color) => (
+                          <SelectItem key={color} value={color}>
                             <span
                               className={cn(
                                 "mr-1.5 inline-block size-2 rounded-full",
-                                eventDotClasses[field.value],
+                                eventDotClasses[color],
                               )}
                             />
-                            {t(COLOR_LABELS[field.value])}
-                          </>
-                        )}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {EVENT_COLORS.map((color) => (
-                        <SelectItem key={color} value={color}>
-                          <span
-                            className={cn(
-                              "mr-1.5 inline-block size-2 rounded-full",
-                              eventDotClasses[color],
-                            )}
-                          />
-                          {t(COLOR_LABELS[color])}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="event-type">{t`Type`}</FieldLabel>
-              <Controller
-                name="type"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    value={field.value ?? "none"}
-                    onValueChange={(next) =>
-                      field.onChange(next === "none" ? null : eventTypeSchema.parse(next))
-                    }
-                  >
-                    <SelectTrigger id="event-type" className="w-full">
-                      <SelectValue>
-                        {() => {
-                          if (field.value === null) return t`None`;
-                          return (
-                            <>
-                              <EventTypeIcon
-                                type={field.value}
-                                className="mr-1.5 inline-block size-3.5"
-                              />
-                              {t(getEventLabel(field.value))}
-                            </>
-                          );
-                        }}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">{t`None`}</SelectItem>
-                      {EVENT_TYPES.map((type) => {
-                        return (
-                          <SelectItem key={type} value={type}>
-                            <EventTypeIcon type={type} className="mr-1.5 inline-block size-3.5" />
-                            {t(getEventLabel(type))}
+                            {t(COLOR_LABELS[color])}
                           </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </Field>
-          </FieldGroup>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel htmlFor="event-type">{t`Type`}</FieldLabel>
+                <Controller
+                  name="type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value ?? "none"}
+                      onValueChange={(next) =>
+                        field.onChange(next === "none" ? null : eventTypeSchema.parse(next))
+                      }
+                    >
+                      <SelectTrigger id="event-type" className="w-full">
+                        <SelectValue>
+                          {() => {
+                            if (field.value === null) return t`None`;
+                            return (
+                              <>
+                                <EventTypeIcon
+                                  type={field.value}
+                                  className="mr-1.5 inline-block size-3.5"
+                                />
+                                {t(getEventLabel(field.value))}
+                              </>
+                            );
+                          }}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">{t`None`}</SelectItem>
+                        {EVENT_TYPES.map((type) => {
+                          return (
+                            <SelectItem key={type} value={type}>
+                              <EventTypeIcon type={type} className="mr-1.5 inline-block size-3.5" />
+                              {t(getEventLabel(type))}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </Field>
+            </FieldGroup>
+          </ScrollArea>
 
           <DialogFooter className="items-center sm:justify-between">
             {isEdit ? (

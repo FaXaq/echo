@@ -2,6 +2,7 @@ import { useMatches, Link } from "@tanstack/react-router";
 import { useLingui } from "@lingui/react/macro";
 import { Home } from "lucide-react";
 import { translateDynamic } from "@/lib/dynamic-messages";
+import { usePageMetaOverride } from "@/contexts/page-meta";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,50 +12,64 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-export function DynamicBreadcrumb() {
+function useBreadcrumbLabel(match: ReturnType<typeof useMatches>[number]) {
+  const override = usePageMetaOverride(match.pathname)?.breadcrumb;
+  const loaderBreadcrumb = (match.loaderData as { breadcrumb?: string } | undefined)?.breadcrumb;
+  return override ?? loaderBreadcrumb ?? match.staticData.breadcrumb;
+}
+
+function BreadcrumbCrumb({
+  match,
+  isLast,
+}: {
+  match: ReturnType<typeof useMatches>[number];
+  isLast: boolean;
+}) {
   const { t } = useLingui();
+  const rawLabel = useBreadcrumbLabel(match);
+  if (!rawLabel) return null;
+  const label = translateDynamic(t, rawLabel);
+
+  return (
+    <div className="flex items-center gap-2">
+      <BreadcrumbSeparator className="hidden md:block" />
+      <BreadcrumbItem>
+        {isLast ? (
+          <BreadcrumbPage>{label}</BreadcrumbPage>
+        ) : (
+          <BreadcrumbLink render={<Link to={match.pathname} />}>{label}</BreadcrumbLink>
+        )}
+      </BreadcrumbItem>
+    </div>
+  );
+}
+
+export function DynamicBreadcrumb() {
   const matches = useMatches();
 
-  const crumbs = matches
-    .filter(
-      (m) =>
-        (m.loaderData as { breadcrumb?: string } | undefined)?.breadcrumb ??
-        m.staticData.breadcrumb,
-    )
-    .map((m) => {
-      const dynamic = (m.loaderData as { breadcrumb?: string } | undefined)?.breadcrumb;
-      const label = dynamic ?? translateDynamic(t, m.staticData.breadcrumb!);
-      return { label, pathname: m.pathname };
-    });
+  const crumbMatches = matches.filter((m) => {
+    const override =
+      m.staticData.breadcrumb ?? (m.loaderData as { breadcrumb?: string })?.breadcrumb;
+    return Boolean(override);
+  });
 
-  if (crumbs.length === 0) return null;
+  if (crumbMatches.length === 0) return null;
 
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem className={crumbs.length > 0 ? "hidden md:block" : ""}>
-          {crumbs.length > 0 ? (
-            <BreadcrumbLink render={<Link to="/" />}>
-              <Home className="size-4" />
-            </BreadcrumbLink>
-          ) : (
-            <BreadcrumbPage>
-              <Home className="size-4" />
-            </BreadcrumbPage>
-          )}
+        <BreadcrumbItem className="hidden md:block">
+          <BreadcrumbLink render={<Link to="/" />}>
+            <Home className="size-4" />
+          </BreadcrumbLink>
         </BreadcrumbItem>
 
-        {crumbs.map((crumb, index) => (
-          <div key={crumb.pathname} className="flex items-center gap-2">
-            <BreadcrumbSeparator className="hidden md:block" />
-            <BreadcrumbItem>
-              {index === crumbs.length - 1 ? (
-                <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink render={<Link to={crumb.pathname} />}>{crumb.label}</BreadcrumbLink>
-              )}
-            </BreadcrumbItem>
-          </div>
+        {crumbMatches.map((match, index) => (
+          <BreadcrumbCrumb
+            key={match.pathname}
+            match={match}
+            isLast={index === crumbMatches.length - 1}
+          />
         ))}
       </BreadcrumbList>
     </Breadcrumb>

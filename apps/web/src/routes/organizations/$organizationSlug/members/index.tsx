@@ -17,7 +17,7 @@ import type { OrganizationRole } from "@echo/auth";
 import z from "zod";
 
 export const Route = createFileRoute("/organizations/$organizationSlug/members/")({
-  staticData: { breadcrumb: "Members" },
+  staticData: { title: "Members", breadcrumb: "Members" },
   loaderDeps: ({ search: { offset, limit } }) => ({ offset, limit }),
   loader: async ({ deps, context }) => {
     const { organizationId } = context;
