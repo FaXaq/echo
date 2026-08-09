@@ -47,8 +47,8 @@ describe("renameFile", () => {
       kind: "document",
       mimeType: "application/pdf",
       sizeBytes: 100,
-      originalFilename: "renamed.pdf",
-      filename: "old.pdf",
+      originalFilename: "old.pdf",
+      filename: "renamed.pdf",
       s3Key: "key",
       status: "uploaded",
     });

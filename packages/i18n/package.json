@@ -9,10 +9,10 @@
     }
   },
   "dependencies": {
-    "i18next": "^25.10.10"
+    "i18next": "catalog:"
   },
   "devDependencies": {
     "@echo/config": "workspace:*",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:"
   }
 }

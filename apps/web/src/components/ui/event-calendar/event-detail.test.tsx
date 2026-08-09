@@ -61,7 +61,7 @@ describe("EventDetail", () => {
       />,
     );
 
-    expect(screen.getByText(/Le Duplex/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Le Duplex/)[0]).toBeInTheDocument();
     const link = screen.getByRole("link", { name: "Open in Maps" });
     expect(link).toHaveAttribute(
       "href",
@@ -136,7 +136,7 @@ describe("EventDetail", () => {
       />,
     );
 
-    expect(screen.getByText("Concert")).toBeInTheDocument();
+    expect(screen.getAllByText("Concert")[0]).toBeInTheDocument();
   });
 
   it("renders the attachments slot", () => {

@@ -11,6 +11,6 @@
   "devDependencies": {
     "@tsconfig/node24": "^24.0.4",
     "@tsconfig/vite-react": "^7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "catalog:"
   }
 }

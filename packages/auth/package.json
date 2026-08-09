@@ -25,15 +25,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "better-auth": "^1.6.24",
-    "pg": "^8.22.0",
-    "zod": "^4.4.3"
+    "better-auth": "catalog:",
+    "pg": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@echo/config": "workspace:*",
-    "@types/node": "^25.9.5",
-    "@types/pg": "^8.20.0",
-    "typescript": "^5.9.3"
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "react": ">=19.0.0"

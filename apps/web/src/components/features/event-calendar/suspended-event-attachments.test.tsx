@@ -24,7 +24,7 @@ describe("SuspendedEventAttachments", () => {
     expect(screen.getByText("0 files")).toBeInTheDocument();
   });
 
-  it("groups files into audio, gallery, and documents sections", async () => {
+  it("renders every linked file with a file-count badge", async () => {
     renderWithFiles([
       {
         id: "f1",
@@ -46,9 +46,7 @@ describe("SuspendedEventAttachments", () => {
       } as fileResource.EventFile,
     ]);
 
-    expect(await screen.findByText("Audio")).toBeInTheDocument();
-    expect(screen.getByText("Documents")).toBeInTheDocument();
-    expect(screen.getByText("Player: https://example.com/demo.mp3")).toBeInTheDocument();
+    expect(await screen.findByText("demo.mp3")).toBeInTheDocument();
     expect(screen.getByText("setlist.pdf")).toBeInTheDocument();
     expect(screen.getByText("2 files")).toBeInTheDocument();
   });

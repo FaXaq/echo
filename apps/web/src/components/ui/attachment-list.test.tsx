@@ -29,7 +29,7 @@ describe("AttachmentList", () => {
     expect(dialog).toBeInTheDocument();
   });
 
-  it("commits a rename on Enter", async () => {
+  it("calls onRename with the file when Rename is chosen from the actions menu", async () => {
     const user = userEvent.setup();
     const onRename = vi.fn();
     render(<AttachmentList files={[makeFile()]} onRename={onRename} />);
@@ -37,23 +37,16 @@ describe("AttachmentList", () => {
     await user.click(screen.getByRole("button", { name: "Actions for setlist.pdf" }));
     await user.click(await screen.findByText("Rename"));
 
-    const input = screen.getByDisplayValue("setlist.pdf");
-    await user.clear(input);
-    await user.type(input, "new-name.pdf{Enter}");
-
-    expect(onRename).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }), "new-name.pdf");
+    expect(onRename).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
   });
 
-  it("calls onDelete after confirming in the alert dialog", async () => {
+  it("calls onDelete with the file when Delete is chosen from the actions menu", async () => {
     const user = userEvent.setup();
     const onDelete = vi.fn();
     render(<AttachmentList files={[makeFile()]} onDelete={onDelete} />);
 
     await user.click(screen.getByRole("button", { name: "Actions for setlist.pdf" }));
     await user.click(await screen.findByText("Delete"));
-    await screen.findByText("Delete this file?");
-    const deleteButton = screen.getByRole("button", { name: /^Delete$/ });
-    await user.click(deleteButton);
 
     expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
   });

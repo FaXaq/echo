@@ -7,6 +7,9 @@ if (!Element.prototype.hasPointerCapture) {
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }
+if (!Element.prototype.getAnimations) {
+  Element.prototype.getAnimations = () => [];
+}
 if (typeof ResizeObserver === "undefined") {
   class ResizeObserverStub implements ResizeObserver {
     observe() {}

@@ -21,8 +21,11 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     endDate: dayjs().hour(9).minute(30).second(0).millisecond(0).toDate(),
     color: "blue",
     type: null,
-    organizationId: null,
+    organization: { id: null },
     place: null,
+    createdBy: "user-1",
+    createdByName: "Jane Doe",
+    createdAt: new Date(),
     ...overrides,
   };
 }
@@ -110,7 +113,7 @@ describe("EventCalendar", () => {
     expect(onEventCreate).toHaveBeenCalledTimes(1);
     expect(onEventCreate.mock.calls[0]![0]).toMatchObject({
       title: "Retro",
-      organizationId: null,
+      organization: { id: null },
     });
   });
 
@@ -130,7 +133,7 @@ describe("EventCalendar", () => {
     expect(onEventCreate).toHaveBeenCalledTimes(1);
     expect(onEventCreate.mock.calls[0]![0]).toMatchObject({
       title: "Board sync",
-      organizationId: "org-2",
+      organization: { id: "org-2" },
     });
   });
 

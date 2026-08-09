@@ -28,8 +28,11 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     endDate: dayjs("2026-07-15T10:00:00").toDate(),
     color: "blue",
     type: null,
-    organizationId: null,
+    organization: { id: null },
     place: null,
+    createdBy: "user-1",
+    createdByName: "Jane Doe",
+    createdAt: new Date(),
     ...overrides,
   };
 }

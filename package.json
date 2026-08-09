@@ -14,6 +14,7 @@
     "quality": "turbo quality",
     "quality:fix": "turbo quality:fix",
     "typecheck": "turbo typecheck",
+    "validate": "pnpm lint && pnpm typecheck && pnpm test",
     "dev:web": "turbo dev --filter=@echo/web",
     "dev:api": "turbo dev --filter=@echo/api",
     "build:web": "turbo build --filter=@echo/web",
