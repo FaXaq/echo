@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { APIError } from "better-auth/api";
 import type { OrganizationOptions } from "better-auth/plugins";
 import { admin as adminPlugin, organization, username } from "better-auth/plugins";
 import type { Pool } from "pg";
@@ -96,6 +97,11 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
         sendInvitationEmail: config.sendOrganizationInvitation,
         organizationHooks: {
           beforeDeleteOrganization: async ({ organization }) => {
+            if (organization.isPersonal) {
+              throw new APIError("FORBIDDEN", {
+                message: "Personal organizations cannot be deleted.",
+              });
+            }
             await config.onOrganizationDeleted?.(organization);
           },
         },
