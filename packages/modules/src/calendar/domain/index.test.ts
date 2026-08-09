@@ -15,12 +15,6 @@ describe("eventTypeSchema", () => {
 
 describe("EVENT_TYPES", () => {
   it("lists exactly the five known types", () => {
-    expect(EVENT_TYPES).toEqual([
-      "unavailability",
-      "rehearsal",
-      "concert",
-      "meeting",
-      "class",
-    ]);
+    expect(EVENT_TYPES).toEqual(["unavailability", "rehearsal", "concert", "meeting", "class"]);
   });
 });

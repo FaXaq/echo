@@ -46,15 +46,14 @@ export function EditableBadge({
     setDraft(String(value));
   };
 
-  const base =
-    "inline-flex items-center gap-1 rounded px-2.5 py-1 transition-all";
+  const base = "inline-flex items-center gap-1 rounded px-2.5 py-1 transition-all";
 
   if (editing) {
     return (
-      <span
-        className={cn(base, "bg-foreground/[0.06] border-b-2 border-b-primary", className)}
-      >
-        <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground">{label}</span>
+      <span className={cn(base, "bg-foreground/[0.06] border-b-2 border-b-primary", className)}>
+        <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground">
+          {label}
+        </span>
         <span className="text-muted-foreground/40 text-[10px]">·</span>
         <input
           ref={inputRef}
@@ -86,10 +85,14 @@ export function EditableBadge({
         className,
       )}
     >
-      <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground">{label}</span>
+      <span className="font-mono text-[9px] tracking-widest uppercase text-muted-foreground">
+        {label}
+      </span>
       <span className="text-muted-foreground/40 text-[10px]">·</span>
       <span className="font-mono font-bold text-sm">
-        {value !== "" && value != null ? value : (
+        {value !== "" && value != null ? (
+          value
+        ) : (
           <span className="text-muted-foreground/50">{placeholder ?? "—"}</span>
         )}
       </span>

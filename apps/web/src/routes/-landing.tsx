@@ -1,53 +1,53 @@
-import { useState } from "react"
-import { GalleryVerticalEnd } from "lucide-react"
-import { LoginForm, type LoginFormValues } from "@/components/login-form"
-import { SignupForm, type SignupFormValues } from "@/components/signup-form"
+import { useState } from "react";
+import { GalleryVerticalEnd } from "lucide-react";
+import { LoginForm, type LoginFormValues } from "@/components/login-form";
+import { SignupForm, type SignupFormValues } from "@/components/signup-form";
 import {
   ForgotPasswordForm,
   type ForgotPasswordFormValues,
-} from "@/components/forgot-password-form"
-import { authClient } from "@/lib/auth"
-import { useRouter } from "@tanstack/react-router"
-import { logger } from "@/lib/logger"
+} from "@/components/forgot-password-form";
+import { authClient } from "@/lib/auth";
+import { useRouter } from "@tanstack/react-router";
+import { logger } from "@/lib/logger";
 
-type View = "login" | "signup" | "forgot-password"
+type View = "login" | "signup" | "forgot-password";
 
 export const Landing = () => {
-  const [view, setView] = useState<View>("login")
-  const [isLoading, setIsLoading] = useState(false)
-  const [serverError, setServerError] = useState<string | undefined>()
-  const [serverSuccess, setServerSuccess] = useState<string | undefined>()
-  const router = useRouter()
+  const [view, setView] = useState<View>("login");
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | undefined>();
+  const [serverSuccess, setServerSuccess] = useState<string | undefined>();
+  const router = useRouter();
 
   const handleLogin = async (values: LoginFormValues) => {
-    setIsLoading(true)
-    setServerError(undefined)
+    setIsLoading(true);
+    setServerError(undefined);
 
     try {
-      const isEmail = values.login.includes("@")
+      const isEmail = values.login.includes("@");
 
       const result = isEmail
         ? await authClient.signIn.email({
-          email: values.login,
-          password: values.password,
-        })
+            email: values.login,
+            password: values.password,
+          })
         : await authClient.signIn.username({
-          username: values.login,
-          password: values.password,
-        })
+            username: values.login,
+            password: values.password,
+          });
 
       if (result.error) {
-        setServerError(result.error.message ?? "Login failed")
+        setServerError(result.error.message ?? "Login failed");
       }
     } finally {
-      setIsLoading(false)
-      router.invalidate()
+      setIsLoading(false);
+      router.invalidate();
     }
-  }
+  };
 
   const handleSignup = async (values: SignupFormValues) => {
-    setIsLoading(true)
-    setServerError(undefined)
+    setIsLoading(true);
+    setServerError(undefined);
 
     try {
       const result = await authClient.signUp.email({
@@ -56,45 +56,44 @@ export const Landing = () => {
         email: values.email,
         password: values.password,
         locale: navigator.language.split("-")[0] ?? "en",
-      })
-
+      });
 
       if (result.error) {
         logger.error(result.error);
-        setServerError(result.error.message ?? "Sign up failed")
+        setServerError(result.error.message ?? "Sign up failed");
       }
     } finally {
-      setIsLoading(false)
-      router.invalidate()
+      setIsLoading(false);
+      router.invalidate();
     }
-  }
+  };
 
   const handleForgotPassword = async (values: ForgotPasswordFormValues) => {
-    setIsLoading(true)
-    setServerError(undefined)
-    setServerSuccess(undefined)
+    setIsLoading(true);
+    setServerError(undefined);
+    setServerSuccess(undefined);
 
     try {
       const result = await authClient.requestPasswordReset({
         email: values.email,
         redirectTo: "/reset-password",
-      })
+      });
 
       if (result.error) {
-        setServerError(result.error.message ?? "Failed to send reset email")
+        setServerError(result.error.message ?? "Failed to send reset email");
       } else {
-        setServerSuccess("Check your email for a password reset link")
+        setServerSuccess("Check your email for a password reset link");
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const switchView = (next: View) => {
-    setServerError(undefined)
-    setServerSuccess(undefined)
-    setView(next)
-  }
+    setServerError(undefined);
+    setServerSuccess(undefined);
+    setView(next);
+  };
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -144,5 +143,5 @@ export const Landing = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

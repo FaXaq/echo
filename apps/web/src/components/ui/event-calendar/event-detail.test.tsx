@@ -1,10 +1,10 @@
-import { render, screen, within } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import dayjs from "dayjs"
-import { describe, expect, it, vi } from "vitest"
+import { render, screen, within } from "@/lib/test-utils";
+import userEvent from "@testing-library/user-event";
+import dayjs from "dayjs";
+import { describe, expect, it, vi } from "vitest";
 
-import { EventDetail } from "./event-detail"
-import type { CalendarEvent } from "./types"
+import { EventDetail } from "./event-detail";
+import type { CalendarEvent } from "./types";
 
 function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   return {
@@ -20,72 +20,110 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     createdByName: "Mr Me",
     createdAt: new Date(),
     ...overrides,
-  }
+  };
 }
 
-const noop = <div />
+const noop = <div />;
 
 describe("EventDetail", () => {
   it("renders the event title and description", () => {
-    const event = makeEvent({ description: "Daily sync" })
+    const event = makeEvent({ description: "Daily sync" });
     render(
-      <EventDetail event={event} onShare={vi.fn()} onEdit={vi.fn()} onDelete={vi.fn()} attachments={noop} />
-    )
+      <EventDetail
+        event={event}
+        onShare={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        attachments={noop}
+      />,
+    );
 
-    expect(screen.getByRole("heading", { name: "Standup" })).toBeInTheDocument()
-    expect(screen.getByText("Daily sync")).toBeInTheDocument()
-  })
+    expect(screen.getByRole("heading", { name: "Standup" })).toBeInTheDocument();
+    expect(screen.getByText("Daily sync")).toBeInTheDocument();
+  });
 
   it("renders the place with an Open in Maps link when set", () => {
     const event = makeEvent({
-      place: { name: "Le Duplex", address: "42 rue de la République, 69002 Lyon, France", lat: 45.764, lng: 4.8357 },
-    })
+      place: {
+        name: "Le Duplex",
+        address: "42 rue de la République, 69002 Lyon, France",
+        lat: 45.764,
+        lng: 4.8357,
+      },
+    });
     render(
-      <EventDetail event={event} onShare={vi.fn()} onEdit={vi.fn()} onDelete={vi.fn()} attachments={noop} />
-    )
+      <EventDetail
+        event={event}
+        onShare={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        attachments={noop}
+      />,
+    );
 
-    expect(screen.getByText(/Le Duplex/)).toBeInTheDocument()
-    const link = screen.getByRole("link", { name: "Open in Maps" })
-    expect(link).toHaveAttribute("href", "https://www.google.com/maps/search/?api=1&query=45.764,4.8357")
-  })
+    expect(screen.getAllByText(/Le Duplex/)[0]).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: "Open in Maps" });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://www.google.com/maps/search/?api=1&query=45.764,4.8357",
+    );
+  });
 
   it("calls onShare when the share button is clicked", async () => {
-    const user = userEvent.setup()
-    const onShare = vi.fn()
+    const user = userEvent.setup();
+    const onShare = vi.fn();
     render(
-      <EventDetail event={makeEvent()} onShare={onShare} onEdit={vi.fn()} onDelete={vi.fn()} attachments={noop} />
-    )
+      <EventDetail
+        event={makeEvent()}
+        onShare={onShare}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        attachments={noop}
+      />,
+    );
 
-    await user.click(screen.getByRole("button", { name: "Share" }))
-    expect(onShare).toHaveBeenCalledTimes(1)
-  })
+    await user.click(screen.getByRole("button", { name: "Share" }));
+    expect(onShare).toHaveBeenCalledTimes(1);
+  });
 
   it("calls onEdit when Update is chosen from the actions menu", async () => {
-    const user = userEvent.setup()
-    const onEdit = vi.fn()
+    const user = userEvent.setup();
+    const onEdit = vi.fn();
     render(
-      <EventDetail event={makeEvent()} onShare={vi.fn()} onEdit={onEdit} onDelete={vi.fn()} attachments={noop} />
-    )
+      <EventDetail
+        event={makeEvent()}
+        onShare={vi.fn()}
+        onEdit={onEdit}
+        onDelete={vi.fn()}
+        attachments={noop}
+      />,
+    );
 
-    await user.click(screen.getByRole("button", { name: "Event actions" }))
-    await user.click(await screen.findByText("Update"))
-    expect(onEdit).toHaveBeenCalledTimes(1)
-  })
+    await user.click(screen.getByRole("button", { name: "Event actions" }));
+    await user.click(await screen.findByText("Update"));
+    expect(onEdit).toHaveBeenCalledTimes(1);
+  });
 
   it("calls onDelete after confirming Delete from the actions menu", async () => {
-    const user = userEvent.setup()
-    const onDelete = vi.fn()
+    const user = userEvent.setup();
+    const onDelete = vi.fn();
     render(
-      <EventDetail event={makeEvent()} onShare={vi.fn()} onEdit={vi.fn()} onDelete={onDelete} attachments={noop} />
-    )
+      <EventDetail
+        event={makeEvent()}
+        onShare={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={onDelete}
+        attachments={noop}
+      />,
+    );
 
-    await user.click(screen.getByRole("button", { name: "Event actions" }))
-    await user.click(await screen.findByText("Delete"))
-    const confirmDialog = await screen.findByRole("alertdialog")
-    await user.click(within(confirmDialog).getByRole("button", { name: "Delete" }))
+    await user.click(screen.getByRole("button", { name: "Event actions" }));
+    await user.click(await screen.findByText("Delete"));
+    const confirmDialog = await screen.findByRole("alertdialog");
+    await user.click(within(confirmDialog).getByRole("button", { name: "Delete" }));
 
-    expect(onDelete).toHaveBeenCalledTimes(1)
-  })
+    expect(onDelete).toHaveBeenCalledTimes(1);
+  });
 
   it("shows the event type as the category badge", () => {
     render(
@@ -95,11 +133,11 @@ describe("EventDetail", () => {
         onEdit={vi.fn()}
         onDelete={vi.fn()}
         attachments={noop}
-      />
-    )
+      />,
+    );
 
-    expect(screen.getByText("Concert")).toBeInTheDocument()
-  })
+    expect(screen.getAllByText("Concert")[0]).toBeInTheDocument();
+  });
 
   it("renders the attachments slot", () => {
     render(
@@ -109,9 +147,9 @@ describe("EventDetail", () => {
         onEdit={vi.fn()}
         onDelete={vi.fn()}
         attachments={<div data-testid="slot">files here</div>}
-      />
-    )
+      />,
+    );
 
-    expect(screen.getByTestId("slot")).toBeInTheDocument()
-  })
-})
+    expect(screen.getByTestId("slot")).toBeInTheDocument();
+  });
+});

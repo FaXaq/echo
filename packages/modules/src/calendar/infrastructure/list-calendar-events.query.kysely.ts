@@ -10,7 +10,10 @@ export const listCalendarEventsQueryFactory: ListCalendarEventsQueryPortFactory 
         .selectAll("calendar_event")
         .select("user.name as created_by_name")
         .leftJoin("organization", "organization.id", "calendar_event.organization_id")
-        .select(["organization.name as organization_name", "organization.slug as organization_slug"])
+        .select([
+          "organization.name as organization_name",
+          "organization.slug as organization_slug",
+        ])
         .where("organization_id", "=", input.organizationId)
         .execute();
 
@@ -22,21 +25,22 @@ export const listCalendarEventsQueryFactory: ListCalendarEventsQueryPortFactory 
       .innerJoin("user", "user.id", "created_by")
       .selectAll("calendar_event")
       .leftJoin("organization", "organization.id", "calendar_event.organization_id")
-      .select(["organization.name as organization_name", "organization.slug as organization_slug", "user.name as created_by_name"])
+      .select([
+        "organization.name as organization_name",
+        "organization.slug as organization_slug",
+        "user.name as created_by_name",
+      ])
       .where((wb) =>
         wb.or([
-          wb.and([
-            wb("created_by", "=", input.userId),
-            wb("organization_id", "is", null),
-          ]),
-          wb("organization_id", "in",
-            db.selectFrom("member")
-              .select("organizationId")
-              .where("userId", "=", input.userId)
+          wb.and([wb("created_by", "=", input.userId), wb("organization_id", "is", null)]),
+          wb(
+            "organization_id",
+            "in",
+            db.selectFrom("member").select("organizationId").where("userId", "=", input.userId),
           ),
         ]),
-    )
-    .execute();
+      )
+      .execute();
 
     return rows.map(toCalendarEvent);
   };

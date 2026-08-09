@@ -18,9 +18,7 @@ describe("kindForMimeType", () => {
     expect(kindForMimeType("application/pdf")).toBe("document");
     expect(kindForMimeType("application/msword")).toBe("document");
     expect(
-      kindForMimeType(
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ),
+      kindForMimeType("application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
     ).toBe("document");
   });
 

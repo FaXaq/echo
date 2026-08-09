@@ -1,10 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { TRPCClientError } from "@trpc/client"
-import { render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
-import { SuspendedEventDetail } from "./suspended-event-detail"
-import * as calendarResource from "@/services/resources/calendar"
-import * as fileResource from "@/services/resources/file"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
+import { render, screen } from "@/lib/test-utils";
+import { describe, expect, it, vi } from "vitest";
+import { SuspendedEventDetail } from "./suspended-event-detail";
+import * as calendarResource from "@/services/resources/calendar";
+import * as fileResource from "@/services/resources/file";
 
 function makeEvent(): calendarResource.CalendarEvent {
   return {
@@ -22,40 +22,51 @@ function makeEvent(): calendarResource.CalendarEvent {
     createdByName: "Mr Me",
     updatedBy: null,
     place: null,
-  } as calendarResource.CalendarEvent
+  } as calendarResource.CalendarEvent;
 }
 
 function renderWithClient(client: QueryClient) {
   return render(
     <QueryClientProvider client={client}>
       <SuspendedEventDetail eventId="event-1" onBack={vi.fn()} />
-    </QueryClientProvider>
-  )
+    </QueryClientProvider>,
+  );
 }
 
 describe("SuspendedEventDetail", () => {
   it("renders the event once loaded", async () => {
-    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-    client.setQueryData(calendarResource.getEventQueryOptions({ eventId: "event-1" }).queryKey, makeEvent())
-    client.setQueryData(fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, [])
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    client.setQueryData(
+      calendarResource.getEventQueryOptions({ eventId: "event-1" }).queryKey,
+      makeEvent(),
+    );
+    client.setQueryData(
+      fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey,
+      [],
+    );
 
-    renderWithClient(client)
+    renderWithClient(client);
 
-    expect(await screen.findByRole("heading", { name: "Standup" })).toBeInTheDocument()
-  })
+    expect(await screen.findByRole("heading", { name: "Standup" })).toBeInTheDocument();
+  });
 
   it("shows a not-found screen (not a generic error) when the event lookup 404s", async () => {
-    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-    client.setQueryData(calendarResource.getEventQueryOptions({ eventId: "event-1" }).queryKey, undefined)
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    client.setQueryData(
+      calendarResource.getEventQueryOptions({ eventId: "event-1" }).queryKey,
+      undefined,
+    );
     vi.spyOn(calendarResource, "getEventQueryOptions").mockReturnValue({
       queryKey: ["calendar", "getEventById", "event-1"],
       queryFn: async () => {
-        throw new TRPCClientError("Not found", { result: { error: { data: { code: "NOT_FOUND" } } } } as never)
+        throw new TRPCClientError("Not found", {
+          result: { error: { data: { code: "NOT_FOUND" } } },
+        } as never);
       },
-    } as never)
+    } as never);
 
-    renderWithClient(client)
+    renderWithClient(client);
 
-    expect(await screen.findByText("Event not found")).toBeInTheDocument()
-  })
-})
+    expect(await screen.findByText("Event not found")).toBeInTheDocument();
+  });
+});

@@ -27,16 +27,12 @@ export const makeClientAuth = (config?: ClientAuthConfig) =>
         ...organizationPluginConfig,
         schema: inferOrgAdditionalFields<ReturnType<typeof makeServerAuth>>(),
       }),
-      usernameClient()
+      usernameClient(),
     ],
   });
 
 export type AuthClient = ReturnType<typeof makeClientAuth>;
-export type ClientSession = ReturnType<
-  typeof makeClientAuth
->["$Infer"]["Session"];
-export type ClientOrganization = ReturnType<
-  typeof makeClientAuth
->["$Infer"]["Organization"];
+export type ClientSession = ReturnType<typeof makeClientAuth>["$Infer"]["Session"];
+export type ClientOrganization = ReturnType<typeof makeClientAuth>["$Infer"]["Organization"];
 export type ClientMember = InferMember<typeof organizationPluginConfig>;
 export type ClientInvitation = InferInvitation<typeof organizationPluginConfig>;

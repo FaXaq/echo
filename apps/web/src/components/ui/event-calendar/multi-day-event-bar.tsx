@@ -1,19 +1,19 @@
-import { type CSSProperties } from "react"
-import dayjs from "dayjs"
+import { type CSSProperties } from "react";
+import dayjs from "dayjs";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-import { useCalendarContext } from "./calendar-context"
-import { eventColorClasses } from "./colors"
-import { EventTypeIcon } from "./event-types"
-import type { CalendarEvent } from "./types"
-import { useEventDrag } from "./use-event-drag"
+import { useCalendarContext } from "./calendar-context";
+import { eventColorClasses } from "./colors";
+import { EventTypeIcon } from "./event-types";
+import type { CalendarEvent } from "./types";
+import { useEventDrag } from "./use-event-drag";
 
 interface MultiDayEventBarProps {
-  event: CalendarEvent
-  continuesBefore: boolean
-  continuesAfter: boolean
-  style?: CSSProperties
+  event: CalendarEvent;
+  continuesBefore: boolean;
+  continuesAfter: boolean;
+  style?: CSSProperties;
 }
 
 export function MultiDayEventBar({
@@ -22,23 +22,23 @@ export function MultiDayEventBar({
   continuesAfter,
   style,
 }: MultiDayEventBarProps) {
-  const { requestEventClick, requestEventMove } = useCalendarContext()
+  const { requestEventClick, requestEventMove } = useCalendarContext();
 
   const { isDragging, dragHandlers } = useEventDrag({
     onClick: () => requestEventClick(event),
     onDrop: (target) => {
-      const original = dayjs(event.startDate)
-      const targetDay = dayjs(target.day, "YYYY-MM-DD")
-      if (targetDay.isSame(original, "day")) return
+      const original = dayjs(event.startDate);
+      const targetDay = dayjs(target.day, "YYYY-MM-DD");
+      if (targetDay.isSame(original, "day")) return;
 
       const newStart = targetDay
         .hour(original.hour())
         .minute(original.minute())
         .second(0)
-        .millisecond(0)
-      requestEventMove(event, newStart.toDate())
+        .millisecond(0);
+      requestEventMove(event, newStart.toDate());
     },
-  })
+  });
 
   return (
     <button
@@ -46,8 +46,8 @@ export function MultiDayEventBar({
       data-slot="multi-day-event-bar"
       {...dragHandlers}
       onClick={(e) => {
-        e.stopPropagation()
-        if (e.detail === 0) requestEventClick(event)
+        e.stopPropagation();
+        if (e.detail === 0) requestEventClick(event);
       }}
       style={style}
       className={cn(
@@ -55,13 +55,11 @@ export function MultiDayEventBar({
         eventColorClasses[event.color],
         continuesBefore ? "rounded-l-none" : "rounded-l-sm",
         continuesAfter ? "rounded-r-none" : "rounded-r-sm",
-        isDragging && "z-20 opacity-70"
+        isDragging && "z-20 opacity-70",
       )}
     >
-      {event.type && (
-        <EventTypeIcon type={event.type} className="size-3 shrink-0" />
-      )}
+      {event.type && <EventTypeIcon type={event.type} className="size-3 shrink-0" />}
       <span className="truncate">{event.title}</span>
     </button>
-  )
+  );
 }

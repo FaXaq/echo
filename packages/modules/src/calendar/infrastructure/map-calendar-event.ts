@@ -1,5 +1,11 @@
 import type { DB } from "@echo/db";
-import { eventTypeSchema, type CalendarEvent, type EventColor, type EventPlace, type EventType } from "../domain/index.js";
+import {
+  eventTypeSchema,
+  type CalendarEvent,
+  type EventColor,
+  type EventPlace,
+  type EventType,
+} from "../domain/index.js";
 import type { Selectable } from "kysely";
 
 export type CalendarEventRow = Selectable<DB["calendar_event"]> & {
@@ -40,11 +46,14 @@ export function toCalendarEvent(row: CalendarEventRow): CalendarEvent {
     allDay: row.all_day ?? false,
     color: row.color as EventColor,
     type: toEventType(row.type),
-    organization: row.organization_id && row.organization_name && row.organization_slug ? {
-      id: row.organization_id,
-      name: row.organization_name,
-      slug: row.organization_slug,
-    } : undefined,
+    organization:
+      row.organization_id && row.organization_name && row.organization_slug
+        ? {
+            id: row.organization_id,
+            name: row.organization_name,
+            slug: row.organization_slug,
+          }
+        : undefined,
     createdAt: row.created_at,
     createdBy: row.created_by,
     createdByName: row.created_by_name,

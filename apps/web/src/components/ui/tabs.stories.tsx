@@ -81,7 +81,9 @@ export const WithDisabled: Story = {
     <Tabs defaultValue="active" className="w-80">
       <TabsList>
         <TabsTrigger value="active">Active</TabsTrigger>
-        <TabsTrigger value="disabled" disabled>Disabled</TabsTrigger>
+        <TabsTrigger value="disabled" disabled>
+          Disabled
+        </TabsTrigger>
         <TabsTrigger value="other">Other</TabsTrigger>
       </TabsList>
       <TabsContent value="active">

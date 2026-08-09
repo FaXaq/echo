@@ -2,6 +2,9 @@
   "name": "@echo/db",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "build": "tsc --build",
     "typecheck": "tsc --noEmit",
@@ -9,23 +12,20 @@
     "migration:create": "node src/migration-create.ts",
     "migration:down": "node src/migrate-down.ts"
   },
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "dependencies": {
     "@echo/auth": "workspace:*",
-    "better-auth": "^1.6.24",
-    "dotenv": "^16.6.1",
-    "kysely": "^0.27.6",
-    "pg": "^8.22.0",
-    "zod": "^4.4.3"
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "kysely": "catalog:",
+    "pg": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@better-auth/cli": "^1.4.21",
+    "@better-auth/cli": "catalog:",
     "@echo/config": "workspace:*",
-    "@types/node": "^25.9.5",
-    "@types/pg": "^8.20.0",
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:",
     "kysely-codegen": "^0.16.8",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:"
   }
 }

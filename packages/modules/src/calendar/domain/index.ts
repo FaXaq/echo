@@ -12,14 +12,7 @@ export const EVENT_TYPES: EventType[] = eventTypeSchema.options;
 
 export type EventColor = "blue" | "green" | "red" | "yellow" | "purple" | "orange";
 
-export const EVENT_COLORS: EventColor[] = [
-  "blue",
-  "green",
-  "red",
-  "yellow",
-  "purple",
-  "orange",
-];
+export const EVENT_COLORS: EventColor[] = ["blue", "green", "red", "yellow", "purple", "orange"];
 
 export type EventPlace = {
   name: string;
@@ -37,11 +30,13 @@ export type CalendarEvent = {
   allDay: boolean;
   color: EventColor;
   type: EventType | null;
-  organization: {
-    id: string,
-    name: string,
-    slug: string,
-  } | undefined;
+  organization:
+    | {
+        id: string;
+        name: string;
+        slug: string;
+      }
+    | undefined;
   createdAt: Date;
   createdBy: string;
   createdByName: string;

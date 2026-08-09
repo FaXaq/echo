@@ -14,9 +14,8 @@ export const isSystemAdmin = (
   return parsed.success && parsed.data === ADMIN_ROLE;
 };
 
-export const canUpdateOrgMemberRole = (
-  viewerRole: OrganizationRole | null | undefined,
-): boolean => viewerRole === "owner" || viewerRole === "admin";
+export const canUpdateOrgMemberRole = (viewerRole: OrganizationRole | null | undefined): boolean =>
+  viewerRole === "owner" || viewerRole === "admin";
 
 export const canRevokeMembership = (
   viewerRole: OrganizationRole | null | undefined,
@@ -27,6 +26,5 @@ export const canRevokeMembership = (
   return false;
 };
 
-export const canCancelInvitation = (
-  viewerRole: OrganizationRole | null | undefined,
-): boolean => viewerRole === "owner" || viewerRole === "admin";
+export const canCancelInvitation = (viewerRole: OrganizationRole | null | undefined): boolean =>
+  viewerRole === "owner" || viewerRole === "admin";

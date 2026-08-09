@@ -1,11 +1,8 @@
-import { Trans, useTranslation } from "react-i18next"
-import { LogOut, Monitor, Moon, Sun } from "lucide-react"
-import { useRouter } from "@tanstack/react-router"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+import { Trans, useLingui } from "@lingui/react/macro";
+import { LogOut, Monitor, Moon, Sun } from "lucide-react";
+import { useRouter } from "@tanstack/react-router";
+import { locales, type Locale } from "@echo/i18n";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,20 +11,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useTheme } from "@/contexts/theme"
-import { authClient } from "@/lib/auth"
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "@/contexts/theme";
+import { authClient } from "@/lib/auth";
 
-type Theme = "light" | "dark" | "system"
-type Locale = "en" | "fr"
+type Theme = "light" | "dark" | "system";
 
 const THEME_OPTIONS: { value: Theme; icon: React.ReactNode }[] = [
   { value: "light", icon: <Sun size={14} /> },
   { value: "system", icon: <Monitor size={14} /> },
   { value: "dark", icon: <Moon size={14} /> },
-]
-
-const LOCALE_OPTIONS: Locale[] = ["en", "fr"]
+];
 
 function getInitials(name: string) {
   return name
@@ -35,33 +29,33 @@ function getInitials(name: string) {
     .map((part) => part[0])
     .join("")
     .toUpperCase()
-    .slice(0, 2)
+    .slice(0, 2);
 }
 
 export interface UserMenuProps {
-  username: string
-  name: string
-  email: string
-  image?: string | null
-  onLogout: () => void
+  username: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  onLogout: () => void;
 }
 
 export function UserMenu({ username, name, email, image, onLogout }: UserMenuProps) {
-  const { t, i18n } = useTranslation("auth")
-  const { theme, setTheme } = useTheme()
-  const router = useRouter()
+  const { i18n } = useLingui();
+  const { theme, setTheme } = useTheme();
+  const router = useRouter();
 
   const handleThemeChange = (newTheme: Theme) => {
-    setTheme(newTheme)
-    authClient.updateUser({ theme: newTheme })
-    router.invalidate()
-  }
+    setTheme(newTheme);
+    authClient.updateUser({ theme: newTheme });
+    router.invalidate();
+  };
 
   const handleLocaleChange = (locale: Locale) => {
-    i18n.changeLanguage(locale)
-    authClient.updateUser({ locale })
-    router.invalidate()
-  }
+    i18n.activate(locale);
+    authClient.updateUser({ locale });
+    router.invalidate();
+  };
 
   return (
     <DropdownMenu>
@@ -85,7 +79,9 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <div className="px-2 py-1.5 flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground"><Trans t={t}>Theme</Trans></span>
+          <span className="text-xs text-muted-foreground">
+            <Trans>Theme</Trans>
+          </span>
           <div className="flex items-center gap-0.5">
             {THEME_OPTIONS.map(({ value, icon }) => (
               <button
@@ -99,13 +95,15 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
           </div>
         </div>
         <div className="px-2 py-1.5 flex items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground"><Trans t={t}>Language</Trans></span>
+          <span className="text-xs text-muted-foreground">
+            <Trans>Language</Trans>
+          </span>
           <div className="flex items-center gap-0.5">
-            {LOCALE_OPTIONS.map((locale) => (
+            {locales.map((locale) => (
               <button
                 key={locale}
                 onClick={() => handleLocaleChange(locale)}
-                className={`px-1.5 py-0.5 rounded text-xs font-medium uppercase transition-colors ${i18n.language === locale ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}
+                className={`px-1.5 py-0.5 rounded text-xs font-medium uppercase transition-colors ${i18n.locale === locale ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}
               >
                 {locale}
               </button>
@@ -115,9 +113,9 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onLogout} className="text-red-400">
           <LogOut />
-          <Trans t={t}>Log out</Trans>
+          <Trans>Log out</Trans>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

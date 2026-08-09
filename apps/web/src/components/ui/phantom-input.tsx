@@ -2,8 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface PhantomInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> { }
+export interface PhantomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const PhantomInput = React.forwardRef<HTMLInputElement, PhantomInputProps>(
   ({ className, ...props }, ref) => {

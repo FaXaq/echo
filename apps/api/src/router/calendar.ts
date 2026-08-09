@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { router, authedProcedure } from "../trpc";
-import { createEvent, listEvents, updateEvent, deleteEvent, getEventById } from "@echo/modules/calendar/app";
+import {
+  createEvent,
+  listEvents,
+  updateEvent,
+  deleteEvent,
+  getEventById,
+} from "@echo/modules/calendar/app";
 import { EVENT_COLORS, eventTypeSchema, type EventColor } from "@echo/modules/calendar/domain";
 import {
   insertCalendarEventCommandFactory,

@@ -42,14 +42,12 @@ const appErrorMiddleware = t.middleware(async ({ next }) => {
 
 export const publicProcedure = t.procedure.use(appErrorMiddleware);
 
-
 export const authedProcedure = publicProcedure.use(({ ctx, next }) => {
   if (!ctx.session) throw new TRPCError({ code: "UNAUTHORIZED" });
   return next({ ctx: { ...ctx, session: ctx.session } });
 });
 
 export const adminProcedure = authedProcedure.use(({ ctx, next }) => {
-  if (ctx.session.user.role !== systemRole.admin)
-    throw new TRPCError({ code: "FORBIDDEN" });
+  if (ctx.session.user.role !== systemRole.admin) throw new TRPCError({ code: "FORBIDDEN" });
   return next({ ctx });
 });

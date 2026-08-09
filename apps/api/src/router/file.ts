@@ -50,19 +50,17 @@ export const makeFileRouter = () =>
         ),
       ),
 
-    deleteFile: authedProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteFile(
-          {
-            db: ctx.db,
-            s3Storage: ctx.s3Storage,
-            userHasPermission: ctx.userHasPermission,
-            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-          },
-          { id: input.id, userId: ctx.session.user.id },
-        ),
+    deleteFile: authedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) =>
+      deleteFile(
+        {
+          db: ctx.db,
+          s3Storage: ctx.s3Storage,
+          userHasPermission: ctx.userHasPermission,
+          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+        },
+        { id: input.id, userId: ctx.session.user.id },
       ),
+    ),
 
     renameFile: authedProcedure
       .input(z.object({ id: z.string(), filename: z.string().min(1) }))

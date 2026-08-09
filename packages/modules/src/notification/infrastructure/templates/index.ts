@@ -1,7 +1,8 @@
 import mjml2html from "mjml";
 import type { makeServerI18n } from "@echo/i18n";
+import { emailMessages } from "@echo/i18n";
 
-type T = ReturnType<typeof makeServerI18n>;
+type I18n = ReturnType<typeof makeServerI18n>;
 
 export async function renderInvitationEmail(
   data: {
@@ -9,12 +10,10 @@ export async function renderInvitationEmail(
     invitationId: string;
     appBaseUrl: string;
   },
-  t: T,
+  i18n: I18n,
 ): Promise<string> {
-  const bodyText = t("emails", "You have been invited to join {{orgName}}", {
-    orgName: data.orgName,
-  });
-  const buttonText = t("emails", "Accept invitation");
+  const bodyText = i18n._({ ...emailMessages.invitationBody, values: { orgName: data.orgName } });
+  const buttonText = i18n._(emailMessages.invitationButton);
 
   const { html, errors } = await mjml2html(`
     <mjml>
@@ -41,10 +40,10 @@ export async function renderResetPasswordEmail(
     appBaseUrl: string;
     token: string;
   },
-  t: T,
+  i18n: I18n,
 ): Promise<string> {
-  const bodyText = t("emails", "You requested a password reset.");
-  const buttonText = t("emails", "Reset my password");
+  const bodyText = i18n._(emailMessages.resetPasswordBody);
+  const buttonText = i18n._(emailMessages.resetPasswordButton);
 
   const { html, errors } = await mjml2html(`
     <mjml>
@@ -60,8 +59,7 @@ export async function renderResetPasswordEmail(
       </mj-body>
     </mjml>
   `);
-  if (errors.length)
-    throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
+  if (errors.length) throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
   return html;
 }
 
@@ -77,7 +75,6 @@ export async function renderExampleEmail(data: { name: string }): Promise<string
       </mj-body>
     </mjml>
   `);
-  if (errors.length)
-    throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
+  if (errors.length) throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
   return html;
 }

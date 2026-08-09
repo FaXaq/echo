@@ -1,5 +1,5 @@
-import dayjs from "dayjs"
-import { describe, expect, it } from "vitest"
+import dayjs from "dayjs";
+import { describe, expect, it } from "vitest";
 
 import {
   bucketDayEvents,
@@ -17,8 +17,8 @@ import {
   moveEventToStart,
   pixelOffsetToMinutes,
   resizeEventEnd,
-} from "./helpers"
-import type { CalendarEvent } from "./types"
+} from "./helpers";
+import type { CalendarEvent } from "./types";
 
 function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
   return {
@@ -28,256 +28,257 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     endDate: dayjs("2026-07-15T10:00:00").toDate(),
     color: "blue",
     type: null,
-    organizationId: null,
+    organization: { id: null },
     place: null,
+    createdBy: "user-1",
+    createdByName: "Jane Doe",
+    createdAt: new Date(),
     ...overrides,
-  }
+  };
 }
 
 describe("getMonthGrid", () => {
   it("returns 42 cells spanning full weeks around the month", () => {
-    const cells = getMonthGrid(dayjs("2026-07-15").toDate())
-    expect(cells).toHaveLength(42)
-    expect(cells[0]!.date.day()).toBe(0)
-    expect(cells[41]!.date.day()).toBe(6)
-  })
+    const cells = getMonthGrid(dayjs("2026-07-15").toDate());
+    expect(cells).toHaveLength(42);
+    expect(cells[0]!.date.day()).toBe(0);
+    expect(cells[41]!.date.day()).toBe(6);
+  });
 
   it("flags cells outside the target month", () => {
-    const cells = getMonthGrid(dayjs("2026-07-15").toDate())
-    const julyCells = cells.filter((cell) => cell.isCurrentMonth)
-    expect(julyCells).toHaveLength(31)
-    expect(julyCells.every((cell) => cell.date.month() === 6)).toBe(true)
-  })
-})
+    const cells = getMonthGrid(dayjs("2026-07-15").toDate());
+    const julyCells = cells.filter((cell) => cell.isCurrentMonth);
+    expect(julyCells).toHaveLength(31);
+    expect(julyCells.every((cell) => cell.date.month() === 6)).toBe(true);
+  });
+});
 
 describe("getWeekDays", () => {
   it("returns 7 consecutive days starting on Sunday", () => {
-    const days = getWeekDays(dayjs("2026-07-15").toDate())
-    expect(days).toHaveLength(7)
-    expect(days[0]!.day()).toBe(0)
-    expect(days[6]!.diff(days[0]!, "day")).toBe(6)
-  })
-})
+    const days = getWeekDays(dayjs("2026-07-15").toDate());
+    expect(days).toHaveLength(7);
+    expect(days[0]!.day()).toBe(0);
+    expect(days[6]!.diff(days[0]!, "day")).toBe(6);
+  });
+});
 
 describe("eventOccursOnDay / getEventsForDay", () => {
   it("matches an event that starts and ends within the day", () => {
-    const event = makeEvent()
-    expect(eventOccursOnDay(event, dayjs("2026-07-15").toDate())).toBe(true)
-    expect(eventOccursOnDay(event, dayjs("2026-07-16").toDate())).toBe(false)
-  })
+    const event = makeEvent();
+    expect(eventOccursOnDay(event, dayjs("2026-07-15").toDate())).toBe(true);
+    expect(eventOccursOnDay(event, dayjs("2026-07-16").toDate())).toBe(false);
+  });
 
   it("matches every day of a multi-day event", () => {
     const event = makeEvent({
       startDate: dayjs("2026-07-15T09:00:00").toDate(),
       endDate: dayjs("2026-07-17T18:00:00").toDate(),
-    })
-    expect(eventOccursOnDay(event, dayjs("2026-07-16").toDate())).toBe(true)
-  })
+    });
+    expect(eventOccursOnDay(event, dayjs("2026-07-16").toDate())).toBe(true);
+  });
 
   it("sorts events for a day by start time", () => {
-    const late = makeEvent({ id: "late", startDate: dayjs("2026-07-15T14:00:00").toDate(), endDate: dayjs("2026-07-15T15:00:00").toDate() })
-    const early = makeEvent({ id: "early", startDate: dayjs("2026-07-15T08:00:00").toDate(), endDate: dayjs("2026-07-15T09:00:00").toDate() })
-    const result = getEventsForDay([late, early], dayjs("2026-07-15").toDate())
-    expect(result.map((e) => e.id)).toEqual(["early", "late"])
-  })
-})
+    const late = makeEvent({
+      id: "late",
+      startDate: dayjs("2026-07-15T14:00:00").toDate(),
+      endDate: dayjs("2026-07-15T15:00:00").toDate(),
+    });
+    const early = makeEvent({
+      id: "early",
+      startDate: dayjs("2026-07-15T08:00:00").toDate(),
+      endDate: dayjs("2026-07-15T09:00:00").toDate(),
+    });
+    const result = getEventsForDay([late, early], dayjs("2026-07-15").toDate());
+    expect(result.map((e) => e.id)).toEqual(["early", "late"]);
+  });
+});
 
 describe("chunkMonthWeeks", () => {
   it("splits 42 month-grid cells into 6 weeks of 7", () => {
-    const cells = getMonthGrid(dayjs("2026-07-15").toDate())
-    const weeks = chunkMonthWeeks(cells)
-    expect(weeks).toHaveLength(6)
-    weeks.forEach((week) => expect(week).toHaveLength(7))
-    expect(weeks[0]![0]).toBe(cells[0])
-    expect(weeks[5]![6]).toBe(cells[41])
-  })
-})
+    const cells = getMonthGrid(dayjs("2026-07-15").toDate());
+    const weeks = chunkMonthWeeks(cells);
+    expect(weeks).toHaveLength(6);
+    weeks.forEach((week) => expect(week).toHaveLength(7));
+    expect(weeks[0]![0]).toBe(cells[0]);
+    expect(weeks[5]![6]).toBe(cells[41]);
+  });
+});
 
 describe("isMultiDayEvent", () => {
   it("is false for an event starting and ending on the same day", () => {
-    expect(isMultiDayEvent(makeEvent())).toBe(false)
-  })
+    expect(isMultiDayEvent(makeEvent())).toBe(false);
+  });
 
   it("is true for an event whose start and end fall on different days", () => {
     const event = makeEvent({
       startDate: dayjs("2026-07-15T20:00:00").toDate(),
       endDate: dayjs("2026-07-16T04:00:00").toDate(),
-    })
-    expect(isMultiDayEvent(event)).toBe(true)
-  })
-})
+    });
+    expect(isMultiDayEvent(event)).toBe(true);
+  });
+});
 
 describe("getWeekMultiDaySegments", () => {
-  const weekDays = getWeekDays(dayjs("2026-07-15").toDate()).map((d) =>
-    d.toDate()
-  )
+  const weekDays = getWeekDays(dayjs("2026-07-15").toDate()).map((d) => d.toDate());
 
   it("ignores single-day events", () => {
-    const segments = getWeekMultiDaySegments([makeEvent()], weekDays)
-    expect(segments).toHaveLength(0)
-  })
+    const segments = getWeekMultiDaySegments([makeEvent()], weekDays);
+    expect(segments).toHaveLength(0);
+  });
 
   it("positions an event fully contained in the week", () => {
     const event = makeEvent({
       id: "multi",
       startDate: dayjs("2026-07-14T09:00:00").toDate(),
       endDate: dayjs("2026-07-16T18:00:00").toDate(),
-    })
-    const [segment] = getWeekMultiDaySegments([event], weekDays)
+    });
+    const [segment] = getWeekMultiDaySegments([event], weekDays);
     expect(segment).toMatchObject({
       startCol: 2,
       span: 3,
       continuesBefore: false,
       continuesAfter: false,
       lane: 0,
-    })
-  })
+    });
+  });
 
   it("clamps a segment that continues before and after the week", () => {
     const event = makeEvent({
       id: "long",
       startDate: dayjs("2026-07-10T09:00:00").toDate(),
       endDate: dayjs("2026-07-25T18:00:00").toDate(),
-    })
-    const [segment] = getWeekMultiDaySegments([event], weekDays)
+    });
+    const [segment] = getWeekMultiDaySegments([event], weekDays);
     expect(segment).toMatchObject({
       startCol: 0,
       span: 7,
       continuesBefore: true,
       continuesAfter: true,
-    })
-  })
+    });
+  });
 
   it("assigns overlapping events to different lanes", () => {
     const a = makeEvent({
       id: "a",
       startDate: dayjs("2026-07-13T09:00:00").toDate(),
       endDate: dayjs("2026-07-15T18:00:00").toDate(),
-    })
+    });
     const b = makeEvent({
       id: "b",
       startDate: dayjs("2026-07-14T09:00:00").toDate(),
       endDate: dayjs("2026-07-17T18:00:00").toDate(),
-    })
-    const segments = getWeekMultiDaySegments([a, b], weekDays)
-    const laneA = segments.find((s) => s.event.id === "a")!.lane
-    const laneB = segments.find((s) => s.event.id === "b")!.lane
-    expect(laneA).not.toBe(laneB)
-  })
+    });
+    const segments = getWeekMultiDaySegments([a, b], weekDays);
+    const laneA = segments.find((s) => s.event.id === "a")!.lane;
+    const laneB = segments.find((s) => s.event.id === "b")!.lane;
+    expect(laneA).not.toBe(laneB);
+  });
 
   it("reuses a lane once its previous event's span has ended", () => {
     const a = makeEvent({
       id: "a",
       startDate: dayjs("2026-07-12T09:00:00").toDate(),
       endDate: dayjs("2026-07-13T18:00:00").toDate(),
-    })
+    });
     const b = makeEvent({
       id: "b",
       startDate: dayjs("2026-07-14T09:00:00").toDate(),
       endDate: dayjs("2026-07-15T18:00:00").toDate(),
-    })
-    const segments = getWeekMultiDaySegments([a, b], weekDays)
-    expect(segments.find((s) => s.event.id === "a")!.lane).toBe(0)
-    expect(segments.find((s) => s.event.id === "b")!.lane).toBe(0)
-  })
-})
+    });
+    const segments = getWeekMultiDaySegments([a, b], weekDays);
+    expect(segments.find((s) => s.event.id === "a")!.lane).toBe(0);
+    expect(segments.find((s) => s.event.id === "b")!.lane).toBe(0);
+  });
+});
 
 describe("bucketDayEvents", () => {
   it("returns all events with no overflow when under the limit", () => {
-    const events = [makeEvent({ id: "1" }), makeEvent({ id: "2" })]
-    const bucket = bucketDayEvents(events, 3)
-    expect(bucket.visible).toHaveLength(2)
-    expect(bucket.overflowCount).toBe(0)
-  })
+    const events = [makeEvent({ id: "1" }), makeEvent({ id: "2" })];
+    const bucket = bucketDayEvents(events, 3);
+    expect(bucket.visible).toHaveLength(2);
+    expect(bucket.overflowCount).toBe(0);
+  });
 
   it("caps visible events and reports overflow", () => {
-    const events = Array.from({ length: 5 }, (_, i) => makeEvent({ id: String(i) }))
-    const bucket = bucketDayEvents(events, 3)
-    expect(bucket.visible).toHaveLength(3)
-    expect(bucket.overflowCount).toBe(2)
-  })
-})
+    const events = Array.from({ length: 5 }, (_, i) => makeEvent({ id: String(i) }));
+    const bucket = bucketDayEvents(events, 3);
+    expect(bucket.visible).toHaveLength(3);
+    expect(bucket.overflowCount).toBe(2);
+  });
+});
 
 describe("getEventBlockPosition", () => {
   it("positions a 1-hour event at 9am as 37.5% top, ~4.17% height", () => {
-    const event = makeEvent()
-    const position = getEventBlockPosition(event, dayjs("2026-07-15").toDate())
-    expect(position.topPercent).toBeCloseTo((9 * 60 / 1440) * 100, 5)
-    expect(position.heightPercent).toBeCloseTo((60 / 1440) * 100, 5)
-  })
+    const event = makeEvent();
+    const position = getEventBlockPosition(event, dayjs("2026-07-15").toDate());
+    expect(position.topPercent).toBeCloseTo(((9 * 60) / 1440) * 100, 5);
+    expect(position.heightPercent).toBeCloseTo((60 / 1440) * 100, 5);
+  });
 
   it("clamps a multi-day event to the given day's boundaries", () => {
     const event = makeEvent({
       startDate: dayjs("2026-07-14T20:00:00").toDate(),
       endDate: dayjs("2026-07-16T04:00:00").toDate(),
-    })
-    const position = getEventBlockPosition(event, dayjs("2026-07-15").toDate())
-    expect(position.topPercent).toBe(0)
-    expect(position.heightPercent).toBeGreaterThan(99.9)
-  })
+    });
+    const position = getEventBlockPosition(event, dayjs("2026-07-15").toDate());
+    expect(position.topPercent).toBe(0);
+    expect(position.heightPercent).toBeGreaterThan(99.9);
+  });
 
   it("enforces a minimum visible height for very short events", () => {
     const event = makeEvent({
       startDate: dayjs("2026-07-15T09:00:00").toDate(),
       endDate: dayjs("2026-07-15T09:01:00").toDate(),
-    })
-    const position = getEventBlockPosition(event, dayjs("2026-07-15").toDate())
-    expect(position.heightPercent).toBeCloseTo((15 / 1440) * 100, 5)
-  })
-})
+    });
+    const position = getEventBlockPosition(event, dayjs("2026-07-15").toDate());
+    expect(position.heightPercent).toBeCloseTo((15 / 1440) * 100, 5);
+  });
+});
 
 describe("formatting", () => {
   it("formats a month title", () => {
-    expect(formatMonthTitle(dayjs("2026-07-15").toDate())).toBe("July 2026")
-  })
+    expect(formatMonthTitle(dayjs("2026-07-15").toDate())).toBe("July 2026");
+  });
 
   it("formats a week range within the same month", () => {
-    expect(formatWeekRangeTitle(dayjs("2026-07-15").toDate())).toBe(
-      "July 12 - 18, 2026"
-    )
-  })
+    expect(formatWeekRangeTitle(dayjs("2026-07-15").toDate())).toBe("July 12 - 18, 2026");
+  });
 
   it("formats a day title", () => {
-    expect(formatDayTitle(dayjs("2026-07-15").toDate())).toBe(
-      "Wednesday, July 15, 2026"
-    )
-  })
-})
+    expect(formatDayTitle(dayjs("2026-07-15").toDate())).toBe("Wednesday, July 15, 2026");
+  });
+});
 
 describe("moveEventToStart", () => {
   it("preserves duration while moving the start", () => {
-    const event = makeEvent()
-    const moved = moveEventToStart(event, dayjs("2026-07-20T13:00:00").toDate())
-    expect(dayjs(moved.startDate).format()).toBe(
-      dayjs("2026-07-20T13:00:00").format()
-    )
-    expect(dayjs(moved.endDate).diff(moved.startDate, "minute")).toBe(60)
-  })
-})
+    const event = makeEvent();
+    const moved = moveEventToStart(event, dayjs("2026-07-20T13:00:00").toDate());
+    expect(dayjs(moved.startDate).format()).toBe(dayjs("2026-07-20T13:00:00").format());
+    expect(dayjs(moved.endDate).diff(moved.startDate, "minute")).toBe(60);
+  });
+});
 
 describe("resizeEventEnd", () => {
   it("updates the end date when after the start", () => {
-    const event = makeEvent()
-    const resized = resizeEventEnd(event, dayjs("2026-07-15T11:30:00").toDate())
-    expect(dayjs(resized.endDate).format()).toBe(
-      dayjs("2026-07-15T11:30:00").format()
-    )
-  })
+    const event = makeEvent();
+    const resized = resizeEventEnd(event, dayjs("2026-07-15T11:30:00").toDate());
+    expect(dayjs(resized.endDate).format()).toBe(dayjs("2026-07-15T11:30:00").format());
+  });
 
   it("clamps to a 15-minute minimum duration when the new end precedes the start", () => {
-    const event = makeEvent()
-    const resized = resizeEventEnd(event, dayjs("2026-07-15T09:05:00").toDate())
-    expect(dayjs(resized.endDate).diff(event.startDate, "minute")).toBe(15)
-  })
-})
+    const event = makeEvent();
+    const resized = resizeEventEnd(event, dayjs("2026-07-15T09:05:00").toDate());
+    expect(dayjs(resized.endDate).diff(event.startDate, "minute")).toBe(15);
+  });
+});
 
 describe("pixelOffsetToMinutes", () => {
   it("converts a mid-container offset to minutes, snapped", () => {
-    expect(pixelOffsetToMinutes(360, 1440, 15)).toBe(360)
-  })
+    expect(pixelOffsetToMinutes(360, 1440, 15)).toBe(360);
+  });
 
   it("clamps offsets outside the container", () => {
-    expect(pixelOffsetToMinutes(-10, 1440)).toBe(0)
-    expect(pixelOffsetToMinutes(2000, 1440)).toBe(1440)
-  })
-})
+    expect(pixelOffsetToMinutes(-10, 1440)).toBe(0);
+    expect(pixelOffsetToMinutes(2000, 1440)).toBe(1440);
+  });
+});

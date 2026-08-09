@@ -9,10 +9,11 @@
     }
   },
   "dependencies": {
-    "i18next": "^25.10.10"
+    "@lingui/core": "catalog:",
+    "@lingui/message-utils": "catalog:"
   },
   "devDependencies": {
     "@echo/config": "workspace:*",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:"
   }
 }

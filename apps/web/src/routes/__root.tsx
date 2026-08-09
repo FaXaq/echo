@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import i18next from "../i18n";
+import { useState } from "react";
+import { i18n } from "@lingui/core";
+import { toLocale } from "@echo/i18n";
+import { detectBrowserLocale } from "../i18n";
 import {
   createRootRouteWithContext,
   Outlet,
@@ -13,11 +15,7 @@ import { trpc } from "../lib/trpc";
 import { authClient } from "../lib/auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/ui/tooltip";
 import type { ClientSession } from "@echo/auth";
 import { Landing } from "./-landing";
@@ -28,13 +26,14 @@ import { Toaster } from "@/components/ui/sonner";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  beforeLoad: ({ context }) => {
+  beforeLoad: () => {
     return {
-      prefetchedQueryOptions: {}
-    }
+      prefetchedQueryOptions: {},
+    };
   },
   loader: async () => {
     const { data: session } = await authClient.getSession();
+    i18n.activate(session?.user.locale ? toLocale(session.user.locale) : detectBrowserLocale());
     return { session };
   },
   staleTime: Infinity,
@@ -50,14 +49,7 @@ function RootLayout() {
     }),
   );
 
-  useEffect(() => {
-    if (session?.user.locale) {
-      i18next.changeLanguage(session.user.locale);
-    }
-  }, [session?.user.locale]);
-
-  const serverTheme = session?.user.theme as
-    "light" | "dark" | "system" | undefined;
+  const serverTheme = session?.user.theme as "light" | "dark" | "system" | undefined;
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -96,10 +88,7 @@ function RootContent({ session }: { session: ClientSession | null }) {
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-full"
-            />
+            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-full" />
             <DynamicBreadcrumb />
             <div className="ml-auto">
               <UserMenu

@@ -1,10 +1,6 @@
 import type { OrganizationOptions, Role } from "better-auth/plugins";
 import { createAccessControl } from "better-auth/plugins/access";
-import {
-  defaultStatements,
-  adminAc,
-  ownerAc,
-} from "better-auth/plugins/organization/access";
+import { defaultStatements, adminAc, ownerAc } from "better-auth/plugins/organization/access";
 import z from "zod";
 
 const calendarEventActions = ["create", "read", "update", "delete"] as const;

@@ -27,9 +27,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <AlertDialog>
-      <AlertDialogTrigger render={<Button variant="outline" />}>
-        Open Dialog
-      </AlertDialogTrigger>
+      <AlertDialogTrigger render={<Button variant="outline" />}>Open Dialog</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -56,7 +54,8 @@ export const Destructive: Story = {
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Account</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete your account and remove all associated data. This action cannot be undone.
+            This will permanently delete your account and remove all associated data. This action
+            cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

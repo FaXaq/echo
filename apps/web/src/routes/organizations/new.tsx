@@ -1,22 +1,18 @@
-import { useState } from "react"
-import { createFileRoute, useRouter } from "@tanstack/react-router"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Trans, useTranslation } from "react-i18next"
-import { authClient } from "@/lib/auth"
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Trans, useLingui } from "@lingui/react/macro";
+import { authClient } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 export const Route = createFileRoute("/organizations/new")({
   component: NewOrganizationPage,
-})
+});
 
 const schema = z.object({
   name: z.string().min(1, "Project name is required"),
@@ -24,14 +20,14 @@ const schema = z.object({
     .string()
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and hyphens only"),
-})
+});
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof schema>;
 
 function NewOrganizationPage() {
-  const { t } = useTranslation("projects")
-  const router = useRouter()
-  const [serverError, setServerError] = useState<string | undefined>()
+  const { t } = useLingui();
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | undefined>();
 
   const {
     register,
@@ -40,29 +36,29 @@ function NewOrganizationPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-  })
+  });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const slug = e.target.value
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "")
-    setValue("slug", slug)
-  }
+      .replace(/^-|-$/g, "");
+    setValue("slug", slug);
+  };
 
   const onSubmit = async (values: FormValues) => {
-    setServerError(undefined)
+    setServerError(undefined);
     const result = await authClient.organization.create({
       name: values.name,
       slug: values.slug,
-    })
+    });
 
     if (result.error) {
-      setServerError(result.error.message ?? "Failed to create organization")
+      setServerError(result.error.message ?? "Failed to create organization");
     } else {
-      router.navigate({ to: "/" })
+      router.navigate({ to: "/" });
     }
-  }
+  };
 
   return (
     <div className="flex flex-1 items-center justify-center p-6">
@@ -71,18 +67,18 @@ function NewOrganizationPage() {
           <FieldGroup>
             <div className="flex flex-col gap-1">
               <h1 className="text-2xl font-bold">
-                <Trans t={t}>New project</Trans>
+                <Trans>New project</Trans>
               </h1>
               <p className="text-sm text-muted-foreground">
-                <Trans t={t}>Create a space for your project</Trans>
+                <Trans>Create a space for your project</Trans>
               </p>
             </div>
 
-            {serverError && <FieldError>{t(serverError)}</FieldError>}
+            {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
             <Field>
               <FieldLabel htmlFor="name">
-                <Trans t={t}>Name</Trans>
+                <Trans>Name</Trans>
               </FieldLabel>
               <Input
                 id="name"
@@ -91,14 +87,12 @@ function NewOrganizationPage() {
                 className="bg-background"
                 {...register("name", { onChange: handleNameChange })}
               />
-              {errors.name && (
-                <FieldError>{t(errors.name.message!)}</FieldError>
-              )}
+              {errors.name && <FieldError>{translateDynamic(t, errors.name.message!)}</FieldError>}
             </Field>
 
             <Field>
               <FieldLabel htmlFor="slug">
-                <Trans t={t}>Slug</Trans>
+                <Trans>Slug</Trans>
               </FieldLabel>
               <Input
                 id="slug"
@@ -107,19 +101,17 @@ function NewOrganizationPage() {
                 className="bg-background"
                 {...register("slug")}
               />
-              {errors.slug && (
-                <FieldError>{t(errors.slug.message!)}</FieldError>
-              )}
+              {errors.slug && <FieldError>{translateDynamic(t, errors.slug.message!)}</FieldError>}
             </Field>
 
             <Field>
               <Button type="submit" isLoading={isSubmitting}>
-                <Trans t={t}>Create organization</Trans>
+                <Trans>Create organization</Trans>
               </Button>
             </Field>
           </FieldGroup>
         </form>
       </div>
     </div>
-  )
+  );
 }

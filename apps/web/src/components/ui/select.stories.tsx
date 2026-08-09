@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue, SelectGroup, SelectLabel, SelectSeparator } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+  SelectSeparator,
+} from "@/components/ui/select";
 
 const meta = {
   title: "UI/Select",
@@ -22,7 +31,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string>("");
 
     return (
@@ -41,7 +50,7 @@ export const Default: Story = {
 };
 
 export const WithGroups: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string>("");
 
     return (
@@ -70,7 +79,7 @@ export const WithGroups: Story = {
 };
 
 export const Disabled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string>("");
 
     return (
@@ -88,7 +97,7 @@ export const Disabled: Story = {
 };
 
 export const DisabledItem: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string>("");
 
     return (
@@ -109,7 +118,7 @@ export const DisabledItem: Story = {
 };
 
 export const Small: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string>("");
 
     return (
@@ -128,7 +137,7 @@ export const Small: Story = {
 };
 
 export const WithDefault: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string>("option-2");
 
     return (

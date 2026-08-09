@@ -15,7 +15,7 @@ export function toViewEvent(event: ApiEvent): ViewEvent {
     place: event.place,
     createdBy: event.createdBy,
     createdByName: event.createdByName,
-    createdAt: new Date(event.createdAt)
+    createdAt: new Date(event.createdAt),
   };
 }
 

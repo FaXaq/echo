@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react"
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { CalendarContext, type CalendarContextValue } from "./calendar-context"
-import { MonthView } from "./month-view"
-import type { CalendarEvent } from "./types"
+import { CalendarContext, type CalendarContextValue } from "./calendar-context";
+import { MonthView } from "./month-view";
+import type { CalendarEvent } from "./types";
 
 const noopContext: CalendarContextValue = {
   requestEventClick: () => {},
@@ -10,7 +10,7 @@ const noopContext: CalendarContextValue = {
   requestEventMove: () => {},
   requestEventResize: () => {},
   requestDayOverflow: () => {},
-}
+};
 
 const meta = {
   title: "UI/MonthView",
@@ -26,10 +26,10 @@ const meta = {
       </CalendarContext.Provider>
     ),
   ],
-} satisfies Meta<typeof MonthView>
+} satisfies Meta<typeof MonthView>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 function makeEvent(overrides: Partial<CalendarEvent>): CalendarEvent {
   return {
@@ -39,10 +39,13 @@ function makeEvent(overrides: Partial<CalendarEvent>): CalendarEvent {
     endDate: new Date("2026-08-03T10:00:00"),
     color: "blue",
     type: null,
-    organizationId: null,
+    organization: { id: null },
     place: null,
+    createdBy: "user-1",
+    createdByName: "Jane Doe",
+    createdAt: new Date(),
     ...overrides,
-  }
+  };
 }
 
 export const WithMultiDayEvents: Story = {
@@ -81,4 +84,4 @@ export const WithMultiDayEvents: Story = {
       }),
     ],
   },
-}
+};

@@ -3,7 +3,16 @@ import { createAccessControl } from "better-auth/plugins/access";
 import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
 import { z } from "zod";
 
-const fileActions = ["selfCreate", "selfRead", "selfDelete", "selfUpdate", "create", "read", "delete", "update"] as const;
+const fileActions = [
+  "selfCreate",
+  "selfRead",
+  "selfDelete",
+  "selfUpdate",
+  "create",
+  "read",
+  "delete",
+  "update",
+] as const;
 
 export const statement = {
   // we need to have this small element to create empty roles for bootstrapping RBAC

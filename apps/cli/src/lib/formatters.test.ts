@@ -31,10 +31,7 @@ describe("formatTable", () => {
   });
 
   it("pads columns to longest value", () => {
-    const rows = [
-      { name: "Al" },
-      { name: "Alexander" },
-    ];
+    const rows = [{ name: "Al" }, { name: "Alexander" }];
     const result = formatTable(rows);
     const lines = result.split("\n");
 

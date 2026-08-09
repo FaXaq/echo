@@ -24,8 +24,11 @@ export function makeGeocoding(config: { accessToken: string }): GeocodingPort {
       url.searchParams.set("q", trimmed);
       url.searchParams.set("access_token", config.accessToken);
       url.searchParams.set("limit", "10");
-      url.searchParams.set("language", "en")
-      url.searchParams.set("types", "postcode,locality,place,neighborhood,address,poi,street,category");
+      url.searchParams.set("language", "en");
+      url.searchParams.set(
+        "types",
+        "postcode,locality,place,neighborhood,address,poi,street,category",
+      );
 
       let response: Response;
       try {

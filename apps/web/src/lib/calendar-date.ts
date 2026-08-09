@@ -18,9 +18,7 @@ export function parseCalendarDate(value: string): Date | null {
   const date = new Date(year, month - 1, day);
 
   const isRealCalendarDate =
-    date.getFullYear() === year &&
-    date.getMonth() === month - 1 &&
-    date.getDate() === day;
+    date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 
   return isRealCalendarDate ? date : null;
 }

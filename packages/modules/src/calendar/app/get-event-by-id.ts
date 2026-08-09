@@ -1,5 +1,5 @@
 import type { KyselyDB } from "@echo/db";
-import { conflict, forbidden, notFound } from "@echo/errors";
+import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { CalendarEvent } from "../domain/index.js";
 import type { GetCalendarEventByIdQueryPort } from "../infrastructure/get-calendar-event-by-id.query.port.js";
@@ -10,17 +10,19 @@ export async function getEventById(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     getCalendarEventById: GetCalendarEventByIdQueryPort;
   },
-  input: { eventId: string, organizationId: string | null },
+  input: { eventId: string; organizationId: string | null },
 ): Promise<CalendarEvent> {
   const eventForPermissions = await deps.getCalendarEventById(deps.db, {
     eventId: input.eventId,
-    organizationId: null
+    organizationId: null,
   });
 
-  if (input.organizationId
-    && eventForPermissions?.organization?.id
-    && input.organizationId !== eventForPermissions.organization.id) {
-    throw notFound("CalendarEvent")
+  if (
+    input.organizationId &&
+    eventForPermissions?.organization?.id &&
+    input.organizationId !== eventForPermissions.organization.id
+  ) {
+    throw notFound("CalendarEvent");
   }
 
   if (eventForPermissions?.organization?.id) {
@@ -35,7 +37,7 @@ export async function getEventById(
     eventId: input.eventId,
   });
 
-  if (calendarEvent === undefined) throw notFound("CalendarEvent")
+  if (calendarEvent === undefined) throw notFound("CalendarEvent");
 
   return calendarEvent;
 }

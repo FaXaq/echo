@@ -16,9 +16,7 @@ export const registerBanCommand = (parent: Command) => {
         body: {
           userId: id,
           ...(opts.reason ? { banReason: opts.reason } : {}),
-          ...(opts.expires
-            ? { banExpiresIn: new Date(opts.expires).getTime() - Date.now() }
-            : {}),
+          ...(opts.expires ? { banExpiresIn: new Date(opts.expires).getTime() - Date.now() } : {}),
         },
         headers,
       });

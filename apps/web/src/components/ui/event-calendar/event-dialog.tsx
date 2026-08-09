@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react"
-import dayjs from "dayjs"
-import { Controller, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { useTranslation } from "react-i18next"
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useLingui } from "@lingui/react/macro";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import { translateDynamic } from "@/lib/dynamic-messages";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,8 +17,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -26,37 +27,38 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dialog";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
-import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors"
-import { getEventLabel, EventTypeIcon } from "./event-types"
-import { OrganizationField } from "./organization-field"
-import { PlaceField } from "./place-field"
-import { EVENT_TYPES, eventTypeSchema, type CalendarEvent, type CalendarEventRange, type EventColor } from "./types"
+import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors";
+import { getEventLabel, EventTypeIcon } from "./event-types";
+import { OrganizationField } from "./organization-field";
+import { PlaceField } from "./place-field";
+import {
+  EVENT_TYPES,
+  eventTypeSchema,
+  type CalendarEvent,
+  type CalendarEventRange,
+  type EventColor,
+} from "./types";
 
-const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm"
+const DATETIME_FORMAT = "YYYY-MM-DDTHH:mm";
 
 const placeSchema = z.object({
   name: z.string().min(1),
   address: z.string().min(1),
   lat: z.number(),
   lng: z.number(),
-})
+});
 
 const eventFormSchema = z
   .object({
@@ -73,21 +75,21 @@ const eventFormSchema = z
   .refine((data) => dayjs(data.endDate).isAfter(dayjs(data.startDate)), {
     error: "End date must be after start date",
     path: ["endDate"],
-  })
+  });
 
-type EventFormValues = z.infer<typeof eventFormSchema>
+type EventFormValues = z.infer<typeof eventFormSchema>;
 
 export type EventDialogState =
   | { mode: "create"; range: CalendarEventRange }
   | { mode: "edit"; event: CalendarEvent }
-  | null
+  | null;
 
 function stateToDefaultValues(
   state: EventDialogState,
-  defaultOrganizationId: string | null = null
+  defaultOrganizationId: string | null = null,
 ): EventFormValues {
   if (state?.mode === "edit") {
-    const { event } = state
+    const { event } = state;
     return {
       title: event.title,
       description: event.description ?? "",
@@ -98,11 +100,11 @@ function stateToDefaultValues(
       type: event.type,
       organizationId: event.organization.id,
       place: event.place,
-    }
+    };
   }
 
-  const start = state?.mode === "create" ? dayjs(state.range.start) : dayjs()
-  const allDay = state?.mode === "create" ? !!state.range.allDay : false
+  const start = state?.mode === "create" ? dayjs(state.range.start) : dayjs();
+  const allDay = state?.mode === "create" ? !!state.range.allDay : false;
 
   return {
     title: "",
@@ -114,15 +116,15 @@ function stateToDefaultValues(
     type: null,
     organizationId: defaultOrganizationId,
     place: null,
-  }
+  };
 }
 
 interface EventDialogProps {
-  state: EventDialogState
-  defaultOrganizationId?: string | null
-  onOpenChange: (open: boolean) => void
-  onSubmit: (event: CalendarEvent) => void | Promise<void>
-  onDelete: (id: string) => void | Promise<void>
+  state: EventDialogState;
+  defaultOrganizationId?: string | null;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: (event: CalendarEvent) => void | Promise<void>;
+  onDelete: (id: string) => void | Promise<void>;
 }
 
 export function EventDialog({
@@ -132,16 +134,16 @@ export function EventDialog({
   onSubmit,
   onDelete,
 }: EventDialogProps) {
-  const { t } = useTranslation("calendar")
+  const { t } = useLingui();
 
   // Keep rendering the last non-null state while the dialog plays its close
   // animation, so the content doesn't flicker/reset before it's done fading out.
-  const [content, setContent] = useState(state)
+  const [content, setContent] = useState(state);
   useEffect(() => {
-    if (state !== null) setContent(state)
-  }, [state])
+    if (state !== null) setContent(state);
+  }, [state]);
 
-  const isEdit = content?.mode === "edit"
+  const isEdit = content?.mode === "edit";
 
   const {
     register,
@@ -153,24 +155,19 @@ export function EventDialog({
   } = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: stateToDefaultValues(content, defaultOrganizationId),
-  })
+  });
 
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const allDay = watch("allDay");
 
   useEffect(() => {
-    if (state !== null) reset(stateToDefaultValues(state, defaultOrganizationId))
-  }, [state, defaultOrganizationId, reset])
-
+    if (state !== null) reset(stateToDefaultValues(state, defaultOrganizationId));
+  }, [state, defaultOrganizationId, reset]);
 
   const submit = async (values: EventFormValues) => {
-    const start = values.allDay
-      ? dayjs(values.startDate).startOf("day")
-      : dayjs(values.startDate)
-    const end = values.allDay
-      ? dayjs(values.endDate).endOf("day")
-      : dayjs(values.endDate)
+    const start = values.allDay ? dayjs(values.startDate).startOf("day") : dayjs(values.startDate);
+    const end = values.allDay ? dayjs(values.endDate).endOf("day") : dayjs(values.endDate);
 
     await onSubmit({
       id: isEdit ? content.event.id : crypto.randomUUID(),
@@ -186,68 +183,56 @@ export function EventDialog({
       // Those are mock values only to have a single interface between this component & others
       createdAt: isEdit ? content.event.createdAt : new Date(),
       createdBy: isEdit ? content.event.createdBy : "",
-      createdByName: isEdit ? content.event.createdByName : ""
-    })
-  }
+      createdByName: isEdit ? content.event.createdByName : "",
+    });
+  };
 
   const handleDelete = async (e: React.MouseEvent) => {
-    if (!isEdit) return
-    e.preventDefault()
-    setIsDeleting(true)
+    if (!isEdit) return;
+    e.preventDefault();
+    setIsDeleting(true);
     try {
-      await onDelete(content.event.id)
+      await onDelete(content.event.id);
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
-  }
+  };
 
   return (
     <Dialog open={state !== null} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md overflow-auto">
         <DialogHeader>
-          <DialogTitle>
-            {isEdit ? t("Edit event") : t("New event")}
-          </DialogTitle>
+          <DialogTitle>{isEdit ? t`Edit event` : t`New event`}</DialogTitle>
           <DialogDescription className="sr-only">
-            {isEdit ? t("Edit event") : t("New event")}
+            {isEdit ? t`Edit event` : t`New event`}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(submit)}>
           <FieldGroup className="pb-4">
             <Field>
-              <FieldLabel htmlFor="event-title">{t("Title")}</FieldLabel>
+              <FieldLabel htmlFor="event-title">{t`Title`}</FieldLabel>
               <Input id="event-title" {...register("title")} />
-              <FieldError>
-                {errors.title && t(errors.title.message!)}
-              </FieldError>
+              <FieldError>{errors.title && translateDynamic(t, errors.title.message!)}</FieldError>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-description">
-                {t("Description")}
-              </FieldLabel>
+              <FieldLabel htmlFor="event-description">{t`Description`}</FieldLabel>
               <Textarea id="event-description" {...register("description")} />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-place">{t("Place")}</FieldLabel>
+              <FieldLabel htmlFor="event-place">{t`Place`}</FieldLabel>
               <Controller
                 name="place"
                 control={control}
                 render={({ field }) => (
-                  <PlaceField
-                    id="event-place"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  <PlaceField id="event-place" value={field.value} onChange={field.onChange} />
                 )}
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-organization">
-                {t("Organization")}
-              </FieldLabel>
+              <FieldLabel htmlFor="event-organization">{t`Organization`}</FieldLabel>
               <Controller
                 name="organizationId"
                 control={control}
@@ -263,7 +248,7 @@ export function EventDialog({
             </Field>
 
             <Field orientation="horizontal">
-              <FieldLabel htmlFor="event-start">{t("Start")}</FieldLabel>
+              <FieldLabel htmlFor="event-start">{t`Start`}</FieldLabel>
               <Input
                 disabled={allDay}
                 id="event-start"
@@ -273,7 +258,7 @@ export function EventDialog({
             </Field>
 
             <Field orientation="horizontal">
-              <FieldLabel htmlFor="event-end">{t("End")}</FieldLabel>
+              <FieldLabel htmlFor="event-end">{t`End`}</FieldLabel>
               <Input
                 disabled={allDay}
                 id="event-end"
@@ -281,7 +266,9 @@ export function EventDialog({
                 {...register("endDate")}
               />
             </Field>
-            <FieldError>{errors.endDate && t(errors.endDate.message!)}</FieldError>
+            <FieldError>
+              {errors.endDate && translateDynamic(t, errors.endDate.message!)}
+            </FieldError>
 
             <Field orientation="horizontal">
               <FieldLabel htmlFor="event-all-day" className="gap-2">
@@ -291,12 +278,12 @@ export function EventDialog({
                   className="size-3.5"
                   {...register("allDay")}
                 />
-                {t("All day")}
+                {t`All day`}
               </FieldLabel>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-color">{t("Color")}</FieldLabel>
+              <FieldLabel htmlFor="event-color">{t`Color`}</FieldLabel>
               <Controller
                 name="color"
                 control={control}
@@ -309,7 +296,7 @@ export function EventDialog({
                             <span
                               className={cn(
                                 "mr-1.5 inline-block size-2 rounded-full",
-                                eventDotClasses[field.value]
+                                eventDotClasses[field.value],
                               )}
                             />
                             {t(COLOR_LABELS[field.value])}
@@ -323,7 +310,7 @@ export function EventDialog({
                           <span
                             className={cn(
                               "mr-1.5 inline-block size-2 rounded-full",
-                              eventDotClasses[color]
+                              eventDotClasses[color],
                             )}
                           />
                           {t(COLOR_LABELS[color])}
@@ -336,7 +323,7 @@ export function EventDialog({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-type">{t("Type")}</FieldLabel>
+              <FieldLabel htmlFor="event-type">{t`Type`}</FieldLabel>
               <Controller
                 name="type"
                 control={control}
@@ -350,25 +337,28 @@ export function EventDialog({
                     <SelectTrigger id="event-type" className="w-full">
                       <SelectValue>
                         {() => {
-                          if (field.value === null) return t("None")
+                          if (field.value === null) return t`None`;
                           return (
                             <>
-                              <EventTypeIcon type={field.value} className="mr-1.5 inline-block size-3.5" />
+                              <EventTypeIcon
+                                type={field.value}
+                                className="mr-1.5 inline-block size-3.5"
+                              />
                               {t(getEventLabel(field.value))}
                             </>
-                          )
+                          );
                         }}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">{t("None")}</SelectItem>
+                      <SelectItem value="none">{t`None`}</SelectItem>
                       {EVENT_TYPES.map((type) => {
                         return (
                           <SelectItem key={type} value={type}>
                             <EventTypeIcon type={type} className="mr-1.5 inline-block size-3.5" />
                             {t(getEventLabel(type))}
                           </SelectItem>
-                        )
+                        );
                       })}
                     </SelectContent>
                   </Select>
@@ -382,34 +372,22 @@ export function EventDialog({
               <AlertDialog>
                 <AlertDialogTrigger
                   render={
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      disabled={isSubmitting}
-                    />
+                    <Button type="button" variant="destructive" size="sm" disabled={isSubmitting} />
                   }
                 >
-                  {t("Delete")}
+                  {t`Delete`}
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>{t("Delete event?")}</AlertDialogTitle>
+                    <AlertDialogTitle>{t`Delete event?`}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      {t(
-                        "This will permanently delete this event. This action cannot be undone."
-                      )}
+                      {t`This will permanently delete this event. This action cannot be undone.`}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isDeleting}>
-                      {t("Cancel")}
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      isLoading={isDeleting}
-                      onClick={handleDelete}
-                    >
-                      {t("Delete")}
+                    <AlertDialogCancel disabled={isDeleting}>{t`Cancel`}</AlertDialogCancel>
+                    <AlertDialogAction isLoading={isDeleting} onClick={handleDelete}>
+                      {t`Delete`}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -419,23 +397,17 @@ export function EventDialog({
             )}
             <div className="flex gap-2">
               <DialogClose
-                render={
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled={isSubmitting}
-                  />
-                }
+                render={<Button type="button" variant="outline" disabled={isSubmitting} />}
               >
-                {t("Cancel")}
+                {t`Cancel`}
               </DialogClose>
               <Button type="submit" isLoading={isSubmitting}>
-                {isEdit ? t("Save changes") : t("Save")}
+                {isEdit ? t`Save changes` : t`Save`}
               </Button>
             </div>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

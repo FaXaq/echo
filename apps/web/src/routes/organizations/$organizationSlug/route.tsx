@@ -1,8 +1,8 @@
-import { authClient } from '@/lib/auth'
-import { Outlet } from '@tanstack/react-router';
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { authClient } from "@/lib/auth";
+import { Outlet } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/organizations/$organizationSlug')({
+export const Route = createFileRoute("/organizations/$organizationSlug")({
   beforeLoad: async ({ params }) => {
     const { data: organizations } = await authClient.organization.list();
     const org = organizations?.find((o) => o.slug === params.organizationSlug);
@@ -11,8 +11,8 @@ export const Route = createFileRoute('/organizations/$organizationSlug')({
     return { organizationId: org.id };
   },
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <Outlet />
+  return <Outlet />;
 }

@@ -1,27 +1,30 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
-import { SuspendedEventAttachments } from "./suspended-event-attachments"
-import * as fileResource from "@/services/resources/file"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen } from "@/lib/test-utils";
+import { describe, expect, it } from "vitest";
+import { SuspendedEventAttachments } from "./suspended-event-attachments";
+import * as fileResource from "@/services/resources/file";
 
 function renderWithFiles(files: fileResource.EventFile[]) {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  client.setQueryData(fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, files)
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  client.setQueryData(
+    fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey,
+    files,
+  );
   return render(
     <QueryClientProvider client={client}>
       <SuspendedEventAttachments eventId="event-1" />
-    </QueryClientProvider>
-  )
+    </QueryClientProvider>,
+  );
 }
 
 describe("SuspendedEventAttachments", () => {
   it("shows the empty state and a zero file-count badge when there are no files", async () => {
-    renderWithFiles([])
-    expect(await screen.findByText("No files linked yet.")).toBeInTheDocument()
-    expect(screen.getByText("0 files")).toBeInTheDocument()
-  })
+    renderWithFiles([]);
+    expect(await screen.findByText("No files linked yet.")).toBeInTheDocument();
+    expect(screen.getByText("0 files")).toBeInTheDocument();
+  });
 
-  it("groups files into audio, gallery, and documents sections", async () => {
+  it("renders every linked file with a file-count badge", async () => {
     renderWithFiles([
       {
         id: "f1",
@@ -41,12 +44,10 @@ describe("SuspendedEventAttachments", () => {
         sizeBytes: 20,
         uploadedByName: "Jane",
       } as fileResource.EventFile,
-    ])
+    ]);
 
-    expect(await screen.findByText("Audio")).toBeInTheDocument()
-    expect(screen.getByText("Documents")).toBeInTheDocument()
-    expect(screen.getByText("Player: https://example.com/demo.mp3")).toBeInTheDocument()
-    expect(screen.getByText("setlist.pdf")).toBeInTheDocument()
-    expect(screen.getByText("2 files")).toBeInTheDocument()
-  })
-})
+    expect(await screen.findByText("demo.mp3")).toBeInTheDocument();
+    expect(screen.getByText("setlist.pdf")).toBeInTheDocument();
+    expect(screen.getByText("2 files")).toBeInTheDocument();
+  });
+});

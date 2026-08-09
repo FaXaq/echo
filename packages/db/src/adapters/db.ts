@@ -10,7 +10,7 @@ export type DBConfig = {
   password: string;
   name: string;
   ssl?: boolean;
-}
+};
 
 export const makeDbAdapter = (config: DBConfig) => {
   const pool = new Pool({
@@ -18,16 +18,16 @@ export const makeDbAdapter = (config: DBConfig) => {
     host: config.host,
     user: config.user,
     password: config.password,
-    ssl: config.ssl ? { rejectUnauthorized: false } : false
-  })
+    ssl: config.ssl ? { rejectUnauthorized: false } : false,
+  });
 
   const dialect = new PostgresDialect({
-    pool
-  })
+    pool,
+  });
 
   const db = new Kysely<DB>({
-    dialect
-  })
+    dialect,
+  });
 
-  return { pool, db, dialect }
-}
+  return { pool, db, dialect };
+};

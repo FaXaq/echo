@@ -4,10 +4,7 @@ import { registerUserCommands } from "./commands/user/index";
 import { registerSessionCommands } from "./commands/session/index";
 import { registerDbCommands } from "./commands/db/index";
 
-program
-  .name("echo")
-  .description("Echo administration CLI")
-  .version("0.1.0");
+program.name("echo").description("Echo administration CLI").version("0.1.0");
 
 registerUserCommands(program);
 registerSessionCommands(program);

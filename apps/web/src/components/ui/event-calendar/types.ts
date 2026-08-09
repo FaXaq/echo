@@ -1,12 +1,6 @@
-import { z } from "zod"
+import { z } from "zod";
 
-export type EventColor =
-  | "blue"
-  | "green"
-  | "red"
-  | "yellow"
-  | "purple"
-  | "orange"
+export type EventColor = "blue" | "green" | "red" | "yellow" | "purple" | "orange";
 
 export const eventTypeSchema = z.enum([
   "unavailability",
@@ -14,46 +8,48 @@ export const eventTypeSchema = z.enum([
   "concert",
   "meeting",
   "class",
-])
-export type EventType = z.infer<typeof eventTypeSchema>
-export const EVENT_TYPES: EventType[] = eventTypeSchema.options
+]);
+export type EventType = z.infer<typeof eventTypeSchema>;
+export const EVENT_TYPES: EventType[] = eventTypeSchema.options;
 
 export interface EventPlace {
-  name: string
-  address: string
-  lat: number
-  lng: number
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
 }
 
 export interface CalendarEvent {
-  id: string
-  title: string
-  description?: string
-  startDate: Date
-  endDate: Date
-  allDay?: boolean
-  color: EventColor
-  type: EventType | null
-  organization: {
-    id: string,
-    name: string,
-    slug: string,
-  } | {
-    id: string | null
-  },
-  place: EventPlace | null
-  createdBy: string
-  createdByName: string
-  createdAt: Date
+  id: string;
+  title: string;
+  description?: string;
+  startDate: Date;
+  endDate: Date;
+  allDay?: boolean;
+  color: EventColor;
+  type: EventType | null;
+  organization:
+    | {
+        id: string;
+        name: string;
+        slug: string;
+      }
+    | {
+        id: string | null;
+      };
+  place: EventPlace | null;
+  createdBy: string;
+  createdByName: string;
+  createdAt: Date;
 }
 
-export type EventPayload = Omit<CalendarEvent, "createdBy" | "createdByName" |"createdAt">
+export type EventPayload = Omit<CalendarEvent, "createdBy" | "createdByName" | "createdAt">;
 
-export const calendarViewSchema = z.enum(["month", "week", "day", "agenda"])
-export type CalendarView = z.infer<typeof calendarViewSchema>
+export const calendarViewSchema = z.enum(["month", "week", "day", "agenda"]);
+export type CalendarView = z.infer<typeof calendarViewSchema>;
 
 export interface CalendarEventRange {
-  start: Date
-  end: Date
-  allDay?: boolean
+  start: Date;
+  end: Date;
+  allDay?: boolean;
 }

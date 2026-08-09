@@ -47,8 +47,8 @@ describe("renameFile", () => {
       kind: "document",
       mimeType: "application/pdf",
       sizeBytes: 100,
-      originalFilename: "renamed.pdf",
-      filename: "old.pdf",
+      originalFilename: "old.pdf",
+      filename: "renamed.pdf",
       s3Key: "key",
       status: "uploaded",
     });
@@ -57,7 +57,11 @@ describe("renameFile", () => {
       {
         db: {} as never,
         ...makeFakePermissionChecks({
-          userHasPermissionInOrganization: async () => ({ success: false, error: null, role: null }),
+          userHasPermissionInOrganization: async () => ({
+            success: false,
+            error: null,
+            role: null,
+          }),
         }),
       },
       { id: "f1", userId: "user-1", filename: "renamed.pdf" },
@@ -73,7 +77,11 @@ describe("renameFile", () => {
         {
           db: {} as never,
           ...makeFakePermissionChecks({
-            userHasPermissionInOrganization: async () => ({ success: false, error: null, role: null }),
+            userHasPermissionInOrganization: async () => ({
+              success: false,
+              error: null,
+              role: null,
+            }),
           }),
         },
         { id: "f1", userId: "user-1", filename: "renamed.pdf" },

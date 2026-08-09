@@ -19,7 +19,7 @@ export function getEventsQueryOptions(opts: { organizationId?: string } = {}) {
   });
 }
 
-export function getEventQueryOptions(opts: { eventId: string, organizationId?: string }) {
+export function getEventQueryOptions(opts: { eventId: string; organizationId?: string }) {
   return queryOptions({
     queryKey: getResourceKey("listEvents", opts),
     queryFn: async ({ queryKey, signal }) => {

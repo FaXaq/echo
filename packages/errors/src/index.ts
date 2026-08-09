@@ -72,17 +72,10 @@ export class UnknownError extends AppError {
 
 export const notFound = (entity: string) => new NotFoundError(entity);
 export const conflict = (message: string) => new ConflictError(message);
-export const dataValidationFailed = (
-  validationsFailed: ZodError[],
-  entity: string,
-) => new DataValidationFailedError(validationsFailed, entity);
+export const dataValidationFailed = (validationsFailed: ZodError[], entity: string) =>
+  new DataValidationFailedError(validationsFailed, entity);
 export const dbError = (message: string) => new DatabaseError(message);
 export const unauthorized = (message: string) => new UnauthorizedError(message);
-export const forbidden = ({
-  entity,
-  action,
-}: {
-  entity: string;
-  action: string;
-}) => new ForbiddenError(entity, action);
+export const forbidden = ({ entity, action }: { entity: string; action: string }) =>
+  new ForbiddenError(entity, action);
 export const unknownError = (message?: string) => new UnknownError(message);

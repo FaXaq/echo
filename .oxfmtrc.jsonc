@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/.turbo/**",
+    "pnpm-lock.yaml",
+    "**/*.md",
+    "**/schema.d.ts",
+    "**/routeTree.gen.ts",
+  ],
+}

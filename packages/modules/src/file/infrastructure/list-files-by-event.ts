@@ -12,5 +12,5 @@ export async function listFilesByEvent(db: KyselyDB, eventId: string): Promise<F
     .where("status", "=", "uploaded")
     .execute();
 
-  return rows.map(row => toFileRecord({ ...row, uploaded_by_name: row.uploaded_by_name }));
+  return rows.map((row) => toFileRecord({ ...row, uploaded_by_name: row.uploaded_by_name }));
 }

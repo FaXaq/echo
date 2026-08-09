@@ -54,10 +54,7 @@ export function makeLogger(
   options: LoggerOptions | undefined,
   stream: pino.DestinationStream,
 ): Logger;
-export function makeLogger(
-  options?: LoggerOptions,
-  stream?: pino.DestinationStream,
-): Logger {
+export function makeLogger(options?: LoggerOptions, stream?: pino.DestinationStream): Logger {
   const level = resolveLevel(options);
   const pinoOptions: pino.LoggerOptions = {
     level,

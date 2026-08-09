@@ -8,4 +8,4 @@ export const makeSelectFileByIdQuery = (db: KyselyDB) => (id: string) => {
     .select("user.name as uploaded_by_name")
     .where("file.id", "=", id)
     .executeTakeFirst();
-}
+};

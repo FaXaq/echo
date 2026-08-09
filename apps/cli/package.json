@@ -1,10 +1,10 @@
 {
   "name": "@echo/cli",
   "private": true,
-  "type": "module",
   "bin": {
     "echo": "./dist/main.js"
   },
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "execute": "tsx src/main.ts",
@@ -31,18 +31,18 @@
   "dependencies": {
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
-    "better-auth": "^1.6.24",
+    "better-auth": "catalog:",
     "commander": "^13.1.0",
-    "dotenv": "^16.6.1",
-    "kysely": "^0.27.6",
-    "zod": "^4.4.3"
+    "dotenv": "catalog:",
+    "kysely": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@better-auth/cli": "^1.4.21",
+    "@better-auth/cli": "catalog:",
     "@echo/config": "workspace:*",
-    "@types/node": "^25.9.5",
-    "tsx": "^4.23.1",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.7"
+    "@types/node": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

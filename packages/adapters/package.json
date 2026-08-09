@@ -19,7 +19,6 @@
   "scripts": {
     "build": "tsc --build",
     "test": "vitest run",
-    "lint": "eslint src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -30,8 +29,8 @@
   },
   "devDependencies": {
     "@echo/config": "workspace:*",
-    "@types/nodemailer": "^7.0.12",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.10"
+    "@types/nodemailer": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

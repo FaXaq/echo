@@ -1,53 +1,50 @@
-import { useState } from "react"
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router"
-import { z } from "zod"
-import { GalleryVerticalEnd } from "lucide-react"
-import {
-  ResetPasswordForm,
-  type ResetPasswordFormValues,
-} from "@/components/reset-password-form"
-import { authClient } from "@/lib/auth"
+import { useState } from "react";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { z } from "zod";
+import { GalleryVerticalEnd } from "lucide-react";
+import { ResetPasswordForm, type ResetPasswordFormValues } from "@/components/reset-password-form";
+import { authClient } from "@/lib/auth";
 
 const searchSchema = z.object({
   token: z.string().optional(),
-})
+});
 
 export const Route = createFileRoute("/reset-password")({
   validateSearch: searchSchema,
   beforeLoad: ({ search }) => {
     if (!search.token) {
-      throw redirect({ to: "/" })
+      throw redirect({ to: "/" });
     }
   },
   component: ResetPasswordPage,
-})
+});
 
 function ResetPasswordPage() {
-  const { token } = Route.useSearch()
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [serverError, setServerError] = useState<string | undefined>()
+  const { token } = Route.useSearch();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | undefined>();
 
   const handleSubmit = async (values: ResetPasswordFormValues) => {
-    if (!token) return
-    setIsLoading(true)
-    setServerError(undefined)
+    if (!token) return;
+    setIsLoading(true);
+    setServerError(undefined);
 
     try {
       const result = await authClient.resetPassword({
         token,
         newPassword: values.password,
-      })
+      });
 
       if (result.error) {
-        setServerError(result.error.message ?? "Password reset failed")
+        setServerError(result.error.message ?? "Password reset failed");
       } else {
-        router.navigate({ to: "/" })
+        router.navigate({ to: "/" });
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -78,5 +75,5 @@ function ResetPasswordPage() {
         />
       </div>
     </div>
-  )
+  );
 }
