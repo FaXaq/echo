@@ -12,6 +12,9 @@ catalogs:
     '@lingui/core':
       specifier: ^6.6.0
       version: 6.6.0
+    '@lingui/message-utils':
+      specifier: ^6.6.0
+      version: 6.6.0
     '@lingui/react':
       specifier: ^6.6.0
       version: 6.6.0
@@ -552,6 +555,9 @@ importers:
       '@lingui/core':
         specifier: 'catalog:'
         version: 6.6.0(@babel/core@7.29.7)(@babel/types@7.29.7)
+      '@lingui/message-utils':
+        specifier: 'catalog:'
+        version: 6.6.0
     devDependencies:
       '@echo/config':
         specifier: workspace:*

@@ -17,3 +17,15 @@ export const emailMessages = {
   },
   invitationButton: { id: "email.invitation.button", message: "Accept invitation" },
 } satisfies Record<string, MessageDescriptor>;
+
+// These ids live outside apps/web/src, so `lingui extract` never finds them and
+// would mark any .po entry for them as obsolete. Translations are kept here by
+// hand instead, and merged into the server-side catalog in index.ts.
+export const emailTranslationsFr: Record<string, string> = {
+  "email.resetPassword.subject": "Réinitialisez votre mot de passe Echo",
+  "email.resetPassword.body": "Vous avez demandé une réinitialisation de mot de passe.",
+  "email.resetPassword.button": "Réinitialiser mon mot de passe",
+  "email.invitation.subject": "Invitation à rejoindre {orgName}",
+  "email.invitation.body": "Vous avez été invité(e) à rejoindre {orgName}",
+  "email.invitation.button": "Accepter l'invitation",
+};

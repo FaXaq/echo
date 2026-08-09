@@ -5,6 +5,7 @@ packages:
 catalog:
   "@better-auth/cli": ^1.4.21
   "@lingui/core": ^6.6.0
+  "@lingui/message-utils": ^6.6.0
   "@lingui/react": ^6.6.0
   "@trpc/server": ^11.18.0
   "@types/mjml": ^4.7.4
