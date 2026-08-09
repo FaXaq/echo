@@ -24,8 +24,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline">Hover me</Button>
+      <TooltipTrigger render={<Button variant="outline" />}>
+        Hover me
       </TooltipTrigger>
       <TooltipContent>
         <p>This is a tooltip</p>
@@ -37,8 +37,8 @@ export const Default: Story = {
 export const Top: Story = {
   render: () => (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline">Top</Button>
+      <TooltipTrigger render={<Button variant="outline" />}>
+        Top
       </TooltipTrigger>
       <TooltipContent side="top">
         <p>Tooltip on top</p>
@@ -50,8 +50,8 @@ export const Top: Story = {
 export const Bottom: Story = {
   render: () => (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline">Bottom</Button>
+      <TooltipTrigger render={<Button variant="outline" />}>
+        Bottom
       </TooltipTrigger>
       <TooltipContent side="bottom">
         <p>Tooltip on bottom</p>

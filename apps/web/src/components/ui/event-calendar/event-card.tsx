@@ -48,12 +48,12 @@ export function EventCard({ event, className }: EventCardProps) {
         className
       )}
     >
+      <EventTypeIcon type={event.type} className="size-3" />
       {!event.allDay && (
         <span className="shrink-0 tabular-nums opacity-80">
           {dayjs(event.startDate).format("h:mm A")}
         </span>
       )}
-      {event.type && <EventTypeIcon type={event.type} className="size-3" />}
       <span className="truncate">{event.title}</span>
     </button>
   )

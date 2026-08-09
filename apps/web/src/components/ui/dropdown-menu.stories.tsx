@@ -30,11 +30,13 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open Menu</Button>
+      <DropdownMenuTrigger render={<Button variant="outline" />}>
+        Open Menu
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
@@ -56,11 +58,13 @@ export const Default: Story = {
 export const WithCheckboxes: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">View Options</Button>
+      <DropdownMenuTrigger render={<Button variant="outline" />}>
+        View Options
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem checked>Show toolbar</DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem>Show status bar</DropdownMenuCheckboxItem>
@@ -73,8 +77,8 @@ export const WithCheckboxes: Story = {
 export const WithSubmenu: Story = {
   render: () => (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Actions</Button>
+      <DropdownMenuTrigger render={<Button variant="outline" />}>
+        Actions
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>Edit</DropdownMenuItem>

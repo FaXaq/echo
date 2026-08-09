@@ -30,10 +30,7 @@ async function canRead(
     return success;
   }
 
-  const { success } = await deps.userHasPermission({
-    permissions: { file: ["read"] },
-  });
-  return success;
+  return false;
 }
 
 export async function listEventFiles(

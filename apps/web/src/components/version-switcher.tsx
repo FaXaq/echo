@@ -40,28 +40,30 @@ export function VersionSwitcher({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <Layout className="size-4" />
-              </div>
-              <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-medium">{selectedVersion}</span>
-              </div>
-              <ChevronDown className="ml-auto size-4" />
-            </SidebarMenuButton>
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <Layout className="size-4" />
+            </div>
+            <div className="flex flex-col gap-0.5 leading-none">
+              <span className="font-medium">{selectedVersion}</span>
+            </div>
+            <ChevronDown className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width)"
+            className="w-(--anchor-width)"
             align="start"
           >
             {versions.map((version) => (
               <DropdownMenuItem
                 key={version}
-                onSelect={() => handleSelect(version)}
+                onClick={() => handleSelect(version)}
               >
                 {version}
                 {version === selectedVersion && (
@@ -72,7 +74,7 @@ export function VersionSwitcher({
             {onCreateNew && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={onCreateNew}>
+                <DropdownMenuItem onClick={onCreateNew}>
                   <Plus className="size-4" />
                   <Trans t={t}>New project</Trans>
                 </DropdownMenuItem>

@@ -96,7 +96,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger id="role" disabled={isSubmitting}>
-                <SelectValue />
+                <SelectValue>{() => t(field.value)}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="member">{t("member")}</SelectItem>

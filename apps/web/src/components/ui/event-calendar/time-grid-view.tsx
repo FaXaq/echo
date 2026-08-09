@@ -91,7 +91,7 @@ export function TimeGridView({ days, events }: TimeGridViewProps) {
         }
       />
 
-      <div ref={scrollRef} className="flex flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="flex flex-1 overflow-y-auto items-start">
         <div className="w-14 shrink-0">
           {HOURS.map((hour) => (
             <div

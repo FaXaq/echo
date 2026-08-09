@@ -34,10 +34,8 @@ export function DynamicBreadcrumb() {
       <BreadcrumbList>
         <BreadcrumbItem className={crumbs.length > 0 ? "hidden md:block" : ""}>
           {crumbs.length > 0 ? (
-            <BreadcrumbLink asChild>
-              <Link to="/">
-                <Home className="size-4" />
-              </Link>
+            <BreadcrumbLink render={<Link to="/" />}>
+              <Home className="size-4" />
             </BreadcrumbLink>
           ) : (
             <BreadcrumbPage>
@@ -53,8 +51,8 @@ export function DynamicBreadcrumb() {
               {index === crumbs.length - 1 ? (
                 <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
               ) : (
-                <BreadcrumbLink asChild>
-                  <Link to={crumb.pathname}>{crumb.label}</Link>
+                <BreadcrumbLink render={<Link to={crumb.pathname} />}>
+                  {crumb.label}
                 </BreadcrumbLink>
               )}
             </BreadcrumbItem>

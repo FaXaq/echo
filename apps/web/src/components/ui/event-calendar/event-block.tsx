@@ -69,7 +69,7 @@ export function EventBlock({ event, day, columnRef }: EventBlockProps) {
       )}
     >
       <p className="flex items-center gap-1 truncate">
-        {event.type && <EventTypeIcon type={event.type} className="size-3" />}
+        <EventTypeIcon type={event.type} className="size-3" />
         <span className="truncate">{event.title}</span>
       </p>
       <p className="truncate tabular-nums opacity-80">

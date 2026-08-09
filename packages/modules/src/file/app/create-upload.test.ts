@@ -19,7 +19,7 @@ describe("createUpload", () => {
           s3Storage: makeFakeS3Storage(),
           ...makeFakePermissionChecks(),
         },
-        { ...baseInput, mimeType: "application/pdf" },
+        { ...baseInput, mimeType: "application/zip" },
       ),
     ).rejects.toBeInstanceOf(ConflictError);
   });

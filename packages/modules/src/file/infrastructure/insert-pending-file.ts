@@ -26,6 +26,7 @@ export async function insertPendingFile(
       kind: input.kind,
       mime_type: input.mimeType,
       size_bytes: input.sizeBytes,
+      filename: input.originalFilename,
       original_filename: input.originalFilename,
       s3_key: input.s3Key,
       status: "pending",
@@ -33,11 +34,11 @@ export async function insertPendingFile(
     .returningAll()
     .executeTakeFirstOrThrow();
 
-  const { username } = await db
+  const { name } = await db
     .selectFrom("user")
-    .select("username")
+    .select("name")
     .where("user.id", "=", row.uploaded_by)
     .executeTakeFirstOrThrow();
 
-  return toFileRecord({ ...row, uploadedByName: username });
+  return toFileRecord({ ...row, uploaded_by_name: name });
 }

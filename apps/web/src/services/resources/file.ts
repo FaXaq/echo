@@ -68,3 +68,16 @@ export function useDeleteFileMutation({ onSuccess }: { onSuccess?: () => void } 
     },
   });
 }
+
+export function useRenameFileMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string; filename: string }) =>
+      apiClient.file.renameFile.mutate(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
+}

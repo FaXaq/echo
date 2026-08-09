@@ -1,4 +1,4 @@
-export type FileKind = "audio" | "video" | "image";
+export type FileKind = "audio" | "video" | "image" | "document";
 export type FileStatus = "pending" | "uploaded";
 
 export const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024;
@@ -7,6 +7,11 @@ export const MIME_TYPES_BY_KIND: Record<FileKind, readonly string[]> = {
   audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/flac", "audio/mp4"],
   video: ["video/mp4", "video/webm", "video/quicktime"],
   image: ["image/png", "image/jpeg", "image/webp", "image/gif"],
+  document: [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ],
 };
 
 export function kindForMimeType(mimeType: string): FileKind | null {
@@ -29,6 +34,7 @@ export type FileRecord = {
   kind: FileKind;
   mimeType: string;
   sizeBytes: number;
+  filename: string;
   originalFilename: string;
   s3Key: string;
   status: FileStatus;

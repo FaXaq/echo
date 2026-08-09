@@ -92,3 +92,17 @@ export function toFixedNumber(num: number, digits: number, base = 10) {
   const pow = Math.pow(base, digits)
   return Math.round(num * pow) / pow
 }
+
+export function mergeRefs<T>(
+  ...refs: (React.Ref<T> | undefined)[]
+): React.RefCallback<T> {
+  return (value) => {
+    for (const ref of refs) {
+      if (typeof ref === "function") {
+        ref(value)
+      } else if (ref && "current" in ref) {
+        ;(ref as React.RefObject<T | null>).current = value
+      }
+    }
+  }
+}

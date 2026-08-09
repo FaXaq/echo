@@ -1,21 +1,15 @@
+import type { Selectable } from "kysely";
 import type { FileKind, FileRecord, FileStatus } from "../domain/index.js";
+import type { DB } from "@echo/db";
 
-export type FileRow = {
-  id: string;
-  event_id: string | null;
-  organization_id: string | null;
-  uploaded_by: string;
-  kind: string;
-  mime_type: string;
-  size_bytes: number;
-  original_filename: string;
-  uploadedByName?: string | null;
-  s3_key: string;
-  status: string;
+export type FileRow = Selectable<DB["file"]> & {
+  uploaded_by_name: string | null;
 };
 
 function toFileKind(value: string): FileKind {
-  if (value === "audio" || value === "video" || value === "image") return value;
+  if (value === "audio" || value === "video" || value === "image" || value === "document") {
+    return value;
+  }
   throw new Error(`Unknown file kind: ${value}`);
 }
 
@@ -30,10 +24,11 @@ export function toFileRecord(row: FileRow): FileRecord {
     eventId: row.event_id,
     organizationId: row.organization_id,
     uploadedBy: row.uploaded_by,
-    uploadedByName: row.uploadedByName ?? row.uploaded_by,
+    uploadedByName: row.uploaded_by_name ?? row.uploaded_by,
     kind: toFileKind(row.kind),
     mimeType: row.mime_type,
     sizeBytes: row.size_bytes,
+    filename: row.filename,
     originalFilename: row.original_filename,
     s3Key: row.s3_key,
     status: toFileStatus(row.status),

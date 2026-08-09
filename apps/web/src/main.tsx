@@ -1,4 +1,5 @@
 import "./i18n";
+import "./lib/dayjs";
 import "./index.css";
 
 import { StrictMode } from "react";
