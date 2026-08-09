@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { EventCalendar, calendarViewSchema } from "@/ui/event-calendar";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/organizations/$organizationSlug/calendar/
 });
 
 function OrganizationCalendarPage() {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const { organizationId } = Route.useRouteContext();
   const { organizationSlug } = Route.useParams();
   const search = Route.useSearch();
@@ -76,10 +76,8 @@ function OrganizationCalendarPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">{t("Schedule")}</h1>
-        <p className="text-muted-foreground">
-          {t("Manage your organization's events and schedule")}
-        </p>
+        <h1 className="text-3xl font-bold mb-2">{t`Schedule`}</h1>
+        <p className="text-muted-foreground">{t`Manage your organization's events and schedule`}</p>
       </div>
       <EventCalendar
         events={events.map(toViewEvent)}

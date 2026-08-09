@@ -3,12 +3,13 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
 import { authClient } from "@/lib/auth";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { trpcLoader } from "@/lib/trpc";
 import dayjs from "dayjs";
 import { Landing } from "./-landing";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 const searchSchema = z.object({
   id: z.string().optional(),
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/accept-invitation")({
 
 function AcceptInvitationPage() {
   const { invitation, session } = Route.useLoaderData();
-  const { t } = useTranslation("members");
+  const { t } = useLingui();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | undefined>();
@@ -48,7 +49,7 @@ function AcceptInvitationPage() {
   if (!invitation) {
     return (
       <p>
-        <Trans t={t}>Cannot find the invitation you're looking for</Trans>
+        <Trans>Cannot find the invitation you're looking for</Trans>
       </p>
     );
   }
@@ -56,9 +57,7 @@ function AcceptInvitationPage() {
   if (invitation.status !== "pending" || dayjs(invitation.expiresAt).isBefore(dayjs())) {
     return (
       <p>
-        <Trans t={t}>
-          Invitation has expired or already been processed. Please, request a new one.
-        </Trans>
+        <Trans>Invitation has expired or already been processed. Please, request a new one.</Trans>
       </p>
     );
   }
@@ -75,7 +74,7 @@ function AcceptInvitationPage() {
         invitationId: invitation.id,
       });
       if (result.error) {
-        setServerError(result.error.message ?? t("Failed to accept invitation"));
+        setServerError(result.error.message ?? t`Failed to accept invitation`);
       } else {
         router.navigate({ to: "/" });
       }
@@ -98,14 +97,14 @@ function AcceptInvitationPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center gap-4 text-center">
             <p>
-              <Trans t={t}>You have been invited to join</Trans>{" "}
+              <Trans>You have been invited to join</Trans>{" "}
               <strong>{invitation.organizationName}</strong>
             </p>
-            {serverError && <FieldError>{t(serverError)}</FieldError>}
+            {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
             <Button onClick={handleAccept} isLoading={isLoading}>
-              <Trans t={t}>Accept invitation</Trans>
+              <Trans>Accept invitation</Trans>
             </Button>
-            <a href="/">{t("Back to home")}</a>
+            <a href="/">{t`Back to home`}</a>
           </div>
         </div>
       </div>

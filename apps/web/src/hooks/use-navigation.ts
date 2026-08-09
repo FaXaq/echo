@@ -1,7 +1,7 @@
 import { authClient } from "@/lib/auth";
 import type { FileRouteTypes } from "@/routeTree.gen";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 type NavItem = {
   title: string;
@@ -20,7 +20,7 @@ type OrganizationOption = Omit<
 > & { id: string | null };
 
 export function useNavigation() {
-  const { t } = useTranslation("navigation");
+  const { t } = useLingui();
   const { data: organizations } = authClient.useListOrganizations();
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export function useNavigation() {
     : null;
 
   const orgOptions: OrganizationOption[] = [
-    { id: PERSONAL_ID, name: t("Personal"), createdAt: new Date(), slug: "" },
+    { id: PERSONAL_ID, name: t`Personal`, createdAt: new Date(), slug: "" },
     ...(organizations ?? []),
   ];
 
@@ -46,11 +46,11 @@ export function useNavigation() {
   const slug = activeOrganization?.slug ?? "";
   const personalNavGroups: NavGroup[] = [
     {
-      title: t("Personal"),
+      title: t`Personal`,
       items: [
-        { title: t("Calendar"), to: "/calendar" },
-        { title: t("Practice"), to: "/" },
-        { title: t("Backlog"), to: "/" },
+        { title: t`Calendar`, to: "/calendar" },
+        { title: t`Practice`, to: "/" },
+        { title: t`Backlog`, to: "/" },
       ],
     },
   ];
@@ -60,22 +60,22 @@ export function useNavigation() {
       title: activeOrganization?.name ?? "",
       items: [
         {
-          title: t("Calendar"),
+          title: t`Calendar`,
           to: "/organizations/$organizationSlug/calendar",
           params: { organizationSlug: slug },
         },
         {
-          title: t("Setlist"),
+          title: t`Setlist`,
           to: "/organizations/$organizationSlug",
           params: { organizationSlug: slug },
         },
         {
-          title: t("Drive"),
+          title: t`Drive`,
           to: "/organizations/$organizationSlug",
           params: { organizationSlug: slug },
         },
         {
-          title: t("Members"),
+          title: t`Members`,
           to: "/organizations/$organizationSlug/members",
           params: { organizationSlug: slug },
         },

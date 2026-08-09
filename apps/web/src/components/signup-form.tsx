@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useLingui } from "@lingui/react/macro";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 const schema = z
   .object({
@@ -49,7 +50,7 @@ export function SignupForm({
   serverError,
   className,
 }: SignupFormProps) {
-  const { t } = useTranslation("auth");
+  const { t } = useLingui();
 
   const {
     register,
@@ -64,18 +65,18 @@ export function SignupForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">
-            <Trans t={t}>Create an account</Trans>
+            <Trans>Create an account</Trans>
           </h1>
           <p className="text-sm text-balance text-muted-foreground">
-            <Trans t={t}>Fill in the details below to get started</Trans>
+            <Trans>Fill in the details below to get started</Trans>
           </p>
         </div>
 
-        {serverError && <FieldError>{t(serverError)}</FieldError>}
+        {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
         <Field>
           <FieldLabel htmlFor="name">
-            <Trans t={t}>Full name</Trans>
+            <Trans>Full name</Trans>
           </FieldLabel>
           <Input
             id="name"
@@ -85,12 +86,12 @@ export function SignupForm({
             className="bg-background"
             {...register("name")}
           />
-          {errors.name && <FieldError>{t(errors.name.message!)}</FieldError>}
+          {errors.name && <FieldError>{translateDynamic(t, errors.name.message!)}</FieldError>}
         </Field>
 
         <Field>
           <FieldLabel htmlFor="username">
-            <Trans t={t}>Username</Trans>
+            <Trans>Username</Trans>
           </FieldLabel>
           <Input
             id="username"
@@ -100,12 +101,14 @@ export function SignupForm({
             className="bg-background"
             {...register("username")}
           />
-          {errors.username && <FieldError>{t(errors.username.message!)}</FieldError>}
+          {errors.username && (
+            <FieldError>{translateDynamic(t, errors.username.message!)}</FieldError>
+          )}
         </Field>
 
         <Field>
           <FieldLabel htmlFor="email">
-            <Trans t={t}>Email</Trans>
+            <Trans>Email</Trans>
           </FieldLabel>
           <Input
             id="email"
@@ -115,12 +118,12 @@ export function SignupForm({
             className="bg-background"
             {...register("email")}
           />
-          {errors.email && <FieldError>{t(errors.email.message!)}</FieldError>}
+          {errors.email && <FieldError>{translateDynamic(t, errors.email.message!)}</FieldError>}
         </Field>
 
         <Field>
           <FieldLabel htmlFor="password">
-            <Trans t={t}>Password</Trans>
+            <Trans>Password</Trans>
           </FieldLabel>
           <Input
             id="password"
@@ -129,12 +132,14 @@ export function SignupForm({
             className="bg-background"
             {...register("password")}
           />
-          {errors.password && <FieldError>{t(errors.password.message!)}</FieldError>}
+          {errors.password && (
+            <FieldError>{translateDynamic(t, errors.password.message!)}</FieldError>
+          )}
         </Field>
 
         <Field>
           <FieldLabel htmlFor="confirmPassword">
-            <Trans t={t}>Confirm password</Trans>
+            <Trans>Confirm password</Trans>
           </FieldLabel>
           <Input
             id="confirmPassword"
@@ -143,18 +148,20 @@ export function SignupForm({
             className="bg-background"
             {...register("confirmPassword")}
           />
-          {errors.confirmPassword && <FieldError>{t(errors.confirmPassword.message!)}</FieldError>}
+          {errors.confirmPassword && (
+            <FieldError>{translateDynamic(t, errors.confirmPassword.message!)}</FieldError>
+          )}
         </Field>
 
         <Field>
           <Button type="submit" isLoading={isLoading}>
-            <Trans t={t}>Create account</Trans>
+            <Trans>Create account</Trans>
           </Button>
         </Field>
 
         {onLoginClick && (
           <p className="text-center text-sm text-muted-foreground">
-            <Trans t={t}>
+            <Trans>
               Already have an account?{" "}
               <button
                 type="button"

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { authClient } from "@/lib/auth";
 import { Button } from "@/ui/button";
@@ -64,7 +64,7 @@ export const Route = createFileRoute("/organizations/$organizationSlug/members/"
 });
 
 function MembersPage() {
-  const { t } = useTranslation("members");
+  const { t } = useLingui();
   const { activeOrganization, members, invitations, currentMemberRole, currentUserId } =
     Route.useLoaderData();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -81,17 +81,15 @@ function MembersPage() {
     <div className="p-6">
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">{t("Members")}</h1>
-          <p className="text-muted-foreground">
-            {t("Manage members and invitations for your project")}
-          </p>
+          <h1 className="text-3xl font-bold mb-2">{t`Members`}</h1>
+          <p className="text-muted-foreground">{t`Manage members and invitations for your project`}</p>
         </div>
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger render={<Button />}>{t("Invite a member")}</SheetTrigger>
+          <SheetTrigger render={<Button />}>{t`Invite a member`}</SheetTrigger>
           <SheetContent className="flex flex-col">
             <SheetHeader>
-              <SheetTitle>{t("Invite a member")}</SheetTitle>
-              <SheetDescription>{t("Add a new member to your organization")}</SheetDescription>
+              <SheetTitle>{t`Invite a member`}</SheetTitle>
+              <SheetDescription>{t`Add a new member to your organization`}</SheetDescription>
             </SheetHeader>
             <div className="flex-1 overflow-auto px-6">
               <InviteForm organizationId={activeOrganization.id} onSuccess={handleInviteSuccess} />

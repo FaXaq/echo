@@ -5,6 +5,8 @@ import "./index.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "@tanstack/react-router";
+import { I18nProvider } from "@lingui/react";
+import { i18n } from "@lingui/core";
 import { authClient } from "./lib/auth";
 import { router } from "./router";
 
@@ -16,6 +18,8 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <RouterProvider router={router} context={{ auth: authClient }} />
+    <I18nProvider i18n={i18n}>
+      <RouterProvider router={router} context={{ auth: authClient }} />
+    </I18nProvider>
   </StrictMode>,
 );

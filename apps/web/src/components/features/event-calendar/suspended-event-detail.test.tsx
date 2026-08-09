@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/lib/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { SuspendedEventDetail } from "./suspended-event-detail";
 import * as calendarResource from "@/services/resources/calendar";

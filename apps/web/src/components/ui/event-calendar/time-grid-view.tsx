@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import dayjs from "dayjs";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 import { cn } from "@/lib/utils";
 
@@ -150,12 +150,12 @@ function AllDayRow({
   scrollbarWidth: number;
   onCreate: (day: Date) => void;
 }) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
 
   return (
     <div className="flex border-b">
       <div className="flex w-14 shrink-0 items-center justify-end pr-2 text-right text-[0.625rem] text-muted-foreground">
-        {t("All day")}
+        {t`All day`}
       </div>
       {days.map((day) => (
         <div

@@ -1,38 +1,19 @@
-import i18next from "i18next";
-import en from "../locales/en.json" with { type: "json" };
-import fr from "../locales/fr.json" with { type: "json" };
+import { setupI18n } from "@lingui/core";
+import { messages as en } from "../locales/en/messages";
+import { messages as fr } from "../locales/fr/messages";
 
-export const resources = {
-  en,
-  fr,
-} as const;
+export const catalogs = { en, fr };
 
-export type AppResources = typeof resources;
+export type Locale = keyof typeof catalogs;
+export const locales: Locale[] = ["en", "fr"];
 
-type Namespace = keyof AppResources["en"];
-type TranslationKey<N extends Namespace> = keyof AppResources["en"][N] & string;
+export const toLocale = (value: string | null | undefined): Locale =>
+  value === "en" || value === "fr" ? value : "fr";
 
 /**
  * Create a synchronous i18n instance for server-side use (e.g., email templates).
- * Does not require async initialization since resources are provided upfront.
+ * A fresh instance per call keeps concurrent sends on different locales isolated.
  */
-export const makeServerI18n = (lang = "fr") => {
-  const i18n = i18next.createInstance();
-  i18n.init({
-    resources,
-    lng: lang,
-    fallbackLng: "fr",
-    initImmediate: false,
-  });
+export const makeServerI18n = (locale: Locale = "fr") => setupI18n({ locale, messages: catalogs });
 
-  const t = <N extends Namespace>(
-    ns: N,
-    key: TranslationKey<N>,
-    vars?: Record<string, string>,
-  ): string => {
-    const result = i18n.t(key, { ns, ...vars });
-    return typeof result === "string" ? result : key;
-  };
-
-  return t;
-};
+export { emailMessages } from "./email-messages";

@@ -21,6 +21,24 @@
       "sourceType": "github",
       "computedHash": "9105cc29a462e8d07da45bbdbc90c3a60be3ba32fbd9d99d49944f5b971f8f96"
     },
+    "enhanced-message-context": {
+      "source": "lingui/skills",
+      "sourceType": "github",
+      "skillPath": "skills/enhanced-message-context/SKILL.md",
+      "computedHash": "84d0a3d209e678781fe5aa7152e108cfb91ff7c6b7a1c39e15fccd5d8dcdf4c8"
+    },
+    "lingui-best-practices": {
+      "source": "lingui/skills",
+      "sourceType": "github",
+      "skillPath": "skills/lingui-best-practices/SKILL.md",
+      "computedHash": "e8d118460a9f7198b5c18cd8bfd9ef8e12904b7cc14d6f56e972cede4beab4e2"
+    },
+    "migrate-i18next-to-lingui": {
+      "source": "lingui/skills",
+      "sourceType": "github",
+      "skillPath": "skills/migrate-i18next-to-lingui/SKILL.md",
+      "computedHash": "03894ee375726621ce09296ec6661ddd2662146c48cab01e274e62568a89d812"
+    },
     "organization-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
@@ -31,6 +49,12 @@
       "sourceType": "github",
       "skillPath": "skills/shadcn/SKILL.md",
       "computedHash": "c1a68ee06a668aced9ab2b5fbdea5f989864123794eb2e056b339a072dbb7f10"
+    },
+    "swc-plugin-compatibility": {
+      "source": "lingui/skills",
+      "sourceType": "github",
+      "skillPath": "skills/swc-plugin-compatibility/SKILL.md",
+      "computedHash": "fd5f2ff1ed69c402214baf5ae907fba5c639afb6b5d8568fbe522c77b2dfbafe"
     },
     "two-factor-authentication-best-practices": {
       "source": "better-auth/skills",

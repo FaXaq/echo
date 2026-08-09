@@ -2,7 +2,7 @@ import { useState } from "react";
 import "@/lib/dayjs";
 import dayjs from "dayjs";
 import { MapPin, MoreVertical, Share2, Timer, User } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { capitalize } from "remeda";
 import { Link } from "@tanstack/react-router";
 
@@ -50,14 +50,14 @@ export function EventDetail({
   attachments,
   className,
 }: EventDetailProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const sameDay = dayjs(event.startDate).isSame(event.endDate, "day");
   const dateLabel = capitalize(dayjs(event.startDate).format("dddd LL"));
   const timeLabel = event.allDay
     ? sameDay
-      ? t("All day")
+      ? t`All day`
       : `${dayjs(event.startDate).format("LL")} – ${dayjs(event.endDate).format("LL")}`
     : sameDay
       ? `${dayjs(event.startDate).format("LT")} – ${dayjs(event.endDate).format("LT")}`
@@ -93,7 +93,7 @@ export function EventDetail({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={t("Share")}
+                  aria-label={t`Share`}
                   onClick={onShare}
                 >
                   <Share2 />
@@ -105,19 +105,19 @@ export function EventDetail({
                         type="button"
                         variant="outline"
                         size="icon-sm"
-                        aria-label={t("Event actions")}
+                        aria-label={t`Event actions`}
                       />
                     }
                   >
                     <MoreVertical />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={onEdit}>{t("Update")}</DropdownMenuItem>
+                    <DropdownMenuItem onClick={onEdit}>{t`Update`}</DropdownMenuItem>
                     <DropdownMenuItem
                       variant="destructive"
                       onClick={() => setDeleteConfirmOpen(true)}
                     >
-                      {t("Delete")}
+                      {t`Delete`}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -172,7 +172,7 @@ export function EventDetail({
 
         <div className="flex w-280px flex-[1_1_220px] flex-col hidden lg:block">
           <div className="flex items-center justify-between gap-2 px-1 py-2.5">
-            <span className="text-xs font-medium text-muted-foreground">{t("Organizer")}</span>
+            <span className="text-xs font-medium text-muted-foreground">{t`Organizer`}</span>
             <div className="flex min-w-0 items-center gap-1.5">
               <Avatar size="sm" className="h-5 w-5">
                 <AvatarFallback className="text-[10px]">
@@ -185,7 +185,7 @@ export function EventDetail({
           <Separator />
 
           <div className="flex items-start justify-between gap-2 px-1 py-2.5">
-            <span className="pt-px text-xs font-medium text-muted-foreground">{t("Date")}</span>
+            <span className="pt-px text-xs font-medium text-muted-foreground">{t`Date`}</span>
             <div className="text-right">
               <div className="text-[13px] font-medium">{dateLabel}</div>
               <div className="text-xs text-muted-foreground">{timeLabel}</div>
@@ -194,7 +194,7 @@ export function EventDetail({
           <Separator />
 
           <div className="flex items-start justify-between gap-2 px-1 py-2.5">
-            <span className="pt-px text-xs font-medium text-muted-foreground">{t("Location")}</span>
+            <span className="pt-px text-xs font-medium text-muted-foreground">{t`Location`}</span>
             <div className="text-right">
               {event.place ? (
                 <>
@@ -206,7 +206,7 @@ export function EventDetail({
                     rel="noreferrer"
                     className="text-xs"
                   >
-                    {t("Open in Maps")}
+                    {t`Open in Maps`}
                   </a>
                 </>
               ) : (
@@ -217,7 +217,7 @@ export function EventDetail({
           <Separator />
 
           <div className="flex items-center justify-between gap-2 px-1 py-2.5">
-            <span className="text-xs font-medium text-muted-foreground">{t("Category")}</span>
+            <span className="text-xs font-medium text-muted-foreground">{t`Category`}</span>
             <Badge variant="secondary">
               <EventTypeIcon type={event.type} className="size-3.5" data-icon="inline-start" />
               {t(getEventLabel(event.type))}
@@ -229,20 +229,20 @@ export function EventDetail({
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("Delete event?")}</AlertDialogTitle>
+            <AlertDialogTitle>{t`Delete event?`}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("This will permanently delete this event. This action cannot be undone.")}
+              {t`This will permanently delete this event. This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{t`Cancel`}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setDeleteConfirmOpen(false);
                 onDelete();
               }}
             >
-              {t("Delete")}
+              {t`Delete`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

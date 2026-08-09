@@ -3,9 +3,10 @@ import dayjs from "dayjs";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 import { cn } from "@/lib/utils";
+import { translateDynamic } from "@/lib/dynamic-messages";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -133,7 +134,7 @@ export function EventDialog({
   onSubmit,
   onDelete,
 }: EventDialogProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
 
   // Keep rendering the last non-null state while the dialog plays its close
   // animation, so the content doesn't flicker/reset before it's done fading out.
@@ -201,26 +202,26 @@ export function EventDialog({
     <Dialog open={state !== null} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md overflow-auto">
         <DialogHeader>
-          <DialogTitle>{isEdit ? t("Edit event") : t("New event")}</DialogTitle>
+          <DialogTitle>{isEdit ? t`Edit event` : t`New event`}</DialogTitle>
           <DialogDescription className="sr-only">
-            {isEdit ? t("Edit event") : t("New event")}
+            {isEdit ? t`Edit event` : t`New event`}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(submit)}>
           <FieldGroup className="pb-4">
             <Field>
-              <FieldLabel htmlFor="event-title">{t("Title")}</FieldLabel>
+              <FieldLabel htmlFor="event-title">{t`Title`}</FieldLabel>
               <Input id="event-title" {...register("title")} />
-              <FieldError>{errors.title && t(errors.title.message!)}</FieldError>
+              <FieldError>{errors.title && translateDynamic(t, errors.title.message!)}</FieldError>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-description">{t("Description")}</FieldLabel>
+              <FieldLabel htmlFor="event-description">{t`Description`}</FieldLabel>
               <Textarea id="event-description" {...register("description")} />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-place">{t("Place")}</FieldLabel>
+              <FieldLabel htmlFor="event-place">{t`Place`}</FieldLabel>
               <Controller
                 name="place"
                 control={control}
@@ -231,7 +232,7 @@ export function EventDialog({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-organization">{t("Organization")}</FieldLabel>
+              <FieldLabel htmlFor="event-organization">{t`Organization`}</FieldLabel>
               <Controller
                 name="organizationId"
                 control={control}
@@ -247,7 +248,7 @@ export function EventDialog({
             </Field>
 
             <Field orientation="horizontal">
-              <FieldLabel htmlFor="event-start">{t("Start")}</FieldLabel>
+              <FieldLabel htmlFor="event-start">{t`Start`}</FieldLabel>
               <Input
                 disabled={allDay}
                 id="event-start"
@@ -257,7 +258,7 @@ export function EventDialog({
             </Field>
 
             <Field orientation="horizontal">
-              <FieldLabel htmlFor="event-end">{t("End")}</FieldLabel>
+              <FieldLabel htmlFor="event-end">{t`End`}</FieldLabel>
               <Input
                 disabled={allDay}
                 id="event-end"
@@ -265,7 +266,9 @@ export function EventDialog({
                 {...register("endDate")}
               />
             </Field>
-            <FieldError>{errors.endDate && t(errors.endDate.message!)}</FieldError>
+            <FieldError>
+              {errors.endDate && translateDynamic(t, errors.endDate.message!)}
+            </FieldError>
 
             <Field orientation="horizontal">
               <FieldLabel htmlFor="event-all-day" className="gap-2">
@@ -275,12 +278,12 @@ export function EventDialog({
                   className="size-3.5"
                   {...register("allDay")}
                 />
-                {t("All day")}
+                {t`All day`}
               </FieldLabel>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-color">{t("Color")}</FieldLabel>
+              <FieldLabel htmlFor="event-color">{t`Color`}</FieldLabel>
               <Controller
                 name="color"
                 control={control}
@@ -320,7 +323,7 @@ export function EventDialog({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="event-type">{t("Type")}</FieldLabel>
+              <FieldLabel htmlFor="event-type">{t`Type`}</FieldLabel>
               <Controller
                 name="type"
                 control={control}
@@ -334,7 +337,7 @@ export function EventDialog({
                     <SelectTrigger id="event-type" className="w-full">
                       <SelectValue>
                         {() => {
-                          if (field.value === null) return t("None");
+                          if (field.value === null) return t`None`;
                           return (
                             <>
                               <EventTypeIcon
@@ -348,7 +351,7 @@ export function EventDialog({
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">{t("None")}</SelectItem>
+                      <SelectItem value="none">{t`None`}</SelectItem>
                       {EVENT_TYPES.map((type) => {
                         return (
                           <SelectItem key={type} value={type}>
@@ -372,19 +375,19 @@ export function EventDialog({
                     <Button type="button" variant="destructive" size="sm" disabled={isSubmitting} />
                   }
                 >
-                  {t("Delete")}
+                  {t`Delete`}
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>{t("Delete event?")}</AlertDialogTitle>
+                    <AlertDialogTitle>{t`Delete event?`}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      {t("This will permanently delete this event. This action cannot be undone.")}
+                      {t`This will permanently delete this event. This action cannot be undone.`}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isDeleting}>{t("Cancel")}</AlertDialogCancel>
+                    <AlertDialogCancel disabled={isDeleting}>{t`Cancel`}</AlertDialogCancel>
                     <AlertDialogAction isLoading={isDeleting} onClick={handleDelete}>
-                      {t("Delete")}
+                      {t`Delete`}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -396,10 +399,10 @@ export function EventDialog({
               <DialogClose
                 render={<Button type="button" variant="outline" disabled={isSubmitting} />}
               >
-                {t("Cancel")}
+                {t`Cancel`}
               </DialogClose>
               <Button type="submit" isLoading={isSubmitting}>
-                {isEdit ? t("Save changes") : t("Save")}
+                {isEdit ? t`Save changes` : t`Save`}
               </Button>
             </div>
           </DialogFooter>

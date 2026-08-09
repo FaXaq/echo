@@ -1,3 +1,5 @@
+import { msg } from "@lingui/core/macro";
+import type { MessageDescriptor } from "@lingui/core";
 import type { EventColor } from "./types";
 
 export const EVENT_COLORS: EventColor[] = ["blue", "green", "red", "yellow", "purple", "orange"];
@@ -20,11 +22,11 @@ export const eventDotClasses: Record<EventColor, string> = {
   orange: "bg-event-orange",
 };
 
-export const COLOR_LABELS: Record<EventColor, string> = {
-  blue: "Blue",
-  green: "Green",
-  red: "Red",
-  yellow: "Yellow",
-  purple: "Purple",
-  orange: "Orange",
+export const COLOR_LABELS: Record<EventColor, MessageDescriptor> = {
+  blue: msg`Blue`,
+  green: msg`Green`,
+  red: msg`Red`,
+  yellow: msg`Yellow`,
+  purple: msg`Purple`,
+  orange: msg`Orange`,
 };

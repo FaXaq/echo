@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
-import i18next from "../i18n";
+import { useState } from "react";
+import { i18n } from "@lingui/core";
+import { toLocale } from "@echo/i18n";
+import { detectBrowserLocale } from "../i18n";
 import {
   createRootRouteWithContext,
   Outlet,
@@ -31,6 +33,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   },
   loader: async () => {
     const { data: session } = await authClient.getSession();
+    i18n.activate(session?.user.locale ? toLocale(session.user.locale) : detectBrowserLocale());
     return { session };
   },
   staleTime: Infinity,
@@ -45,12 +48,6 @@ function RootLayout() {
       links: [httpBatchLink({ url: "/trpc" })],
     }),
   );
-
-  useEffect(() => {
-    if (session?.user.locale) {
-      i18next.changeLanguage(session.user.locale);
-    }
-  }, [session?.user.locale]);
 
   const serverTheme = session?.user.theme as "light" | "dark" | "system" | undefined;
 

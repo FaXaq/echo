@@ -2,9 +2,17 @@ import type { Preview, Decorator } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
+import { I18nProvider } from "@lingui/react";
+import { i18n } from "@lingui/core";
 import { trpc } from "../src/lib/trpc";
 import "../src/i18n";
 import "../src/index.css";
+
+const WithI18n: Decorator = (Story) => (
+  <I18nProvider i18n={i18n}>
+    <Story />
+  </I18nProvider>
+);
 
 const WithTRPC: Decorator = (Story) => {
   const [queryClient] = useState(
@@ -29,7 +37,7 @@ const WithTRPC: Decorator = (Story) => {
 };
 
 const preview: Preview = {
-  decorators: [WithTRPC],
+  decorators: [WithTRPC, WithI18n],
   parameters: {
     controls: {
       matchers: {

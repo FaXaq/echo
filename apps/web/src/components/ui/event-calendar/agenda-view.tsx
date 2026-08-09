@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,7 @@ interface AgendaViewProps {
 }
 
 export function AgendaView({ date, events }: AgendaViewProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
 
   const groups = Array.from({ length: AGENDA_DAYS_AHEAD }, (_, i) => dayjs(date).add(i, "day"))
     .map((day) => ({ day, events: getEventsForDay(events, day.toDate()) }))
@@ -27,7 +27,7 @@ export function AgendaView({ date, events }: AgendaViewProps) {
         data-slot="agenda-view"
         className="flex flex-1 items-center justify-center rounded-lg border text-xs text-muted-foreground"
       >
-        {t("No events scheduled")}
+        {t`No events scheduled`}
       </div>
     );
   }

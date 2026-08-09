@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "@lingui/react/macro";
 
 export function VersionSwitcher({
   versions,
@@ -24,7 +24,6 @@ export function VersionSwitcher({
   onSelect?: (version: string) => void;
   onCreateNew?: () => void;
 }) {
-  const { t } = useTranslation("navigation");
   const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion);
 
   const handleSelect = (version: string) => {
@@ -64,7 +63,7 @@ export function VersionSwitcher({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onCreateNew}>
                   <Plus className="size-4" />
-                  <Trans t={t}>New project</Trans>
+                  <Trans>New project</Trans>
                 </DropdownMenuItem>
               </>
             )}

@@ -1,6 +1,7 @@
 import { useMatches, Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { Home } from "lucide-react";
+import { translateDynamic } from "@/lib/dynamic-messages";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,7 +12,7 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export function DynamicBreadcrumb() {
-  const { t } = useTranslation("navigation");
+  const { t } = useLingui();
   const matches = useMatches();
 
   const crumbs = matches
@@ -22,7 +23,7 @@ export function DynamicBreadcrumb() {
     )
     .map((m) => {
       const dynamic = (m.loaderData as { breadcrumb?: string } | undefined)?.breadcrumb;
-      const label = dynamic ?? t(m.staticData.breadcrumb!);
+      const label = dynamic ?? translateDynamic(t, m.staticData.breadcrumb!);
       return { label, pathname: m.pathname };
     });
 

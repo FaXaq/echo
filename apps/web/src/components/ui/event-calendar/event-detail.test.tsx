@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "@/lib/test-utils";
 import userEvent from "@testing-library/user-event";
 import dayjs from "dayjs";
 import { describe, expect, it, vi } from "vitest";

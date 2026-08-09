@@ -1,11 +1,11 @@
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/fr";
-import i18next from "@/i18n";
+import { i18n } from "@lingui/core";
 
 dayjs.extend(localizedFormat);
-dayjs.locale(i18next.language);
+dayjs.locale(i18n.locale);
 
-i18next.on("languageChanged", (lng) => {
-  dayjs.locale(lng);
+i18n.on("change", () => {
+  dayjs.locale(i18n.locale);
 });

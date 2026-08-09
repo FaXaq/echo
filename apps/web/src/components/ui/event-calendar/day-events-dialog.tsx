@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,11 +23,9 @@ interface DayEventsDialogProps {
 }
 
 export function DayEventsDialog({ day, events, onOpenChange }: DayEventsDialogProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const { requestEventCreate } = useCalendarContext();
-  const title = t("Events on {{date}}", {
-    date: day ? dayjs(day).format("MMMM D, YYYY") : "",
-  });
+  const title = t`Events on ${day ? dayjs(day).format("MMMM D, YYYY") : ""}`;
 
   return (
     <Dialog open={day !== null} onOpenChange={onOpenChange}>
@@ -48,7 +46,7 @@ export function DayEventsDialog({ day, events, onOpenChange }: DayEventsDialogPr
           onClick={() => day && requestEventCreate(currentHourRange(day))}
         >
           <Plus className="size-3.5" data-icon="inline-start" />
-          {t("New event")}
+          {t`New event`}
         </Button>
       </DialogContent>
     </Dialog>

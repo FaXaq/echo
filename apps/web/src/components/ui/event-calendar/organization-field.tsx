@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 import {
   Select,
@@ -21,7 +21,7 @@ export interface OrganizationFieldProps {
 }
 
 export function OrganizationField({ id, value, onChange, disabled }: OrganizationFieldProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const { data: organizations, isPending } = useQuery(selfListOrganizations());
 
   if (isPending) {
@@ -38,13 +38,13 @@ export function OrganizationField({ id, value, onChange, disabled }: Organizatio
         <SelectValue>
           {(val: string) =>
             val === NONE_VALUE
-              ? t("No organization")
+              ? t`No organization`
               : (organizations?.find((organization) => organization.id === val)?.name ?? val)
           }
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={NONE_VALUE}>{t("No organization")}</SelectItem>
+        <SelectItem value={NONE_VALUE}>{t`No organization`}</SelectItem>
         {organizations?.map((organization) => (
           <SelectItem key={organization.id} value={organization.id}>
             {organization.name}

@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
+import { msg } from "@lingui/core/macro";
+import type { MessageDescriptor } from "@lingui/core";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,11 +28,11 @@ import { WeekView } from "./week-view";
 
 const VIEWS: CalendarView[] = ["month", "week", "day", "agenda"];
 
-const VIEW_LABELS: Record<CalendarView, string> = {
-  month: "Month",
-  week: "Week",
-  day: "Day",
-  agenda: "Agenda",
+const VIEW_LABELS: Record<CalendarView, MessageDescriptor> = {
+  month: msg`Month`,
+  week: msg`Week`,
+  day: msg`Day`,
+  agenda: msg`Agenda`,
 };
 
 function titleForView(view: CalendarView, date: Date): string {
@@ -78,7 +80,7 @@ export function EventCalendar({
   defaultOrganizationId,
   className,
 }: EventCalendarProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
 
   const [internalView, setInternalView] = useState<CalendarView>("month");
   const [internalDate, setInternalDate] = useState<Date>(() => new Date());
@@ -131,14 +133,14 @@ export function EventCalendar({
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Button type="button" variant="outline" size="sm" onClick={() => setDate(new Date())}>
-              {t("Today")}
+              {t`Today`}
             </Button>
             <div className="flex items-center">
               <Button
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                aria-label={t("Previous")}
+                aria-label={t`Previous`}
                 onClick={() => setDate(stepDate(view, date, -1))}
               >
                 <ChevronLeft className="size-4" />
@@ -147,7 +149,7 @@ export function EventCalendar({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                aria-label={t("Next")}
+                aria-label={t`Next`}
                 onClick={() => setDate(stepDate(view, date, 1))}
               >
                 <ChevronRight className="size-4" />
@@ -177,7 +179,7 @@ export function EventCalendar({
               }
             >
               <Plus className="size-3.5" data-icon="inline-start" />
-              {t("New event")}
+              {t`New event`}
             </Button>
           </div>
         </div>

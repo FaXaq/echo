@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "@/lib/test-utils";
 import { describe, expect, it } from "vitest";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
 import * as fileResource from "@/services/resources/file";
