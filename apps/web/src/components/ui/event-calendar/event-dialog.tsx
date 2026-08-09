@@ -39,7 +39,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors";
-import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS } from "./event-types";
+import { getEventLabel, EventTypeIcon } from "./event-types";
 import { OrganizationField } from "./organization-field";
 import { PlaceField } from "./place-field";
 import {
@@ -97,7 +97,7 @@ function stateToDefaultValues(
       allDay: !!event.allDay,
       color: event.color,
       type: event.type,
-      organizationId: event.organizationId,
+      organizationId: event.organization.id,
       place: event.place,
     };
   }
@@ -177,8 +177,12 @@ export function EventDialog({
       allDay: values.allDay,
       color: values.color,
       type: values.type,
-      organizationId: values.organizationId,
       place: values.place,
+      organization: isEdit ? content.event.organization : { id: values.organizationId },
+      // Those are mock values only to have a single interface between this component & others
+      createdAt: isEdit ? content.event.createdAt : new Date(),
+      createdBy: isEdit ? content.event.createdBy : "",
+      createdByName: isEdit ? content.event.createdByName : "",
     });
   };
 
@@ -195,7 +199,7 @@ export function EventDialog({
 
   return (
     <Dialog open={state !== null} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md overflow-auto">
         <DialogHeader>
           <DialogTitle>{isEdit ? t("Edit event") : t("New event")}</DialogTitle>
           <DialogDescription className="sr-only">
@@ -203,7 +207,7 @@ export function EventDialog({
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(submit)}>
-          <FieldGroup>
+          <FieldGroup className="pb-4">
             <Field>
               <FieldLabel htmlFor="event-title">{t("Title")}</FieldLabel>
               <Input id="event-title" {...register("title")} />
@@ -283,7 +287,19 @@ export function EventDialog({
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger id="event-color" className="w-full">
-                      <SelectValue />
+                      <SelectValue>
+                        {() => (
+                          <>
+                            <span
+                              className={cn(
+                                "mr-1.5 inline-block size-2 rounded-full",
+                                eventDotClasses[field.value],
+                              )}
+                            />
+                            {t(COLOR_LABELS[field.value])}
+                          </>
+                        )}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {EVENT_COLORS.map((color) => (
@@ -316,16 +332,28 @@ export function EventDialog({
                     }
                   >
                     <SelectTrigger id="event-type" className="w-full">
-                      <SelectValue />
+                      <SelectValue>
+                        {() => {
+                          if (field.value === null) return t("None");
+                          return (
+                            <>
+                              <EventTypeIcon
+                                type={field.value}
+                                className="mr-1.5 inline-block size-3.5"
+                              />
+                              {t(getEventLabel(field.value))}
+                            </>
+                          );
+                        }}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="none">{t("None")}</SelectItem>
                       {EVENT_TYPES.map((type) => {
-                        const Icon = EVENT_TYPE_ICONS[type];
                         return (
                           <SelectItem key={type} value={type}>
-                            <Icon className="mr-1.5 inline-block size-3.5" />
-                            {t(EVENT_TYPE_LABELS[type])}
+                            <EventTypeIcon type={type} className="mr-1.5 inline-block size-3.5" />
+                            {t(getEventLabel(type))}
                           </SelectItem>
                         );
                       })}
@@ -339,10 +367,12 @@ export function EventDialog({
           <DialogFooter className="items-center sm:justify-between">
             {isEdit ? (
               <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button type="button" variant="destructive" size="sm" disabled={isSubmitting}>
-                    {t("Delete")}
-                  </Button>
+                <AlertDialogTrigger
+                  render={
+                    <Button type="button" variant="destructive" size="sm" disabled={isSubmitting} />
+                  }
+                >
+                  {t("Delete")}
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -363,10 +393,10 @@ export function EventDialog({
               <span />
             )}
             <div className="flex gap-2">
-              <DialogClose asChild>
-                <Button type="button" variant="outline" disabled={isSubmitting}>
-                  {t("Cancel")}
-                </Button>
+              <DialogClose
+                render={<Button type="button" variant="outline" disabled={isSubmitting} />}
+              >
+                {t("Cancel")}
               </DialogClose>
               <Button type="submit" isLoading={isSubmitting}>
                 {isEdit ? t("Save changes") : t("Save")}

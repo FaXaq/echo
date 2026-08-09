@@ -40,6 +40,74 @@ export function getEventsForDay(events: CalendarEvent[], day: Date): CalendarEve
     .sort((a, b) => dayjs(a.startDate).diff(dayjs(b.startDate)));
 }
 
+export function chunkMonthWeeks(cells: MonthGridCell[]): MonthGridCell[][] {
+  const DAYS_PER_WEEK = 7;
+  return Array.from({ length: cells.length / DAYS_PER_WEEK }, (_, i) =>
+    cells.slice(i * DAYS_PER_WEEK, i * DAYS_PER_WEEK + DAYS_PER_WEEK),
+  );
+}
+
+export function isMultiDayEvent(event: CalendarEvent): boolean {
+  return !dayjs(event.startDate).isSame(event.endDate, "day");
+}
+
+export interface MultiDayBarSegment {
+  event: CalendarEvent;
+  startCol: number;
+  span: number;
+  continuesBefore: boolean;
+  continuesAfter: boolean;
+  lane: number;
+}
+
+export function getWeekMultiDaySegments(
+  events: CalendarEvent[],
+  weekDays: Date[],
+): MultiDayBarSegment[] {
+  const weekStart = dayjs(weekDays[0]).startOf("day");
+  const weekEnd = dayjs(weekDays[weekDays.length - 1]).endOf("day");
+
+  const overlapping = events
+    .filter(isMultiDayEvent)
+    .filter(
+      (event) =>
+        !dayjs(event.startDate).isAfter(weekEnd) && !dayjs(event.endDate).isBefore(weekStart),
+    )
+    .sort((a, b) => {
+      const startDiff = dayjs(a.startDate).diff(b.startDate);
+      if (startDiff !== 0) return startDiff;
+      return dayjs(b.endDate).diff(a.endDate);
+    });
+
+  const lanesEndCol: number[] = [];
+
+  return overlapping.map((event) => {
+    const start = dayjs(event.startDate);
+    const end = dayjs(event.endDate);
+    const continuesBefore = start.isBefore(weekStart);
+    const continuesAfter = end.isAfter(weekEnd);
+    const startCol = continuesBefore ? 0 : start.diff(weekStart, "day");
+    const endCol = continuesAfter ? weekDays.length - 1 : end.diff(weekStart, "day");
+
+    let lane = lanesEndCol.findIndex((lastCol) => lastCol < startCol);
+    if (lane === -1) {
+      lane = lanesEndCol.length;
+      lanesEndCol.push(endCol);
+    } else {
+      lanesEndCol[lane] = endCol;
+    }
+
+    return {
+      event,
+      startCol,
+      span: endCol - startCol + 1,
+      continuesBefore,
+      continuesAfter,
+      lane,
+    };
+  });
+}
+
 export interface DayEventBucket {
   visible: CalendarEvent[];
   overflowCount: number;

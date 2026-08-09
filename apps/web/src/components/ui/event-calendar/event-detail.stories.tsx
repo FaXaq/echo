@@ -1,29 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { EventDetail } from "./event-detail";
-import { getEventFilesQueryOptions } from "@/services/resources/file";
-
-function withEmptyFiles() {
-  const queryClient = new QueryClient();
-  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "1" }).queryKey, []);
-  return queryClient;
-}
 
 const meta = {
   title: "UI/EventDetail",
   component: EventDetail,
-  parameters: {
-    layout: "centered",
-  },
+  parameters: { layout: "centered" },
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <QueryClientProvider client={withEmptyFiles()}>
-        <div className="w-96">
-          <Story />
-        </div>
-      </QueryClientProvider>
+      <div className="w-[720px]">
+        <Story />
+      </div>
     ),
   ],
 } satisfies Meta<typeof EventDetail>;
@@ -39,17 +27,22 @@ const baseEvent = {
   endDate: new Date("2026-08-03T09:30:00"),
   color: "blue",
   type: null,
-  organizationId: null,
   place: null,
+  organization: { id: "test", name: "test", slug: "test" },
+  createdBy: "XXX",
+  createdByName: "Mr Me",
+  createdAt: new Date("2026-08-02T09:30:00"),
 } as const;
 
+const sharedArgs = {
+  onShare: () => {},
+  onEdit: () => {},
+  onDelete: () => {},
+  attachments: <div className="text-xs text-muted-foreground">Attachments render here</div>,
+};
+
 export const Default: Story = {
-  args: {
-    event: baseEvent,
-    onEdit: () => {},
-    onDelete: () => {},
-    onBack: () => {},
-  },
+  args: { event: baseEvent, ...sharedArgs },
 };
 
 export const AllDay: Story = {
@@ -61,19 +54,12 @@ export const AllDay: Story = {
       allDay: true,
       color: "purple",
     },
-    onEdit: () => {},
-    onDelete: () => {},
-    onBack: () => {},
+    ...sharedArgs,
   },
 };
 
 export const NoDescription: Story = {
-  args: {
-    event: { ...baseEvent, description: undefined, color: "green" },
-    onEdit: () => {},
-    onDelete: () => {},
-    onBack: () => {},
-  },
+  args: { event: { ...baseEvent, description: undefined, color: "green" }, ...sharedArgs },
 };
 
 export const WithPlace: Story = {
@@ -87,8 +73,6 @@ export const WithPlace: Story = {
         lng: 4.8357,
       },
     },
-    onEdit: () => {},
-    onDelete: () => {},
-    onBack: () => {},
+    ...sharedArgs,
   },
 };

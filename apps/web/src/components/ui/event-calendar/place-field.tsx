@@ -11,7 +11,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
+import { Popover, PopoverContent } from "@/components/ui/popover";
 import { searchPlaces } from "@/services/resources/place";
 
 import type { EventPlace } from "./types";
@@ -27,12 +27,14 @@ export interface PlaceFieldProps {
 export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
   const { t } = useTranslation("calendar");
   const [inputValue, setInputValue] = useState(value?.name ?? "");
+  const [prevValue, setPrevValue] = useState(value);
   const [results, setResults] = useState<EventPlace[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const commandRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLDivElement>(null);
 
   const NAVIGATION_KEYS = ["ArrowDown", "ArrowUp", "Home", "End", "Enter"];
 
@@ -44,9 +46,10 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
     );
   }
 
-  useEffect(() => {
+  if (value !== prevValue) {
+    setPrevValue(value);
     setInputValue(value?.name ?? "");
-  }, [value]);
+  }
 
   useEffect(() => {
     return () => {
@@ -103,41 +106,40 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverAnchor asChild>
-        <div className="relative">
-          <Input
-            id={id}
-            role="combobox"
-            aria-expanded={open}
-            aria-autocomplete="list"
-            autoComplete="off"
-            value={inputValue}
-            placeholder={t("Search for a place")}
-            onChange={(e) => handleInputValueChange(e.target.value)}
-            onFocus={() => {
-              if (results.length > 0 || isSearching) setOpen(true);
-            }}
-            onKeyDown={forwardKeyToCommand}
-            className={value ? "pr-6" : undefined}
-          />
-          {value && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-xs"
-              aria-label={t("Clear place")}
-              className="absolute right-0.5 top-1/2 -translate-y-1/2"
-              onClick={handleClear}
-            >
-              <X />
-            </Button>
-          )}
-        </div>
-      </PopoverAnchor>
+      <div className="relative" ref={anchorRef}>
+        <Input
+          id={id}
+          role="combobox"
+          aria-expanded={open}
+          aria-autocomplete="list"
+          autoComplete="off"
+          value={inputValue}
+          placeholder={t("Search for a place")}
+          onChange={(e) => handleInputValueChange(e.target.value)}
+          onFocus={() => {
+            if (results.length > 0 || isSearching) setOpen(true);
+          }}
+          onKeyDown={forwardKeyToCommand}
+          className={value ? "pr-6" : undefined}
+        />
+        {value && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            aria-label={t("Clear place")}
+            className="absolute right-0.5 top-1/2 -translate-y-1/2"
+            onClick={handleClear}
+          >
+            <X />
+          </Button>
+        )}
+      </div>
       <PopoverContent
+        anchor={anchorRef}
         align="start"
-        className="w-(--radix-popover-trigger-width) p-0"
-        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="w-(--anchor-width) p-0"
+        initialFocus={false}
       >
         <Command ref={commandRef} shouldFilter={false}>
           <CommandList>

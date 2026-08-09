@@ -24,6 +24,11 @@ import { Toaster } from "@/components/ui/sonner";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: () => {
+    return {
+      prefetchedQueryOptions: {},
+    };
+  },
   loader: async () => {
     const { data: session } = await authClient.getSession();
     return { session };
@@ -98,7 +103,7 @@ function RootContent({ session }: { session: ClientSession | null }) {
               />
             </div>
           </header>
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto typeset typeset-notes">
             <Outlet />
           </div>
         </SidebarInset>

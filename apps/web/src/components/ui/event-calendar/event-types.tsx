@@ -1,24 +1,25 @@
-import { Ban, GraduationCap, Music2, Ticket, Users, type LucideIcon } from "lucide-react";
+import { Ban, Calendar, GraduationCap, Music2, Ticket, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { EventType } from "./types";
+import { match } from "ts-pattern";
 
-export const EVENT_TYPE_LABELS: Record<EventType, string> = {
-  unavailability: "Unavailability",
-  rehearsal: "Rehearsal",
-  concert: "Concert",
-  meeting: "Meeting",
-  class: "Class",
-};
+export const getEventLabel = (type: EventType | null) =>
+  match(type)
+    .with(null, () => "Event")
+    .with("unavailability", () => "Unavailability")
+    .with("rehearsal", () => "Rehearsal")
+    .with("concert", () => "Concert")
+    .with("meeting", () => "Meeting")
+    .with("class", () => "Class")
+    .exhaustive();
 
-export const EVENT_TYPE_ICONS: Record<EventType, LucideIcon> = {
-  unavailability: Ban,
-  rehearsal: Music2,
-  concert: Ticket,
-  meeting: Users,
-  class: GraduationCap,
-};
-
-export function EventTypeIcon({ type, className }: { type: EventType; className?: string }) {
-  const Icon = EVENT_TYPE_ICONS[type];
-  return <Icon className={cn("shrink-0", className)} />;
+export function EventTypeIcon({ type, className }: { type: EventType | null; className?: string }) {
+  return match(type)
+    .with(null, () => <Calendar className={cn("shrink-0", className)} />)
+    .with("class", () => <GraduationCap className={cn("shrink-0", className)} />)
+    .with("unavailability", () => <Ban className={cn("shrink-0", className)} />)
+    .with("rehearsal", () => <Music2 className={cn("shrink-0", className)} />)
+    .with("concert", () => <Ticket className={cn("shrink-0", className)} />)
+    .with("meeting", () => <Users className={cn("shrink-0", className)} />)
+    .exhaustive();
 }

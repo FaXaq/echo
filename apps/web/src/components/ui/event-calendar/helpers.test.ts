@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   bucketDayEvents,
+  chunkMonthWeeks,
   eventOccursOnDay,
   formatDayTitle,
   formatMonthTitle,
@@ -11,6 +12,8 @@ import {
   getEventsForDay,
   getMonthGrid,
   getWeekDays,
+  getWeekMultiDaySegments,
+  isMultiDayEvent,
   moveEventToStart,
   pixelOffsetToMinutes,
   resizeEventEnd,
@@ -84,6 +87,104 @@ describe("eventOccursOnDay / getEventsForDay", () => {
     });
     const result = getEventsForDay([late, early], dayjs("2026-07-15").toDate());
     expect(result.map((e) => e.id)).toEqual(["early", "late"]);
+  });
+});
+
+describe("chunkMonthWeeks", () => {
+  it("splits 42 month-grid cells into 6 weeks of 7", () => {
+    const cells = getMonthGrid(dayjs("2026-07-15").toDate());
+    const weeks = chunkMonthWeeks(cells);
+    expect(weeks).toHaveLength(6);
+    weeks.forEach((week) => expect(week).toHaveLength(7));
+    expect(weeks[0]![0]).toBe(cells[0]);
+    expect(weeks[5]![6]).toBe(cells[41]);
+  });
+});
+
+describe("isMultiDayEvent", () => {
+  it("is false for an event starting and ending on the same day", () => {
+    expect(isMultiDayEvent(makeEvent())).toBe(false);
+  });
+
+  it("is true for an event whose start and end fall on different days", () => {
+    const event = makeEvent({
+      startDate: dayjs("2026-07-15T20:00:00").toDate(),
+      endDate: dayjs("2026-07-16T04:00:00").toDate(),
+    });
+    expect(isMultiDayEvent(event)).toBe(true);
+  });
+});
+
+describe("getWeekMultiDaySegments", () => {
+  const weekDays = getWeekDays(dayjs("2026-07-15").toDate()).map((d) => d.toDate());
+
+  it("ignores single-day events", () => {
+    const segments = getWeekMultiDaySegments([makeEvent()], weekDays);
+    expect(segments).toHaveLength(0);
+  });
+
+  it("positions an event fully contained in the week", () => {
+    const event = makeEvent({
+      id: "multi",
+      startDate: dayjs("2026-07-14T09:00:00").toDate(),
+      endDate: dayjs("2026-07-16T18:00:00").toDate(),
+    });
+    const [segment] = getWeekMultiDaySegments([event], weekDays);
+    expect(segment).toMatchObject({
+      startCol: 2,
+      span: 3,
+      continuesBefore: false,
+      continuesAfter: false,
+      lane: 0,
+    });
+  });
+
+  it("clamps a segment that continues before and after the week", () => {
+    const event = makeEvent({
+      id: "long",
+      startDate: dayjs("2026-07-10T09:00:00").toDate(),
+      endDate: dayjs("2026-07-25T18:00:00").toDate(),
+    });
+    const [segment] = getWeekMultiDaySegments([event], weekDays);
+    expect(segment).toMatchObject({
+      startCol: 0,
+      span: 7,
+      continuesBefore: true,
+      continuesAfter: true,
+    });
+  });
+
+  it("assigns overlapping events to different lanes", () => {
+    const a = makeEvent({
+      id: "a",
+      startDate: dayjs("2026-07-13T09:00:00").toDate(),
+      endDate: dayjs("2026-07-15T18:00:00").toDate(),
+    });
+    const b = makeEvent({
+      id: "b",
+      startDate: dayjs("2026-07-14T09:00:00").toDate(),
+      endDate: dayjs("2026-07-17T18:00:00").toDate(),
+    });
+    const segments = getWeekMultiDaySegments([a, b], weekDays);
+    const laneA = segments.find((s) => s.event.id === "a")!.lane;
+    const laneB = segments.find((s) => s.event.id === "b")!.lane;
+    expect(laneA).not.toBe(laneB);
+  });
+
+  it("reuses a lane once its previous event's span has ended", () => {
+    const a = makeEvent({
+      id: "a",
+      startDate: dayjs("2026-07-12T09:00:00").toDate(),
+      endDate: dayjs("2026-07-13T18:00:00").toDate(),
+    });
+    const b = makeEvent({
+      id: "b",
+      startDate: dayjs("2026-07-14T09:00:00").toDate(),
+      endDate: dayjs("2026-07-15T18:00:00").toDate(),
+    });
+    const segments = getWeekMultiDaySegments([a, b], weekDays);
+    expect(segments.find((s) => s.event.id === "a")!.lane).toBe(0);
+    expect(segments.find((s) => s.event.id === "b")!.lane).toBe(0);
   });
 });
 

@@ -21,3 +21,9 @@ export type {
   ListCalendarEventsQueryPort,
 } from "./list-calendar-events.query.port.js";
 export { listCalendarEventsQueryFactory } from "./list-calendar-events.query.kysely.js";
+
+export type {
+  GetCalendarEventByIdQueryInput,
+  GetCalendarEventByIdQueryPort,
+} from "./get-calendar-event-by-id.query.port";
+export { getCalendarEventByIdFactory } from "./get-calendar-event-by-id.query.kysely";

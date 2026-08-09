@@ -14,6 +14,7 @@ export default defineConfig({
 
   server: {
     port: 5173,
+    allowedHosts: [".trycloudflare.com"],
     proxy: {
       "/trpc": {
         target: "http://localhost:3000",

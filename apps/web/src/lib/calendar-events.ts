@@ -11,8 +11,11 @@ export function toViewEvent(event: ApiEvent): ViewEvent {
     allDay: event.allDay,
     color: event.color,
     type: event.type,
-    organizationId: event.organizationId,
+    organization: event.organization ?? { id: null },
     place: event.place,
+    createdBy: event.createdBy,
+    createdByName: event.createdByName,
+    createdAt: new Date(event.createdAt),
   };
 }
 
@@ -37,7 +40,7 @@ export function fromViewEvent(event: ViewEvent): EventFormValues {
     allDay: event.allDay,
     color: event.color,
     type: event.type,
-    organizationId: event.organizationId ?? undefined,
+    organizationId: event.organization.id ?? undefined,
     place: event.place,
   };
 }

@@ -87,9 +87,7 @@ function MembersPage() {
           </p>
         </div>
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <Button>{t("Invite a member")}</Button>
-          </SheetTrigger>
+          <SheetTrigger render={<Button />}>{t("Invite a member")}</SheetTrigger>
           <SheetContent className="flex flex-col">
             <SheetHeader>
               <SheetTitle>{t("Invite a member")}</SheetTitle>

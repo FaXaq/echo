@@ -4,7 +4,7 @@ import { defaultStatements, adminAc, ownerAc } from "better-auth/plugins/organiz
 import z from "zod";
 
 const calendarEventActions = ["create", "read", "update", "delete"] as const;
-const fileActions = ["create", "read", "delete"] as const;
+const fileActions = ["create", "read", "delete", "update"] as const;
 
 export const statement = {
   ...defaultStatements,

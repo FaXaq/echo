@@ -35,7 +35,13 @@ export function OrganizationField({ id, value, onChange, disabled }: Organizatio
       onValueChange={(next) => onChange(next === NONE_VALUE ? null : next)}
     >
       <SelectTrigger id={id} className="w-full">
-        <SelectValue />
+        <SelectValue>
+          {(val: string) =>
+            val === NONE_VALUE
+              ? t("No organization")
+              : (organizations?.find((organization) => organization.id === val)?.name ?? val)
+          }
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectItem value={NONE_VALUE}>{t("No organization")}</SelectItem>

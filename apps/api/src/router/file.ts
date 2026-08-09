@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { confirmUpload, createUpload, deleteFile, listEventFiles } from "@echo/modules/file/app";
+import {
+  confirmUpload,
+  createUpload,
+  deleteFile,
+  listEventFiles,
+  renameFile,
+} from "@echo/modules/file/app";
 import { authedProcedure, router } from "../trpc";
 
 export const makeFileRouter = () =>
@@ -55,4 +61,17 @@ export const makeFileRouter = () =>
         { id: input.id, userId: ctx.session.user.id },
       ),
     ),
+
+    renameFile: authedProcedure
+      .input(z.object({ id: z.string(), filename: z.string().min(1) }))
+      .mutation(({ ctx, input }) =>
+        renameFile(
+          {
+            db: ctx.db,
+            userHasPermission: ctx.userHasPermission,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          },
+          { id: input.id, userId: ctx.session.user.id, filename: input.filename },
+        ),
+      ),
   });
