@@ -40,7 +40,7 @@ export function AgendaView({ date, events }: AgendaViewProps) {
       {groups.map(({ day, events: dayEvents }) => (
         <div key={day.format("YYYY-MM-DD")} className="flex flex-col gap-1.5">
           <h3 className={cn("text-xs font-medium", day.isSame(dayjs(), "day") && "text-primary")}>
-            {day.format("dddd, MMMM D")}
+            {day.format("dddd LL")}
           </h3>
           <div className="flex flex-col gap-1">
             {dayEvents.map((event) => (
