@@ -7,6 +7,8 @@ import {
   renderInvitationEmail,
 } from "@echo/modules/notification/infrastructure";
 import { deleteOrganizationFiles } from "@echo/modules/file/app";
+import { createOrganizationCommandFactory } from "@echo/modules/organization/infrastructure";
+import { createOrganization } from "@echo/modules/organization/app";
 import { makeMailer } from "@echo/adapters/mailer";
 import { makeS3Storage } from "@echo/adapters/s3-storage";
 import { makeLogger } from "@echo/logger";
@@ -16,13 +18,20 @@ const mailer = makeMailer(appConfig.mailer);
 const s3Storage = makeS3Storage(appConfig.s3);
 const logger = makeLogger();
 
-const auth = makeServerAuth({
+const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   secret: appConfig.auth.secret,
   pool,
   baseUrl: appConfig.auth.baseUrl,
   trustedOrigins: appConfig.auth.trustedOrigins,
   getInitialOrganizationId: async () => {
     return undefined;
+  },
+  onUserCreated: async (user) => {
+    const createOrganizationCommand = createOrganizationCommandFactory({ auth });
+    await createOrganization(
+      { createOrganizationCommand },
+      { name: `${user.name}'s organization`, userId: user.id, isPersonal: true },
+    );
   },
   onOrganizationDeleted: async (organization) => {
     const failures = await deleteOrganizationFiles(

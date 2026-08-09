@@ -16,6 +16,7 @@ export type ServerAuthConfig = {
   trustedOrigins?: string[];
   sendOrganizationInvitation?: OrganizationOptions["sendInvitationEmail"];
   getInitialOrganizationId?: (userId: string) => Promise<string | undefined>;
+  onUserCreated?: (user: { id: string; name: string }) => Promise<void>;
   sendResetPasswordEmail?: (
     user: { email: string; locale: string },
     token: string,
@@ -29,6 +30,13 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
       additionalFields: userAdditionalFields,
     },
     databaseHooks: {
+      user: {
+        create: {
+          after: async (user) => {
+            await config.onUserCreated?.(user);
+          },
+        },
+      },
       session: {
         create: {
           before: async (session) => {
