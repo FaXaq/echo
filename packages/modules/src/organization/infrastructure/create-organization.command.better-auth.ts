@@ -13,8 +13,13 @@ export const createOrganizationCommandFactory: CreateOrganizationCommandPortFact
   (deps) => async (input) => {
     try {
       const organization = await deps.auth.api.createOrganization({
-        headers: deps.headers,
-        body: { name: input.name, slug: input.slug, userId: input.userId },
+        ...(deps.headers ? { headers: deps.headers } : {}),
+        body: {
+          name: input.name,
+          slug: input.slug,
+          userId: input.userId,
+          isPersonal: input.isPersonal,
+        },
       });
 
       return {

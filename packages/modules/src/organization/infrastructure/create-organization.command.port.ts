@@ -5,6 +5,7 @@ export type CreateOrganizationInput = {
   name: string;
   slug: string;
   userId: string;
+  isPersonal?: boolean;
 };
 
 export type CreateOrganizationResult =
@@ -17,5 +18,5 @@ export type CreateOrganizationCommandPort = (
 
 export type CreateOrganizationCommandPortFactory = (deps: {
   auth: ServerAuth;
-  headers: Headers;
+  headers?: Headers;
 }) => CreateOrganizationCommandPort;
