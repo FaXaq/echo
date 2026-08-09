@@ -22,7 +22,7 @@ msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
 
-#: apps/web/src/routes/accept-invitation.tsx:104
+#: apps/web/src/routes/accept-invitation.tsx:105
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
 
@@ -57,7 +57,7 @@ msgstr "Agenda"
 msgid "All day"
 msgstr "Toute la journée"
 
-#: apps/web/src/components/signup-form.tsx:160
+#: apps/web/src/components/signup-form.tsx:164
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Déjà un compte ? <0>Se connecter</0>"
 
@@ -93,7 +93,7 @@ msgstr "Au moins une lettre majuscule"
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
-#: apps/web/src/routes/accept-invitation.tsx:106
+#: apps/web/src/routes/accept-invitation.tsx:107
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
@@ -157,8 +157,8 @@ msgstr "Couleur"
 msgid "Concert"
 msgstr "Concert"
 
-#: apps/web/src/components/reset-password-form.tsx:85
-#: apps/web/src/components/signup-form.tsx:138
+#: apps/web/src/components/reset-password-form.tsx:87
+#: apps/web/src/components/signup-form.tsx:142
 msgid "Confirm password"
 msgstr "Confirmer le mot de passe"
 
@@ -175,7 +175,7 @@ msgstr "Impossible de charger ce fichier"
 msgid "Create a space for your project"
 msgstr "Créez un espace pour votre projet"
 
-#: apps/web/src/components/signup-form.tsx:154
+#: apps/web/src/components/signup-form.tsx:158
 msgid "Create account"
 msgstr "Créer un compte"
 
@@ -217,7 +217,7 @@ msgstr "Supprimer ce fichier ?"
 msgid "Description"
 msgstr "Description"
 
-#: apps/web/src/components/login-form.tsx:111
+#: apps/web/src/components/login-form.tsx:113
 msgid "Don't have an account? <0>Sign up</0>"
 msgstr "Pas encore de compte ? <0>S’inscrire</0>"
 
@@ -239,7 +239,7 @@ msgid "Edit event"
 msgstr "Modifier l'événement"
 
 #: apps/web/src/components/forgot-password-form.tsx:65
-#: apps/web/src/components/signup-form.tsx:109
+#: apps/web/src/components/signup-form.tsx:111
 #: apps/web/src/routes/organizations/$organizationSlug/members/-invite-form.tsx:70
 #: apps/web/src/routes/organizations/$organizationSlug/members/-members-table.tsx:99
 msgid "Email"
@@ -381,7 +381,7 @@ msgstr "Lieu"
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: apps/web/src/components/login-form.tsx:105
+#: apps/web/src/components/login-form.tsx:107
 msgid "Login"
 msgstr "Connexion"
 
@@ -516,7 +516,7 @@ msgid "Owner"
 msgstr "Propriétaire"
 
 #: apps/web/src/components/login-form.tsx:77
-#: apps/web/src/components/signup-form.tsx:124
+#: apps/web/src/components/signup-form.tsx:126
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -581,7 +581,7 @@ msgstr "Renommer"
 msgid "Rename file"
 msgstr "Renommer le fichier"
 
-#: apps/web/src/components/reset-password-form.tsx:101
+#: apps/web/src/components/reset-password-form.tsx:103
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
