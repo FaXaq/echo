@@ -6,6 +6,6 @@
     "pnpm-lock.yaml",
     "**/*.md",
     "**/schema.d.ts",
-    "**/routeTree.gen.ts"
+    "**/routeTree.gen.ts",
   ],
 }
