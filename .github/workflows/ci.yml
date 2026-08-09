@@ -74,3 +74,20 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm test
+
+  i18n:
+    name: Translations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .tool-versions
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm i18n:check

@@ -1,16 +1,10 @@
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import { resources } from "@echo/i18n";
+import { i18n } from "@lingui/core";
+import { catalogs, toLocale, type Locale } from "@echo/i18n";
 
-i18next
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: "fr",
-    defaultNS: "common",
-    interpolation: { escapeValue: false },
-  });
+export function detectBrowserLocale(): Locale {
+  if (typeof navigator === "undefined") return "fr";
+  return toLocale(navigator.language?.split("-")[0]);
+}
 
-export default i18next;
+i18n.load(catalogs);
+i18n.activate(detectBrowserLocale());

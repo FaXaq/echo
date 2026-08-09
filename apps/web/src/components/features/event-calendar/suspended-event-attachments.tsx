@@ -1,8 +1,9 @@
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useTranslation } from "react-i18next";
+import { Plural, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { translateDynamic } from "@/lib/dynamic-messages";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,7 +51,7 @@ function RenameFileForm({
   onOpenChange: (open: boolean) => void;
   onConfirm: (filename: string) => void;
 }) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const [value, setValue] = useState(file.filename);
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -63,12 +64,12 @@ function RenameFileForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <DialogHeader>
-        <DialogTitle>{t("Rename file")}</DialogTitle>
+        <DialogTitle>{t`Rename file`}</DialogTitle>
       </DialogHeader>
       <Input autoFocus value={value} onChange={(event) => setValue(event.target.value)} />
       <DialogFooter>
-        <DialogClose render={<Button type="button" variant="outline" />}>{t("Cancel")}</DialogClose>
-        <Button type="submit">{t("Save")}</Button>
+        <DialogClose render={<Button type="button" variant="outline" />}>{t`Cancel`}</DialogClose>
+        <Button type="submit">{t`Save`}</Button>
       </DialogFooter>
     </form>
   );
@@ -100,7 +101,7 @@ function RenameFileDialog({
 }
 
 function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAttachmentsProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId }));
   const uploadMutation = useUploadFileMutation();
   const deleteMutation = useDeleteFileMutation();
@@ -117,18 +118,17 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   return (
     <div className="flex flex-col gap-3.5">
       <div className="flex items-center gap-2">
-        <span className="flex-1 text-[13px] font-semibold">{t("Linked files")}</span>
+        <span className="flex-1 text-[13px] font-semibold">{t`Linked files`}</span>
         <Badge variant="outline">
-          {files.length === 1
-            ? t("{{count}} file", { count: files.length })
-            : t("{{count}} files", { count: files.length })}
+          <Plural value={files.length} one="# file" other="# files" />
         </Badge>
       </div>
 
       <FileUpload onFilesSelected={handleFilesSelected} disabled={uploadMutation.isPending} />
       {uploadMutation.isError && (
         <p className="text-xs text-destructive">
-          {t(
+          {translateDynamic(
+            t,
             uploadMutation.error instanceof Error && uploadMutation.error.message
               ? uploadMutation.error.message
               : "Upload failed",
@@ -147,7 +147,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 
       {files.length === 0 && (
         <p className="py-5 text-center text-[13px] text-muted-foreground">
-          {t("No files linked yet.")}
+          {t`No files linked yet.`}
         </p>
       )}
 
@@ -157,20 +157,20 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("Delete this file?")}</AlertDialogTitle>
+            <AlertDialogTitle>{t`Delete this file?`}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("This will permanently delete the file. This action cannot be undone.")}
+              {t`This will permanently delete the file. This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("Cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{t`Cancel`}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (deletingFileId) deleteMutation.mutate({ id: deletingFileId });
                 setDeletingFileId(null);
               }}
             >
-              {t("Delete")}
+              {t`Delete`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -188,8 +188,8 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 }
 
 function EventAttachmentsError() {
-  const { t } = useTranslation("calendar");
-  return <p className="text-xs text-destructive">{t("Couldn't load attachments")}</p>;
+  const { t } = useLingui();
+  return <p className="text-xs text-destructive">{t`Couldn't load attachments`}</p>;
 }
 
 function EventAttachmentsLoader() {

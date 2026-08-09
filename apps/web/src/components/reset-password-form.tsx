@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useLingui } from "@lingui/react/macro";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 const schema = z
   .object({
@@ -41,7 +42,7 @@ export function ResetPasswordForm({
   serverError,
   className,
 }: ResetPasswordFormProps) {
-  const { t } = useTranslation("auth");
+  const { t } = useLingui();
 
   const {
     register,
@@ -56,18 +57,18 @@ export function ResetPasswordForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">
-            <Trans t={t}>Set a new password</Trans>
+            <Trans>Set a new password</Trans>
           </h1>
           <p className="text-sm text-balance text-muted-foreground">
-            <Trans t={t}>Choose a strong password for your account</Trans>
+            <Trans>Choose a strong password for your account</Trans>
           </p>
         </div>
 
-        {serverError && <FieldError>{t(serverError)}</FieldError>}
+        {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
         <Field>
           <FieldLabel htmlFor="password">
-            <Trans t={t}>New password</Trans>
+            <Trans>New password</Trans>
           </FieldLabel>
           <Input
             id="password"
@@ -76,12 +77,14 @@ export function ResetPasswordForm({
             className="bg-background"
             {...register("password")}
           />
-          {errors.password && <FieldError>{t(errors.password.message!)}</FieldError>}
+          {errors.password && (
+            <FieldError>{translateDynamic(t, errors.password.message!)}</FieldError>
+          )}
         </Field>
 
         <Field>
           <FieldLabel htmlFor="confirmPassword">
-            <Trans t={t}>Confirm password</Trans>
+            <Trans>Confirm password</Trans>
           </FieldLabel>
           <Input
             id="confirmPassword"
@@ -90,12 +93,14 @@ export function ResetPasswordForm({
             className="bg-background"
             {...register("confirmPassword")}
           />
-          {errors.confirmPassword && <FieldError>{t(errors.confirmPassword.message!)}</FieldError>}
+          {errors.confirmPassword && (
+            <FieldError>{translateDynamic(t, errors.confirmPassword.message!)}</FieldError>
+          )}
         </Field>
 
         <Field>
           <Button type="submit" isLoading={isLoading}>
-            <Trans t={t}>Reset password</Trans>
+            <Trans>Reset password</Trans>
           </Button>
         </Field>
       </FieldGroup>

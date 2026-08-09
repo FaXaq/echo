@@ -9,7 +9,8 @@
     }
   },
   "dependencies": {
-    "i18next": "catalog:"
+    "@lingui/core": "catalog:",
+    "@lingui/message-utils": "catalog:"
   },
   "devDependencies": {
     "@echo/config": "workspace:*",

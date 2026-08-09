@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { authClient } from "@/lib/auth";
 import { Button } from "@/ui/button";
@@ -23,6 +23,7 @@ import {
 } from "@echo/modules/user/domain";
 import type { OrganizationRole, ClientMember, ClientInvitation } from "@echo/auth";
 import { logger } from "@/lib/logger";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 interface MembersTableProps {
   members: ClientMember[];
@@ -41,7 +42,7 @@ export function MembersTable({
   organizationId,
   onRefresh,
 }: MembersTableProps) {
-  const { t } = useTranslation("members");
+  const { t } = useLingui();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCancelInvitation = async (invitationId: string) => {
@@ -94,10 +95,10 @@ export function MembersTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("Name")}</TableHead>
-            <TableHead>{t("Email")}</TableHead>
-            <TableHead>{t("Role")}</TableHead>
-            <TableHead className="w-24">{t("Actions")}</TableHead>
+            <TableHead>{t`Name`}</TableHead>
+            <TableHead>{t`Email`}</TableHead>
+            <TableHead>{t`Role`}</TableHead>
+            <TableHead className="w-24">{t`Actions`}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -108,9 +109,9 @@ export function MembersTable({
                 <TableCell>{invitation.email || "-"}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="mr-2">
-                    {t(invitation.role)}
+                    {translateDynamic(t, invitation.role)}
                   </Badge>
-                  <Badge variant="secondary">{t("Pending")}</Badge>
+                  <Badge variant="secondary">{t`Pending`}</Badge>
                 </TableCell>
                 <TableCell>
                   {canCancelInvitation(currentMemberRole) ? (
@@ -118,19 +119,19 @@ export function MembersTable({
                       <AlertDialogTrigger
                         render={<Button variant="destructive" size="sm" disabled={isLoading} />}
                       >
-                        {t("Cancel")}
+                        {t`Cancel`}
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>{t("Cancel invitation")}</AlertDialogTitle>
+                          <AlertDialogTitle>{t`Cancel invitation`}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            {t("Are you sure you want to cancel this invitation?")}
+                            {t`Are you sure you want to cancel this invitation?`}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>{t("No, keep it")}</AlertDialogCancel>
+                          <AlertDialogCancel>{t`No, keep it`}</AlertDialogCancel>
                           <AlertDialogAction onClick={() => handleCancelInvitation(invitation.id)}>
-                            {t("Yes, cancel")}
+                            {t`Yes, cancel`}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -155,18 +156,20 @@ export function MembersTable({
                         disabled={isLoading}
                       >
                         <SelectTrigger className="w-28">
-                          <SelectValue>{(role: OrganizationRole) => t(role)}</SelectValue>
+                          <SelectValue>
+                            {(role: OrganizationRole) => translateDynamic(t, role)}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="member">{t("member")}</SelectItem>
-                          <SelectItem value="admin">{t("admin")}</SelectItem>
+                          <SelectItem value="member">{translateDynamic(t, "member")}</SelectItem>
+                          <SelectItem value="admin">{translateDynamic(t, "admin")}</SelectItem>
                           {currentMemberRole === "owner" && (
-                            <SelectItem value="owner">{t("owner")}</SelectItem>
+                            <SelectItem value="owner">{translateDynamic(t, "owner")}</SelectItem>
                           )}
                         </SelectContent>
                       </Select>
                     ) : (
-                      <Badge variant="outline">{t(member.role)}</Badge>
+                      <Badge variant="outline">{translateDynamic(t, member.role)}</Badge>
                     )}
                   </TableCell>
                   <TableCell>
@@ -176,21 +179,19 @@ export function MembersTable({
                         <AlertDialogTrigger
                           render={<Button variant="destructive" size="sm" disabled={isLoading} />}
                         >
-                          {t("Revoke")}
+                          {t`Revoke`}
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>{t("Revoke membership")}</AlertDialogTitle>
+                            <AlertDialogTitle>{t`Revoke membership`}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              {t(
-                                "Are you sure you want to remove this member from the organization?",
-                              )}
+                              {t`Are you sure you want to remove this member from the organization?`}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>{t("No, keep them")}</AlertDialogCancel>
+                            <AlertDialogCancel>{t`No, keep them`}</AlertDialogCancel>
                             <AlertDialogAction onClick={() => handleRevoke(member.userId)}>
-                              {t("Yes, remove")}
+                              {t`Yes, remove`}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -203,7 +204,7 @@ export function MembersTable({
           {!hasMembers && (
             <TableRow>
               <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                {t("No members yet")}
+                {t`No members yet`}
               </TableCell>
             </TableRow>
           )}

@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useLingui } from "@lingui/react/macro";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 const schema = z.object({
   login: z.string().min(1, "Email or username is required"),
@@ -31,7 +32,7 @@ export function LoginForm({
   serverError,
   className,
 }: LoginFormProps) {
-  const { t } = useTranslation("auth");
+  const { t } = useLingui();
 
   const {
     register,
@@ -46,18 +47,18 @@ export function LoginForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">
-            <Trans t={t}>Login to your account</Trans>
+            <Trans>Login to your account</Trans>
           </h1>
           <p className="text-sm text-balance text-muted-foreground">
-            <Trans t={t}>Enter your email or username to login</Trans>
+            <Trans>Enter your email or username to login</Trans>
           </p>
         </div>
 
-        {serverError && <FieldError>{t(serverError)}</FieldError>}
+        {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
         <Field>
           <FieldLabel htmlFor="login">
-            <Trans t={t}>Email or username</Trans>
+            <Trans>Email or username</Trans>
           </FieldLabel>
           <Input
             id="login"
@@ -67,13 +68,13 @@ export function LoginForm({
             className="bg-background"
             {...register("login")}
           />
-          {errors.login && <FieldError>{t(errors.login.message!)}</FieldError>}
+          {errors.login && <FieldError>{translateDynamic(t, errors.login.message!)}</FieldError>}
         </Field>
 
         <Field>
           <div className="flex items-center">
             <FieldLabel htmlFor="password">
-              <Trans t={t}>Password</Trans>
+              <Trans>Password</Trans>
             </FieldLabel>
             {onForgotPasswordClick ? (
               <button
@@ -81,11 +82,11 @@ export function LoginForm({
                 className="ml-auto text-sm underline-offset-4 hover:underline"
                 onClick={onForgotPasswordClick}
               >
-                <Trans t={t}>Forgot your password?</Trans>
+                <Trans>Forgot your password?</Trans>
               </button>
             ) : (
               <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">
-                <Trans t={t}>Forgot your password?</Trans>
+                <Trans>Forgot your password?</Trans>
               </a>
             )}
           </div>
@@ -96,18 +97,20 @@ export function LoginForm({
             className="bg-background"
             {...register("password")}
           />
-          {errors.password && <FieldError>{t(errors.password.message!)}</FieldError>}
+          {errors.password && (
+            <FieldError>{translateDynamic(t, errors.password.message!)}</FieldError>
+          )}
         </Field>
 
         <Field>
           <Button type="submit" isLoading={isLoading}>
-            <Trans t={t}>Login</Trans>
+            <Trans>Login</Trans>
           </Button>
         </Field>
 
         {onSignupClick && (
           <p className="text-center text-sm text-muted-foreground">
-            <Trans t={t}>
+            <Trans>
               Don&apos;t have an account?{" "}
               <button
                 type="button"

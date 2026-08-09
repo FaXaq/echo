@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +25,7 @@ export interface PlaceFieldProps {
 }
 
 export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const [inputValue, setInputValue] = useState(value?.name ?? "");
   const [prevValue, setPrevValue] = useState(value);
   const [results, setResults] = useState<EventPlace[]>([]);
@@ -114,7 +114,7 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
           aria-autocomplete="list"
           autoComplete="off"
           value={inputValue}
-          placeholder={t("Search for a place")}
+          placeholder={t`Search for a place`}
           onChange={(e) => handleInputValueChange(e.target.value)}
           onFocus={() => {
             if (results.length > 0 || isSearching) setOpen(true);
@@ -127,7 +127,7 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
             type="button"
             variant="ghost"
             size="icon-xs"
-            aria-label={t("Clear place")}
+            aria-label={t`Clear place`}
             className="absolute right-0.5 top-1/2 -translate-y-1/2"
             onClick={handleClear}
           >
@@ -148,10 +148,10 @@ export function PlaceField({ id, value, onChange }: PlaceFieldProps) {
                 {isSearching ? (
                   <span className="flex items-center justify-center gap-2">
                     <Loader2 className="size-3.5 animate-spin" />
-                    {t("Searching…")}
+                    {t`Searching…`}
                   </span>
                 ) : (
-                  t("No places found")
+                  t`No places found`
                 )}
               </CommandEmpty>
             )}

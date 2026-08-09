@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useLingui } from "@lingui/react/macro";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -30,7 +31,7 @@ export function ForgotPasswordForm({
   serverSuccess,
   className,
 }: ForgotPasswordFormProps) {
-  const { t } = useTranslation("auth");
+  const { t } = useLingui();
 
   const {
     register,
@@ -45,23 +46,23 @@ export function ForgotPasswordForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">
-            <Trans t={t}>Forgot your password?</Trans>
+            <Trans>Forgot your password?</Trans>
           </h1>
           <p className="text-sm text-balance text-muted-foreground">
-            <Trans t={t}>Enter your email to receive a reset link</Trans>
+            <Trans>Enter your email to receive a reset link</Trans>
           </p>
         </div>
 
-        {serverError && <FieldError>{t(serverError)}</FieldError>}
+        {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
         {serverSuccess ? (
           <p className="rounded-md bg-green-50 p-3 text-center text-sm text-green-700 dark:bg-green-950 dark:text-green-300">
-            {t(serverSuccess)}
+            {translateDynamic(t, serverSuccess)}
           </p>
         ) : (
           <Field>
             <FieldLabel htmlFor="email">
-              <Trans t={t}>Email</Trans>
+              <Trans>Email</Trans>
             </FieldLabel>
             <Input
               id="email"
@@ -71,21 +72,21 @@ export function ForgotPasswordForm({
               className="bg-background"
               {...register("email")}
             />
-            {errors.email && <FieldError>{t(errors.email.message!)}</FieldError>}
+            {errors.email && <FieldError>{translateDynamic(t, errors.email.message!)}</FieldError>}
           </Field>
         )}
 
         {!serverSuccess && (
           <Field>
             <Button type="submit" isLoading={isLoading}>
-              <Trans t={t}>Send reset link</Trans>
+              <Trans>Send reset link</Trans>
             </Button>
           </Field>
         )}
 
         {onBackToLogin && (
           <p className="text-center text-sm text-muted-foreground">
-            <Trans t={t}>
+            <Trans>
               <button
                 type="button"
                 className="text-foreground underline underline-offset-4 hover:opacity-80"

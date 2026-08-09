@@ -1,6 +1,6 @@
 import * as React from "react";
 import { UploadCloud } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { cn } from "@/lib/utils";
 
 export interface FileUploadProps {
@@ -16,7 +16,7 @@ export function FileUpload({
   disabled = false,
   onFilesSelected,
 }: FileUploadProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const [isDragging, setIsDragging] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -53,12 +53,12 @@ export function FileUpload({
     >
       <UploadCloud className="size-6 text-muted-foreground" />
       <p className="text-xs text-muted-foreground">
-        {t("Drag and drop files here, or click to select")}
+        {t`Drag and drop files here, or click to select`}
       </p>
       <input
         ref={inputRef}
         type="file"
-        aria-label={t("Add files")}
+        aria-label={t`Add files`}
         className="sr-only"
         accept={accept}
         multiple={multiple}

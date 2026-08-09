@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { DownloadIcon, FileText, FileWarning, MoreVertical, Pen, Trash } from "lucide-react";
 import {
   Attachment,
@@ -29,7 +29,7 @@ export interface AttachmentListProps {
 }
 
 export function AttachmentList({ files, onDelete, onRename, onDownload }: AttachmentListProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
 
@@ -51,14 +51,14 @@ export function AttachmentList({ files, onDelete, onRename, onDownload }: Attach
                 state={failed ? "error" : "done"}
               >
                 <AttachmentTrigger
-                  aria-label={t("Open {{filename}}", { filename: file.filename })}
+                  aria-label={t`Open ${file.filename}`}
                   onClick={() => setPreviewId(file.id)}
                 />
                 <AttachmentMedia>{failed ? <FileWarning /> : <FileText />}</AttachmentMedia>
                 <AttachmentContent>
                   <AttachmentTitle>{file.filename}</AttachmentTitle>
                   <AttachmentDescription>
-                    {failed ? t("Couldn't load this file") : formatSize(file.sizeBytes)}
+                    {failed ? t`Couldn't load this file` : formatSize(file.sizeBytes)}
                   </AttachmentDescription>
                 </AttachmentContent>
                 <AttachmentActions>
@@ -69,7 +69,7 @@ export function AttachmentList({ files, onDelete, onRename, onDownload }: Attach
                           type="button"
                           variant="ghost"
                           size="icon-xs"
-                          aria-label={t("Actions for {{filename}}", { filename: file.filename })}
+                          aria-label={t`Actions for ${file.filename}`}
                         />
                       }
                     >
@@ -83,7 +83,7 @@ export function AttachmentList({ files, onDelete, onRename, onDownload }: Attach
                           }}
                         >
                           <Pen />
-                          {t("Rename")}
+                          {t`Rename`}
                         </DropdownMenuItem>
                       )}
                       {onDownload && (
@@ -93,13 +93,13 @@ export function AttachmentList({ files, onDelete, onRename, onDownload }: Attach
                           }}
                         >
                           <DownloadIcon />
-                          {t("Download")}
+                          {t`Download`}
                         </DropdownMenuItem>
                       )}
                       {onDelete && (
                         <DropdownMenuItem variant="destructive" onClick={() => onDelete(file)}>
                           <Trash />
-                          {t("Delete")}
+                          {t`Delete`}
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>
@@ -118,7 +118,7 @@ export function AttachmentList({ files, onDelete, onRename, onDownload }: Attach
             (failedIds.has(previewFile.id) ? (
               <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-2 rounded-md border border-border bg-muted text-sm text-destructive">
                 <FileWarning className="size-6" />
-                <span>{t("Couldn't load this file")}</span>
+                <span>{t`Couldn't load this file`}</span>
               </div>
             ) : (
               <iframe

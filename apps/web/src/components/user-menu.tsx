@@ -1,6 +1,7 @@
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { LogOut, Monitor, Moon, Sun } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
+import { locales, type Locale } from "@echo/i18n";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -15,15 +16,12 @@ import { useTheme } from "@/contexts/theme";
 import { authClient } from "@/lib/auth";
 
 type Theme = "light" | "dark" | "system";
-type Locale = "en" | "fr";
 
 const THEME_OPTIONS: { value: Theme; icon: React.ReactNode }[] = [
   { value: "light", icon: <Sun size={14} /> },
   { value: "system", icon: <Monitor size={14} /> },
   { value: "dark", icon: <Moon size={14} /> },
 ];
-
-const LOCALE_OPTIONS: Locale[] = ["en", "fr"];
 
 function getInitials(name: string) {
   return name
@@ -43,7 +41,7 @@ export interface UserMenuProps {
 }
 
 export function UserMenu({ username, name, email, image, onLogout }: UserMenuProps) {
-  const { t, i18n } = useTranslation("auth");
+  const { i18n } = useLingui();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
 
@@ -54,7 +52,7 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
   };
 
   const handleLocaleChange = (locale: Locale) => {
-    i18n.changeLanguage(locale);
+    i18n.activate(locale);
     authClient.updateUser({ locale });
     router.invalidate();
   };
@@ -82,7 +80,7 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
         <DropdownMenuSeparator />
         <div className="px-2 py-1.5 flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">
-            <Trans t={t}>Theme</Trans>
+            <Trans>Theme</Trans>
           </span>
           <div className="flex items-center gap-0.5">
             {THEME_OPTIONS.map(({ value, icon }) => (
@@ -98,14 +96,14 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
         </div>
         <div className="px-2 py-1.5 flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">
-            <Trans t={t}>Language</Trans>
+            <Trans>Language</Trans>
           </span>
           <div className="flex items-center gap-0.5">
-            {LOCALE_OPTIONS.map((locale) => (
+            {locales.map((locale) => (
               <button
                 key={locale}
                 onClick={() => handleLocaleChange(locale)}
-                className={`px-1.5 py-0.5 rounded text-xs font-medium uppercase transition-colors ${i18n.language === locale ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}
+                className={`px-1.5 py-0.5 rounded text-xs font-medium uppercase transition-colors ${i18n.locale === locale ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent/50"}`}
               >
                 {locale}
               </button>
@@ -115,7 +113,7 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={onLogout} className="text-red-400">
           <LogOut />
-          <Trans t={t}>Log out</Trans>
+          <Trans>Log out</Trans>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

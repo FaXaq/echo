@@ -2,7 +2,7 @@ import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,7 +22,7 @@ export interface SuspendedEventDetailProps {
 }
 
 function EventDetailContent({ eventId, organizationId, onBack }: SuspendedEventDetailProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const { data: event } = useSuspenseQuery(getEventQueryOptions({ eventId, organizationId }));
   const viewEvent = toViewEvent(event);
   const [dialogState, setDialogState] = useState<EventDialogState>(null);
@@ -34,14 +34,14 @@ function EventDetailContent({ eventId, organizationId, onBack }: SuspendedEventD
   const deleteEventMutation = useDeleteEventMutation({
     organizationId,
     onSuccess: () => {
-      toast.success(t("Event deleted"));
+      toast.success(t`Event deleted`);
       onBack();
     },
   });
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success(t("Link copied to clipboard"));
+    toast.success(t`Link copied to clipboard`);
   };
 
   const handleSubmit = async (updated: typeof viewEvent) => {
@@ -88,21 +88,19 @@ function EventDetailSkeleton() {
 }
 
 function EventDetailError({ error, onBack }: { error: unknown; onBack: () => void }) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const isNotFound = error instanceof TRPCClientError && error.data?.code === "NOT_FOUND";
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center gap-4 p-6">
       <h1 className="text-2xl font-bold">
-        {isNotFound ? t("Event not found") : t("Something went wrong")}
+        {isNotFound ? t`Event not found` : t`Something went wrong`}
       </h1>
       {isNotFound && (
-        <p className="text-muted-foreground">
-          {t("This event doesn't exist or has been deleted.")}
-        </p>
+        <p className="text-muted-foreground">{t`This event doesn't exist or has been deleted.`}</p>
       )}
       <Button type="button" onClick={onBack}>
-        {t("Back to calendar")}
+        {t`Back to calendar`}
       </Button>
     </div>
   );

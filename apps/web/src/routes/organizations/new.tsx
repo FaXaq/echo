@@ -3,11 +3,12 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { authClient } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { translateDynamic } from "@/lib/dynamic-messages";
 
 export const Route = createFileRoute("/organizations/new")({
   component: NewOrganizationPage,
@@ -24,7 +25,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 function NewOrganizationPage() {
-  const { t } = useTranslation("projects");
+  const { t } = useLingui();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | undefined>();
 
@@ -66,18 +67,18 @@ function NewOrganizationPage() {
           <FieldGroup>
             <div className="flex flex-col gap-1">
               <h1 className="text-2xl font-bold">
-                <Trans t={t}>New project</Trans>
+                <Trans>New project</Trans>
               </h1>
               <p className="text-sm text-muted-foreground">
-                <Trans t={t}>Create a space for your project</Trans>
+                <Trans>Create a space for your project</Trans>
               </p>
             </div>
 
-            {serverError && <FieldError>{t(serverError)}</FieldError>}
+            {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
             <Field>
               <FieldLabel htmlFor="name">
-                <Trans t={t}>Name</Trans>
+                <Trans>Name</Trans>
               </FieldLabel>
               <Input
                 id="name"
@@ -86,12 +87,12 @@ function NewOrganizationPage() {
                 className="bg-background"
                 {...register("name", { onChange: handleNameChange })}
               />
-              {errors.name && <FieldError>{t(errors.name.message!)}</FieldError>}
+              {errors.name && <FieldError>{translateDynamic(t, errors.name.message!)}</FieldError>}
             </Field>
 
             <Field>
               <FieldLabel htmlFor="slug">
-                <Trans t={t}>Slug</Trans>
+                <Trans>Slug</Trans>
               </FieldLabel>
               <Input
                 id="slug"
@@ -100,12 +101,12 @@ function NewOrganizationPage() {
                 className="bg-background"
                 {...register("slug")}
               />
-              {errors.slug && <FieldError>{t(errors.slug.message!)}</FieldError>}
+              {errors.slug && <FieldError>{translateDynamic(t, errors.slug.message!)}</FieldError>}
             </Field>
 
             <Field>
               <Button type="submit" isLoading={isSubmitting}>
-                <Trans t={t}>Create organization</Trans>
+                <Trans>Create organization</Trans>
               </Button>
             </Field>
           </FieldGroup>

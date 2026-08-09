@@ -1,5 +1,9 @@
 import "@testing-library/jest-dom/vitest";
-import "./i18n";
+import { i18n } from "@lingui/core";
+import { catalogs } from "@echo/i18n";
+
+i18n.load(catalogs);
+i18n.activate("en");
 
 if (!Element.prototype.hasPointerCapture) {
   Element.prototype.hasPointerCapture = () => false;

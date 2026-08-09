@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 
 import { cn } from "@/lib/utils";
 
@@ -27,7 +27,7 @@ interface MonthViewProps {
 }
 
 export function MonthView({ date, events }: MonthViewProps) {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const cells = getMonthGrid(date);
   const weeks = chunkMonthWeeks(cells);
 
@@ -64,7 +64,7 @@ function MonthWeekRow({
 }: {
   week: MonthGridCell[];
   events: CalendarEvent[];
-  t: (key: string, options?: Record<string, unknown>) => string;
+  t: (strings: TemplateStringsArray, ...values: unknown[]) => string;
 }) {
   const { requestEventCreate, requestDayOverflow } = useCalendarContext();
   const today = dayjs();
@@ -119,7 +119,7 @@ function MonthWeekRow({
                 }}
                 className="shrink-0 px-1.5 text-left text-[0.625rem] font-medium text-muted-foreground hover:text-foreground"
               >
-                {t("+{{count}} more", { count: overflowCount })}
+                {t`+${overflowCount} more`}
               </button>
             )}
           </div>

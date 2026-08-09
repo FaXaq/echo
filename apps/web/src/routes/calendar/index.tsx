@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
+import { useLingui } from "@lingui/react/macro";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { EventCalendar, calendarViewSchema } from "@/ui/event-calendar";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/calendar/")({
 });
 
 function CalendarPage() {
-  const { t } = useTranslation("calendar");
+  const { t } = useLingui();
   const navigate = useNavigate();
   const search = Route.useSearch();
   const { data: events = [] } = useQuery(getEventsQueryOptions());
@@ -70,7 +70,7 @@ function CalendarPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">{t("Calendar")}</h1>
+        <h1 className="text-3xl font-bold mb-2">{t`Calendar`}</h1>
       </div>
       <EventCalendar
         events={events.map(toViewEvent)}
