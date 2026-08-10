@@ -1,64 +1,59 @@
 import { useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { authClient } from "@/lib/auth";
+import { TRPCClientError } from "@trpc/client";
+import { useSession } from "@/hooks/use-session";
+import { useCreateOrganizationMutation } from "@/services/resources/organization";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { translateDynamic } from "@/lib/dynamic-messages";
 
-export const Route = createFileRoute("/organizations/new")({
+export const Route = createFileRoute("/projects/new")({
   staticData: { title: "New project", breadcrumb: "New project" },
   component: NewOrganizationPage,
 });
 
 const schema = z.object({
   name: z.string().min(1, "Project name is required"),
-  slug: z
-    .string()
-    .min(1, "Slug is required")
-    .regex(/^[a-z0-9-]+$/, "Lowercase letters, numbers and hyphens only"),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 function NewOrganizationPage() {
   const { t } = useLingui();
+  const { session } = useSession();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | undefined>();
+  const createOrganizationMutation = useCreateOrganizationMutation();
+
+  if (!session) {
+    throw redirect({ to: "/" });
+  }
 
   const {
     register,
     handleSubmit,
-    setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const slug = e.target.value
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-    setValue("slug", slug);
-  };
-
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = (values: FormValues) => {
     setServerError(undefined);
-    const result = await authClient.organization.create({
-      name: values.name,
-      slug: values.slug,
+    createOrganizationMutation.mutate(values, {
+      onSuccess: (res) => {
+        router.navigate({ to: "/projects/$projectSlug", params: { projectSlug: res.slug } });
+      },
+      onError: (error) => {
+        setServerError(
+          error instanceof TRPCClientError ? error.message : "Failed to create project",
+        );
+      },
     });
-
-    if (result.error) {
-      setServerError(result.error.message ?? "Failed to create organization");
-    } else {
-      router.navigate({ to: "/" });
-    }
   };
 
   return (
@@ -84,30 +79,16 @@ function NewOrganizationPage() {
               <Input
                 id="name"
                 type="text"
-                placeholder="My Project"
+                placeholder={t`My Project`}
                 className="bg-background"
-                {...register("name", { onChange: handleNameChange })}
+                {...register("name")}
               />
               {errors.name && <FieldError>{translateDynamic(t, errors.name.message!)}</FieldError>}
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="slug">
-                <Trans>Slug</Trans>
-              </FieldLabel>
-              <Input
-                id="slug"
-                type="text"
-                placeholder="my-project"
-                className="bg-background"
-                {...register("slug")}
-              />
-              {errors.slug && <FieldError>{translateDynamic(t, errors.slug.message!)}</FieldError>}
-            </Field>
-
-            <Field>
-              <Button type="submit" isLoading={isSubmitting}>
-                <Trans>Create organization</Trans>
+              <Button type="submit" isLoading={createOrganizationMutation.isPending}>
+                <Trans>Create project</Trans>
               </Button>
             </Field>
           </FieldGroup>

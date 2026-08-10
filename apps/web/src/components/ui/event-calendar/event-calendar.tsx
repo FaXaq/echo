@@ -63,7 +63,7 @@ export interface EventCalendarProps {
   onEventCreate?: (event: CalendarEvent) => void | Promise<void>;
   onEventUpdate?: (event: CalendarEvent) => void | Promise<void>;
   onEventDelete?: (id: string) => void | Promise<void>;
-  defaultOrganizationId?: string | null;
+  defaultOrganizationId: string;
   className?: string;
 }
 

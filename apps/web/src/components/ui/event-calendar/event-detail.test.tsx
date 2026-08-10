@@ -3,6 +3,11 @@ import userEvent from "@testing-library/user-event";
 import dayjs from "dayjs";
 import { describe, expect, it, vi } from "vitest";
 
+vi.mock("@tanstack/react-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tanstack/react-router")>()),
+  Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+}));
+
 import { EventDetail } from "./event-detail";
 import type { CalendarEvent } from "./types";
 
@@ -14,7 +19,7 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     endDate: dayjs().hour(9).minute(30).second(0).millisecond(0).toDate(),
     color: "blue",
     type: null,
-    organization: { id: null },
+    organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
     place: null,
     createdBy: "user-1",
     createdByName: "Mr Me",

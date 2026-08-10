@@ -2,6 +2,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { render, screen } from "@/lib/test-utils";
 import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tanstack/react-router")>()),
+  Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+}));
+
 import { SuspendedEventDetail } from "./suspended-event-detail";
 import * as calendarResource from "@/services/resources/calendar";
 import * as fileResource from "@/services/resources/file";
@@ -16,7 +22,7 @@ function makeEvent(): calendarResource.CalendarEvent {
     allDay: false,
     color: "blue",
     type: null,
-    organization: undefined,
+    organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
     createdAt: "2026-08-02T09:00:00",
     createdBy: "user-1",
     createdByName: "Mr Me",
@@ -28,7 +34,12 @@ function makeEvent(): calendarResource.CalendarEvent {
 function renderWithClient(client: QueryClient) {
   return render(
     <QueryClientProvider client={client}>
-      <SuspendedEventDetail eventId="event-1" pathname="/calendar/event-1" onBack={vi.fn()} />
+      <SuspendedEventDetail
+        eventId="event-1"
+        organizationId="org-1"
+        pathname="/calendar/event-1"
+        onBack={vi.fn()}
+      />
     </QueryClientProvider>,
   );
 }
@@ -37,7 +48,8 @@ describe("SuspendedEventDetail", () => {
   it("renders the event once loaded", async () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     client.setQueryData(
-      calendarResource.getEventQueryOptions({ eventId: "event-1" }).queryKey,
+      calendarResource.getEventQueryOptions({ eventId: "event-1", organizationId: "org-1" })
+        .queryKey,
       makeEvent(),
     );
     client.setQueryData(
@@ -53,7 +65,8 @@ describe("SuspendedEventDetail", () => {
   it("shows a not-found screen (not a generic error) when the event lookup 404s", async () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     client.setQueryData(
-      calendarResource.getEventQueryOptions({ eventId: "event-1" }).queryKey,
+      calendarResource.getEventQueryOptions({ eventId: "event-1", organizationId: "org-1" })
+        .queryKey,
       undefined,
     );
     vi.spyOn(calendarResource, "getEventQueryOptions").mockReturnValue({

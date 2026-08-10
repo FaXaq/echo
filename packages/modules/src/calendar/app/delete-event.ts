@@ -9,15 +9,13 @@ export async function deleteEvent(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     deleteCalendarEventCommand: DeleteCalendarEventCommandPort;
   },
-  input: { id: string; organizationId: string | null; userId: string },
+  input: { id: string; organizationId: string },
 ): Promise<void> {
-  if (input.organizationId !== null) {
-    const { success } = await deps.userHasPermissionInOrganization({
-      organizationId: input.organizationId,
-      permissions: { calendarEvent: ["delete"] },
-    });
-    if (!success) throw forbidden({ entity: "CalendarEvent", action: "delete" });
-  }
+  const { success } = await deps.userHasPermissionInOrganization({
+    organizationId: input.organizationId,
+    permissions: { calendarEvent: ["delete"] },
+  });
+  if (!success) throw forbidden({ entity: "CalendarEvent", action: "delete" });
 
   const deleted = await deps.deleteCalendarEventCommand(deps.db, input);
   if (!deleted) throw notFound("CalendarEvent");

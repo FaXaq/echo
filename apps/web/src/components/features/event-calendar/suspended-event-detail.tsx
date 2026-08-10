@@ -3,7 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventDetail, EventDialog, type EventDialogState } from "@/ui/event-calendar";
@@ -18,7 +18,7 @@ import { SuspendedEventAttachments } from "./suspended-event-attachments";
 
 export interface SuspendedEventDetailProps {
   eventId: string;
-  organizationId?: string;
+  organizationId: string;
   pathname: string;
   onBack: () => void;
 }
@@ -37,20 +37,19 @@ function EventDetailContent({
   useSyncPageMeta(pathname, viewEvent.title, viewEvent.title);
 
   const updateEventMutation = useUpdateEventMutation({
-    organizationId,
     onSuccess: () => setDialogState(null),
   });
   const deleteEventMutation = useDeleteEventMutation({
     organizationId,
     onSuccess: () => {
-      toast.success(t`Event deleted`);
+      toast.add({ type: "success", title: t`Event deleted` });
       onBack();
     },
   });
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success(t`Link copied to clipboard`);
+    toast.add({ type: "success", title: t`Link copied to clipboard` });
   };
 
   const handleSubmit = async (updated: typeof viewEvent) => {
@@ -74,6 +73,7 @@ function EventDetailContent({
       />
       <EventDialog
         state={dialogState}
+        defaultOrganizationId={organizationId}
         onOpenChange={(open) => !open && setDialogState(null)}
         onSubmit={handleSubmit}
         onDelete={handleDelete}

@@ -23,8 +23,6 @@ export const DYNAMIC_MESSAGES: Record<string, MessageDescriptor> = {
   "Email or username is required": msg`Email or username is required`,
   "Password is required": msg`Password is required`,
   "Project name is required": msg`Project name is required`,
-  "Slug is required": msg`Slug is required`,
-  "Lowercase letters, numbers and hyphens only": msg`Lowercase letters, numbers and hyphens only`,
   "Title is required": msg`Title is required`,
   "End date must be after start date": msg`End date must be after start date`,
 
@@ -33,7 +31,8 @@ export const DYNAMIC_MESSAGES: Record<string, MessageDescriptor> = {
   "Failed to send reset email": msg`Failed to send reset email`,
   "Check your email for a password reset link": msg`Check your email for a password reset link`,
   "Password reset failed": msg`Password reset failed`,
-  "Failed to create organization": msg`Failed to create organization`,
+  "Failed to create project": msg`Failed to create project`,
+  "Could not generate a unique organization slug": msg`Could not generate a unique organization slug`,
   "Upload failed": msg`Upload failed`,
 
   Calendar: msg`Calendar`,
