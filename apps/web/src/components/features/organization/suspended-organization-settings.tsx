@@ -164,62 +164,67 @@ function OrganizationSettingsContent({
         </section>
       )}
 
-      <section className="max-w-xl flex flex-col gap-4">
-        <div>
-          <h2 className="mb-2 text-sm font-medium text-destructive">
+      <Card className="ring-destructive/30 max-w-xl">
+        <CardHeader>
+          <CardTitle className="text-destructive">
             <Trans>Danger zone</Trans>
-          </h2>
-          <p>
+          </CardTitle>
+          <CardDescription>
             <Trans>Every action here is destructive. Please proceed with caution.</Trans>
-          </p>
-        </div>
-        {canDeleteOrganization && !organization.isPersonal && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t`Delete project`}</CardTitle>
-              <CardDescription>
-                {t`Permanently delete this project and all of its data. This action cannot be undone.`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <AlertDialogTrigger
-                  render={
-                    <Button variant="destructive" disabled={deleteOrganizationMutation.isPending} />
-                  }
-                >
-                  <Trans>Delete project</Trans>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      <Trans>Delete project</Trans>
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      <Trans>
-                        This will permanently delete <strong>{organization.name}</strong> and all of
-                        its data. This action cannot be undone.
-                      </Trans>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel disabled={deleteOrganizationMutation.isPending}>
-                      <Trans>Cancel</Trans>
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      variant="destructive"
-                      isLoading={deleteOrganizationMutation.isPending}
-                      onClick={handleDeleteOrganization}
-                    >
-                      <Trans>Delete</Trans>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </CardContent>
-          </Card>
-        )}
-      </section>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {canDeleteOrganization && !organization.isPersonal && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{t`Delete project`}</CardTitle>
+                <CardDescription>
+                  {t`Permanently delete this project and all of its data. This action cannot be undone.`}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                  <AlertDialogTrigger
+                    render={
+                      <Button
+                        variant="destructive"
+                        disabled={deleteOrganizationMutation.isPending}
+                      />
+                    }
+                  >
+                    <Trans>Delete project</Trans>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        <Trans>Delete project</Trans>
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        <Trans>
+                          This will permanently delete <strong>{organization.name}</strong> and all
+                          of its data. This action cannot be undone.
+                        </Trans>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel disabled={deleteOrganizationMutation.isPending}>
+                        <Trans>Cancel</Trans>
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        variant="destructive"
+                        isLoading={deleteOrganizationMutation.isPending}
+                        onClick={handleDeleteOrganization}
+                      >
+                        <Trans>Delete</Trans>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </CardContent>
+            </Card>
+          )}
+        </CardContent>
+      </Card>
     </>
   );
 }
