@@ -13,8 +13,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "../lib/trpc";
 import { queryClient } from "../lib/query-client";
-import { authClient } from "../lib/auth";
 import { getSessionQueryOptions } from "@/services/resources/session";
+import { useSignOutMutation } from "@/services/resources/auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -74,6 +74,7 @@ function RootLayout() {
 function RootContent({ session }: { session: ClientSession | null }) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const signOutMutation = useSignOutMutation();
 
   if (!session) {
     if (pathname === "/reset-password" || pathname === "/accept-invitation") {
@@ -82,9 +83,13 @@ function RootContent({ session }: { session: ClientSession | null }) {
     return <Landing />;
   }
 
-  const handleLogout = async () => {
-    await authClient.signOut();
-    router.invalidate();
+  const handleLogout = () => {
+    signOutMutation.mutate(undefined, {
+      onSuccess: async () => {
+        await router.invalidate();
+        router.navigate({ to: "/" });
+      },
+    });
   };
 
   return (

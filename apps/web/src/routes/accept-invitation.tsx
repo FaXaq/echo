@@ -45,7 +45,6 @@ function AcceptInvitationPage() {
   const { invitation, session } = Route.useLoaderData();
   const { t } = useLingui();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | undefined>();
   const acceptInvitationMutation = useAcceptInvitationMutation();
 
@@ -69,21 +68,19 @@ function AcceptInvitationPage() {
     return <Landing />;
   }
 
-  const handleAccept = async () => {
-    setIsLoading(true);
+  const handleAccept = () => {
     setServerError(undefined);
-    try {
-      const result = await acceptInvitationMutation.mutateAsync({
-        invitationId: invitation.id,
-      });
-      if (result.error) {
-        setServerError(result.error.message ?? t`Failed to accept invitation`);
-      } else {
-        router.navigate({ to: "/" });
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    acceptInvitationMutation.mutate(
+      { invitationId: invitation.id },
+      {
+        onSuccess: () => {
+          router.navigate({ to: "/" });
+        },
+        onError: (error) => {
+          setServerError(error.message || t`Failed to accept invitation`);
+        },
+      },
+    );
   };
 
   return (
@@ -104,7 +101,7 @@ function AcceptInvitationPage() {
               <strong>{invitation.organizationName}</strong>
             </p>
             {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
-            <Button onClick={handleAccept} isLoading={isLoading}>
+            <Button onClick={handleAccept} isLoading={acceptInvitationMutation.isPending}>
               <Trans>Accept invitation</Trans>
             </Button>
             <a href="/">{t`Back to home`}</a>
