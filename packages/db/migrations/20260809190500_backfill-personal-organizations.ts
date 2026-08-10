@@ -25,7 +25,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
       const insertResult = await sql`
         INSERT INTO "organization" ("id", "name", "slug", "isPersonal", "createdBy", "createdAt")
-        VALUES (${organizationId}, ${`${user.name}'s organization`}, ${slug}, true, ${user.id}, now())
+        VALUES (${organizationId}, ${`${user.name}`}, ${slug}, true, ${user.id}, now())
         ON CONFLICT ("slug") DO NOTHING
       `.execute(db);
 

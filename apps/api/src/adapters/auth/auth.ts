@@ -36,7 +36,7 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
       const createOrganizationCommand = createOrganizationCommandFactory({ auth });
       const organization = await createOrganization(
         { createOrganizationCommand },
-        { name: `${user.name}'s organization`, userId: user.id },
+        { name: `${user.name}`, userId: user.id },
       );
       await markOrganizationPersonal(db, organization.id, user.id);
     } catch (error) {
