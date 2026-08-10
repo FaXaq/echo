@@ -183,7 +183,7 @@ msgstr "Impossible de charger les pièces jointes"
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
-#: apps/web/src/routes/projects/new.tsx:67
+#: apps/web/src/routes/projects/new.tsx:69
 msgid "Create a space for your project"
 msgstr "Créez un espace pour votre projet"
 
@@ -199,7 +199,7 @@ msgstr "Créer un compte"
 #~ msgid "Create organization"
 #~ msgstr "Créer le groupe"
 
-#: apps/web/src/routes/projects/new.tsx:89
+#: apps/web/src/routes/projects/new.tsx:91
 msgid "Create project"
 msgstr "Créer le projet"
 
@@ -499,12 +499,12 @@ msgstr "Membres"
 msgid "Month"
 msgstr "Mois"
 
-#: apps/web/src/routes/projects/new.tsx:80
+#: apps/web/src/routes/projects/new.tsx:82
 msgid "My Project"
 msgstr "Mon projet"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:83
-#: apps/web/src/routes/projects/new.tsx:75
+#: apps/web/src/routes/projects/new.tsx:77
 msgid "Name"
 msgstr "Nom"
 
@@ -521,7 +521,7 @@ msgstr "Nouveau mot de passe"
 
 #: apps/web/src/components/version-switcher.tsx:77
 #: apps/web/src/lib/dynamic-messages.ts:41
-#: apps/web/src/routes/projects/new.tsx:64
+#: apps/web/src/routes/projects/new.tsx:66
 msgid "New project"
 msgstr "Nouveau projet"
 
