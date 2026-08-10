@@ -22,52 +22,13 @@
     {
       "files": ["apps/web/src/**"],
       "rules": {
-        "no-console": ["error", { "allow": ["warn", "error"] }],
-        "no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": ["*/lib/auth", "**/lib/auth"],
-                "importNames": ["authClient"],
-                "allowTypeImports": true,
-                "message": "Don't call authClient directly outside services/resources/*. Add a queryOptions() getter or a useXMutation() hook there instead, so reads/writes share one react-query cache key and invalidation works — see the frontend-loading-best-practices skill."
-              },
-              {
-                "group": ["*/services/api-client", "**/services/api-client"],
-                "importNames": ["apiClient"],
-                "message": "Don't call apiClient (tRPC) directly outside services/resources/*. Add a queryOptions() getter or a useXMutation() hook there instead — see the frontend-loading-best-practices skill."
-              }
-            ]
-          }
-        ]
+        "no-console": ["error", { "allow": ["warn", "error"] }]
       }
     },
     {
       "files": ["**/*.stories.tsx"],
       "rules": {
         "no-console": "off"
-      }
-    },
-    {
-      "files": ["apps/web/src/services/resources/**"],
-      "rules": {
-        "no-restricted-imports": "off"
-      }
-    },
-    {
-      "files": [
-        "apps/web/src/main.tsx",
-        "apps/web/src/lib/trpc.ts",
-        "apps/web/src/routes/__root.tsx",
-        "apps/web/src/routes/index.tsx",
-        "apps/web/src/routes/accept-invitation.tsx",
-        "apps/web/src/routes/projects/$projectSlug/route.tsx",
-        "apps/web/src/routes/projects/$projectSlug/settings/index.tsx",
-        "apps/web/src/components/features/organization/suspended-organization-settings.tsx"
-      ],
-      "rules": {
-        "no-restricted-imports": "off"
       }
     }
   ]

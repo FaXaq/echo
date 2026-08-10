@@ -73,18 +73,20 @@ export function EventDetail({
           <div className="flex flex-col gap-5">
             <div className="flex items-center justify-between gap-2.5">
               <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
-                <Link
-                  to="/projects/$projectSlug"
-                  params={{ projectSlug: event.organization.slug }}
-                  className="flex items-center gap-1.5 font-medium text-foreground"
-                >
-                  <Avatar size="sm" className="h-5 w-5">
-                    <AvatarFallback className="text-[10px]">
-                      {getInitials(event.organization.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  {event.organization.name}
-                </Link>
+                {"name" in event.organization && (
+                  <Link
+                    to="/organizations/$organizationSlug"
+                    params={{ organizationSlug: event.organization.slug }}
+                    className="flex items-center gap-1.5 font-medium text-foreground"
+                  >
+                    <Avatar size="sm" className="h-5 w-5">
+                      <AvatarFallback className="text-[10px]">
+                        {getInitials(event.organization.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    {event.organization.name}
+                  </Link>
+                )}
               </div>
               <div className="flex items-center gap-1.5">
                 <Button

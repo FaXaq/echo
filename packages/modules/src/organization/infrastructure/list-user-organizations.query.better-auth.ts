@@ -6,10 +6,5 @@ export const listUserOrganizationsQueryFactory: ListUserOrganizationQueryPortFac
       headers: deps.headers,
     });
 
-    return organizations.map((o) => ({
-      id: o.id,
-      name: o.name,
-      slug: o.slug,
-      isPersonal: o.isPersonal ?? false,
-    }));
+    return organizations.map((o) => ({ id: o.id, name: o.name }));
   };

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useLingui } from "@lingui/react/macro";
 
 import {
   Select,
@@ -10,14 +11,17 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { selfListOrganizations } from "@/services/resources/organization";
 
+const NONE_VALUE = "none";
+
 export interface OrganizationFieldProps {
   id?: string;
-  value: string;
-  onChange: (value: string) => void;
+  value: string | null;
+  onChange: (value: string | null) => void;
   disabled?: boolean;
 }
 
 export function OrganizationField({ id, value, onChange, disabled }: OrganizationFieldProps) {
+  const { t } = useLingui();
   const { data: organizations, isPending } = useQuery(selfListOrganizations());
 
   if (isPending) {
@@ -27,17 +31,20 @@ export function OrganizationField({ id, value, onChange, disabled }: Organizatio
   return (
     <Select
       disabled={disabled}
-      value={value}
-      onValueChange={(next) => next !== null && onChange(next)}
+      value={value ?? NONE_VALUE}
+      onValueChange={(next) => onChange(next === NONE_VALUE ? null : next)}
     >
       <SelectTrigger id={id} className="w-full">
         <SelectValue>
           {(val: string) =>
-            organizations?.find((organization) => organization.id === val)?.name ?? val
+            val === NONE_VALUE
+              ? t`No organization`
+              : (organizations?.find((organization) => organization.id === val)?.name ?? val)
           }
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
+        <SelectItem value={NONE_VALUE}>{t`No organization`}</SelectItem>
         {organizations?.map((organization) => (
           <SelectItem key={organization.id} value={organization.id}>
             {organization.name}

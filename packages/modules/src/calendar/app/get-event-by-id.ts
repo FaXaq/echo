@@ -10,18 +10,34 @@ export async function getEventById(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     getCalendarEventById: GetCalendarEventByIdQueryPort;
   },
-  input: { eventId: string; organizationId: string },
+  input: { eventId: string; organizationId: string | null },
 ): Promise<CalendarEvent> {
-  const calendarEvent = await deps.getCalendarEventById(deps.db, { eventId: input.eventId });
+  const eventForPermissions = await deps.getCalendarEventById(deps.db, {
+    eventId: input.eventId,
+    organizationId: null,
+  });
+
+  if (
+    input.organizationId &&
+    eventForPermissions?.organization?.id &&
+    input.organizationId !== eventForPermissions.organization.id
+  ) {
+    throw notFound("CalendarEvent");
+  }
+
+  if (eventForPermissions?.organization?.id) {
+    const { success } = await deps.userHasPermissionInOrganization({
+      organizationId: eventForPermissions.organization.id,
+      permissions: { calendarEvent: ["read"] },
+    });
+    if (!success) throw forbidden({ entity: "CalendarEvent", action: "list" });
+  }
+
+  const calendarEvent = await deps.getCalendarEventById(deps.db, {
+    eventId: input.eventId,
+  });
 
   if (calendarEvent === undefined) throw notFound("CalendarEvent");
-  if (calendarEvent.organization.id !== input.organizationId) throw notFound("CalendarEvent");
-
-  const { success } = await deps.userHasPermissionInOrganization({
-    organizationId: calendarEvent.organization.id,
-    permissions: { calendarEvent: ["read"] },
-  });
-  if (!success) throw forbidden({ entity: "CalendarEvent", action: "list" });
 
   return calendarEvent;
 }

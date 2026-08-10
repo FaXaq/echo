@@ -21,14 +21,8 @@ export const organizationAdditionalFields = {
   createdBy: {
     type: "string",
     required: false,
-    input: false,
+    input: true,
     references: { model: "user", field: "id", onDelete: "set null" },
-  },
-  isPersonal: {
-    type: "boolean",
-    required: false,
-    input: false,
-    defaultValue: false,
   },
 } satisfies {
   [key: string]: DBFieldAttribute;

@@ -35,7 +35,7 @@ export interface CalendarEvent {
   description: string | null;
   end_date: Timestamp;
   id: string;
-  organization_id: string;
+  organization_id: string | null;
   place_address: string | null;
   place_lat: number | null;
   place_lng: number | null;
@@ -86,7 +86,6 @@ export interface Organization {
   createdAt: Timestamp;
   createdBy: string | null;
   id: string;
-  isPersonal: boolean | null;
   logo: string | null;
   metadata: string | null;
   name: string;

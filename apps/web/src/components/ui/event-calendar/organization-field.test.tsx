@@ -33,7 +33,7 @@ describe("OrganizationField", () => {
 
     const user = userEvent.setup();
     const onChange = vi.fn();
-    renderWithClient(<OrganizationField value="org-1" onChange={onChange} />);
+    renderWithClient(<OrganizationField value={null} onChange={onChange} />);
 
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
 
@@ -41,10 +41,28 @@ describe("OrganizationField", () => {
 
     const trigger = await screen.findByRole("combobox");
     await user.click(trigger);
-    const option = await screen.findByRole("option", { name: "Beta Co" });
+    const option = await screen.findByRole("option", { name: "Acme Inc" });
     await user.click(option);
 
-    expect(onChange).toHaveBeenCalledWith("org-2");
+    expect(onChange).toHaveBeenCalledWith("org-1");
+  });
+
+  it("selects 'No organization' to clear the value", async () => {
+    vi.spyOn(organizationResource, "selfListOrganizations").mockReturnValue({
+      queryKey: ["organization", "selfList"],
+      queryFn: async () => sampleOrganizations,
+    } as never);
+
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithClient(<OrganizationField value="org-1" onChange={onChange} />);
+
+    const trigger = await screen.findByRole("combobox");
+    await user.click(trigger);
+    const option = await screen.findByRole("option", { name: "No organization" });
+    await user.click(option);
+
+    expect(onChange).toHaveBeenCalledWith(null);
   });
 
   it("shows the selected organization's name", async () => {

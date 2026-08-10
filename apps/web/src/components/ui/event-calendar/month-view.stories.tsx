@@ -39,7 +39,7 @@ function makeEvent(overrides: Partial<CalendarEvent>): CalendarEvent {
     endDate: new Date("2026-08-03T10:00:00"),
     color: "blue",
     type: null,
-    organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+    organization: { id: null },
     place: null,
     createdBy: "user-1",
     createdByName: "Jane Doe",

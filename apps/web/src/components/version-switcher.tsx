@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Layout, ChevronDown, Check, Plus } from "lucide-react";
 
 import {
@@ -10,27 +11,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Badge } from "@/components/ui/badge";
 import { Trans } from "@lingui/react/macro";
-
-export interface VersionOption {
-  id: string;
-  name: string;
-  isPersonal: boolean;
-}
 
 export function VersionSwitcher({
   versions,
-  currentVersion,
+  defaultVersion,
   onSelect,
   onCreateNew,
 }: {
-  versions: VersionOption[];
-  currentVersion: string;
-  onSelect?: (id: string) => void;
+  versions: string[];
+  defaultVersion: string;
+  onSelect?: (version: string) => void;
   onCreateNew?: () => void;
 }) {
-  const current = versions.find((version) => version.id === currentVersion);
+  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion);
+
+  const handleSelect = (version: string) => {
+    setSelectedVersion(version);
+    onSelect?.(version);
+  };
 
   return (
     <SidebarMenu>
@@ -48,25 +47,15 @@ export function VersionSwitcher({
               <Layout className="size-4" />
             </div>
             <div className="flex flex-col gap-0.5 leading-none">
-              <span className="font-medium">{current?.name}</span>
+              <span className="font-medium">{selectedVersion}</span>
             </div>
-            {current?.isPersonal && (
-              <Badge variant="secondary">
-                <Trans>Personal</Trans>
-              </Badge>
-            )}
             <ChevronDown className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-(--anchor-width)" align="start">
             {versions.map((version) => (
-              <DropdownMenuItem key={version.id} onClick={() => onSelect?.(version.id)}>
-                {version.name}
-                {version.isPersonal && (
-                  <Badge variant="secondary">
-                    <Trans>Personal</Trans>
-                  </Badge>
-                )}
-                {version.id === currentVersion && <Check className="ml-auto size-4" />}
+              <DropdownMenuItem key={version} onClick={() => handleSelect(version)}>
+                {version}
+                {version === selectedVersion && <Check className="ml-auto size-4" />}
               </DropdownMenuItem>
             ))}
             {onCreateNew && (

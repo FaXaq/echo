@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
+import { authClient } from "@/lib/auth";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { trpcLoader } from "@/lib/trpc";
 import dayjs from "dayjs";
@@ -9,8 +10,6 @@ import { Landing } from "./-landing";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { translateDynamic } from "@/lib/dynamic-messages";
-import { useAcceptInvitationMutation } from "@/services/resources/auth";
-import { getSessionQueryOptions } from "@/services/resources/session";
 
 const searchSchema = z.object({
   id: z.string().optional(),
@@ -25,7 +24,7 @@ export const Route = createFileRoute("/accept-invitation")({
     }
   },
   loaderDeps: ({ search: { id } }) => ({ id }),
-  loader: async ({ deps, context }) => {
+  loader: async ({ deps }) => {
     if (!deps.id) {
       return { invitation: null };
     }
@@ -34,7 +33,7 @@ export const Route = createFileRoute("/accept-invitation")({
       id: deps.id,
     });
 
-    const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
+    const { data: session } = await authClient.getSession();
 
     return { invitation, session };
   },
@@ -45,8 +44,8 @@ function AcceptInvitationPage() {
   const { invitation, session } = Route.useLoaderData();
   const { t } = useLingui();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | undefined>();
-  const acceptInvitationMutation = useAcceptInvitationMutation();
 
   if (!invitation) {
     return (
@@ -68,19 +67,21 @@ function AcceptInvitationPage() {
     return <Landing />;
   }
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
+    setIsLoading(true);
     setServerError(undefined);
-    acceptInvitationMutation.mutate(
-      { invitationId: invitation.id },
-      {
-        onSuccess: () => {
-          router.navigate({ to: "/" });
-        },
-        onError: (error) => {
-          setServerError(error.message || t`Failed to accept invitation`);
-        },
-      },
-    );
+    try {
+      const result = await authClient.organization.acceptInvitation({
+        invitationId: invitation.id,
+      });
+      if (result.error) {
+        setServerError(result.error.message ?? t`Failed to accept invitation`);
+      } else {
+        router.navigate({ to: "/" });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -101,7 +102,7 @@ function AcceptInvitationPage() {
               <strong>{invitation.organizationName}</strong>
             </p>
             {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
-            <Button onClick={handleAccept} isLoading={acceptInvitationMutation.isPending}>
+            <Button onClick={handleAccept} isLoading={isLoading}>
               <Trans>Accept invitation</Trans>
             </Button>
             <a href="/">{t`Back to home`}</a>

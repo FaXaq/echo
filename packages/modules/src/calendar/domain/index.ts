@@ -30,11 +30,13 @@ export type CalendarEvent = {
   allDay: boolean;
   color: EventColor;
   type: EventType | null;
-  organization: {
-    id: string;
-    name: string;
-    slug: string;
-  };
+  organization:
+    | {
+        id: string;
+        name: string;
+        slug: string;
+      }
+    | undefined;
   createdAt: Date;
   createdBy: string;
   createdByName: string;

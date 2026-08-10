@@ -11,7 +11,7 @@ export function toViewEvent(event: ApiEvent): ViewEvent {
     allDay: event.allDay,
     color: event.color,
     type: event.type,
-    organization: event.organization,
+    organization: event.organization ?? { id: null },
     place: event.place,
     createdBy: event.createdBy,
     createdByName: event.createdByName,
@@ -27,7 +27,7 @@ export type EventFormValues = {
   allDay?: boolean;
   color: ViewEvent["color"];
   type: ViewEvent["type"];
-  organizationId: string;
+  organizationId?: string;
   place: EventPlace | null;
 };
 
@@ -40,7 +40,7 @@ export function fromViewEvent(event: ViewEvent): EventFormValues {
     allDay: event.allDay,
     color: event.color,
     type: event.type,
-    organizationId: event.organization.id,
+    organizationId: event.organization.id ?? undefined,
     place: event.place,
   };
 }

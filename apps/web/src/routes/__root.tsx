@@ -9,12 +9,10 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import type { MyRouterContext } from "../router";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "../lib/trpc";
-import { queryClient } from "../lib/query-client";
-import { getSessionQueryOptions } from "@/services/resources/session";
-import { useSignOutMutation } from "@/services/resources/auth";
+import { authClient } from "../lib/auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -24,7 +22,7 @@ import { Landing } from "./-landing";
 import { UserMenu } from "@/components/user-menu";
 import { ThemeProvider } from "@/contexts/theme";
 import { SessionProvider } from "@/hooks/use-session";
-import { Toaster } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/sonner";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
 import { DynamicTitle } from "./-dynamic-title";
 import { PageMetaProvider } from "@/contexts/page-meta";
@@ -35,8 +33,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       prefetchedQueryOptions: {},
     };
   },
-  loader: async ({ context }) => {
-    const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
+  loader: async () => {
+    const { data: session } = await authClient.getSession();
     i18n.activate(session?.user.locale ? toLocale(session.user.locale) : detectBrowserLocale());
     return { session };
   },
@@ -46,6 +44,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootLayout() {
   const { session } = Route.useLoaderData();
+  const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [httpBatchLink({ url: "/trpc" })],
@@ -74,7 +73,6 @@ function RootLayout() {
 function RootContent({ session }: { session: ClientSession | null }) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const signOutMutation = useSignOutMutation();
 
   if (!session) {
     if (pathname === "/reset-password" || pathname === "/accept-invitation") {
@@ -83,13 +81,9 @@ function RootContent({ session }: { session: ClientSession | null }) {
     return <Landing />;
   }
 
-  const handleLogout = () => {
-    signOutMutation.mutate(undefined, {
-      onSuccess: async () => {
-        await router.invalidate();
-        router.navigate({ to: "/" });
-      },
-    });
+  const handleLogout = async () => {
+    await authClient.signOut();
+    router.invalidate();
   };
 
   return (

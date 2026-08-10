@@ -17,7 +17,7 @@ export async function createEvent(
     insertCalendarEventCommand: InsertCalendarEventCommandPort;
   },
   input: {
-    organizationId: string;
+    organizationId: string | null;
     userId: string;
     title: string;
     description?: string | null;
@@ -29,11 +29,13 @@ export async function createEvent(
     place?: EventPlace | null;
   },
 ): Promise<CalendarEvent> {
-  const { success } = await deps.userHasPermissionInOrganization({
-    organizationId: input.organizationId,
-    permissions: { calendarEvent: ["create"] },
-  });
-  if (!success) throw forbidden({ entity: "CalendarEvent", action: "create" });
+  if (input.organizationId !== null) {
+    const { success } = await deps.userHasPermissionInOrganization({
+      organizationId: input.organizationId,
+      permissions: { calendarEvent: ["create"] },
+    });
+    if (!success) throw forbidden({ entity: "CalendarEvent", action: "create" });
+  }
 
   if (!isValidEventRange(input.startDate, input.endDate)) {
     throw conflict("End date must be after start date");

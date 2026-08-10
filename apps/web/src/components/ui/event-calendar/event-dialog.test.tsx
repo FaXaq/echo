@@ -18,7 +18,7 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     endDate: dayjs().hour(9).minute(30).second(0).millisecond(0).toDate(),
     color: "blue",
     type: null,
-    organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+    organization: { id: "org-1" },
     place: null,
     createdBy: "user-1",
     createdByName: "Jane Doe",
@@ -44,14 +44,13 @@ describe("EventDialog", () => {
     renderWithClient(
       <EventDialog
         state={{ mode: "create", range: { start: new Date(), end: new Date() } }}
-        defaultOrganizationId="org-1"
         onOpenChange={vi.fn()}
         onSubmit={vi.fn()}
         onDelete={vi.fn()}
       />,
     );
 
-    expect(await screen.findByLabelText("Project", {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(await screen.findByLabelText("Organization", {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it("pre-fills the Organization field with defaultOrganizationId when creating", async () => {
@@ -65,7 +64,7 @@ describe("EventDialog", () => {
       />,
     );
 
-    const trigger = await screen.findByLabelText("Project");
+    const trigger = await screen.findByLabelText("Organization");
     expect(await within(trigger).findByText("Acme Inc")).toBeInTheDocument();
   });
 
@@ -73,21 +72,19 @@ describe("EventDialog", () => {
     renderWithClient(
       <EventDialog
         state={{ mode: "edit", event: makeEvent() }}
-        defaultOrganizationId="org-1"
         onOpenChange={vi.fn()}
         onSubmit={vi.fn()}
         onDelete={vi.fn()}
       />,
     );
 
-    expect(screen.queryByLabelText("Project")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Organization")).not.toBeInTheDocument();
   });
 
   it("defaults the Type field to None when creating an event", async () => {
     renderWithClient(
       <EventDialog
         state={{ mode: "create", range: { start: new Date(), end: new Date() } }}
-        defaultOrganizationId="org-1"
         onOpenChange={vi.fn()}
         onSubmit={vi.fn()}
         onDelete={vi.fn()}
@@ -104,7 +101,6 @@ describe("EventDialog", () => {
     renderWithClient(
       <EventDialog
         state={{ mode: "edit", event: makeEvent() }}
-        defaultOrganizationId="org-1"
         onOpenChange={vi.fn()}
         onSubmit={onSubmit}
         onDelete={vi.fn()}

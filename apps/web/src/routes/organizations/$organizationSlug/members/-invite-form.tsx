@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLingui } from "@lingui/react/macro";
-import { useInviteMemberMutation } from "@/services/resources/member";
+import { authClient } from "@/lib/auth";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
@@ -24,12 +24,11 @@ interface InviteFormProps {
 export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
   const { t } = useLingui();
   const [serverError, setServerError] = useState<string | undefined>();
-  const inviteMemberMutation = useInviteMemberMutation();
   const {
     control,
     handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
   } = useForm<InviteFormValues>({
     resolver: zodResolver(inviteSchema),
@@ -39,25 +38,29 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
     },
   });
 
-  const onSubmit = (values: InviteFormValues) => {
+  const onSubmit = async (values: InviteFormValues) => {
     if (!organizationId) {
-      setServerError(t`Project not found`);
+      setServerError(t`Organization not found`);
       return;
     }
 
     setServerError(undefined);
-    inviteMemberMutation.mutate(
-      { email: values.email, role: values.role, organizationId },
-      {
-        onSuccess: () => {
-          reset();
-          onSuccess?.();
-        },
-        onError: (error) => {
-          setServerError(error.message || t`Failed to invite member`);
-        },
-      },
-    );
+    try {
+      await authClient.organization.inviteMember({
+        email: values.email,
+        role: values.role,
+        organizationId,
+      });
+      reset();
+      onSuccess?.();
+    } catch (error) {
+      if (error instanceof Error) {
+        const message = error?.message || t`Failed to invite member`;
+        setServerError(message);
+      }
+
+      throw new Error(String(error));
+    }
   };
 
   return (
@@ -71,7 +74,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
           type="email"
           placeholder={t`Enter email address`}
           {...register("email")}
-          disabled={inviteMemberMutation.isPending}
+          disabled={isSubmitting}
         />
         {errors.email && (
           <p className="text-sm text-destructive">{translateDynamic(t, errors.email.message!)}</p>
@@ -87,7 +90,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger id="role" disabled={inviteMemberMutation.isPending}>
+              <SelectTrigger id="role" disabled={isSubmitting}>
                 <SelectValue>{() => translateDynamic(t, field.value)}</SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -104,8 +107,8 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
 
       {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
-      <Button type="submit" disabled={inviteMemberMutation.isPending} className="w-full">
-        {inviteMemberMutation.isPending ? t`Inviting...` : t`Invite`}
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? t`Inviting...` : t`Invite`}
       </Button>
     </form>
   );

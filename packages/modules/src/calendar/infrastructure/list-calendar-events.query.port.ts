@@ -2,7 +2,8 @@ import type { KyselyDB } from "@echo/db";
 import type { CalendarEvent } from "../domain/index.js";
 
 export type ListCalendarEventsInput = {
-  organizationId: string;
+  userId: string;
+  organizationId?: string | null;
 };
 
 export type ListCalendarEventsQueryPort = (

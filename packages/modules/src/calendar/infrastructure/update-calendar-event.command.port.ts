@@ -3,7 +3,7 @@ import type { CalendarEvent, EventColor, EventPlace, EventType } from "../domain
 
 export type UpdateCalendarEventInput = {
   id: string;
-  organizationId: string;
+  organizationId: string | null;
   userId: string;
   title: string;
   description: string | null;

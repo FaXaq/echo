@@ -46,7 +46,7 @@ const getCalendarEventById = getCalendarEventByIdFactory();
 export const makeCalendarRouter = () =>
   router({
     getEventById: authedProcedure
-      .input(z.object({ eventId: z.string(), organizationId: z.string() }))
+      .input(z.object({ eventId: z.string(), organizationId: z.string().optional() }))
       .query(({ ctx, input }) =>
         getEventById(
           {
@@ -54,12 +54,12 @@ export const makeCalendarRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             getCalendarEventById,
           },
-          { organizationId: input.organizationId, eventId: input.eventId },
+          { organizationId: input.organizationId ?? null, eventId: input.eventId },
         ),
       ),
 
     listEvents: authedProcedure
-      .input(z.object({ organizationId: z.string() }))
+      .input(z.object({ organizationId: z.string().optional() }))
       .query(({ ctx, input }) =>
         listEvents(
           {
@@ -67,12 +67,12 @@ export const makeCalendarRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             listCalendarEventsQuery,
           },
-          { organizationId: input.organizationId },
+          { organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
       ),
 
     createEvent: authedProcedure
-      .input(z.object({ organizationId: z.string(), ...eventInput }))
+      .input(z.object({ organizationId: z.string().optional(), ...eventInput }))
       .mutation(({ ctx, input }) =>
         createEvent(
           {
@@ -80,12 +80,12 @@ export const makeCalendarRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             insertCalendarEventCommand,
           },
-          { ...input, userId: ctx.session.user.id },
+          { ...input, organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
       ),
 
     updateEvent: authedProcedure
-      .input(z.object({ id: z.string(), organizationId: z.string(), ...eventInput }))
+      .input(z.object({ id: z.string(), organizationId: z.string().optional(), ...eventInput }))
       .mutation(({ ctx, input }) =>
         updateEvent(
           {
@@ -93,12 +93,12 @@ export const makeCalendarRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             updateCalendarEventCommand,
           },
-          { ...input, userId: ctx.session.user.id },
+          { ...input, organizationId: input.organizationId ?? null, userId: ctx.session.user.id },
         ),
       ),
 
     deleteEvent: authedProcedure
-      .input(z.object({ id: z.string(), organizationId: z.string() }))
+      .input(z.object({ id: z.string(), organizationId: z.string().optional() }))
       .mutation(({ ctx, input }) =>
         deleteEvent(
           {
@@ -106,7 +106,11 @@ export const makeCalendarRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             deleteCalendarEventCommand,
           },
-          { id: input.id, organizationId: input.organizationId },
+          {
+            id: input.id,
+            organizationId: input.organizationId ?? null,
+            userId: ctx.session.user.id,
+          },
         ),
       ),
   });

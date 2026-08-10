@@ -10,13 +10,18 @@ export async function listEvents(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     listCalendarEventsQuery: ListCalendarEventsQueryPort;
   },
-  input: { organizationId: string },
+  input: { userId: string; organizationId?: string | null },
 ): Promise<CalendarEvent[]> {
-  const { success } = await deps.userHasPermissionInOrganization({
-    organizationId: input.organizationId,
-    permissions: { calendarEvent: ["read"] },
-  });
-  if (!success) throw forbidden({ entity: "CalendarEvent", action: "list" });
+  if (input.organizationId) {
+    const { success } = await deps.userHasPermissionInOrganization({
+      organizationId: input.organizationId,
+      permissions: { calendarEvent: ["read"] },
+    });
+    if (!success) throw forbidden({ entity: "CalendarEvent", action: "list" });
+  }
 
-  return deps.listCalendarEventsQuery(deps.db, { organizationId: input.organizationId });
+  return deps.listCalendarEventsQuery(deps.db, {
+    userId: input.userId,
+    organizationId: input.organizationId,
+  });
 }

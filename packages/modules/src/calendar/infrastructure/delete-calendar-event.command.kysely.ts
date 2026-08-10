@@ -2,11 +2,15 @@ import type { DeleteCalendarEventCommandPortFactory } from "./delete-calendar-ev
 
 export const deleteCalendarEventCommandFactory: DeleteCalendarEventCommandPortFactory =
   () => async (db, input) => {
-    const result = await db
-      .deleteFrom("calendar_event")
-      .where("id", "=", input.id)
-      .where("organization_id", "=", input.organizationId)
-      .executeTakeFirst();
+    let query = db.deleteFrom("calendar_event").where("id", "=", input.id);
+
+    if (input.organizationId === null) {
+      query = query.where("organization_id", "is", null).where("created_by", "=", input.userId);
+    } else {
+      query = query.where("organization_id", "=", input.organizationId);
+    }
+
+    const result = await query.executeTakeFirst();
 
     return result.numDeletedRows > 0n;
   };

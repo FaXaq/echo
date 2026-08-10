@@ -3,7 +3,7 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
 import { ResetPasswordForm, type ResetPasswordFormValues } from "@/components/reset-password-form";
-import { useResetPasswordMutation } from "@/services/resources/auth";
+import { authClient } from "@/lib/auth";
 
 const searchSchema = z.object({
   token: z.string().optional(),
@@ -23,24 +23,28 @@ export const Route = createFileRoute("/reset-password")({
 function ResetPasswordPage() {
   const { token } = Route.useSearch();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | undefined>();
-  const resetPasswordMutation = useResetPasswordMutation();
 
-  const handleSubmit = (values: ResetPasswordFormValues) => {
+  const handleSubmit = async (values: ResetPasswordFormValues) => {
     if (!token) return;
+    setIsLoading(true);
     setServerError(undefined);
 
-    resetPasswordMutation.mutate(
-      { token, newPassword: values.password },
-      {
-        onSuccess: () => {
-          router.navigate({ to: "/" });
-        },
-        onError: (error) => {
-          setServerError(error.message);
-        },
-      },
-    );
+    try {
+      const result = await authClient.resetPassword({
+        token,
+        newPassword: values.password,
+      });
+
+      if (result.error) {
+        setServerError(result.error.message ?? "Password reset failed");
+      } else {
+        router.navigate({ to: "/" });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,7 +62,7 @@ function ResetPasswordPage() {
           <div className="w-full max-w-xs">
             <ResetPasswordForm
               onSubmit={handleSubmit}
-              isLoading={resetPasswordMutation.isPending}
+              isLoading={isLoading}
               serverError={serverError}
             />
           </div>

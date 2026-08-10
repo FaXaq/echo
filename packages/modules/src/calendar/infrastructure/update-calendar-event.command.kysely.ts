@@ -5,7 +5,7 @@ import { toCalendarEvent } from "./map-calendar-event.js";
 export const updateCalendarEventCommandFactory: UpdateCalendarEventCommandPortFactory =
   () => async (db, input) => {
     return db.transaction().execute(async (trx) => {
-      const updated = await trx
+      let query = trx
         .updateTable("calendar_event")
         .set({
           title: input.title,
@@ -22,10 +22,15 @@ export const updateCalendarEventCommandFactory: UpdateCalendarEventCommandPortFa
           place_lat: input.place?.lat ?? null,
           place_lng: input.place?.lng ?? null,
         })
-        .where("id", "=", input.id)
-        .where("organization_id", "=", input.organizationId)
-        .returning("id")
-        .executeTakeFirst();
+        .where("id", "=", input.id);
+
+      if (input.organizationId === null) {
+        query = query.where("organization_id", "is", null).where("created_by", "=", input.userId);
+      } else {
+        query = query.where("organization_id", "=", input.organizationId);
+      }
+
+      const updated = await query.returning("id").executeTakeFirst();
       if (!updated) return null;
 
       const row = await makeSelectCalendarEventByIdQuery(trx)(updated.id);

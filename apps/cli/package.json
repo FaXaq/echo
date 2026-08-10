@@ -31,7 +31,6 @@
   "dependencies": {
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
-    "@echo/modules": "workspace:*",
     "better-auth": "catalog:",
     "commander": "^13.1.0",
     "dotenv": "catalog:",

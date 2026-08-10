@@ -13,7 +13,6 @@ const meta = {
   component: EventCalendar,
   args: {
     events: [],
-    defaultOrganizationId: "org-1",
   },
   parameters: {
     layout: "fullscreen",
@@ -35,7 +34,7 @@ function makeSampleEvents(): CalendarEvent[] {
       endDate: today.add(30, "minute").toDate(),
       color: "blue",
       type: null,
-      organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+      organization: { id: null },
       place: null,
       createdBy: "user-1",
       createdByName: "Jane Doe",
@@ -49,7 +48,7 @@ function makeSampleEvents(): CalendarEvent[] {
       endDate: today.add(3, "hour").toDate(),
       color: "purple",
       type: null,
-      organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+      organization: { id: null },
       place: null,
       createdBy: "user-1",
       createdByName: "Jane Doe",
@@ -62,7 +61,7 @@ function makeSampleEvents(): CalendarEvent[] {
       endDate: today.add(5, "hour").toDate(),
       color: "green",
       type: null,
-      organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+      organization: { id: null },
       place: null,
       createdBy: "user-1",
       createdByName: "Jane Doe",
@@ -76,7 +75,7 @@ function makeSampleEvents(): CalendarEvent[] {
       endDate: today.add(2, "day").endOf("day").toDate(),
       color: "orange",
       type: null,
-      organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+      organization: { id: null },
       place: null,
       createdBy: "user-1",
       createdByName: "Jane Doe",
@@ -89,7 +88,7 @@ function makeSampleEvents(): CalendarEvent[] {
       endDate: today.add(1, "day").hour(11).minute(30).toDate(),
       color: "red",
       type: null,
-      organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+      organization: { id: null },
       place: null,
       createdBy: "user-1",
       createdByName: "Jane Doe",
@@ -102,7 +101,7 @@ function makeSampleEvents(): CalendarEvent[] {
       endDate: today.add(3, "day").hour(15).minute(0).toDate(),
       color: "yellow",
       type: null,
-      organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+      organization: { id: null },
       place: null,
       createdBy: "user-1",
       createdByName: "Jane Doe",
@@ -121,7 +120,7 @@ function makeOverflowEvents(): CalendarEvent[] {
     endDate: today.add(i, "hour").add(45, "minute").toDate(),
     color: (["blue", "green", "red", "yellow", "purple", "orange"] as const)[i % 6],
     type: null,
-    organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
+    organization: { id: null },
     place: null,
     createdBy: "user-1",
     createdByName: "Jane Doe",
@@ -144,7 +143,6 @@ function CalendarDemo({
     <div className="h-[800px] p-4">
       <EventCalendar
         events={events}
-        defaultOrganizationId="org-1"
         view={view}
         onViewChange={setView}
         date={date}

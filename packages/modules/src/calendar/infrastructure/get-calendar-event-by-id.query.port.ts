@@ -3,6 +3,7 @@ import type { CalendarEvent } from "../domain/index.js";
 
 export type GetCalendarEventByIdQueryInput = {
   eventId: string;
+  organizationId?: string | null;
 };
 
 export type GetCalendarEventByIdQueryPort = (
