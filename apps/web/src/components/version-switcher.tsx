@@ -10,7 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { Badge } from "@/components/ui/badge";
 import { Trans } from "@lingui/react/macro";
+
+export interface VersionOption {
+  id: string;
+  name: string;
+  isPersonal: boolean;
+}
 
 export function VersionSwitcher({
   versions,
@@ -18,11 +25,13 @@ export function VersionSwitcher({
   onSelect,
   onCreateNew,
 }: {
-  versions: string[];
+  versions: VersionOption[];
   currentVersion: string;
-  onSelect?: (version: string) => void;
+  onSelect?: (id: string) => void;
   onCreateNew?: () => void;
 }) {
+  const current = versions.find((version) => version.id === currentVersion);
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -39,15 +48,25 @@ export function VersionSwitcher({
               <Layout className="size-4" />
             </div>
             <div className="flex flex-col gap-0.5 leading-none">
-              <span className="font-medium">{currentVersion}</span>
+              <span className="font-medium">{current?.name}</span>
             </div>
+            {current?.isPersonal && (
+              <Badge variant="secondary">
+                <Trans>Personal</Trans>
+              </Badge>
+            )}
             <ChevronDown className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-(--anchor-width)" align="start">
             {versions.map((version) => (
-              <DropdownMenuItem key={version} onClick={() => onSelect?.(version)}>
-                {version}
-                {version === currentVersion && <Check className="ml-auto size-4" />}
+              <DropdownMenuItem key={version.id} onClick={() => onSelect?.(version.id)}>
+                {version.name}
+                {version.isPersonal && (
+                  <Badge variant="secondary">
+                    <Trans>Personal</Trans>
+                  </Badge>
+                )}
+                {version.id === currentVersion && <Check className="ml-auto size-4" />}
               </DropdownMenuItem>
             ))}
             {onCreateNew && (

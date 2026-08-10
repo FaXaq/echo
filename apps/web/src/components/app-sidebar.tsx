@@ -20,11 +20,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { orgOptions, activeOrganization, setActiveOrganization, navGroups } = useNavigation();
   const navigate = useNavigate();
 
-  const activeOrgName = activeOrganization?.name ?? orgOptions[0]?.name ?? "";
-  const orgNames = orgOptions.map((o) => o.name);
+  const activeOrgId = activeOrganization?.id ?? orgOptions[0]?.id ?? "";
+  const versions = orgOptions.map((o) => ({ id: o.id, name: o.name, isPersonal: o.isPersonal }));
 
-  const handleOrgSelect = (name: string) => {
-    const org = orgOptions.find((o) => o.name === name);
+  const handleOrgSelect = (id: string) => {
+    const org = orgOptions.find((o) => o.id === id);
     if (org) setActiveOrganization(org);
   };
 
@@ -32,8 +32,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader>
         <VersionSwitcher
-          versions={orgNames}
-          currentVersion={activeOrgName}
+          versions={versions}
+          currentVersion={activeOrgId}
           onSelect={handleOrgSelect}
           onCreateNew={() => navigate({ to: "/projects/new" })}
         />
