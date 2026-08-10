@@ -29,7 +29,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
     control,
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm<InviteFormValues>({
     resolver: zodResolver(inviteSchema),
@@ -39,25 +39,25 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
     },
   });
 
-  const onSubmit = async (values: InviteFormValues) => {
+  const onSubmit = (values: InviteFormValues) => {
     if (!organizationId) {
       setServerError(t`Project not found`);
       return;
     }
 
     setServerError(undefined);
-    try {
-      await inviteMemberMutation.mutateAsync({
-        email: values.email,
-        role: values.role,
-        organizationId,
-      });
-      reset();
-      onSuccess?.();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t`Failed to invite member`;
-      setServerError(message);
-    }
+    inviteMemberMutation.mutate(
+      { email: values.email, role: values.role, organizationId },
+      {
+        onSuccess: () => {
+          reset();
+          onSuccess?.();
+        },
+        onError: (error) => {
+          setServerError(error.message || t`Failed to invite member`);
+        },
+      },
+    );
   };
 
   return (
@@ -71,7 +71,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
           type="email"
           placeholder={t`Enter email address`}
           {...register("email")}
-          disabled={isSubmitting}
+          disabled={inviteMemberMutation.isPending}
         />
         {errors.email && (
           <p className="text-sm text-destructive">{translateDynamic(t, errors.email.message!)}</p>
@@ -87,7 +87,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
           control={control}
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger id="role" disabled={isSubmitting}>
+              <SelectTrigger id="role" disabled={inviteMemberMutation.isPending}>
                 <SelectValue>{() => translateDynamic(t, field.value)}</SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -104,8 +104,8 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
 
       {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? t`Inviting...` : t`Invite`}
+      <Button type="submit" disabled={inviteMemberMutation.isPending} className="w-full">
+        {inviteMemberMutation.isPending ? t`Inviting...` : t`Invite`}
       </Button>
     </form>
   );

@@ -52,28 +52,25 @@ export function MembersTable({
     removeMemberMutation.isPending ||
     updateMemberRoleMutation.isPending;
 
-  const handleCancelInvitation = async (invitationId: string) => {
-    try {
-      await cancelInvitationMutation.mutateAsync({ invitationId });
-    } catch (error) {
-      logger.error(error, "Failed to cancel invitation:");
-    }
+  const handleCancelInvitation = (invitationId: string) => {
+    cancelInvitationMutation.mutate(
+      { invitationId },
+      { onError: (error) => logger.error(error, "Failed to cancel invitation:") },
+    );
   };
 
-  const handleRevoke = async (userId: string) => {
-    try {
-      await removeMemberMutation.mutateAsync({ memberIdOrEmail: userId, organizationId });
-    } catch (error) {
-      logger.error(error, "Failed to revoke membership:");
-    }
+  const handleRevoke = (userId: string) => {
+    removeMemberMutation.mutate(
+      { memberIdOrEmail: userId, organizationId },
+      { onError: (error) => logger.error(error, "Failed to revoke membership:") },
+    );
   };
 
-  const handleUpdateRole = async (memberId: string, role: OrganizationRole) => {
-    try {
-      await updateMemberRoleMutation.mutateAsync({ memberId, role, organizationId });
-    } catch (error) {
-      logger.error(error, "Failed to update member role:");
-    }
+  const handleUpdateRole = (memberId: string, role: OrganizationRole) => {
+    updateMemberRoleMutation.mutate(
+      { memberId, role, organizationId },
+      { onError: (error) => logger.error(error, "Failed to update member role:") },
+    );
   };
 
   const hasMembers = members.length > 0 || invitations.length > 0;

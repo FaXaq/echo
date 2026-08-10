@@ -37,19 +37,23 @@ function NewOrganizationPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = (values: FormValues) => {
     setServerError(undefined);
-    try {
-      const res = await createOrganizationMutation.mutateAsync(values);
-      router.navigate({ to: "/projects/$projectSlug", params: { projectSlug: res.slug } });
-    } catch (error) {
-      setServerError(error instanceof TRPCClientError ? error.message : "Failed to create project");
-    }
+    createOrganizationMutation.mutate(values, {
+      onSuccess: (res) => {
+        router.navigate({ to: "/projects/$projectSlug", params: { projectSlug: res.slug } });
+      },
+      onError: (error) => {
+        setServerError(
+          error instanceof TRPCClientError ? error.message : "Failed to create project",
+        );
+      },
+    });
   };
 
   return (
@@ -83,7 +87,7 @@ function NewOrganizationPage() {
             </Field>
 
             <Field>
-              <Button type="submit" isLoading={isSubmitting}>
+              <Button type="submit" isLoading={createOrganizationMutation.isPending}>
                 <Trans>Create project</Trans>
               </Button>
             </Field>

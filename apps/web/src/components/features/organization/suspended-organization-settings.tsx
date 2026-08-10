@@ -80,15 +80,20 @@ function OrganizationSettingsContent({
     permissions: { organization: ["delete"] },
   });
 
-  const handleDeleteOrganization = async () => {
-    try {
-      await deleteOrganizationMutation.mutateAsync({ organizationId });
-      toast.add({ type: "success", title: t`Project deleted` });
-      setIsDeleteDialogOpen(false);
-      router.navigate({ to: "/" });
-    } catch {
-      toast.add({ type: "error", title: t`Failed to delete project` });
-    }
+  const handleDeleteOrganization = () => {
+    deleteOrganizationMutation.mutate(
+      { organizationId },
+      {
+        onSuccess: () => {
+          toast.add({ type: "success", title: t`Project deleted` });
+          setIsDeleteDialogOpen(false);
+          router.navigate({ to: "/" });
+        },
+        onError: () => {
+          toast.add({ type: "error", title: t`Failed to delete project` });
+        },
+      },
+    );
   };
 
   return (

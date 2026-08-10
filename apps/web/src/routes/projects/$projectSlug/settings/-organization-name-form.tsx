@@ -31,22 +31,24 @@ export function OrganizationNameForm({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isDirty },
   } = useForm<OrganizationNameFormValues>({
     resolver: zodResolver(organizationNameSchema),
     defaultValues: { name: defaultName },
   });
 
-  const onSubmit = async (values: OrganizationNameFormValues) => {
+  const onSubmit = (values: OrganizationNameFormValues) => {
     setServerError(undefined);
 
-    try {
-      await updateOrganizationMutation.mutateAsync({ organizationId, name: values.name });
-      onSuccess?.();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t`Failed to update project name`;
-      setServerError(message);
-    }
+    updateOrganizationMutation.mutate(
+      { organizationId, name: values.name },
+      {
+        onSuccess: () => onSuccess?.(),
+        onError: (error) => {
+          setServerError(error.message || t`Failed to update project name`);
+        },
+      },
+    );
   };
 
   return (
@@ -55,14 +57,14 @@ export function OrganizationNameForm({
         <label htmlFor="name" className="sr-only">
           {t`Project name`}
         </label>
-        <Input id="name" {...register("name")} disabled={isSubmitting} />
+        <Input id="name" {...register("name")} disabled={updateOrganizationMutation.isPending} />
         {errors.name && (
           <p className="text-sm text-destructive">{translateDynamic(t, errors.name.message!)}</p>
         )}
         {serverError && <p className="text-sm text-destructive">{serverError}</p>}
       </div>
-      <Button type="submit" disabled={isSubmitting || !isDirty}>
-        {isSubmitting ? t`Saving...` : t`Save`}
+      <Button type="submit" disabled={updateOrganizationMutation.isPending || !isDirty}>
+        {updateOrganizationMutation.isPending ? t`Saving...` : t`Save`}
       </Button>
     </form>
   );
