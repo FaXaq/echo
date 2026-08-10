@@ -1,8 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useLingui } from "@lingui/react/macro";
-import { authClient } from "@/lib/auth";
 import { isOrganizationAdmin } from "@echo/modules/user/domain";
-import { organizationRoleSchema } from "@echo/auth";
+import type { OrganizationRole } from "@echo/auth";
+import { getActiveMemberRoleQueryOptions } from "@/services/resources/session";
 import { SuspendedOrganizationSettings } from "@/components/features/organization/suspended-organization-settings";
 import z from "zod";
 
@@ -13,13 +13,17 @@ export const Route = createFileRoute("/projects/$projectSlug/settings/")({
     offset: z.number().default(0),
   }),
   beforeLoad: async ({ context }) => {
-    const { organizationId } = context;
+    const { organizationId, queryClient } = context;
 
-    const { data: roleData } = await authClient.organization.getActiveMemberRole({
-      query: { organizationId },
-    });
-    const parsedRole = organizationRoleSchema.safeParse(roleData?.role);
-    const currentMemberRole = parsedRole.success ? parsedRole.data : null;
+    let currentMemberRole: OrganizationRole | null = null;
+    try {
+      const { role } = await queryClient.ensureQueryData(
+        getActiveMemberRoleQueryOptions({ organizationId }),
+      );
+      currentMemberRole = role;
+    } catch {
+      currentMemberRole = null;
+    }
 
     if (!isOrganizationAdmin(currentMemberRole)) throw redirect({ to: "/" });
 

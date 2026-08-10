@@ -2,7 +2,6 @@ import { useState } from "react";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
-import { authClient } from "@/lib/auth";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { trpcLoader } from "@/lib/trpc";
 import dayjs from "dayjs";
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { useAcceptInvitationMutation } from "@/services/resources/auth";
+import { getSessionQueryOptions } from "@/services/resources/session";
 
 const searchSchema = z.object({
   id: z.string().optional(),
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/accept-invitation")({
     }
   },
   loaderDeps: ({ search: { id } }) => ({ id }),
-  loader: async ({ deps }) => {
+  loader: async ({ deps, context }) => {
     if (!deps.id) {
       return { invitation: null };
     }
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/accept-invitation")({
       id: deps.id,
     });
 
-    const { data: session } = await authClient.getSession();
+    const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
 
     return { invitation, session };
   },

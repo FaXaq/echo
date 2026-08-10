@@ -9,10 +9,12 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import type { MyRouterContext } from "../router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "../lib/trpc";
+import { queryClient } from "../lib/query-client";
 import { authClient } from "../lib/auth";
+import { getSessionQueryOptions } from "@/services/resources/session";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -33,8 +35,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       prefetchedQueryOptions: {},
     };
   },
-  loader: async () => {
-    const { data: session } = await authClient.getSession();
+  loader: async ({ context }) => {
+    const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
     i18n.activate(session?.user.locale ? toLocale(session.user.locale) : detectBrowserLocale());
     return { session };
   },
@@ -44,7 +46,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootLayout() {
   const { session } = Route.useLoaderData();
-  const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [httpBatchLink({ url: "/trpc" })],

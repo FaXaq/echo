@@ -1,13 +1,14 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth";
+import { getSessionQueryOptions } from "@/services/resources/session";
+import { selfListOrganizations } from "@/services/resources/organization";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: async () => {
-    const { data: session } = await authClient.getSession();
+  beforeLoad: async ({ context }) => {
+    const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
     if (!session) return;
 
-    const { data: organizations } = await authClient.organization.list();
-    const personalOrganization = organizations?.find((o) => o.isPersonal);
+    const organizations = await context.queryClient.ensureQueryData(selfListOrganizations());
+    const personalOrganization = organizations.find((o) => o.isPersonal);
     if (!personalOrganization) throw redirect({ to: "/projects/new" });
     throw redirect({
       to: "/projects/$projectSlug/calendar",
