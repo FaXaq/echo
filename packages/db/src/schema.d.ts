@@ -35,7 +35,7 @@ export interface CalendarEvent {
   description: string | null;
   end_date: Timestamp;
   id: string;
-  organization_id: string | null;
+  organization_id: string;
   place_address: string | null;
   place_lat: number | null;
   place_lng: number | null;

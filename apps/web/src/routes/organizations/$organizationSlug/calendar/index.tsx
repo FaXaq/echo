@@ -30,8 +30,8 @@ function OrganizationCalendarPage() {
   const navigate = useNavigate();
   const { data: events = [] } = useQuery(getEventsQueryOptions({ organizationId }));
 
-  const createEventMutation = useCreateEventMutation({ organizationId });
-  const updateEventMutation = useUpdateEventMutation({ organizationId });
+  const createEventMutation = useCreateEventMutation();
+  const updateEventMutation = useUpdateEventMutation();
   const deleteEventMutation = useDeleteEventMutation({ organizationId });
 
   const view = search.view ?? "month";

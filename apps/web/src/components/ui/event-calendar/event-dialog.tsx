@@ -71,7 +71,7 @@ const eventFormSchema = z
     color: z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]),
     type: eventTypeSchema.nullable(),
     place: placeSchema.nullable(),
-    organizationId: z.string().nullable(),
+    organizationId: z.string(),
   })
   .refine((data) => dayjs(data.endDate).isAfter(dayjs(data.startDate)), {
     error: "End date must be after start date",
@@ -87,7 +87,7 @@ export type EventDialogState =
 
 function stateToDefaultValues(
   state: EventDialogState,
-  defaultOrganizationId: string | null = null,
+  defaultOrganizationId: string,
 ): EventFormValues {
   if (state?.mode === "edit") {
     const { event } = state;
@@ -122,7 +122,7 @@ function stateToDefaultValues(
 
 interface EventDialogProps {
   state: EventDialogState;
-  defaultOrganizationId?: string | null;
+  defaultOrganizationId: string;
   onOpenChange: (open: boolean) => void;
   onSubmit: (event: CalendarEvent) => void | Promise<void>;
   onDelete: (id: string) => void | Promise<void>;
@@ -130,7 +130,7 @@ interface EventDialogProps {
 
 export function EventDialog({
   state,
-  defaultOrganizationId = null,
+  defaultOrganizationId,
   onOpenChange,
   onSubmit,
   onDelete,
@@ -180,8 +180,10 @@ export function EventDialog({
       color: values.color,
       type: values.type,
       place: values.place,
-      organization: isEdit ? content.event.organization : { id: values.organizationId },
       // Those are mock values only to have a single interface between this component & others
+      organization: isEdit
+        ? content.event.organization
+        : { id: values.organizationId, name: "", slug: "" },
       createdAt: isEdit ? content.event.createdAt : new Date(),
       createdBy: isEdit ? content.event.createdBy : "",
       createdByName: isEdit ? content.event.createdByName : "",

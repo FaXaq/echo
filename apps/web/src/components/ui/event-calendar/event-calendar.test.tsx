@@ -21,7 +21,7 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
     endDate: dayjs().hour(9).minute(30).second(0).millisecond(0).toDate(),
     color: "blue",
     type: null,
-    organization: { id: null },
+    organization: { id: "org-1", name: "Acme Inc", slug: "acme-inc" },
     place: null,
     createdBy: "user-1",
     createdByName: "Jane Doe",
@@ -44,14 +44,14 @@ describe("EventCalendar", () => {
   });
 
   it("renders in month view by default", () => {
-    renderWithClient(<EventCalendar events={[makeEvent()]} />);
+    renderWithClient(<EventCalendar events={[makeEvent()]} defaultOrganizationId="org-1" />);
     expect(screen.getByText("Standup")).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Month", selected: true })).toBeInTheDocument();
   });
 
   it("switches views via the tab list", async () => {
     const user = userEvent.setup();
-    renderWithClient(<EventCalendar events={[makeEvent()]} />);
+    renderWithClient(<EventCalendar events={[makeEvent()]} defaultOrganizationId="org-1" />);
 
     await user.click(screen.getByRole("tab", { name: "Week" }));
 
@@ -60,7 +60,7 @@ describe("EventCalendar", () => {
 
   it("navigates to the next month and back to today", async () => {
     const user = userEvent.setup();
-    renderWithClient(<EventCalendar events={[]} />);
+    renderWithClient(<EventCalendar events={[]} defaultOrganizationId="org-1" />);
 
     const initialTitle = screen.getByRole("heading", { level: 2 }).textContent;
     await user.click(screen.getByRole("button", { name: "Next" }));
@@ -73,7 +73,7 @@ describe("EventCalendar", () => {
 
   it("navigates to the next month in agenda view", async () => {
     const user = userEvent.setup();
-    renderWithClient(<EventCalendar events={[]} />);
+    renderWithClient(<EventCalendar events={[]} defaultOrganizationId="org-1" />);
 
     await user.click(screen.getByRole("tab", { name: "Agenda" }));
     const initialTitle = screen.getByRole("heading", { level: 2 }).textContent;
@@ -87,7 +87,9 @@ describe("EventCalendar", () => {
     const user = userEvent.setup();
     const onEventClick = vi.fn();
     const event = makeEvent();
-    renderWithClient(<EventCalendar events={[event]} onEventClick={onEventClick} />);
+    renderWithClient(
+      <EventCalendar events={[event]} defaultOrganizationId="org-1" onEventClick={onEventClick} />,
+    );
 
     await user.click(screen.getByText("Standup"));
 
@@ -98,7 +100,9 @@ describe("EventCalendar", () => {
   it("validates and creates a new event from the New event dialog", async () => {
     const user = userEvent.setup();
     const onEventCreate = vi.fn();
-    renderWithClient(<EventCalendar events={[]} onEventCreate={onEventCreate} />);
+    renderWithClient(
+      <EventCalendar events={[]} defaultOrganizationId="org-1" onEventCreate={onEventCreate} />,
+    );
 
     await user.click(screen.getByRole("button", { name: /New event/i }));
     const dialog = screen.getByRole("dialog");
@@ -113,14 +117,16 @@ describe("EventCalendar", () => {
     expect(onEventCreate).toHaveBeenCalledTimes(1);
     expect(onEventCreate.mock.calls[0]![0]).toMatchObject({
       title: "Retro",
-      organization: { id: null },
+      organization: { id: "org-1" },
     });
   });
 
   it("lets the user attach an organization when creating an event", async () => {
     const user = userEvent.setup();
     const onEventCreate = vi.fn();
-    renderWithClient(<EventCalendar events={[]} onEventCreate={onEventCreate} />);
+    renderWithClient(
+      <EventCalendar events={[]} defaultOrganizationId="org-1" onEventCreate={onEventCreate} />,
+    );
 
     await user.click(screen.getByRole("button", { name: /New event/i }));
     const dialog = screen.getByRole("dialog");

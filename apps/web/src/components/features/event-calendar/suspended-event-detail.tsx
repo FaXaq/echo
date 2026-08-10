@@ -18,7 +18,7 @@ import { SuspendedEventAttachments } from "./suspended-event-attachments";
 
 export interface SuspendedEventDetailProps {
   eventId: string;
-  organizationId?: string;
+  organizationId: string;
   pathname: string;
   onBack: () => void;
 }
@@ -37,7 +37,6 @@ function EventDetailContent({
   useSyncPageMeta(pathname, viewEvent.title, viewEvent.title);
 
   const updateEventMutation = useUpdateEventMutation({
-    organizationId,
     onSuccess: () => setDialogState(null),
   });
   const deleteEventMutation = useDeleteEventMutation({
@@ -74,6 +73,7 @@ function EventDetailContent({
       />
       <EventDialog
         state={dialogState}
+        defaultOrganizationId={organizationId}
         onOpenChange={(open) => !open && setDialogState(null)}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
