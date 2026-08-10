@@ -40,7 +40,7 @@ msgstr "Actions pour {0}"
 #~ msgid "Add a new member to your organization"
 #~ msgstr "Ajouter un nouveau membre à votre organisation"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:116
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:145
 msgid "Add a new member to your project"
 msgstr "Ajouter un nouveau membre à votre projet"
 
@@ -121,7 +121,7 @@ msgstr "Agenda"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:71
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:166
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:170
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:207
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
@@ -203,7 +203,7 @@ msgstr "Créer un compte"
 msgid "Create project"
 msgstr "Créer le projet"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:139
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:170
 msgid "Danger zone"
 msgstr "Zone de danger"
 
@@ -216,7 +216,7 @@ msgid "Day"
 msgstr "Jour"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:173
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:177
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:214
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:243
@@ -236,9 +236,9 @@ msgstr "Supprimer l'événement ?"
 #~ msgid "Delete organization"
 #~ msgstr "Supprimer le groupe"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:142
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:154
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:159
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:179
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:191
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:196
 msgid "Delete project"
 msgstr "Supprimer le projet"
 
@@ -331,6 +331,10 @@ msgstr "Événement introuvable"
 msgid "Events on {0}"
 msgstr "Événements du {0}"
 
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:173
+msgid "Every action here is destructive. Please proceed with caution."
+msgstr "Chaque action ici est destructive. Veuillez procéder avec prudence."
+
 #: apps/web/src/routes/accept-invitation.tsx:80
 msgid "Failed to accept invitation"
 msgstr "Échec de l'acceptation de l'invitation"
@@ -347,7 +351,7 @@ msgstr "Échec de la création du projet"
 #~ msgid "Failed to delete organization"
 #~ msgstr "Échec de la suppression du groupe"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:85
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:90
 msgid "Failed to delete project"
 msgstr "Échec de la suppression du projet"
 
@@ -385,7 +389,7 @@ msgstr "Nom complet"
 msgid "Full name is required"
 msgstr "Le nom complet est requis"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:92
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:104
 msgid "General"
 msgstr "Général"
 
@@ -405,14 +409,18 @@ msgstr "L’invitation a expiré ou a déjà été traitée. Merci d’en demand
 msgid "Invite"
 msgstr "Inviter"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:112
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:115
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:141
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:144
 msgid "Invite a member"
 msgstr "Inviter un membre"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:108
 msgid "Inviting..."
 msgstr "Invitation en cours..."
+
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:99
+msgid "It's your personal space."
+msgstr "C'est votre espace personnel."
 
 #: apps/web/src/components/user-menu.tsx:98
 msgid "Language"
@@ -459,8 +467,8 @@ msgstr "Connexion à votre compte"
 #~ msgstr "Gérez les membres et les invitations de votre projet"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:44
-msgid "Manage settings for your project"
-msgstr "Gérez les paramètres de votre projet"
+#~ msgid "Manage settings for your project"
+#~ msgstr "Gérez les paramètres de votre projet"
 
 #: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:79
 #~ msgid "Manage your organization's events and schedule"
@@ -482,7 +490,7 @@ msgstr "Réunion"
 msgid "Member"
 msgstr "Membre"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:110
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:139
 #: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Members"
 msgstr "Membres"
@@ -626,7 +634,7 @@ msgstr "En attente"
 #~ msgid "Permanently delete this organization and all of its data. This action cannot be undone."
 #~ msgstr "Supprime définitivement ce groupe et toutes ses données. Cette action est irréversible."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:144
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:181
 msgid "Permanently delete this project and all of its data. This action cannot be undone."
 msgstr "Supprime définitivement ce projet et toutes ses données. Cette action est irréversible."
 
@@ -655,11 +663,11 @@ msgstr "Précédent"
 msgid "Project"
 msgstr "Projet"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:81
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:86
 msgid "Project deleted"
 msgstr "Projet supprimé"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:95
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:108
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:56
 msgid "Project name"
 msgstr "Nom du projet"
@@ -668,13 +676,17 @@ msgstr "Nom du projet"
 msgid "Project name is required"
 msgstr "Le nom du projet est requis"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:102
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:115
 msgid "Project name updated"
 msgstr "Nom du projet mis à jour"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:44
 msgid "Project not found"
 msgstr "Projet introuvable"
+
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:123
+msgid "Project slug"
+msgstr "Identifiant du projet"
 
 #: apps/web/src/components/ui/event-calendar/colors.ts:30
 msgid "Purple"
@@ -774,7 +786,7 @@ msgstr "Échec de l'inscription"
 #~ msgstr "Le slug est requis"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:201
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:238
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
 
@@ -794,12 +806,24 @@ msgstr "Cet événement n'existe pas ou a été supprimé."
 #~ msgid "This is the name displayed across your organization."
 #~ msgstr "C'est le nom affiché dans toute votre organisation."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:96
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:109
 msgid "This is the name displayed across your project."
 msgstr "C'est le nom affiché dans tout votre projet."
 
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:126
+msgid "This is the slug that appears in the URL. It's auto-generated."
+msgstr "C'est l'identifiant qui apparaît dans l'URL. Il est généré automatiquement."
+
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:99
+#~ msgid "This is your personal organization."
+#~ msgstr "Ceci est votre organisation personnelle."
+
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:99
+#~ msgid "This is your personal project."
+#~ msgstr "Ceci est votre projet personnel."
+
 #. placeholder {0}: organization.name
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:162
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:199
 msgid "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses données. Cette action est irréversible."
 

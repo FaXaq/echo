@@ -9,12 +9,18 @@ export { key };
 
 export function listMembersQueryOptions(opts: {
   organizationId: string;
+  isPersonal: boolean;
   limit: number;
   offset: number;
 }) {
   return queryOptions({
     queryKey: getResourceKey("list", opts),
     queryFn: async () => {
+      if (opts.isPersonal)
+        return {
+          members: [],
+          total: 0,
+        } satisfies Awaited<ReturnType<(typeof authClient)["organization"]["listMembers"]>>;
       const { data, error } = await authClient.organization.listMembers({
         query: {
           organizationId: opts.organizationId,

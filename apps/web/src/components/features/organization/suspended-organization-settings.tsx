@@ -62,7 +62,12 @@ function OrganizationSettingsContent({
     getFullOrganizationQueryOptions({ organizationId }),
   );
   const { data: members } = useSuspenseQuery(
-    listMembersQueryOptions({ organizationId, limit, offset }),
+    listMembersQueryOptions({
+      organizationId,
+      limit,
+      offset,
+      isPersonal: organization.isPersonal === true,
+    }),
   );
   const { data: invitations } = useSuspenseQuery(listInvitationsQueryOptions({ organizationId }));
 
@@ -88,55 +93,87 @@ function OrganizationSettingsContent({
 
   return (
     <>
+      {organization.isPersonal && (
+        <section className="mb-8 max-w-xl">
+          <p>
+            <Trans>It's your personal space.</Trans>
+          </p>
+        </section>
+      )}
       <section className="mb-8 max-w-xl">
         <h2 className="mb-4 text-xl font-semibold">{t`General`}</h2>
-        <Card>
-          <CardHeader>
-            <CardTitle>{t`Project name`}</CardTitle>
-            <CardDescription>{t`This is the name displayed across your project.`}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <OrganizationNameForm
-              organizationId={organization.id}
-              defaultName={organization.name}
-              onSuccess={() => toast.add({ type: "success", title: t`Project name updated` })}
-            />
-          </CardContent>
-        </Card>
-      </section>
+        <div className="flex flex-col gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t`Project name`}</CardTitle>
+              <CardDescription>{t`This is the name displayed across your project.`}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <OrganizationNameForm
+                organizationId={organization.id}
+                defaultName={organization.name}
+                onSuccess={() => toast.add({ type: "success", title: t`Project name updated` })}
+              />
+            </CardContent>
+          </Card>
 
-      <section className="mb-8">
-        <div className="mb-4 flex items-start justify-between">
-          <h2 className="text-xl font-semibold">{t`Members`}</h2>
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger render={<Button />}>{t`Invite a member`}</SheetTrigger>
-            <SheetContent className="flex flex-col">
-              <SheetHeader>
-                <SheetTitle>{t`Invite a member`}</SheetTitle>
-                <SheetDescription>{t`Add a new member to your project`}</SheetDescription>
-              </SheetHeader>
-              <div className="flex-1 overflow-auto px-6">
-                <InviteForm
-                  organizationId={organization.id}
-                  onSuccess={() => setIsSheetOpen(false)}
-                />
-              </div>
-            </SheetContent>
-          </Sheet>
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <Trans>Project slug</Trans>
+              </CardTitle>
+              <CardDescription>
+                <Trans>This is the slug that appears in the URL. It's auto-generated.</Trans>
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <code>{organization.slug}</code>
+            </CardContent>
+          </Card>
         </div>
-
-        <MembersTable
-          members={members?.members ?? []}
-          invitations={invitations}
-          currentMemberRole={currentMemberRole}
-          currentUserId={session.user.id}
-          organizationId={organization.id}
-        />
       </section>
 
-      {canDeleteOrganization && (
-        <section className="max-w-xl">
-          <h2 className="mb-2 text-sm font-medium text-destructive">{t`Danger zone`}</h2>
+      {!organization.isPersonal && (
+        <section className="mb-8">
+          <div className="mb-4 flex items-start justify-between">
+            <h2 className="text-xl font-semibold">{t`Members`}</h2>
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger render={<Button />}>{t`Invite a member`}</SheetTrigger>
+              <SheetContent className="flex flex-col">
+                <SheetHeader>
+                  <SheetTitle>{t`Invite a member`}</SheetTitle>
+                  <SheetDescription>{t`Add a new member to your project`}</SheetDescription>
+                </SheetHeader>
+                <div className="flex-1 overflow-auto px-6">
+                  <InviteForm
+                    organizationId={organization.id}
+                    onSuccess={() => setIsSheetOpen(false)}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          <MembersTable
+            members={members?.members ?? []}
+            invitations={invitations}
+            currentMemberRole={currentMemberRole}
+            currentUserId={session.user.id}
+            organizationId={organization.id}
+          />
+        </section>
+      )}
+
+      <section className="max-w-xl flex flex-col gap-4">
+        <div>
+          <h2 className="mb-2 text-sm font-medium text-destructive">
+            <Trans>Danger zone</Trans>
+          </h2>
+          <p>
+            <Trans>Every action here is destructive. Please proceed with caution.</Trans>
+          </p>
+        </div>
+        {canDeleteOrganization && !organization.isPersonal && (
           <Card>
             <CardHeader>
               <CardTitle>{t`Delete project`}</CardTitle>
@@ -181,8 +218,8 @@ function OrganizationSettingsContent({
               </AlertDialog>
             </CardContent>
           </Card>
-        </section>
-      )}
+        )}
+      </section>
     </>
   );
 }
