@@ -6,9 +6,14 @@ import {
   ForgotPasswordForm,
   type ForgotPasswordFormValues,
 } from "@/components/forgot-password-form";
-import { authClient } from "@/lib/auth";
 import { useRouter } from "@tanstack/react-router";
 import { logger } from "@/lib/logger";
+import {
+  useSignInEmailMutation,
+  useSignInUsernameMutation,
+  useSignUpEmailMutation,
+  useRequestPasswordResetMutation,
+} from "@/services/resources/auth";
 
 type View = "login" | "signup" | "forgot-password";
 
@@ -18,6 +23,10 @@ export const Landing = () => {
   const [serverError, setServerError] = useState<string | undefined>();
   const [serverSuccess, setServerSuccess] = useState<string | undefined>();
   const router = useRouter();
+  const signInEmailMutation = useSignInEmailMutation();
+  const signInUsernameMutation = useSignInUsernameMutation();
+  const signUpEmailMutation = useSignUpEmailMutation();
+  const requestPasswordResetMutation = useRequestPasswordResetMutation();
 
   const handleLogin = async (values: LoginFormValues) => {
     setIsLoading(true);
@@ -27,11 +36,11 @@ export const Landing = () => {
       const isEmail = values.login.includes("@");
 
       const result = isEmail
-        ? await authClient.signIn.email({
+        ? await signInEmailMutation.mutateAsync({
             email: values.login,
             password: values.password,
           })
-        : await authClient.signIn.username({
+        : await signInUsernameMutation.mutateAsync({
             username: values.login,
             password: values.password,
           });
@@ -50,7 +59,7 @@ export const Landing = () => {
     setServerError(undefined);
 
     try {
-      const result = await authClient.signUp.email({
+      const result = await signUpEmailMutation.mutateAsync({
         name: values.name,
         username: values.username,
         email: values.email,
@@ -74,7 +83,7 @@ export const Landing = () => {
     setServerSuccess(undefined);
 
     try {
-      const result = await authClient.requestPasswordReset({
+      const result = await requestPasswordResetMutation.mutateAsync({
         email: values.email,
         redirectTo: "/reset-password",
       });

@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/contexts/theme";
-import { authClient } from "@/lib/auth";
+import { useUpdateUserMutation } from "@/services/resources/auth";
 
 type Theme = "light" | "dark" | "system";
 
@@ -44,17 +44,16 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
   const { i18n } = useLingui();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const updateUserMutation = useUpdateUserMutation();
 
   const handleThemeChange = (newTheme: Theme) => {
     setTheme(newTheme);
-    authClient.updateUser({ theme: newTheme });
-    router.invalidate();
+    updateUserMutation.mutate({ theme: newTheme }, { onSuccess: () => router.invalidate() });
   };
 
   const handleLocaleChange = (locale: Locale) => {
     i18n.activate(locale);
-    authClient.updateUser({ locale });
-    router.invalidate();
+    updateUserMutation.mutate({ locale }, { onSuccess: () => router.invalidate() });
   };
 
   return (

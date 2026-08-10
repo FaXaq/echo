@@ -10,6 +10,7 @@ import { Landing } from "./-landing";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { translateDynamic } from "@/lib/dynamic-messages";
+import { useAcceptInvitationMutation } from "@/services/resources/auth";
 
 const searchSchema = z.object({
   id: z.string().optional(),
@@ -46,6 +47,7 @@ function AcceptInvitationPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | undefined>();
+  const acceptInvitationMutation = useAcceptInvitationMutation();
 
   if (!invitation) {
     return (
@@ -71,7 +73,7 @@ function AcceptInvitationPage() {
     setIsLoading(true);
     setServerError(undefined);
     try {
-      const result = await authClient.organization.acceptInvitation({
+      const result = await acceptInvitationMutation.mutateAsync({
         invitationId: invitation.id,
       });
       if (result.error) {
