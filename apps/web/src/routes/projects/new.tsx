@@ -12,7 +12,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { translateDynamic } from "@/lib/dynamic-messages";
 
-export const Route = createFileRoute("/new")({
+export const Route = createFileRoute("/projects/new")({
   staticData: { title: "New project", breadcrumb: "New project" },
   component: NewOrganizationPage,
 });

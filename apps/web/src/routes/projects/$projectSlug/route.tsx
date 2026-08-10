@@ -3,7 +3,7 @@ import { authClient } from "@/lib/auth";
 import { Outlet } from "@tanstack/react-router";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/$projectSlug")({
+export const Route = createFileRoute("/projects/$projectSlug")({
   beforeLoad: async ({ params }) => {
     const { data: organizations } = await authClient.organization.list();
     const org = organizations?.find((o) => o.slug === params.projectSlug);

@@ -14,7 +14,7 @@ import {
 import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
 import { formatCalendarDate, parseCalendarDate } from "@/lib/calendar-date";
 
-export const Route = createFileRoute("/$projectSlug/calendar/")({
+export const Route = createFileRoute("/projects/$projectSlug/calendar/")({
   validateSearch: z.object({
     view: calendarViewSchema.optional().catch(undefined),
     date: z.string().optional().catch(undefined),
@@ -51,7 +51,7 @@ function OrganizationCalendarPage() {
 
   const handleEventClick = (event: ViewEvent) => {
     navigate({
-      to: "/$projectSlug/calendar/$eventId",
+      to: "/projects/$projectSlug/calendar/$eventId",
       params: { projectSlug, eventId: event.id },
     });
   };

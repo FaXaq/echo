@@ -32,7 +32,7 @@ import { organizationRoleSchema, type OrganizationRole } from "@echo/auth";
 import { toast } from "@/components/ui/toast";
 import z from "zod";
 
-export const Route = createFileRoute("/$projectSlug/settings/")({
+export const Route = createFileRoute("/projects/$projectSlug/settings/")({
   staticData: { title: "Settings", breadcrumb: "Settings" },
   loaderDeps: ({ search: { offset, limit } }) => ({ offset, limit }),
   loader: async ({ deps, context }) => {

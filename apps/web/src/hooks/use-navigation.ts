@@ -41,7 +41,7 @@ export function useNavigation() {
   );
 
   const setActiveOrganization = (org: OrganizationOption) => {
-    navigate({ to: "/$projectSlug", params: { projectSlug: org.slug } });
+    navigate({ to: "/projects/$projectSlug", params: { projectSlug: org.slug } });
   };
 
   const slug = activeOrganization?.slug ?? "";
@@ -52,24 +52,24 @@ export function useNavigation() {
           items: [
             {
               title: t`Calendar`,
-              to: "/$projectSlug/calendar",
+              to: "/projects/$projectSlug/calendar",
               params: { projectSlug: slug },
             },
             {
               title: t`Setlist`,
-              to: "/$projectSlug",
+              to: "/projects/$projectSlug",
               params: { projectSlug: slug },
             },
             {
               title: t`Drive`,
-              to: "/$projectSlug",
+              to: "/projects/$projectSlug",
               params: { projectSlug: slug },
             },
             ...(isActiveOrganizationAdmin
               ? [
                   {
                     title: t`Settings`,
-                    to: "/$projectSlug/settings" as const,
+                    to: "/projects/$projectSlug/settings" as const,
                     params: { projectSlug: slug },
                   },
                 ]
