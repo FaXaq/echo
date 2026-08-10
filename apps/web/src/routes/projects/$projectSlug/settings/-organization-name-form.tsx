@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLingui } from "@lingui/react/macro";
-import { authClient } from "@/lib/auth";
+import { useUpdateOrganizationMutation } from "@/services/resources/organization";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { translateDynamic } from "@/lib/dynamic-messages";
@@ -27,6 +27,7 @@ export function OrganizationNameForm({
 }: OrganizationNameFormProps) {
   const { t } = useLingui();
   const [serverError, setServerError] = useState<string | undefined>();
+  const updateOrganizationMutation = useUpdateOrganizationMutation();
   const {
     register,
     handleSubmit,
@@ -39,17 +40,13 @@ export function OrganizationNameForm({
   const onSubmit = async (values: OrganizationNameFormValues) => {
     setServerError(undefined);
 
-    const result = await authClient.organization.update({
-      organizationId,
-      data: { name: values.name },
-    });
-
-    if (result.error) {
-      setServerError(result.error.message ?? t`Failed to update project name`);
-      return;
+    try {
+      await updateOrganizationMutation.mutateAsync({ organizationId, name: values.name });
+      onSuccess?.();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t`Failed to update project name`;
+      setServerError(message);
     }
-
-    onSuccess?.();
   };
 
   return (

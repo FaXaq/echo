@@ -27,7 +27,7 @@ msgstr "<0>Back to login</0>"
 msgid "Accept invitation"
 msgstr "Accept invitation"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:101
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:89
 msgid "Actions"
 msgstr "Actions"
 
@@ -40,7 +40,7 @@ msgstr "Actions for {0}"
 #~ msgid "Add a new member to your organization"
 #~ msgstr "Add a new member to your organization"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:180
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:119
 msgid "Add a new member to your project"
 msgstr "Add a new member to your project"
 
@@ -66,7 +66,7 @@ msgstr "All day"
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:128
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:116
 msgid "Are you sure you want to cancel this invitation?"
 msgstr "Are you sure you want to cancel this invitation?"
 
@@ -74,7 +74,7 @@ msgstr "Are you sure you want to cancel this invitation?"
 #~ msgid "Are you sure you want to remove this member from the organization?"
 #~ msgstr "Are you sure you want to remove this member from the organization?"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:188
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:176
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Are you sure you want to remove this member from the project?"
 
@@ -114,22 +114,22 @@ msgstr "Back to home"
 msgid "Blue"
 msgstr "Blue"
 
-#: apps/web/src/hooks/use-navigation.ts:54
+#: apps/web/src/hooks/use-navigation.ts:58
 #: apps/web/src/lib/dynamic-messages.ts:38
 msgid "Calendar"
 msgstr "Calendar"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:71
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:166
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:173
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:122
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:231
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:110
 msgid "Cancel"
 msgstr "Cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:126
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:114
 msgid "Cancel invitation"
 msgstr "Cancel invitation"
 
@@ -203,7 +203,7 @@ msgstr "Create an account"
 msgid "Create project"
 msgstr "Create project"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:204
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:142
 msgid "Danger zone"
 msgstr "Danger zone"
 
@@ -216,12 +216,12 @@ msgid "Day"
 msgstr "Day"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:173
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:180
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:243
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:385
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:397
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:238
 msgid "Delete"
 msgstr "Delete"
 
@@ -236,9 +236,9 @@ msgstr "Delete event?"
 #~ msgid "Delete organization"
 #~ msgstr "Delete organization"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:207
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:215
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:220
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:145
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:157
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:162
 msgid "Delete project"
 msgstr "Delete project"
 
@@ -262,7 +262,7 @@ msgstr "Download"
 msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
-#: apps/web/src/hooks/use-navigation.ts:64
+#: apps/web/src/hooks/use-navigation.ts:68
 msgid "Drive"
 msgstr "Drive"
 
@@ -273,8 +273,8 @@ msgstr "Edit event"
 
 #: apps/web/src/components/forgot-password-form.tsx:65
 #: apps/web/src/components/signup-form.tsx:111
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:70
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:99
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:67
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:87
 msgid "Email"
 msgstr "Email"
 
@@ -294,7 +294,7 @@ msgstr "End"
 msgid "End date must be after start date"
 msgstr "End date must be after start date"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:75
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:72
 msgid "Enter email address"
 msgstr "Enter email address"
 
@@ -347,7 +347,7 @@ msgstr "Failed to create project"
 #~ msgid "Failed to delete organization"
 #~ msgstr "Failed to delete organization"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:133
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:88
 msgid "Failed to delete project"
 msgstr "Failed to delete project"
 
@@ -363,7 +363,7 @@ msgstr "Failed to send reset email"
 #~ msgid "Failed to update organization name"
 #~ msgstr "Failed to update organization name"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:48
+#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:47
 msgid "Failed to update project name"
 msgstr "Failed to update project name"
 
@@ -385,7 +385,7 @@ msgstr "Full name"
 msgid "Full name is required"
 msgstr "Full name is required"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:153
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:95
 msgid "General"
 msgstr "General"
 
@@ -401,16 +401,16 @@ msgstr "Invalid email address"
 msgid "Invitation has expired or already been processed. Please, request a new one."
 msgstr "Invitation has expired or already been processed. Please, request a new one."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:111
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:108
 msgid "Invite"
 msgstr "Invite"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:176
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:179
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:115
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:118
 msgid "Invite a member"
 msgstr "Invite a member"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:111
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:108
 msgid "Inviting..."
 msgstr "Inviting..."
 
@@ -458,7 +458,7 @@ msgstr "Login to your account"
 #~ msgid "Manage members and invitations for your project"
 #~ msgstr "Manage members and invitations for your project"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:149
+#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:40
 msgid "Manage settings for your project"
 msgstr "Manage settings for your project"
 
@@ -482,8 +482,8 @@ msgstr "Meeting"
 msgid "Member"
 msgstr "Member"
 
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:113
 #: apps/web/src/lib/dynamic-messages.ts:40
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:174
 msgid "Members"
 msgstr "Members"
 
@@ -491,7 +491,11 @@ msgstr "Members"
 msgid "Month"
 msgstr "Month"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:98
+#: apps/web/src/routes/projects/new.tsx:78
+msgid "My Project"
+msgstr "My Project"
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:86
 #: apps/web/src/routes/projects/new.tsx:73
 msgid "Name"
 msgstr "Name"
@@ -525,7 +529,7 @@ msgstr "No events scheduled"
 msgid "No files linked yet."
 msgstr "No files linked yet."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:207
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:195
 msgid "No members yet"
 msgstr "No members yet"
 
@@ -538,11 +542,11 @@ msgstr "No members yet"
 msgid "No places found"
 msgstr "No places found"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:132
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:120
 msgid "No, keep it"
 msgstr "No, keep it"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:192
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:180
 msgid "No, keep them"
 msgstr "No, keep them"
 
@@ -614,7 +618,7 @@ msgstr "Password reset failed"
 msgid "Passwords do not match"
 msgstr "Passwords do not match"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:114
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:102
 msgid "Pending"
 msgstr "Pending"
 
@@ -622,7 +626,7 @@ msgstr "Pending"
 #~ msgid "Permanently delete this organization and all of its data. This action cannot be undone."
 #~ msgstr "Permanently delete this organization and all of its data. This action cannot be undone."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:209
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:147
 msgid "Permanently delete this project and all of its data. This action cannot be undone."
 msgstr "Permanently delete this project and all of its data. This action cannot be undone."
 
@@ -651,12 +655,12 @@ msgstr "Previous"
 msgid "Project"
 msgstr "Project"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:137
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:84
 msgid "Project deleted"
 msgstr "Project deleted"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:59
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:156
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:98
+#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:56
 msgid "Project name"
 msgstr "Project name"
 
@@ -664,11 +668,11 @@ msgstr "Project name"
 msgid "Project name is required"
 msgstr "Project name is required"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:164
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:105
 msgid "Project name updated"
 msgstr "Project name updated"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:43
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:44
 msgid "Project not found"
 msgstr "Project not found"
 
@@ -697,22 +701,22 @@ msgstr "Rename file"
 msgid "Reset password"
 msgstr "Reset password"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:182
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:170
 msgid "Revoke"
 msgstr "Revoke"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:186
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:174
 msgid "Revoke membership"
 msgstr "Revoke membership"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:86
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:100
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:83
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:88
 msgid "Role"
 msgstr "Role"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:72
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
-#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:68
+#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:65
 msgid "Save"
 msgstr "Save"
 
@@ -720,7 +724,7 @@ msgstr "Save"
 msgid "Save changes"
 msgstr "Save changes"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:68
+#: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:65
 msgid "Saving..."
 msgstr "Saving..."
 
@@ -744,12 +748,12 @@ msgstr "Send reset link"
 msgid "Set a new password"
 msgstr "Set a new password"
 
-#: apps/web/src/hooks/use-navigation.ts:59
+#: apps/web/src/hooks/use-navigation.ts:63
 msgid "Setlist"
 msgstr "Setlist"
 
-#: apps/web/src/hooks/use-navigation.ts:71
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:148
+#: apps/web/src/hooks/use-navigation.ts:75
+#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:39
 msgid "Settings"
 msgstr "Settings"
 
@@ -770,6 +774,7 @@ msgstr "Sign up failed"
 #~ msgstr "Slug is required"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:204
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
@@ -789,12 +794,12 @@ msgstr "This event doesn't exist or has been deleted."
 #~ msgid "This is the name displayed across your organization."
 #~ msgstr "This is the name displayed across your organization."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:157
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:99
 msgid "This is the name displayed across your project."
 msgstr "This is the name displayed across your project."
 
-#. placeholder {0}: activeOrganization.name
-#: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:223
+#. placeholder {0}: organization.name
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:165
 msgid "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 msgstr "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 
@@ -855,11 +860,11 @@ msgstr "Week"
 msgid "Yellow"
 msgstr "Yellow"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:134
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:122
 msgid "Yes, cancel"
 msgstr "Yes, cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:194
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:182
 msgid "Yes, remove"
 msgstr "Yes, remove"
 

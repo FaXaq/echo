@@ -45,8 +45,8 @@ function NewOrganizationPage() {
   const onSubmit = async (values: FormValues) => {
     setServerError(undefined);
     try {
-      await createOrganizationMutation.mutateAsync(values);
-      router.navigate({ to: "/" });
+      const res = await createOrganizationMutation.mutateAsync(values);
+      router.navigate({ to: "/projects/$projectSlug", params: { projectSlug: res.slug } });
     } catch (error) {
       setServerError(error instanceof TRPCClientError ? error.message : "Failed to create project");
     }
@@ -75,7 +75,7 @@ function NewOrganizationPage() {
               <Input
                 id="name"
                 type="text"
-                placeholder="My Project"
+                placeholder={t`My Project`}
                 className="bg-background"
                 {...register("name")}
               />

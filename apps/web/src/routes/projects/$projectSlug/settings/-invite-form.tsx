@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLingui } from "@lingui/react/macro";
-import { authClient } from "@/lib/auth";
+import { useInviteMemberMutation } from "@/services/resources/member";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
@@ -24,6 +24,7 @@ interface InviteFormProps {
 export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
   const { t } = useLingui();
   const [serverError, setServerError] = useState<string | undefined>();
+  const inviteMemberMutation = useInviteMemberMutation();
   const {
     control,
     handleSubmit,
@@ -46,7 +47,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
 
     setServerError(undefined);
     try {
-      await authClient.organization.inviteMember({
+      await inviteMemberMutation.mutateAsync({
         email: values.email,
         role: values.role,
         organizationId,
@@ -54,12 +55,8 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
       reset();
       onSuccess?.();
     } catch (error) {
-      if (error instanceof Error) {
-        const message = error?.message || t`Failed to invite member`;
-        setServerError(message);
-      }
-
-      throw new Error(String(error));
+      const message = error instanceof Error ? error.message : t`Failed to invite member`;
+      setServerError(message);
     }
   };
 

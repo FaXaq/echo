@@ -1,6 +1,9 @@
 import { useLingui } from "@lingui/react/macro";
-import { useState } from "react";
-import { authClient } from "@/lib/auth";
+import {
+  useCancelInvitationMutation,
+  useRemoveMemberMutation,
+  useUpdateMemberRoleMutation,
+} from "@/services/resources/member";
 import { Button } from "@/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table";
 import { Badge } from "@/ui/badge";
@@ -31,7 +34,6 @@ interface MembersTableProps {
   currentMemberRole: OrganizationRole | null;
   currentUserId: string | null;
   organizationId: string;
-  onRefresh: () => void;
 }
 
 export function MembersTable({
@@ -40,51 +42,37 @@ export function MembersTable({
   currentMemberRole,
   currentUserId,
   organizationId,
-  onRefresh,
 }: MembersTableProps) {
   const { t } = useLingui();
-  const [isLoading, setIsLoading] = useState(false);
+  const cancelInvitationMutation = useCancelInvitationMutation();
+  const removeMemberMutation = useRemoveMemberMutation();
+  const updateMemberRoleMutation = useUpdateMemberRoleMutation();
+  const isLoading =
+    cancelInvitationMutation.isPending ||
+    removeMemberMutation.isPending ||
+    updateMemberRoleMutation.isPending;
 
   const handleCancelInvitation = async (invitationId: string) => {
-    setIsLoading(true);
     try {
-      await authClient.organization.cancelInvitation({ invitationId });
-      onRefresh();
+      await cancelInvitationMutation.mutateAsync({ invitationId });
     } catch (error) {
       logger.error(error, "Failed to cancel invitation:");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleRevoke = async (userId: string) => {
-    setIsLoading(true);
     try {
-      await authClient.organization.removeMember({
-        memberIdOrEmail: userId,
-        organizationId,
-      });
-      onRefresh();
+      await removeMemberMutation.mutateAsync({ memberIdOrEmail: userId, organizationId });
     } catch (error) {
       logger.error(error, "Failed to revoke membership:");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleUpdateRole = async (memberId: string, role: OrganizationRole) => {
-    setIsLoading(true);
     try {
-      await authClient.organization.updateMemberRole({
-        memberId,
-        role,
-        organizationId,
-      });
-      onRefresh();
+      await updateMemberRoleMutation.mutateAsync({ memberId, role, organizationId });
     } catch (error) {
       logger.error(error, "Failed to update member role:");
-    } finally {
-      setIsLoading(false);
     }
   };
 

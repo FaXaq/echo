@@ -1,9 +1,11 @@
-import { authClient } from "@/lib/auth";
 import type { FileRouteTypes } from "@/routeTree.gen";
 import { useNavigate, useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
 import { organizationRoleSchema } from "@echo/auth";
 import { isOrganizationAdmin } from "@echo/modules/user/domain";
+import { selfListOrganizations, type Organizations } from "@/services/resources/organization";
+import { getActiveMemberRoleQueryOptions } from "@/services/resources/session";
 
 type NavItem = {
   title: string;
@@ -14,14 +16,11 @@ type NavItem = {
 
 export type NavGroup = { title: string; items: NavItem[] };
 
-type OrganizationOption = NonNullable<
-  ReturnType<Awaited<typeof authClient.useListOrganizations>>["data"]
->[number];
+type OrganizationOption = Organizations[number];
 
 export function useNavigation() {
   const { t } = useLingui();
-  const { data: organizations } = authClient.useListOrganizations();
-  const { data: activeMemberRole } = authClient.useActiveMemberRole();
+  const { data: organizations } = useQuery(selfListOrganizations());
   const navigate = useNavigate();
 
   const params = useParams({ strict: false });
@@ -29,6 +28,11 @@ export function useNavigation() {
   const activeOrganization = currentSlug
     ? ((organizations ?? []).find((o) => o.slug === currentSlug) ?? null)
     : null;
+
+  const { data: activeMemberRole } = useQuery({
+    ...getActiveMemberRoleQueryOptions({ organizationId: activeOrganization?.id ?? "" }),
+    enabled: activeOrganization !== null,
+  });
 
   const parsedActiveMemberRole = organizationRoleSchema.safeParse(activeMemberRole?.role);
   const currentMemberRole = parsedActiveMemberRole.success ? parsedActiveMemberRole.data : null;

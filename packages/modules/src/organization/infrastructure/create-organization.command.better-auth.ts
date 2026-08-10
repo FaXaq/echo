@@ -23,7 +23,12 @@ export const createOrganizationCommandFactory: CreateOrganizationCommandPortFact
 
       return {
         status: "created",
-        organization: { id: organization.id, name: organization.name },
+        organization: {
+          id: organization.id,
+          name: organization.name,
+          slug: organization.slug,
+          isPersonal: organization.isPersonal ?? false,
+        },
       };
     } catch (error) {
       if (isSlugTakenError(error)) return { status: "slug_taken" };

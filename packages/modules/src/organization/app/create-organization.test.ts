@@ -13,14 +13,22 @@ describe("createOrganization", () => {
       attempts++;
       seenSlugs.push(input.slug);
       if (attempts < 3) return { status: "slug_taken" };
-      return { status: "created", organization: { id: "org-1", name: input.name } };
+      return {
+        status: "created",
+        organization: { id: "org-1", name: input.name, slug: input.slug, isPersonal: false },
+      };
     };
 
     const organization = await createOrganization({ createOrganizationCommand }, baseInput);
 
     expect(attempts).toBe(3);
     expect(new Set(seenSlugs).size).toBe(3);
-    expect(organization).toEqual({ id: "org-1", name: baseInput.name });
+    expect(organization).toEqual({
+      id: "org-1",
+      name: baseInput.name,
+      slug: expect.any(String),
+      isPersonal: false,
+    });
   });
 
   it("throws a ConflictError after exhausting all slug attempts", async () => {
