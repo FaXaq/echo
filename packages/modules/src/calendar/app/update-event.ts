@@ -18,7 +18,7 @@ export async function updateEvent(
   },
   input: {
     id: string;
-    organizationId: string | null;
+    organizationId: string;
     userId: string;
     title: string;
     description?: string | null;
@@ -30,13 +30,11 @@ export async function updateEvent(
     place?: EventPlace | null;
   },
 ): Promise<CalendarEvent> {
-  if (input.organizationId !== null) {
-    const { success } = await deps.userHasPermissionInOrganization({
-      organizationId: input.organizationId,
-      permissions: { calendarEvent: ["update"] },
-    });
-    if (!success) throw forbidden({ entity: "CalendarEvent", action: "update" });
-  }
+  const { success } = await deps.userHasPermissionInOrganization({
+    organizationId: input.organizationId,
+    permissions: { calendarEvent: ["update"] },
+  });
+  if (!success) throw forbidden({ entity: "CalendarEvent", action: "update" });
 
   if (!isValidEventRange(input.startDate, input.endDate)) {
     throw conflict("End date must be after start date");

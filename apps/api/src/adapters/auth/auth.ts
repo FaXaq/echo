@@ -6,18 +6,54 @@ import {
   renderResetPasswordEmail,
   renderInvitationEmail,
 } from "@echo/modules/notification/infrastructure";
+import { deleteOrganizationFiles } from "@echo/modules/file/app";
+import {
+  createOrganizationCommandFactory,
+  getPersonalOrganizationQuery,
+  markOrganizationPersonal,
+} from "@echo/modules/organization/infrastructure";
+import { createOrganization } from "@echo/modules/organization/app";
 import { makeMailer } from "@echo/adapters/mailer";
+import { makeS3Storage } from "@echo/adapters/s3-storage";
+import { makeLogger } from "@echo/logger";
 
-const { pool } = makeDbAdapter(appConfig.db);
+const { db, pool } = makeDbAdapter(appConfig.db);
 const mailer = makeMailer(appConfig.mailer);
+const s3Storage = makeS3Storage(appConfig.s3);
+const logger = makeLogger();
 
-const auth = makeServerAuth({
+const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   secret: appConfig.auth.secret,
   pool,
   baseUrl: appConfig.auth.baseUrl,
   trustedOrigins: appConfig.auth.trustedOrigins,
-  getInitialOrganizationId: async () => {
-    return undefined;
+  getInitialOrganizationId: async (userId) => {
+    const organization = await getPersonalOrganizationQuery(db, userId);
+    return organization?.id;
+  },
+  onUserCreated: async (user) => {
+    try {
+      const createOrganizationCommand = createOrganizationCommandFactory({ auth });
+      const organization = await createOrganization(
+        { createOrganizationCommand },
+        { name: `${user.name}`, userId: user.id },
+      );
+      await markOrganizationPersonal(db, organization.id, user.id);
+    } catch (error) {
+      logger.error({ error, userId: user.id }, "Failed to create personal organization on signup");
+    }
+  },
+  onOrganizationDeleted: async (organization) => {
+    const failures = await deleteOrganizationFiles(
+      { db, s3Storage },
+      { organizationId: organization.id },
+    );
+    for (const failure of failures) {
+      logger.error(
+        { error: failure.error, fileId: failure.fileId, organizationId: organization.id },
+        "Failed to delete S3 object during organization deletion",
+      );
+    }
   },
   sendResetPasswordEmail: async ({ email, locale }, token) => {
     const i18n = makeServerI18n(toLocale(locale));

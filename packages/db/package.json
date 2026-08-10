@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./generate-org-slug": "./src/generate-org-slug.ts"
   },
   "scripts": {
     "build": "tsc --build",

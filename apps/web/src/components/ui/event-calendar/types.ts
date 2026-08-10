@@ -28,15 +28,11 @@ export interface CalendarEvent {
   allDay?: boolean;
   color: EventColor;
   type: EventType | null;
-  organization:
-    | {
-        id: string;
-        name: string;
-        slug: string;
-      }
-    | {
-        id: string | null;
-      };
+  organization: {
+    id: string;
+    name: string;
+    slug: string;
+  };
   place: EventPlace | null;
   createdBy: string;
   createdByName: string;

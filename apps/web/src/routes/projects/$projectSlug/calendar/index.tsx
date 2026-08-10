@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+
 import { useLingui } from "@lingui/react/macro";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -13,41 +14,46 @@ import {
 import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
 import { formatCalendarDate, parseCalendarDate } from "@/lib/calendar-date";
 
-export const Route = createFileRoute("/calendar/")({
+export const Route = createFileRoute("/projects/$projectSlug/calendar/")({
   validateSearch: z.object({
     view: calendarViewSchema.optional().catch(undefined),
     date: z.string().optional().catch(undefined),
   }),
-  component: CalendarPage,
+  component: OrganizationCalendarPage,
 });
 
-function CalendarPage() {
+function OrganizationCalendarPage() {
   const { t } = useLingui();
-  const navigate = useNavigate();
+  const { organizationId } = Route.useRouteContext();
+  const { projectSlug } = Route.useParams();
   const search = Route.useSearch();
-  const { data: events = [] } = useQuery(getEventsQueryOptions());
+  const navigate = useNavigate();
+  const { data: events = [] } = useQuery(getEventsQueryOptions({ organizationId }));
 
   const createEventMutation = useCreateEventMutation();
   const updateEventMutation = useUpdateEventMutation();
-  const deleteEventMutation = useDeleteEventMutation();
+  const deleteEventMutation = useDeleteEventMutation({ organizationId });
 
   const view = search.view ?? "month";
   const date = search.date ? (parseCalendarDate(search.date) ?? new Date()) : new Date();
 
   const handleEventCreate = async (event: ViewEvent) => {
-    createEventMutation.mutate(fromViewEvent(event));
+    await createEventMutation.mutateAsync(fromViewEvent(event));
   };
 
   const handleEventUpdate = async (event: ViewEvent) => {
-    updateEventMutation.mutate({ id: event.id, ...fromViewEvent(event) });
+    await updateEventMutation.mutateAsync({ id: event.id, ...fromViewEvent(event) });
   };
 
   const handleEventDelete = async (id: string) => {
-    deleteEventMutation.mutate({ id });
+    await deleteEventMutation.mutateAsync({ id });
   };
 
   const handleEventClick = (event: ViewEvent) => {
-    navigate({ to: "/calendar/$eventId", params: { eventId: event.id } });
+    navigate({
+      to: "/projects/$projectSlug/calendar/$eventId",
+      params: { projectSlug, eventId: event.id },
+    });
   };
 
   const handleViewChange = (nextView: CalendarView) => {
@@ -69,7 +75,8 @@ function CalendarPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">{t`Calendar`}</h1>
+        <h1 className="text-3xl font-bold mb-2">{t`Schedule`}</h1>
+        <p className="text-muted-foreground">{t`Manage your project's events and schedule`}</p>
       </div>
       <EventCalendar
         events={events.map(toViewEvent)}
@@ -81,6 +88,7 @@ function CalendarPage() {
         onEventCreate={handleEventCreate}
         onEventUpdate={handleEventUpdate}
         onEventDelete={handleEventDelete}
+        defaultOrganizationId={organizationId}
         className="flex-1"
       />
     </div>

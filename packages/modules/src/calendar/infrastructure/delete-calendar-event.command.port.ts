@@ -2,8 +2,7 @@ import type { KyselyDB } from "@echo/db";
 
 export type DeleteCalendarEventInput = {
   id: string;
-  organizationId: string | null;
-  userId: string;
+  organizationId: string;
 };
 
 export type DeleteCalendarEventCommandPort = (

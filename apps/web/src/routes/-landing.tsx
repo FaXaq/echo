@@ -6,87 +6,96 @@ import {
   ForgotPasswordForm,
   type ForgotPasswordFormValues,
 } from "@/components/forgot-password-form";
-import { authClient } from "@/lib/auth";
 import { useRouter } from "@tanstack/react-router";
 import { logger } from "@/lib/logger";
+import {
+  useSignInEmailMutation,
+  useSignInUsernameMutation,
+  useSignUpEmailMutation,
+  useRequestPasswordResetMutation,
+} from "@/services/resources/auth";
 
 type View = "login" | "signup" | "forgot-password";
 
 export const Landing = () => {
   const [view, setView] = useState<View>("login");
-  const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | undefined>();
   const [serverSuccess, setServerSuccess] = useState<string | undefined>();
   const router = useRouter();
+  const signInEmailMutation = useSignInEmailMutation();
+  const signInUsernameMutation = useSignInUsernameMutation();
+  const signUpEmailMutation = useSignUpEmailMutation();
+  const requestPasswordResetMutation = useRequestPasswordResetMutation();
 
-  const handleLogin = async (values: LoginFormValues) => {
-    setIsLoading(true);
+  const isLoading =
+    signInEmailMutation.isPending ||
+    signInUsernameMutation.isPending ||
+    signUpEmailMutation.isPending ||
+    requestPasswordResetMutation.isPending;
+
+  const handleLogin = (values: LoginFormValues) => {
     setServerError(undefined);
 
-    try {
-      const isEmail = values.login.includes("@");
+    const onSuccess = async () => {
+      await router.invalidate();
+      router.navigate({ to: "/" });
+    };
+    const onError = (error: Error) => {
+      setServerError(error.message);
+    };
 
-      const result = isEmail
-        ? await authClient.signIn.email({
-            email: values.login,
-            password: values.password,
-          })
-        : await authClient.signIn.username({
-            username: values.login,
-            password: values.password,
-          });
-
-      if (result.error) {
-        setServerError(result.error.message ?? "Login failed");
-      }
-    } finally {
-      setIsLoading(false);
-      router.invalidate();
+    if (values.login.includes("@")) {
+      signInEmailMutation.mutate(
+        { email: values.login, password: values.password },
+        { onSuccess, onError },
+      );
+    } else {
+      signInUsernameMutation.mutate(
+        { username: values.login, password: values.password },
+        { onSuccess, onError },
+      );
     }
   };
 
-  const handleSignup = async (values: SignupFormValues) => {
-    setIsLoading(true);
+  const handleSignup = (values: SignupFormValues) => {
     setServerError(undefined);
 
-    try {
-      const result = await authClient.signUp.email({
+    signUpEmailMutation.mutate(
+      {
         name: values.name,
         username: values.username,
         email: values.email,
         password: values.password,
         locale: navigator.language.split("-")[0] ?? "en",
-      });
-
-      if (result.error) {
-        logger.error(result.error);
-        setServerError(result.error.message ?? "Sign up failed");
-      }
-    } finally {
-      setIsLoading(false);
-      router.invalidate();
-    }
+      },
+      {
+        onSuccess: async () => {
+          await router.invalidate();
+          router.navigate({ to: "/" });
+        },
+        onError: (error) => {
+          logger.error(error);
+          setServerError(error.message);
+        },
+      },
+    );
   };
 
-  const handleForgotPassword = async (values: ForgotPasswordFormValues) => {
-    setIsLoading(true);
+  const handleForgotPassword = (values: ForgotPasswordFormValues) => {
     setServerError(undefined);
     setServerSuccess(undefined);
 
-    try {
-      const result = await authClient.requestPasswordReset({
-        email: values.email,
-        redirectTo: "/reset-password",
-      });
-
-      if (result.error) {
-        setServerError(result.error.message ?? "Failed to send reset email");
-      } else {
-        setServerSuccess("Check your email for a password reset link");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    requestPasswordResetMutation.mutate(
+      { email: values.email, redirectTo: "/reset-password" },
+      {
+        onSuccess: () => {
+          setServerSuccess("Check your email for a password reset link");
+        },
+        onError: (error) => {
+          setServerError(error.message);
+        },
+      },
+    );
   };
 
   const switchView = (next: View) => {
