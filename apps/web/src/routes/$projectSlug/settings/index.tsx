@@ -29,7 +29,7 @@ import { MembersTable } from "./-members-table";
 import { OrganizationNameForm } from "./-organization-name-form";
 import { isOrganizationAdmin } from "@echo/modules/user/domain";
 import { organizationRoleSchema, type OrganizationRole } from "@echo/auth";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import z from "zod";
 
 export const Route = createFileRoute("/$projectSlug/settings/")({
@@ -130,11 +130,11 @@ function SettingsPage() {
 
       if (result.error) {
         logger.error(result.error, "Failed to delete organization");
-        toast.error(t`Failed to delete project`);
+        toast.add({ type: "error", title: t`Failed to delete project` });
         return;
       }
 
-      toast.success(t`Project deleted`);
+      toast.add({ type: "success", title: t`Project deleted` });
       setIsDeleteDialogOpen(false);
       router.navigate({ to: "/" });
     } finally {
@@ -161,7 +161,7 @@ function SettingsPage() {
               organizationId={activeOrganization.id}
               defaultName={activeOrganization.name}
               onSuccess={() => {
-                toast.success(t`Project name updated`);
+                toast.add({ type: "success", title: t`Project name updated` });
                 router.invalidate();
               }}
             />

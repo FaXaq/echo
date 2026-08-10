@@ -22,7 +22,7 @@ import { Landing } from "./-landing";
 import { UserMenu } from "@/components/user-menu";
 import { ThemeProvider } from "@/contexts/theme";
 import { SessionProvider } from "@/hooks/use-session";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toast";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
 import { DynamicTitle } from "./-dynamic-title";
 import { PageMetaProvider } from "@/contexts/page-meta";
