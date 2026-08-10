@@ -53,7 +53,7 @@ msgid "Agenda"
 msgstr "Agenda"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:60
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:284
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:287
 #: apps/web/src/components/ui/event-calendar/time-grid-view.tsx:158
 msgid "All day"
 msgstr "All day"
@@ -114,8 +114,8 @@ msgstr "Calendar"
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:71
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:166
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:392
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
 #: apps/web/src/routes/organizations/$organizationSlug/settings/-members-table.tsx:122
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:210
 msgid "Cancel"
@@ -149,7 +149,7 @@ msgstr "Class"
 msgid "Clear place"
 msgstr "Clear place"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:289
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:292
 msgid "Color"
 msgstr "Color"
 
@@ -207,14 +207,14 @@ msgstr "Day"
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:243
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:382
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:394
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:385
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:397
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:217
 msgid "Delete"
 msgstr "Delete"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:230
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:386
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 msgid "Delete event?"
 msgstr "Delete event?"
 
@@ -228,7 +228,7 @@ msgstr "Delete organization"
 msgid "Delete this file?"
 msgstr "Delete this file?"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:222
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:225
 msgid "Description"
 msgstr "Description"
 
@@ -248,8 +248,8 @@ msgstr "Drag and drop files here, or click to select"
 msgid "Drive"
 msgstr "Drive"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:205
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:207
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:208
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:210
 msgid "Edit event"
 msgstr "Edit event"
 
@@ -268,7 +268,7 @@ msgstr "Email or username"
 msgid "Email or username is required"
 msgstr "Email or username is required"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:264
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:267
 msgid "End"
 msgstr "End"
 
@@ -456,8 +456,8 @@ msgstr "Name"
 
 #: apps/web/src/components/ui/event-calendar/day-events-dialog.tsx:49
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:182
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:205
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:207
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:208
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:210
 msgid "New event"
 msgstr "New event"
 
@@ -504,8 +504,8 @@ msgstr "No, keep it"
 msgid "No, keep them"
 msgstr "No, keep them"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:343
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:357
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:346
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:360
 msgid "None"
 msgstr "None"
 
@@ -522,7 +522,7 @@ msgstr "Open in Maps"
 msgid "Orange"
 msgstr "Orange"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:238
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:241
 msgid "Organization"
 msgstr "Organization"
 
@@ -572,7 +572,7 @@ msgstr "Permanently delete this organization and all of its data. This action ca
 #~ msgid "Personal"
 #~ msgstr "Personal"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:227
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:230
 msgid "Place"
 msgstr "Place"
 
@@ -631,11 +631,11 @@ msgid "Role"
 msgstr "Role"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:72
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
 msgid "Save"
 msgstr "Save"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
 msgid "Save changes"
 msgstr "Save changes"
 
@@ -688,7 +688,7 @@ msgstr "Sign up failed"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:254
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:257
 msgid "Start"
 msgstr "Start"
 
@@ -714,11 +714,11 @@ msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:232
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:388
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "This will permanently delete this event. This action cannot be undone."
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:214
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:217
 msgid "Title"
 msgstr "Title"
 
@@ -730,7 +730,7 @@ msgstr "Title is required"
 msgid "Today"
 msgstr "Today"
 
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:329
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:332
 msgid "Type"
 msgstr "Type"
 
