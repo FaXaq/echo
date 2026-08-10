@@ -26,6 +26,7 @@ import {
 } from "@/ui/alert-dialog";
 import { InviteForm } from "./-invite-form";
 import { MembersTable } from "./-members-table";
+import { OrganizationNameForm } from "./-organization-name-form";
 import { isOrganizationAdmin } from "@echo/modules/user/domain";
 import { organizationRoleSchema, type OrganizationRole } from "@echo/auth";
 import { toast } from "sonner";
@@ -147,6 +148,26 @@ function SettingsPage() {
         <h1 className="text-3xl font-bold mb-2">{t`Settings`}</h1>
         <p className="text-muted-foreground">{t`Manage settings for your project`}</p>
       </div>
+
+      <section className="mb-8 max-w-xl">
+        <h2 className="mb-4 text-xl font-semibold">{t`General`}</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>{t`Organization name`}</CardTitle>
+            <CardDescription>{t`This is the name displayed across your organization.`}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <OrganizationNameForm
+              organizationId={activeOrganization.id}
+              defaultName={activeOrganization.name}
+              onSuccess={() => {
+                toast.success(t`Organization name updated`);
+                router.invalidate();
+              }}
+            />
+          </CardContent>
+        </Card>
+      </section>
 
       <section className="mb-8">
         <div className="mb-4 flex items-start justify-between">

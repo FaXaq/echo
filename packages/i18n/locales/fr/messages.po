@@ -22,7 +22,7 @@ msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
 
-#: apps/web/src/lib/dynamic-messages.ts:42
+#: apps/web/src/lib/dynamic-messages.ts:43
 #: apps/web/src/routes/accept-invitation.tsx:106
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
@@ -36,7 +36,7 @@ msgstr "Actions"
 msgid "Actions for {0}"
 msgstr "Actions pour {0}"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:159
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:180
 msgid "Add a new member to your organization"
 msgstr "Ajouter un nouveau membre à votre organisation"
 
@@ -44,7 +44,7 @@ msgstr "Ajouter un nouveau membre à votre organisation"
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
-#: apps/web/src/lib/dynamic-messages.ts:46
+#: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -107,7 +107,7 @@ msgid "Blue"
 msgstr "Bleu"
 
 #: apps/web/src/hooks/use-navigation.ts:54
-#: apps/web/src/lib/dynamic-messages.ts:38
+#: apps/web/src/lib/dynamic-messages.ts:39
 msgid "Calendar"
 msgstr "Agenda"
 
@@ -117,7 +117,7 @@ msgstr "Agenda"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
 #: apps/web/src/routes/organizations/$organizationSlug/settings/-members-table.tsx:122
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:210
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:231
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -133,7 +133,7 @@ msgstr "Impossible de trouver l’invitation que vous recherchez"
 msgid "Category"
 msgstr "Catégorie"
 
-#: apps/web/src/lib/dynamic-messages.ts:32
+#: apps/web/src/lib/dynamic-messages.ts:33
 msgid "Check your email for a password reset link"
 msgstr "Vérifiez votre email pour le lien de réinitialisation"
 
@@ -162,7 +162,7 @@ msgstr "Concert"
 msgid "Confirm password"
 msgstr "Confirmer le mot de passe"
 
-#: apps/web/src/lib/dynamic-messages.ts:35
+#: apps/web/src/lib/dynamic-messages.ts:36
 msgid "Could not generate a unique organization slug"
 msgstr "Impossible de générer un identifiant unique pour le projet"
 
@@ -191,7 +191,7 @@ msgstr "Créer un compte"
 msgid "Create organization"
 msgstr "Créer le groupe"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:183
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:204
 msgid "Danger zone"
 msgstr "Zone de danger"
 
@@ -209,7 +209,7 @@ msgstr "Jour"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:243
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:385
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:397
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:217
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:238
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -218,9 +218,9 @@ msgstr "Supprimer"
 msgid "Delete event?"
 msgstr "Supprimer l'événement ?"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:186
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:194
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:199
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:207
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:215
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:220
 msgid "Delete organization"
 msgstr "Supprimer le groupe"
 
@@ -272,7 +272,7 @@ msgstr "Email ou nom d'utilisateur requis"
 msgid "End"
 msgstr "Fin"
 
-#: apps/web/src/lib/dynamic-messages.ts:27
+#: apps/web/src/lib/dynamic-messages.ts:28
 msgid "End date must be after start date"
 msgstr "La date de fin doit être postérieure à la date de début"
 
@@ -300,7 +300,7 @@ msgstr "Actions de l'événement"
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
-#: apps/web/src/lib/dynamic-messages.ts:39
+#: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Event details"
 msgstr "Détails de l'événement"
 
@@ -317,11 +317,11 @@ msgstr "Événements du {0}"
 msgid "Failed to accept invitation"
 msgstr "Échec de l'acceptation de l'invitation"
 
-#: apps/web/src/lib/dynamic-messages.ts:34
+#: apps/web/src/lib/dynamic-messages.ts:35
 msgid "Failed to create organization"
 msgstr "Échec de la création du groupe"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:132
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:133
 msgid "Failed to delete organization"
 msgstr "Échec de la suppression du groupe"
 
@@ -329,9 +329,13 @@ msgstr "Échec de la suppression du groupe"
 msgid "Failed to invite member"
 msgstr "Échec de l'invitation"
 
-#: apps/web/src/lib/dynamic-messages.ts:31
+#: apps/web/src/lib/dynamic-messages.ts:32
 msgid "Failed to send reset email"
 msgstr "Échec de l'envoi de l'email de réinitialisation"
+
+#: apps/web/src/routes/organizations/$organizationSlug/settings/-organization-name-form.tsx:48
+msgid "Failed to update organization name"
+msgstr "Échec de la mise à jour du nom de l'organisation"
 
 #: apps/web/src/components/signup-form.tsx:71
 msgid "Fill in the details below to get started"
@@ -351,6 +355,10 @@ msgstr "Nom complet"
 msgid "Full name is required"
 msgstr "Le nom complet est requis"
 
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:153
+msgid "General"
+msgstr "Général"
+
 #: apps/web/src/components/ui/event-calendar/colors.ts:27
 msgid "Green"
 msgstr "Vert"
@@ -367,8 +375,8 @@ msgstr "L’invitation a expiré ou a déjà été traitée. Merci d’en demand
 msgid "Invite"
 msgstr "Inviter"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:155
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:158
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:176
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:179
 msgid "Invite a member"
 msgstr "Inviter un membre"
 
@@ -404,7 +412,7 @@ msgstr "Se déconnecter"
 msgid "Login"
 msgstr "Connexion"
 
-#: apps/web/src/lib/dynamic-messages.ts:29
+#: apps/web/src/lib/dynamic-messages.ts:30
 msgid "Login failed"
 msgstr "Échec de la connexion"
 
@@ -420,7 +428,7 @@ msgstr "Connexion à votre compte"
 #~ msgid "Manage members and invitations for your project"
 #~ msgstr "Gérez les membres et les invitations de votre projet"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:148
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:149
 msgid "Manage settings for your project"
 msgstr "Gérez les paramètres de votre projet"
 
@@ -436,12 +444,12 @@ msgstr "Maximum 72 caractères"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:45
+#: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Member"
 msgstr "Membre"
 
-#: apps/web/src/lib/dynamic-messages.ts:40
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:153
+#: apps/web/src/lib/dynamic-messages.ts:41
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:174
 msgid "Members"
 msgstr "Membres"
 
@@ -466,7 +474,7 @@ msgid "New password"
 msgstr "Nouveau mot de passe"
 
 #: apps/web/src/components/version-switcher.tsx:58
-#: apps/web/src/lib/dynamic-messages.ts:41
+#: apps/web/src/lib/dynamic-messages.ts:42
 #: apps/web/src/routes/organizations/new.tsx:58
 msgid "New project"
 msgstr "Nouveau projet"
@@ -526,9 +534,22 @@ msgstr "Orange"
 msgid "Organization"
 msgstr "Organisation"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:136
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:137
 msgid "Organization deleted"
 msgstr "Groupe supprimé"
+
+#: apps/web/src/routes/organizations/$organizationSlug/settings/-organization-name-form.tsx:59
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:156
+msgid "Organization name"
+msgstr "Nom de l'organisation"
+
+#: apps/web/src/lib/dynamic-messages.ts:26
+msgid "Organization name is required"
+msgstr "Le nom de l'organisation est requis"
+
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:164
+msgid "Organization name updated"
+msgstr "Nom de l'organisation mis à jour"
 
 #: apps/web/src/routes/organizations/$organizationSlug/settings/-invite-form.tsx:43
 msgid "Organization not found"
@@ -538,7 +559,7 @@ msgstr "Organisation introuvable"
 msgid "Organizer"
 msgstr "Organisateur"
 
-#: apps/web/src/lib/dynamic-messages.ts:47
+#: apps/web/src/lib/dynamic-messages.ts:48
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -551,7 +572,7 @@ msgstr "Mot de passe"
 msgid "Password is required"
 msgstr "Mot de passe requis"
 
-#: apps/web/src/lib/dynamic-messages.ts:33
+#: apps/web/src/lib/dynamic-messages.ts:34
 msgid "Password reset failed"
 msgstr "Échec de la réinitialisation du mot de passe"
 
@@ -563,7 +584,7 @@ msgstr "Les mots de passe ne correspondent pas"
 msgid "Pending"
 msgstr "En attente"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:188
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:209
 msgid "Permanently delete this organization and all of its data. This action cannot be undone."
 msgstr "Supprime définitivement ce groupe et toutes ses données. Cette action est irréversible."
 
@@ -613,7 +634,7 @@ msgid "Rename file"
 msgstr "Renommer le fichier"
 
 #: apps/web/src/components/reset-password-form.tsx:103
-#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/lib/dynamic-messages.ts:44
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -632,12 +653,17 @@ msgstr "Rôle"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:72
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
+#: apps/web/src/routes/organizations/$organizationSlug/settings/-organization-name-form.tsx:68
 msgid "Save"
 msgstr "Enregistrer"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
+
+#: apps/web/src/routes/organizations/$organizationSlug/settings/-organization-name-form.tsx:68
+msgid "Saving..."
+msgstr "Enregistrement..."
 
 #: apps/web/src/routes/organizations/$organizationSlug/calendar/index.tsx:78
 msgid "Schedule"
@@ -664,7 +690,7 @@ msgid "Setlist"
 msgstr "Setlist"
 
 #: apps/web/src/hooks/use-navigation.ts:71
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:147
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:148
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -672,7 +698,7 @@ msgstr "Paramètres"
 msgid "Share"
 msgstr "Partager"
 
-#: apps/web/src/lib/dynamic-messages.ts:30
+#: apps/web/src/lib/dynamic-messages.ts:31
 msgid "Sign up failed"
 msgstr "Échec de l'inscription"
 
@@ -700,8 +726,12 @@ msgstr "Thème"
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:157
+msgid "This is the name displayed across your organization."
+msgstr "C'est le nom affiché dans toute votre organisation."
+
 #. placeholder {0}: activeOrganization.name
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:202
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:223
 msgid "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses données. Cette action est irréversible."
 
@@ -722,7 +752,7 @@ msgstr "Cette action supprimera définitivement cet événement. Cette action es
 msgid "Title"
 msgstr "Titre"
 
-#: apps/web/src/lib/dynamic-messages.ts:26
+#: apps/web/src/lib/dynamic-messages.ts:27
 msgid "Title is required"
 msgstr "Le titre est requis"
 
@@ -742,7 +772,7 @@ msgstr "Indisponibilité"
 msgid "Update"
 msgstr "Modifier"
 
-#: apps/web/src/lib/dynamic-messages.ts:36
+#: apps/web/src/lib/dynamic-messages.ts:37
 msgid "Upload failed"
 msgstr "Échec de l'envoi"
 
