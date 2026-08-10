@@ -35,7 +35,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           versions={orgNames}
           currentVersion={activeOrgName}
           onSelect={handleOrgSelect}
-          onCreateNew={() => navigate({ to: "/organizations/new" })}
+          onCreateNew={() => navigate({ to: "/new" })}
         />
       </SidebarHeader>
       <SidebarContent>

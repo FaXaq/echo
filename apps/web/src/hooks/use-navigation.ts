@@ -25,7 +25,7 @@ export function useNavigation() {
   const navigate = useNavigate();
 
   const params = useParams({ strict: false });
-  const currentSlug = (params as Record<string, string | undefined>).organizationSlug;
+  const currentSlug = (params as Record<string, string | undefined>).projectSlug;
   const activeOrganization = currentSlug
     ? ((organizations ?? []).find((o) => o.slug === currentSlug) ?? null)
     : null;
@@ -41,7 +41,7 @@ export function useNavigation() {
   );
 
   const setActiveOrganization = (org: OrganizationOption) => {
-    navigate({ to: "/organizations/$organizationSlug", params: { organizationSlug: org.slug } });
+    navigate({ to: "/$projectSlug", params: { projectSlug: org.slug } });
   };
 
   const slug = activeOrganization?.slug ?? "";
@@ -52,25 +52,25 @@ export function useNavigation() {
           items: [
             {
               title: t`Calendar`,
-              to: "/organizations/$organizationSlug/calendar",
-              params: { organizationSlug: slug },
+              to: "/$projectSlug/calendar",
+              params: { projectSlug: slug },
             },
             {
               title: t`Setlist`,
-              to: "/organizations/$organizationSlug",
-              params: { organizationSlug: slug },
+              to: "/$projectSlug",
+              params: { projectSlug: slug },
             },
             {
               title: t`Drive`,
-              to: "/organizations/$organizationSlug",
-              params: { organizationSlug: slug },
+              to: "/$projectSlug",
+              params: { projectSlug: slug },
             },
             ...(isActiveOrganizationAdmin
               ? [
                   {
                     title: t`Settings`,
-                    to: "/organizations/$organizationSlug/settings" as const,
-                    params: { organizationSlug: slug },
+                    to: "/$projectSlug/settings" as const,
+                    params: { projectSlug: slug },
                   },
                 ]
               : []),

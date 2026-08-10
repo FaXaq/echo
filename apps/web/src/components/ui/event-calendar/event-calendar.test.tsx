@@ -132,7 +132,7 @@ describe("EventCalendar", () => {
     const dialog = screen.getByRole("dialog");
 
     await user.type(within(dialog).getByLabelText("Title"), "Board sync");
-    await user.click(within(dialog).getByLabelText("Organization"));
+    await user.click(within(dialog).getByLabelText("Project"));
     await user.click(await screen.findByRole("option", { name: "Beta Co" }));
     await user.click(within(dialog).getByRole("button", { name: "Save" }));
 
@@ -152,7 +152,7 @@ describe("EventCalendar", () => {
     await user.click(screen.getByRole("button", { name: /New event/i }));
     const dialog = screen.getByRole("dialog");
 
-    const trigger = await within(dialog).findByLabelText("Organization");
+    const trigger = await within(dialog).findByLabelText("Project");
     expect(await within(trigger).findByText("Beta Co")).toBeInTheDocument();
   });
 });

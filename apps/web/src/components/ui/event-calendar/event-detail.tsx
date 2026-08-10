@@ -74,8 +74,8 @@ export function EventDetail({
             <div className="flex items-center justify-between gap-2.5">
               <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
                 <Link
-                  to="/organizations/$organizationSlug"
-                  params={{ organizationSlug: event.organization.slug }}
+                  to="/$projectSlug"
+                  params={{ projectSlug: event.organization.slug }}
                   className="flex items-center gap-1.5 font-medium text-foreground"
                 >
                   <Avatar size="sm" className="h-5 w-5">

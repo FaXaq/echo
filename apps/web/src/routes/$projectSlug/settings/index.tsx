@@ -32,7 +32,7 @@ import { organizationRoleSchema, type OrganizationRole } from "@echo/auth";
 import { toast } from "sonner";
 import z from "zod";
 
-export const Route = createFileRoute("/organizations/$organizationSlug/settings/")({
+export const Route = createFileRoute("/$projectSlug/settings/")({
   staticData: { title: "Settings", breadcrumb: "Settings" },
   loaderDeps: ({ search: { offset, limit } }) => ({ offset, limit }),
   loader: async ({ deps, context }) => {
@@ -130,11 +130,11 @@ function SettingsPage() {
 
       if (result.error) {
         logger.error(result.error, "Failed to delete organization");
-        toast.error(t`Failed to delete organization`);
+        toast.error(t`Failed to delete project`);
         return;
       }
 
-      toast.success(t`Organization deleted`);
+      toast.success(t`Project deleted`);
       setIsDeleteDialogOpen(false);
       router.navigate({ to: "/" });
     } finally {
@@ -153,15 +153,15 @@ function SettingsPage() {
         <h2 className="mb-4 text-xl font-semibold">{t`General`}</h2>
         <Card>
           <CardHeader>
-            <CardTitle>{t`Organization name`}</CardTitle>
-            <CardDescription>{t`This is the name displayed across your organization.`}</CardDescription>
+            <CardTitle>{t`Project name`}</CardTitle>
+            <CardDescription>{t`This is the name displayed across your project.`}</CardDescription>
           </CardHeader>
           <CardContent>
             <OrganizationNameForm
               organizationId={activeOrganization.id}
               defaultName={activeOrganization.name}
               onSuccess={() => {
-                toast.success(t`Organization name updated`);
+                toast.success(t`Project name updated`);
                 router.invalidate();
               }}
             />
@@ -177,7 +177,7 @@ function SettingsPage() {
             <SheetContent className="flex flex-col">
               <SheetHeader>
                 <SheetTitle>{t`Invite a member`}</SheetTitle>
-                <SheetDescription>{t`Add a new member to your organization`}</SheetDescription>
+                <SheetDescription>{t`Add a new member to your project`}</SheetDescription>
               </SheetHeader>
               <div className="flex-1 overflow-auto px-6">
                 <InviteForm
@@ -204,20 +204,20 @@ function SettingsPage() {
           <h2 className="mb-2 text-sm font-medium text-destructive">{t`Danger zone`}</h2>
           <Card>
             <CardHeader>
-              <CardTitle>{t`Delete organization`}</CardTitle>
+              <CardTitle>{t`Delete project`}</CardTitle>
               <CardDescription>
-                {t`Permanently delete this organization and all of its data. This action cannot be undone.`}
+                {t`Permanently delete this project and all of its data. This action cannot be undone.`}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <AlertDialogTrigger render={<Button variant="destructive" disabled={isDeleting} />}>
-                  <Trans>Delete organization</Trans>
+                  <Trans>Delete project</Trans>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      <Trans>Delete organization</Trans>
+                      <Trans>Delete project</Trans>
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                       <Trans>

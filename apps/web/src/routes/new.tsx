@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { TRPCClientError } from "@trpc/client";
+import { useSession } from "@/hooks/use-session";
 import { useCreateOrganizationMutation } from "@/services/resources/organization";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { translateDynamic } from "@/lib/dynamic-messages";
 
-export const Route = createFileRoute("/organizations/new")({
+export const Route = createFileRoute("/new")({
   staticData: { title: "New project", breadcrumb: "New project" },
   component: NewOrganizationPage,
 });
@@ -24,9 +25,14 @@ type FormValues = z.infer<typeof schema>;
 
 function NewOrganizationPage() {
   const { t } = useLingui();
+  const { session } = useSession();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | undefined>();
   const createOrganizationMutation = useCreateOrganizationMutation();
+
+  if (!session) {
+    throw redirect({ to: "/" });
+  }
 
   const {
     register,
@@ -42,9 +48,7 @@ function NewOrganizationPage() {
       await createOrganizationMutation.mutateAsync(values);
       router.navigate({ to: "/" });
     } catch (error) {
-      setServerError(
-        error instanceof TRPCClientError ? error.message : "Failed to create organization",
-      );
+      setServerError(error instanceof TRPCClientError ? error.message : "Failed to create project");
     }
   };
 
@@ -80,7 +84,7 @@ function NewOrganizationPage() {
 
             <Field>
               <Button type="submit" isLoading={isSubmitting}>
-                <Trans>Create organization</Trans>
+                <Trans>Create project</Trans>
               </Button>
             </Field>
           </FieldGroup>

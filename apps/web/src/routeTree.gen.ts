@@ -10,20 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectSlugRouteRouteImport } from './routes/$projectSlug/route'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
-import { Route as OrganizationsRouteRouteImport } from './routes/organizations/route'
+import { Route as NewRouteImport } from './routes/new'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as OrganizationsOrganizationSlugRouteRouteImport } from './routes/organizations/$organizationSlug/route'
-import { Route as OrganizationsNewRouteImport } from './routes/organizations/new'
-import { Route as OrganizationsOrganizationSlugIndexRouteImport } from './routes/organizations/$organizationSlug/index'
-import { Route as OrganizationsOrganizationSlugCalendarRouteRouteImport } from './routes/organizations/$organizationSlug/calendar/route'
-import { Route as OrganizationsOrganizationSlugCalendarIndexRouteImport } from './routes/organizations/$organizationSlug/calendar/index'
-import { Route as OrganizationsOrganizationSlugCalendarEventIdRouteImport } from './routes/organizations/$organizationSlug/calendar/$eventId'
-import { Route as OrganizationsOrganizationSlugSettingsIndexRouteImport } from './routes/organizations/$organizationSlug/settings/index'
+import { Route as ProjectSlugIndexRouteImport } from './routes/$projectSlug/index'
+import { Route as ProjectSlugCalendarRouteRouteImport } from './routes/$projectSlug/calendar/route'
+import { Route as ProjectSlugCalendarIndexRouteImport } from './routes/$projectSlug/calendar/index'
+import { Route as ProjectSlugCalendarEventIdRouteImport } from './routes/$projectSlug/calendar/$eventId'
+import { Route as ProjectSlugSettingsIndexRouteImport } from './routes/$projectSlug/settings/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectSlugRouteRoute = ProjectSlugRouteRouteImport.update({
+  id: '/$projectSlug',
+  path: '/$projectSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
@@ -31,9 +35,9 @@ const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
   path: '/accept-invitation',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrganizationsRouteRoute = OrganizationsRouteRouteImport.update({
-  id: '/organizations',
-  path: '/organizations',
+const NewRoute = NewRouteImport.update({
+  id: '/new',
+  path: '/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -41,130 +45,113 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OrganizationsOrganizationSlugRouteRoute =
-  OrganizationsOrganizationSlugRouteRouteImport.update({
-    id: '/$organizationSlug',
-    path: '/$organizationSlug',
-    getParentRoute: () => OrganizationsRouteRoute,
-  } as any)
-const OrganizationsNewRoute = OrganizationsNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => OrganizationsRouteRoute,
+const ProjectSlugIndexRoute = ProjectSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjectSlugRouteRoute,
 } as any)
-const OrganizationsOrganizationSlugIndexRoute =
-  OrganizationsOrganizationSlugIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
-  } as any)
-const OrganizationsOrganizationSlugCalendarRouteRoute =
-  OrganizationsOrganizationSlugCalendarRouteRouteImport.update({
+const ProjectSlugCalendarRouteRoute =
+  ProjectSlugCalendarRouteRouteImport.update({
     id: '/calendar',
     path: '/calendar',
-    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
+    getParentRoute: () => ProjectSlugRouteRoute,
   } as any)
-const OrganizationsOrganizationSlugCalendarIndexRoute =
-  OrganizationsOrganizationSlugCalendarIndexRouteImport.update({
+const ProjectSlugCalendarIndexRoute =
+  ProjectSlugCalendarIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => OrganizationsOrganizationSlugCalendarRouteRoute,
+    getParentRoute: () => ProjectSlugCalendarRouteRoute,
   } as any)
-const OrganizationsOrganizationSlugCalendarEventIdRoute =
-  OrganizationsOrganizationSlugCalendarEventIdRouteImport.update({
+const ProjectSlugCalendarEventIdRoute =
+  ProjectSlugCalendarEventIdRouteImport.update({
     id: '/$eventId',
     path: '/$eventId',
-    getParentRoute: () => OrganizationsOrganizationSlugCalendarRouteRoute,
+    getParentRoute: () => ProjectSlugCalendarRouteRoute,
   } as any)
-const OrganizationsOrganizationSlugSettingsIndexRoute =
-  OrganizationsOrganizationSlugSettingsIndexRouteImport.update({
+const ProjectSlugSettingsIndexRoute =
+  ProjectSlugSettingsIndexRouteImport.update({
     id: '/settings/',
     path: '/settings/',
-    getParentRoute: () => OrganizationsOrganizationSlugRouteRoute,
+    getParentRoute: () => ProjectSlugRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/organizations': typeof OrganizationsRouteRouteWithChildren
+  '/$projectSlug': typeof ProjectSlugRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
+  '/new': typeof NewRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/organizations/$organizationSlug': typeof OrganizationsOrganizationSlugRouteRouteWithChildren
-  '/organizations/new': typeof OrganizationsNewRoute
-  '/organizations/$organizationSlug/calendar': typeof OrganizationsOrganizationSlugCalendarRouteRouteWithChildren
-  '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
-  '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
-  '/organizations/$organizationSlug/calendar/': typeof OrganizationsOrganizationSlugCalendarIndexRoute
-  '/organizations/$organizationSlug/settings/': typeof OrganizationsOrganizationSlugSettingsIndexRoute
+  '/$projectSlug/calendar': typeof ProjectSlugCalendarRouteRouteWithChildren
+  '/$projectSlug/': typeof ProjectSlugIndexRoute
+  '/$projectSlug/calendar/$eventId': typeof ProjectSlugCalendarEventIdRoute
+  '/$projectSlug/calendar/': typeof ProjectSlugCalendarIndexRoute
+  '/$projectSlug/settings/': typeof ProjectSlugSettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/organizations': typeof OrganizationsRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
+  '/new': typeof NewRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/organizations/new': typeof OrganizationsNewRoute
-  '/organizations/$organizationSlug': typeof OrganizationsOrganizationSlugIndexRoute
-  '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
-  '/organizations/$organizationSlug/calendar': typeof OrganizationsOrganizationSlugCalendarIndexRoute
-  '/organizations/$organizationSlug/settings': typeof OrganizationsOrganizationSlugSettingsIndexRoute
+  '/$projectSlug': typeof ProjectSlugIndexRoute
+  '/$projectSlug/calendar/$eventId': typeof ProjectSlugCalendarEventIdRoute
+  '/$projectSlug/calendar': typeof ProjectSlugCalendarIndexRoute
+  '/$projectSlug/settings': typeof ProjectSlugSettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/organizations': typeof OrganizationsRouteRouteWithChildren
+  '/$projectSlug': typeof ProjectSlugRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
+  '/new': typeof NewRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/organizations/$organizationSlug': typeof OrganizationsOrganizationSlugRouteRouteWithChildren
-  '/organizations/new': typeof OrganizationsNewRoute
-  '/organizations/$organizationSlug/calendar': typeof OrganizationsOrganizationSlugCalendarRouteRouteWithChildren
-  '/organizations/$organizationSlug/': typeof OrganizationsOrganizationSlugIndexRoute
-  '/organizations/$organizationSlug/calendar/$eventId': typeof OrganizationsOrganizationSlugCalendarEventIdRoute
-  '/organizations/$organizationSlug/calendar/': typeof OrganizationsOrganizationSlugCalendarIndexRoute
-  '/organizations/$organizationSlug/settings/': typeof OrganizationsOrganizationSlugSettingsIndexRoute
+  '/$projectSlug/calendar': typeof ProjectSlugCalendarRouteRouteWithChildren
+  '/$projectSlug/': typeof ProjectSlugIndexRoute
+  '/$projectSlug/calendar/$eventId': typeof ProjectSlugCalendarEventIdRoute
+  '/$projectSlug/calendar/': typeof ProjectSlugCalendarIndexRoute
+  '/$projectSlug/settings/': typeof ProjectSlugSettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/organizations'
+    | '/$projectSlug'
     | '/accept-invitation'
+    | '/new'
     | '/reset-password'
-    | '/organizations/$organizationSlug'
-    | '/organizations/new'
-    | '/organizations/$organizationSlug/calendar'
-    | '/organizations/$organizationSlug/'
-    | '/organizations/$organizationSlug/calendar/$eventId'
-    | '/organizations/$organizationSlug/calendar/'
-    | '/organizations/$organizationSlug/settings/'
+    | '/$projectSlug/calendar'
+    | '/$projectSlug/'
+    | '/$projectSlug/calendar/$eventId'
+    | '/$projectSlug/calendar/'
+    | '/$projectSlug/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/organizations'
     | '/accept-invitation'
+    | '/new'
     | '/reset-password'
-    | '/organizations/new'
-    | '/organizations/$organizationSlug'
-    | '/organizations/$organizationSlug/calendar/$eventId'
-    | '/organizations/$organizationSlug/calendar'
-    | '/organizations/$organizationSlug/settings'
+    | '/$projectSlug'
+    | '/$projectSlug/calendar/$eventId'
+    | '/$projectSlug/calendar'
+    | '/$projectSlug/settings'
   id:
     | '__root__'
     | '/'
-    | '/organizations'
+    | '/$projectSlug'
     | '/accept-invitation'
+    | '/new'
     | '/reset-password'
-    | '/organizations/$organizationSlug'
-    | '/organizations/new'
-    | '/organizations/$organizationSlug/calendar'
-    | '/organizations/$organizationSlug/'
-    | '/organizations/$organizationSlug/calendar/$eventId'
-    | '/organizations/$organizationSlug/calendar/'
-    | '/organizations/$organizationSlug/settings/'
+    | '/$projectSlug/calendar'
+    | '/$projectSlug/'
+    | '/$projectSlug/calendar/$eventId'
+    | '/$projectSlug/calendar/'
+    | '/$projectSlug/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  OrganizationsRouteRoute: typeof OrganizationsRouteRouteWithChildren
+  ProjectSlugRouteRoute: typeof ProjectSlugRouteRouteWithChildren
   AcceptInvitationRoute: typeof AcceptInvitationRoute
+  NewRoute: typeof NewRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -177,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$projectSlug': {
+      id: '/$projectSlug'
+      path: '/$projectSlug'
+      fullPath: '/$projectSlug'
+      preLoaderRoute: typeof ProjectSlugRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/accept-invitation': {
       id: '/accept-invitation'
       path: '/accept-invitation'
@@ -184,11 +178,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcceptInvitationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/organizations': {
-      id: '/organizations'
-      path: '/organizations'
-      fullPath: '/organizations'
-      preLoaderRoute: typeof OrganizationsRouteRouteImport
+    '/new': {
+      id: '/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof NewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -198,115 +192,80 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/organizations/$organizationSlug': {
-      id: '/organizations/$organizationSlug'
-      path: '/$organizationSlug'
-      fullPath: '/organizations/$organizationSlug'
-      preLoaderRoute: typeof OrganizationsOrganizationSlugRouteRouteImport
-      parentRoute: typeof OrganizationsRouteRoute
-    }
-    '/organizations/new': {
-      id: '/organizations/new'
-      path: '/new'
-      fullPath: '/organizations/new'
-      preLoaderRoute: typeof OrganizationsNewRouteImport
-      parentRoute: typeof OrganizationsRouteRoute
-    }
-    '/organizations/$organizationSlug/': {
-      id: '/organizations/$organizationSlug/'
+    '/$projectSlug/': {
+      id: '/$projectSlug/'
       path: '/'
-      fullPath: '/organizations/$organizationSlug/'
-      preLoaderRoute: typeof OrganizationsOrganizationSlugIndexRouteImport
-      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
+      fullPath: '/$projectSlug/'
+      preLoaderRoute: typeof ProjectSlugIndexRouteImport
+      parentRoute: typeof ProjectSlugRouteRoute
     }
-    '/organizations/$organizationSlug/calendar': {
-      id: '/organizations/$organizationSlug/calendar'
+    '/$projectSlug/calendar': {
+      id: '/$projectSlug/calendar'
       path: '/calendar'
-      fullPath: '/organizations/$organizationSlug/calendar'
-      preLoaderRoute: typeof OrganizationsOrganizationSlugCalendarRouteRouteImport
-      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
+      fullPath: '/$projectSlug/calendar'
+      preLoaderRoute: typeof ProjectSlugCalendarRouteRouteImport
+      parentRoute: typeof ProjectSlugRouteRoute
     }
-    '/organizations/$organizationSlug/calendar/': {
-      id: '/organizations/$organizationSlug/calendar/'
+    '/$projectSlug/calendar/': {
+      id: '/$projectSlug/calendar/'
       path: '/'
-      fullPath: '/organizations/$organizationSlug/calendar/'
-      preLoaderRoute: typeof OrganizationsOrganizationSlugCalendarIndexRouteImport
-      parentRoute: typeof OrganizationsOrganizationSlugCalendarRouteRoute
+      fullPath: '/$projectSlug/calendar/'
+      preLoaderRoute: typeof ProjectSlugCalendarIndexRouteImport
+      parentRoute: typeof ProjectSlugCalendarRouteRoute
     }
-    '/organizations/$organizationSlug/calendar/$eventId': {
-      id: '/organizations/$organizationSlug/calendar/$eventId'
+    '/$projectSlug/calendar/$eventId': {
+      id: '/$projectSlug/calendar/$eventId'
       path: '/$eventId'
-      fullPath: '/organizations/$organizationSlug/calendar/$eventId'
-      preLoaderRoute: typeof OrganizationsOrganizationSlugCalendarEventIdRouteImport
-      parentRoute: typeof OrganizationsOrganizationSlugCalendarRouteRoute
+      fullPath: '/$projectSlug/calendar/$eventId'
+      preLoaderRoute: typeof ProjectSlugCalendarEventIdRouteImport
+      parentRoute: typeof ProjectSlugCalendarRouteRoute
     }
-    '/organizations/$organizationSlug/settings/': {
-      id: '/organizations/$organizationSlug/settings/'
+    '/$projectSlug/settings/': {
+      id: '/$projectSlug/settings/'
       path: '/settings'
-      fullPath: '/organizations/$organizationSlug/settings/'
-      preLoaderRoute: typeof OrganizationsOrganizationSlugSettingsIndexRouteImport
-      parentRoute: typeof OrganizationsOrganizationSlugRouteRoute
+      fullPath: '/$projectSlug/settings/'
+      preLoaderRoute: typeof ProjectSlugSettingsIndexRouteImport
+      parentRoute: typeof ProjectSlugRouteRoute
     }
   }
 }
 
-interface OrganizationsOrganizationSlugCalendarRouteRouteChildren {
-  OrganizationsOrganizationSlugCalendarEventIdRoute: typeof OrganizationsOrganizationSlugCalendarEventIdRoute
-  OrganizationsOrganizationSlugCalendarIndexRoute: typeof OrganizationsOrganizationSlugCalendarIndexRoute
+interface ProjectSlugCalendarRouteRouteChildren {
+  ProjectSlugCalendarEventIdRoute: typeof ProjectSlugCalendarEventIdRoute
+  ProjectSlugCalendarIndexRoute: typeof ProjectSlugCalendarIndexRoute
 }
 
-const OrganizationsOrganizationSlugCalendarRouteRouteChildren: OrganizationsOrganizationSlugCalendarRouteRouteChildren =
+const ProjectSlugCalendarRouteRouteChildren: ProjectSlugCalendarRouteRouteChildren =
   {
-    OrganizationsOrganizationSlugCalendarEventIdRoute:
-      OrganizationsOrganizationSlugCalendarEventIdRoute,
-    OrganizationsOrganizationSlugCalendarIndexRoute:
-      OrganizationsOrganizationSlugCalendarIndexRoute,
+    ProjectSlugCalendarEventIdRoute: ProjectSlugCalendarEventIdRoute,
+    ProjectSlugCalendarIndexRoute: ProjectSlugCalendarIndexRoute,
   }
 
-const OrganizationsOrganizationSlugCalendarRouteRouteWithChildren =
-  OrganizationsOrganizationSlugCalendarRouteRoute._addFileChildren(
-    OrganizationsOrganizationSlugCalendarRouteRouteChildren,
+const ProjectSlugCalendarRouteRouteWithChildren =
+  ProjectSlugCalendarRouteRoute._addFileChildren(
+    ProjectSlugCalendarRouteRouteChildren,
   )
 
-interface OrganizationsOrganizationSlugRouteRouteChildren {
-  OrganizationsOrganizationSlugCalendarRouteRoute: typeof OrganizationsOrganizationSlugCalendarRouteRouteWithChildren
-  OrganizationsOrganizationSlugIndexRoute: typeof OrganizationsOrganizationSlugIndexRoute
-  OrganizationsOrganizationSlugSettingsIndexRoute: typeof OrganizationsOrganizationSlugSettingsIndexRoute
+interface ProjectSlugRouteRouteChildren {
+  ProjectSlugCalendarRouteRoute: typeof ProjectSlugCalendarRouteRouteWithChildren
+  ProjectSlugIndexRoute: typeof ProjectSlugIndexRoute
+  ProjectSlugSettingsIndexRoute: typeof ProjectSlugSettingsIndexRoute
 }
 
-const OrganizationsOrganizationSlugRouteRouteChildren: OrganizationsOrganizationSlugRouteRouteChildren =
-  {
-    OrganizationsOrganizationSlugCalendarRouteRoute:
-      OrganizationsOrganizationSlugCalendarRouteRouteWithChildren,
-    OrganizationsOrganizationSlugIndexRoute:
-      OrganizationsOrganizationSlugIndexRoute,
-    OrganizationsOrganizationSlugSettingsIndexRoute:
-      OrganizationsOrganizationSlugSettingsIndexRoute,
-  }
-
-const OrganizationsOrganizationSlugRouteRouteWithChildren =
-  OrganizationsOrganizationSlugRouteRoute._addFileChildren(
-    OrganizationsOrganizationSlugRouteRouteChildren,
-  )
-
-interface OrganizationsRouteRouteChildren {
-  OrganizationsOrganizationSlugRouteRoute: typeof OrganizationsOrganizationSlugRouteRouteWithChildren
-  OrganizationsNewRoute: typeof OrganizationsNewRoute
+const ProjectSlugRouteRouteChildren: ProjectSlugRouteRouteChildren = {
+  ProjectSlugCalendarRouteRoute: ProjectSlugCalendarRouteRouteWithChildren,
+  ProjectSlugIndexRoute: ProjectSlugIndexRoute,
+  ProjectSlugSettingsIndexRoute: ProjectSlugSettingsIndexRoute,
 }
 
-const OrganizationsRouteRouteChildren: OrganizationsRouteRouteChildren = {
-  OrganizationsOrganizationSlugRouteRoute:
-    OrganizationsOrganizationSlugRouteRouteWithChildren,
-  OrganizationsNewRoute: OrganizationsNewRoute,
-}
-
-const OrganizationsRouteRouteWithChildren =
-  OrganizationsRouteRoute._addFileChildren(OrganizationsRouteRouteChildren)
+const ProjectSlugRouteRouteWithChildren =
+  ProjectSlugRouteRoute._addFileChildren(ProjectSlugRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  OrganizationsRouteRoute: OrganizationsRouteRouteWithChildren,
+  ProjectSlugRouteRoute: ProjectSlugRouteRouteWithChildren,
   AcceptInvitationRoute: AcceptInvitationRoute,
+  NewRoute: NewRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport

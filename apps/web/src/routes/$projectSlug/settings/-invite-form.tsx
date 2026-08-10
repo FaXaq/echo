@@ -40,7 +40,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
 
   const onSubmit = async (values: InviteFormValues) => {
     if (!organizationId) {
-      setServerError(t`Organization not found`);
+      setServerError(t`Project not found`);
       return;
     }
 

@@ -238,7 +238,7 @@ export function EventDialog({
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="event-organization">{t`Organization`}</FieldLabel>
+                <FieldLabel htmlFor="event-organization">{t`Project`}</FieldLabel>
                 <Controller
                   name="organizationId"
                   control={control}

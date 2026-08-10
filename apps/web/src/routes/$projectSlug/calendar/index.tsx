@@ -14,7 +14,7 @@ import {
 import { toViewEvent, fromViewEvent } from "@/lib/calendar-events";
 import { formatCalendarDate, parseCalendarDate } from "@/lib/calendar-date";
 
-export const Route = createFileRoute("/organizations/$organizationSlug/calendar/")({
+export const Route = createFileRoute("/$projectSlug/calendar/")({
   validateSearch: z.object({
     view: calendarViewSchema.optional().catch(undefined),
     date: z.string().optional().catch(undefined),
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/organizations/$organizationSlug/calendar/
 function OrganizationCalendarPage() {
   const { t } = useLingui();
   const { organizationId } = Route.useRouteContext();
-  const { organizationSlug } = Route.useParams();
+  const { projectSlug } = Route.useParams();
   const search = Route.useSearch();
   const navigate = useNavigate();
   const { data: events = [] } = useQuery(getEventsQueryOptions({ organizationId }));
@@ -51,8 +51,8 @@ function OrganizationCalendarPage() {
 
   const handleEventClick = (event: ViewEvent) => {
     navigate({
-      to: "/organizations/$organizationSlug/calendar/$eventId",
-      params: { organizationSlug, eventId: event.id },
+      to: "/$projectSlug/calendar/$eventId",
+      params: { projectSlug, eventId: event.id },
     });
   };
 
@@ -76,7 +76,7 @@ function OrganizationCalendarPage() {
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold mb-2">{t`Schedule`}</h1>
-        <p className="text-muted-foreground">{t`Manage your organization's events and schedule`}</p>
+        <p className="text-muted-foreground">{t`Manage your project's events and schedule`}</p>
       </div>
       <EventCalendar
         events={events.map(toViewEvent)}

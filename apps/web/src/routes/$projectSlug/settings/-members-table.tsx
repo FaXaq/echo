@@ -185,7 +185,7 @@ export function MembersTable({
                           <AlertDialogHeader>
                             <AlertDialogTitle>{t`Revoke membership`}</AlertDialogTitle>
                             <AlertDialogDescription>
-                              {t`Are you sure you want to remove this member from the organization?`}
+                              {t`Are you sure you want to remove this member from the project?`}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

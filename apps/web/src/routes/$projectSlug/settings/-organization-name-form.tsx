@@ -9,7 +9,7 @@ import { Input } from "@/ui/input";
 import { translateDynamic } from "@/lib/dynamic-messages";
 
 const organizationNameSchema = z.object({
-  name: z.string().min(1, "Organization name is required"),
+  name: z.string().min(1, "Project name is required"),
 });
 
 type OrganizationNameFormValues = z.infer<typeof organizationNameSchema>;
@@ -45,7 +45,7 @@ export function OrganizationNameForm({
     });
 
     if (result.error) {
-      setServerError(result.error.message ?? t`Failed to update organization name`);
+      setServerError(result.error.message ?? t`Failed to update project name`);
       return;
     }
 
@@ -56,7 +56,7 @@ export function OrganizationNameForm({
     <form onSubmit={handleSubmit(onSubmit)} className="flex items-start gap-3">
       <div className="flex-1 space-y-2">
         <label htmlFor="name" className="sr-only">
-          {t`Organization name`}
+          {t`Project name`}
         </label>
         <Input id="name" {...register("name")} disabled={isSubmitting} />
         {errors.name && (

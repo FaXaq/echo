@@ -51,7 +51,7 @@ describe("EventDialog", () => {
       />,
     );
 
-    expect(await screen.findByLabelText("Organization", {}, { timeout: 3000 })).toBeInTheDocument();
+    expect(await screen.findByLabelText("Project", {}, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it("pre-fills the Organization field with defaultOrganizationId when creating", async () => {
@@ -65,7 +65,7 @@ describe("EventDialog", () => {
       />,
     );
 
-    const trigger = await screen.findByLabelText("Organization");
+    const trigger = await screen.findByLabelText("Project");
     expect(await within(trigger).findByText("Acme Inc")).toBeInTheDocument();
   });
 
@@ -80,7 +80,7 @@ describe("EventDialog", () => {
       />,
     );
 
-    expect(screen.queryByLabelText("Organization")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Project")).not.toBeInTheDocument();
   });
 
   it("defaults the Type field to None when creating an event", async () => {

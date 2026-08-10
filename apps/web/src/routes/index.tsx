@@ -8,10 +8,10 @@ export const Route = createFileRoute("/")({
 
     const { data: organizations } = await authClient.organization.list();
     const personalOrganization = organizations?.find((o) => o.isPersonal);
-    if (!personalOrganization) throw redirect({ to: "/organizations/new" });
+    if (!personalOrganization) throw redirect({ to: "/new" });
     throw redirect({
-      to: "/organizations/$organizationSlug/calendar",
-      params: { organizationSlug: personalOrganization.slug },
+      to: "/$projectSlug/calendar",
+      params: { projectSlug: personalOrganization.slug },
     });
   },
 });
