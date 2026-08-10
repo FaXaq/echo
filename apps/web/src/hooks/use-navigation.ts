@@ -14,12 +14,9 @@ type NavItem = {
 
 export type NavGroup = { title: string; items: NavItem[] };
 
-const PERSONAL_ID = null;
-
-type OrganizationOption = Omit<
-  NonNullable<ReturnType<Awaited<typeof authClient.useListOrganizations>>["data"]>[number],
-  "id"
-> & { id: string | null };
+type OrganizationOption = NonNullable<
+  ReturnType<Awaited<typeof authClient.useListOrganizations>>["data"]
+>[number];
 
 export function useNavigation() {
   const { t } = useLingui();
@@ -39,67 +36,48 @@ export function useNavigation() {
   const isActiveOrganizationAdmin =
     activeOrganization !== null && isOrganizationAdmin(currentMemberRole);
 
-  const orgOptions: OrganizationOption[] = [
-    { id: PERSONAL_ID, name: t`Personal`, createdAt: new Date(), slug: "" },
-    ...(organizations ?? []),
-  ];
+  const orgOptions: OrganizationOption[] = [...(organizations ?? [])].sort(
+    (a, b) => Number(b.isPersonal) - Number(a.isPersonal),
+  );
 
   const setActiveOrganization = (org: OrganizationOption) => {
-    if (org.id === null) {
-      navigate({ to: "/" });
-    } else {
-      navigate({ to: "/organizations/$organizationSlug", params: { organizationSlug: org.slug } });
-    }
+    navigate({ to: "/organizations/$organizationSlug", params: { organizationSlug: org.slug } });
   };
 
   const slug = activeOrganization?.slug ?? "";
-  const personalNavGroups: NavGroup[] = [
-    {
-      title: t`Personal`,
-      items: [
-        { title: t`Calendar`, to: "/calendar" },
-        { title: t`Practice`, to: "/" },
-        { title: t`Backlog`, to: "/" },
-      ],
-    },
-  ];
-
-  const projectNavGroups: NavGroup[] = [
-    {
-      title: activeOrganization?.name ?? "",
-      items: [
+  const navGroups: NavGroup[] = activeOrganization
+    ? [
         {
-          title: t`Calendar`,
-          to: "/organizations/$organizationSlug/calendar",
-          params: { organizationSlug: slug },
+          title: activeOrganization.name,
+          items: [
+            {
+              title: t`Calendar`,
+              to: "/organizations/$organizationSlug/calendar",
+              params: { organizationSlug: slug },
+            },
+            {
+              title: t`Setlist`,
+              to: "/organizations/$organizationSlug",
+              params: { organizationSlug: slug },
+            },
+            {
+              title: t`Drive`,
+              to: "/organizations/$organizationSlug",
+              params: { organizationSlug: slug },
+            },
+            ...(isActiveOrganizationAdmin
+              ? [
+                  {
+                    title: t`Settings`,
+                    to: "/organizations/$organizationSlug/settings" as const,
+                    params: { organizationSlug: slug },
+                  },
+                ]
+              : []),
+          ],
         },
-        {
-          title: t`Setlist`,
-          to: "/organizations/$organizationSlug",
-          params: { organizationSlug: slug },
-        },
-        {
-          title: t`Drive`,
-          to: "/organizations/$organizationSlug",
-          params: { organizationSlug: slug },
-        },
-        ...(isActiveOrganizationAdmin
-          ? [
-              {
-                title: t`Settings`,
-                to: "/organizations/$organizationSlug/settings" as const,
-                params: { organizationSlug: slug },
-              },
-            ]
-          : []),
-      ],
-    },
-  ];
-
-  const navGroups: NavGroup[] =
-    activeOrganization === null || activeOrganization === undefined
-      ? personalNavGroups
-      : projectNavGroups;
+      ]
+    : [];
 
   return { orgOptions, activeOrganization, setActiveOrganization, navGroups };
 }

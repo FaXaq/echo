@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Layout, ChevronDown, Check, Plus } from "lucide-react";
 
 import {
@@ -15,22 +14,15 @@ import { Trans } from "@lingui/react/macro";
 
 export function VersionSwitcher({
   versions,
-  defaultVersion,
+  currentVersion,
   onSelect,
   onCreateNew,
 }: {
   versions: string[];
-  defaultVersion: string;
+  currentVersion: string;
   onSelect?: (version: string) => void;
   onCreateNew?: () => void;
 }) {
-  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion);
-
-  const handleSelect = (version: string) => {
-    setSelectedVersion(version);
-    onSelect?.(version);
-  };
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -47,15 +39,15 @@ export function VersionSwitcher({
               <Layout className="size-4" />
             </div>
             <div className="flex flex-col gap-0.5 leading-none">
-              <span className="font-medium">{selectedVersion}</span>
+              <span className="font-medium">{currentVersion}</span>
             </div>
             <ChevronDown className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-(--anchor-width)" align="start">
             {versions.map((version) => (
-              <DropdownMenuItem key={version} onClick={() => handleSelect(version)}>
+              <DropdownMenuItem key={version} onClick={() => onSelect?.(version)}>
                 {version}
-                {version === selectedVersion && <Check className="ml-auto size-4" />}
+                {version === currentVersion && <Check className="ml-auto size-4" />}
               </DropdownMenuItem>
             ))}
             {onCreateNew && (

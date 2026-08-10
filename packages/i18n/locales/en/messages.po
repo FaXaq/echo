@@ -99,17 +99,15 @@ msgid "Back to home"
 msgstr "Back to home"
 
 #: apps/web/src/hooks/use-navigation.ts:62
-msgid "Backlog"
-msgstr "Backlog"
+#~ msgid "Backlog"
+#~ msgstr "Backlog"
 
 #: apps/web/src/components/ui/event-calendar/colors.ts:26
 msgid "Blue"
 msgstr "Blue"
 
-#: apps/web/src/hooks/use-navigation.ts:60
-#: apps/web/src/hooks/use-navigation.ts:72
+#: apps/web/src/hooks/use-navigation.ts:54
 #: apps/web/src/lib/dynamic-messages.ts:38
-#: apps/web/src/routes/calendar/index.tsx:72
 msgid "Calendar"
 msgstr "Calendar"
 
@@ -119,7 +117,7 @@ msgstr "Calendar"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:393
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:407
 #: apps/web/src/routes/organizations/$organizationSlug/settings/-members-table.tsx:122
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:207
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:210
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -193,7 +191,7 @@ msgstr "Create an account"
 msgid "Create organization"
 msgstr "Create organization"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:180
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:183
 msgid "Danger zone"
 msgstr "Danger zone"
 
@@ -211,7 +209,7 @@ msgstr "Day"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:245
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:383
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:214
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:217
 msgid "Delete"
 msgstr "Delete"
 
@@ -220,9 +218,9 @@ msgstr "Delete"
 msgid "Delete event?"
 msgstr "Delete event?"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:183
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:191
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:196
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:186
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:194
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:199
 msgid "Delete organization"
 msgstr "Delete organization"
 
@@ -246,7 +244,7 @@ msgstr "Download"
 msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
-#: apps/web/src/hooks/use-navigation.ts:82
+#: apps/web/src/hooks/use-navigation.ts:64
 msgid "Drive"
 msgstr "Drive"
 
@@ -467,7 +465,7 @@ msgstr "New event"
 msgid "New password"
 msgstr "New password"
 
-#: apps/web/src/components/version-switcher.tsx:66
+#: apps/web/src/components/version-switcher.tsx:58
 #: apps/web/src/lib/dynamic-messages.ts:41
 #: apps/web/src/routes/organizations/new.tsx:58
 msgid "New project"
@@ -565,14 +563,14 @@ msgstr "Passwords do not match"
 msgid "Pending"
 msgstr "Pending"
 
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:185
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:188
 msgid "Permanently delete this organization and all of its data. This action cannot be undone."
 msgstr "Permanently delete this organization and all of its data. This action cannot be undone."
 
 #: apps/web/src/hooks/use-navigation.ts:43
 #: apps/web/src/hooks/use-navigation.ts:58
-msgid "Personal"
-msgstr "Personal"
+#~ msgid "Personal"
+#~ msgstr "Personal"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:228
 msgid "Place"
@@ -583,8 +581,8 @@ msgid "Please confirm your password"
 msgstr "Please confirm your password"
 
 #: apps/web/src/hooks/use-navigation.ts:61
-msgid "Practice"
-msgstr "Practice"
+#~ msgid "Practice"
+#~ msgstr "Practice"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:143
 msgid "Previous"
@@ -661,11 +659,11 @@ msgstr "Send reset link"
 msgid "Set a new password"
 msgstr "Set a new password"
 
-#: apps/web/src/hooks/use-navigation.ts:77
+#: apps/web/src/hooks/use-navigation.ts:59
 msgid "Setlist"
 msgstr "Setlist"
 
-#: apps/web/src/hooks/use-navigation.ts:89
+#: apps/web/src/hooks/use-navigation.ts:71
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:147
 msgid "Settings"
 msgstr "Settings"
@@ -703,7 +701,7 @@ msgid "This event doesn't exist or has been deleted."
 msgstr "This event doesn't exist or has been deleted."
 
 #. placeholder {0}: activeOrganization.name
-#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:199
+#: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:202
 msgid "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 msgstr "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 

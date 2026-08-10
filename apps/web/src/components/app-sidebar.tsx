@@ -33,7 +33,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <VersionSwitcher
           versions={orgNames}
-          defaultVersion={activeOrgName}
+          currentVersion={activeOrgName}
           onSelect={handleOrgSelect}
           onCreateNew={() => navigate({ to: "/organizations/new" })}
         />
