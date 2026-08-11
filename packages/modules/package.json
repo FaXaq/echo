@@ -94,6 +94,10 @@
     "./place/app": {
       "types": "./src/place/app/index.ts",
       "default": "./src/place/app/index.ts"
+    },
+    "./plan/domain": {
+      "types": "./src/plan/domain/index.ts",
+      "default": "./src/plan/domain/index.ts"
     }
   },
   "scripts": {
