@@ -14,6 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: files.length
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:93
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:123
 msgid "{0, plural, one {# file} other {# files}}"
 msgstr "{0, plural, one {# file} other {# files}}"
@@ -68,6 +69,10 @@ msgstr "Agenda"
 msgid "All day"
 msgstr "All day"
 
+#: apps/web/src/routes/projects/$projectSlug/drive/route.tsx:18
+msgid "All files shared across the project"
+msgstr "All files shared across the project"
+
 #: apps/web/src/components/signup-form.tsx:164
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
@@ -84,7 +89,7 @@ msgstr "Are you sure you want to cancel this invitation?"
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Are you sure you want to remove this member from the project?"
 
-#: apps/web/src/components/ui/data-table-column-header.tsx:48
+#: apps/web/src/components/ui/data-table-column-header.tsx:50
 msgid "Asc"
 msgstr "Asc"
 
@@ -188,6 +193,10 @@ msgstr "Could not generate a unique organization slug"
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
 
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:101
+msgid "Couldn't load files"
+msgstr "Couldn't load files"
+
 #: apps/web/src/components/ui/attachment-list.tsx:61
 #: apps/web/src/components/ui/attachment-list.tsx:121
 msgid "Couldn't load this file"
@@ -220,6 +229,10 @@ msgstr "Danger zone"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:186
 msgid "Date"
 msgstr "Date"
+
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:50
+msgid "Date added"
+msgstr "Date added"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:34
 msgid "Day"
@@ -256,7 +269,7 @@ msgstr "Delete project"
 msgid "Delete this file?"
 msgstr "Delete this file?"
 
-#: apps/web/src/components/ui/data-table-column-header.tsx:52
+#: apps/web/src/components/ui/data-table-column-header.tsx:54
 msgid "Desc"
 msgstr "Desc"
 
@@ -277,6 +290,7 @@ msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
 #: apps/web/src/hooks/use-navigation.ts:68
+#: apps/web/src/routes/projects/$projectSlug/drive/route.tsx:17
 msgid "Drive"
 msgstr "Drive"
 
@@ -427,7 +441,7 @@ msgstr "Go to previous page"
 msgid "Green"
 msgstr "Green"
 
-#: apps/web/src/components/ui/data-table-column-header.tsx:60
+#: apps/web/src/components/ui/data-table-column-header.tsx:62
 msgid "Hide"
 msgstr "Hide"
 
@@ -459,6 +473,10 @@ msgstr "It's your personal space."
 #: apps/web/src/components/user-menu.tsx:98
 msgid "Language"
 msgstr "Language"
+
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:51
+msgid "Last modified"
+msgstr "Last modified"
 
 #: apps/web/src/lib/dynamic-messages.ts:13
 msgid "Letters, numbers, _ and - only"
@@ -537,6 +555,7 @@ msgstr "Month"
 msgid "My Project"
 msgstr "My Project"
 
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:48
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:83
 #: apps/web/src/routes/projects/new.tsx:77
 msgid "Name"
@@ -571,6 +590,10 @@ msgstr "No events scheduled"
 msgid "No files linked yet."
 msgstr "No files linked yet."
 
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:85
+msgid "No files yet"
+msgstr "No files yet"
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:192
 msgid "No members yet"
 msgstr "No members yet"
@@ -584,7 +607,7 @@ msgstr "No members yet"
 msgid "No places found"
 msgstr "No places found"
 
-#: apps/web/src/components/ui/data-table.tsx:49
+#: apps/web/src/components/ui/data-table.tsx:54
 msgid "No results."
 msgstr "No results."
 
@@ -825,6 +848,10 @@ msgstr "Share"
 msgid "Sign up failed"
 msgstr "Sign up failed"
 
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:52
+msgid "Size"
+msgstr "Size"
+
 #: apps/web/src/routes/organizations/new.tsx:96
 #~ msgid "Slug"
 #~ msgstr "Slug"
@@ -900,7 +927,7 @@ msgstr "Title is required"
 msgid "Today"
 msgstr "Today"
 
-#: apps/web/src/components/ui/data-table-view-options.tsx:30
+#: apps/web/src/components/ui/data-table-view-options.tsx:32
 msgid "Toggle columns"
 msgstr "Toggle columns"
 
@@ -920,6 +947,10 @@ msgstr "Update"
 msgid "Upload failed"
 msgstr "Upload failed"
 
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:49
+msgid "Uploaded by"
+msgstr "Uploaded by"
+
 #: apps/web/src/components/signup-form.tsx:94
 msgid "Username"
 msgstr "Username"
@@ -928,7 +959,7 @@ msgstr "Username"
 msgid "Username must be at least 3 characters"
 msgstr "Username must be at least 3 characters"
 
-#: apps/web/src/components/ui/data-table-view-options.tsx:27
+#: apps/web/src/components/ui/data-table-view-options.tsx:29
 msgid "View"
 msgstr "View"
 

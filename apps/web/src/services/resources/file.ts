@@ -8,6 +8,7 @@ const { key, getResourceKey } = initResourceKey("file");
 export { key };
 
 export type EventFile = RouterOutputs["file"]["listEventFiles"][number];
+export type OrganizationFile = RouterOutputs["file"]["listOrganizationFiles"][number];
 
 export function getEventFilesQueryOptions(opts: { eventId: string }) {
   return queryOptions({
@@ -21,6 +22,16 @@ export function getEventFilesQueryOptions(opts: { eventId: string }) {
     // (and re-decoding) unchanged audio/attachments every time a second
     // observer (e.g. the edit dialog) mounts on the same query key.
     staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function getOrganizationFilesQueryOptions(opts: { organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("listOrganizationFiles", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.file.listOrganizationFiles.query(params, { signal });
+    },
   });
 }
 

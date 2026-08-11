@@ -20,6 +20,8 @@ function stubFile(file: { organizationId: string | null; uploadedBy: string } | 
           filename: "old.pdf",
           s3Key: "key",
           status: "uploaded",
+          createdAt: null,
+          updatedAt: null,
         }
       : null,
   );
@@ -51,6 +53,8 @@ describe("renameFile", () => {
       filename: "renamed.pdf",
       s3Key: "key",
       status: "uploaded",
+      createdAt: null,
+      updatedAt: null,
     });
 
     const result = await renameFile(

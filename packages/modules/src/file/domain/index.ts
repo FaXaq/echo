@@ -38,4 +38,6 @@ export type FileRecord = {
   originalFilename: string;
   s3Key: string;
   status: FileStatus;
+  createdAt: Date | null;
+  updatedAt: Date | null;
 };
