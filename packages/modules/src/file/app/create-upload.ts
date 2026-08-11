@@ -1,19 +1,23 @@
-import type { KyselyDB } from "@echo/db";
-import { conflict, forbidden } from "@echo/errors";
+import { conflict, forbidden, notFound } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
 } from "@echo/modules/user/infrastructure";
 import { isValidFileSize, kindForMimeType } from "../domain/index.js";
-import { insertPendingFile } from "../infrastructure/index.js";
+import type { FileRecord } from "../domain/index.js";
+import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+
+export type InsertPendingFilePort = (input: InsertPendingFileInput) => Promise<FileRecord>;
+export type GetPersonalOrganizationIdPort = (userId: string) => Promise<string | undefined>;
 
 export async function createUpload(
   deps: {
-    db: KyselyDB;
     s3Storage: S3StoragePort;
     userHasPermission: CheckUserPermission;
     userHasPermissionInOrganization: CheckOrganizationPermission;
+    insertPendingFile: InsertPendingFilePort;
+    getPersonalOrganizationId: GetPersonalOrganizationIdPort;
   },
   input: {
     userId: string;
@@ -41,15 +45,19 @@ export async function createUpload(
     if (!success) throw forbidden({ entity: "File", action: "create" });
   }
 
+  const organizationId =
+    input.organizationId ?? (await deps.getPersonalOrganizationId(input.userId));
+  if (!organizationId) throw notFound("Personal organization");
+
   const id = crypto.randomUUID();
   const s3Key = input.organizationId
     ? `org/${input.organizationId}/${id}/${input.filename}`
     : `personal/${input.userId}/${id}/${input.filename}`;
 
-  await insertPendingFile(deps.db, {
+  await deps.insertPendingFile({
     id,
     eventId: input.eventId ?? null,
-    organizationId: input.organizationId ?? null,
+    organizationId,
     uploadedBy: input.userId,
     kind,
     mimeType: input.mimeType,

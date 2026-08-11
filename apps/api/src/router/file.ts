@@ -7,6 +7,8 @@ import {
   listOrganizationFiles,
   renameFile,
 } from "@echo/modules/file/app";
+import { insertPendingFile } from "@echo/modules/file/infrastructure";
+import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { authedProcedure, router } from "../trpc";
 
 export const makeFileRouter = () =>
@@ -24,10 +26,12 @@ export const makeFileRouter = () =>
       .mutation(({ ctx, input }) =>
         createUpload(
           {
-            db: ctx.db,
             s3Storage: ctx.s3Storage,
             userHasPermission: ctx.userHasPermission,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            insertPendingFile: (fileInput) => insertPendingFile(ctx.db, fileInput),
+            getPersonalOrganizationId: async (userId: string) =>
+              (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
           },
           { userId: ctx.session.user.id, ...input },
         ),

@@ -2,19 +2,21 @@ import type { KyselyDB } from "@echo/db";
 import type { FileKind, FileRecord } from "../domain/index.js";
 import { toFileRecord } from "./map-file.js";
 
+export type InsertPendingFileInput = {
+  id: string;
+  eventId: string | null;
+  organizationId: string | null;
+  uploadedBy: string;
+  kind: FileKind;
+  mimeType: string;
+  sizeBytes: number;
+  originalFilename: string;
+  s3Key: string;
+};
+
 export async function insertPendingFile(
   db: KyselyDB,
-  input: {
-    id: string;
-    eventId: string | null;
-    organizationId: string | null;
-    uploadedBy: string;
-    kind: FileKind;
-    mimeType: string;
-    sizeBytes: number;
-    originalFilename: string;
-    s3Key: string;
-  },
+  input: InsertPendingFileInput,
 ): Promise<FileRecord> {
   const row = await db
     .insertInto("file")

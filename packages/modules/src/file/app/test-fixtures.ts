@@ -3,6 +3,9 @@ import type {
   CheckUserPermission,
 } from "@echo/modules/user/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import type { FileRecord } from "../domain/index.js";
+import type { InsertPendingFileInput } from "../infrastructure/index.js";
+import type { GetPersonalOrganizationIdPort, InsertPendingFilePort } from "./create-upload.js";
 
 export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
   const keys = new Set(existingKeys);
@@ -33,5 +36,36 @@ export function makeFakePermissionChecks(
     userHasPermission: async () => ({ success: true, error: null }),
     userHasPermissionInOrganization: async () => ({ success: true, error: null, role: null }),
     ...overrides,
+  };
+}
+
+export function makeFakePersonalOrganizationId(
+  organizationId: string | undefined,
+): GetPersonalOrganizationIdPort {
+  return async () => organizationId;
+}
+
+export function makeFakeInsertPendingFile(
+  onInsert?: (input: InsertPendingFileInput) => void,
+): InsertPendingFilePort {
+  return async (input) => {
+    onInsert?.(input);
+    const record: FileRecord = {
+      id: input.id,
+      eventId: input.eventId,
+      organizationId: input.organizationId,
+      uploadedBy: input.uploadedBy,
+      uploadedByName: "Test User",
+      kind: input.kind,
+      mimeType: input.mimeType,
+      sizeBytes: input.sizeBytes,
+      filename: input.originalFilename,
+      originalFilename: input.originalFilename,
+      s3Key: input.s3Key,
+      status: "pending",
+      createdAt: null,
+      updatedAt: null,
+    };
+    return record;
   };
 }
