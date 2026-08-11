@@ -9,6 +9,11 @@ import {
 } from "@echo/modules/file/app";
 import { insertPendingFile } from "@echo/modules/file/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
+import { resolveEntitlements } from "@echo/modules/plan/app";
+import {
+  getOrganizationStorageUsageQuery,
+  resolvePlanQuery,
+} from "@echo/modules/plan/infrastructure";
 import { authedProcedure, router } from "../trpc";
 
 export const makeFileRouter = () =>
@@ -32,6 +37,13 @@ export const makeFileRouter = () =>
             insertPendingFile: (fileInput) => insertPendingFile(ctx.db, fileInput),
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
+            resolveOrganizationEntitlements: (organizationId: string) =>
+              resolveEntitlements(
+                { resolvePlan: (id: string) => resolvePlanQuery(ctx.db, id) },
+                organizationId,
+              ),
+            getOrganizationStorageUsage: (organizationId: string) =>
+              getOrganizationStorageUsageQuery(ctx.db, organizationId),
           },
           { userId: ctx.session.user.id, ...input },
         ),

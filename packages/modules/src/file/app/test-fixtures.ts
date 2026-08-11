@@ -3,6 +3,11 @@ import type {
   CheckUserPermission,
 } from "@echo/modules/user/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import { planCatalog } from "@echo/modules/plan/domain";
+import type {
+  GetOrganizationStorageUsagePort,
+  ResolveEntitlementsPort,
+} from "@echo/modules/plan/app";
 import type { FileRecord } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import type { GetPersonalOrganizationIdPort, InsertPendingFilePort } from "./create-upload.js";
@@ -43,6 +48,19 @@ export function makeFakePersonalOrganizationId(
   organizationId: string | undefined,
 ): GetPersonalOrganizationIdPort {
   return async () => organizationId;
+}
+
+export function makeFakeQuotaPorts(
+  overrides: Partial<{
+    resolveOrganizationEntitlements: ResolveEntitlementsPort;
+    getOrganizationStorageUsage: GetOrganizationStorageUsagePort;
+  }> = {},
+) {
+  return {
+    resolveOrganizationEntitlements: async () => planCatalog.free,
+    getOrganizationStorageUsage: async () => 0,
+    ...overrides,
+  };
 }
 
 export function makeFakeInsertPendingFile(

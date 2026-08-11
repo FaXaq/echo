@@ -1,9 +1,14 @@
-import { conflict, forbidden, notFound } from "@echo/errors";
+import { conflict, forbidden, notFound, quotaExceeded } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
 } from "@echo/modules/user/infrastructure";
-import { isValidFileSize, kindForMimeType } from "../domain/index.js";
+import { exceedsLimit } from "@echo/modules/plan/domain";
+import type {
+  GetOrganizationStorageUsagePort,
+  ResolveEntitlementsPort,
+} from "@echo/modules/plan/app";
+import { kindForMimeType } from "../domain/index.js";
 import type { FileRecord } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
@@ -18,6 +23,8 @@ export async function createUpload(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     insertPendingFile: InsertPendingFilePort;
     getPersonalOrganizationId: GetPersonalOrganizationIdPort;
+    resolveOrganizationEntitlements: ResolveEntitlementsPort;
+    getOrganizationStorageUsage: GetOrganizationStorageUsagePort;
   },
   input: {
     userId: string;
@@ -30,7 +37,6 @@ export async function createUpload(
 ): Promise<{ fileId: string; uploadUrl: string }> {
   const kind = kindForMimeType(input.mimeType);
   if (!kind) throw conflict("Unsupported file type");
-  if (!isValidFileSize(input.sizeBytes)) throw conflict("File is too large");
 
   if (input.organizationId) {
     const { success } = await deps.userHasPermissionInOrganization({
@@ -48,6 +54,25 @@ export async function createUpload(
   const organizationId =
     input.organizationId ?? (await deps.getPersonalOrganizationId(input.userId));
   if (!organizationId) throw notFound("Personal organization");
+
+  const { limits } = await deps.resolveOrganizationEntitlements(organizationId);
+
+  if (input.sizeBytes > limits.maxFileSizeBytes) {
+    throw quotaExceeded({
+      limitName: "maxFileSizeBytes",
+      limit: limits.maxFileSizeBytes,
+      current: input.sizeBytes,
+    });
+  }
+
+  const usedBytes = await deps.getOrganizationStorageUsage(organizationId);
+  if (exceedsLimit({ current: usedBytes, delta: input.sizeBytes, limit: limits.storageBytes })) {
+    throw quotaExceeded({
+      limitName: "storageBytes",
+      limit: limits.storageBytes,
+      current: usedBytes,
+    });
+  }
 
   const id = crypto.randomUUID();
   const s3Key = input.organizationId
