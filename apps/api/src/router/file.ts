@@ -4,6 +4,7 @@ import {
   createUpload,
   deleteFile,
   listEventFiles,
+  listOrganizationFiles,
   renameFile,
 } from "@echo/modules/file/app";
 import { authedProcedure, router } from "../trpc";
@@ -47,6 +48,15 @@ export const makeFileRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
           { eventId: input.eventId, userId: ctx.session.user.id },
+        ),
+      ),
+
+    listOrganizationFiles: authedProcedure
+      .input(z.object({ organizationId: z.string() }))
+      .query(({ ctx, input }) =>
+        listOrganizationFiles(
+          { db: ctx.db, userHasPermissionInOrganization: ctx.userHasPermissionInOrganization },
+          { organizationId: input.organizationId },
         ),
       ),
 

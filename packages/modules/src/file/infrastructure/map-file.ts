@@ -32,5 +32,7 @@ export function toFileRecord(row: FileRow): FileRecord {
     originalFilename: row.original_filename,
     s3Key: row.s3_key,
     status: toFileStatus(row.status),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
   };
 }
