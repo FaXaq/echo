@@ -98,6 +98,14 @@
     "./plan/domain": {
       "types": "./src/plan/domain/index.ts",
       "default": "./src/plan/domain/index.ts"
+    },
+    "./plan/infrastructure": {
+      "types": "./src/plan/infrastructure/index.ts",
+      "default": "./src/plan/infrastructure/index.ts"
+    },
+    "./plan/app": {
+      "types": "./src/plan/app/index.ts",
+      "default": "./src/plan/app/index.ts"
     }
   },
   "scripts": {
