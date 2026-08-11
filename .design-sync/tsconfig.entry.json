@@ -1,0 +1,21 @@
+{
+  "extends": "../apps/web/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true,
+    "rootDir": ".."
+  },
+  "include": [
+    "entry.ts",
+    "../apps/web/src/components/ui/**/*.ts",
+    "../apps/web/src/components/ui/**/*.tsx"
+  ],
+  "exclude": [
+    "../apps/web/src/components/ui/**/*.stories.tsx",
+    "../apps/web/src/components/ui/**/*.test.tsx",
+    "../apps/web/src/components/ui/event-calendar/**"
+  ]
+}

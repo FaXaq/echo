@@ -40,7 +40,12 @@ graphify-out
 # ai plans
 docs/superpowers
 
-# claude design
-.design-sync
+# claude design (durable set — config, NOTES, conventions, previews/, overrides/ — stays committed)
+.design-sync/sb-reference/
+.design-sync/learnings/
+.design-sync/.cache/
+.design-sync/node_modules
+.design-sync/apps/
+.design-sync/.design-sync/
 .ds-sync
 ds-bundle
