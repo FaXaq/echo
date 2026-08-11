@@ -80,6 +80,30 @@ export const Default: Story = {
   ],
 };
 
+export const ManyFiles: Story = {
+  decorators: [
+    (Story) => (
+      <QueryClientProvider
+        client={withSeededFiles(
+          Array.from({ length: 40 }, (_, index) =>
+            makeFile({
+              id: `file-${index}`,
+              filename: `2026-08-${String((index % 28) + 1).padStart(2, "0")}-rehearsal-take-${index + 1}-master-bounce.wav`,
+              originalFilename: `take-${index + 1}.wav`,
+              kind: "audio",
+              mimeType: "audio/wav",
+              sizeBytes: 40_000_000 + index * 1_500_000,
+              uploadedByName: `Bandmate Number ${index + 1}`,
+            }),
+          ),
+        )}
+      >
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
+};
+
 export const Empty: Story = {
   decorators: [
     (Story) => (

@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:93
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:99
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:123
 msgid "{0, plural, one {# file} other {# files}}"
 msgstr "{0, plural, one {# file} other {# files}}"
@@ -69,7 +69,7 @@ msgstr "Agenda"
 msgid "All day"
 msgstr "All day"
 
-#: apps/web/src/routes/projects/$projectSlug/drive/route.tsx:18
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:19
 msgid "All files shared across the project"
 msgstr "All files shared across the project"
 
@@ -193,7 +193,7 @@ msgstr "Could not generate a unique organization slug"
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
 
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:101
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:107
 msgid "Couldn't load files"
 msgstr "Couldn't load files"
 
@@ -230,7 +230,7 @@ msgstr "Danger zone"
 msgid "Date"
 msgstr "Date"
 
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:50
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:58
 msgid "Date added"
 msgstr "Date added"
 
@@ -290,7 +290,7 @@ msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
 #: apps/web/src/hooks/use-navigation.ts:68
-#: apps/web/src/routes/projects/$projectSlug/drive/route.tsx:17
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:16
 msgid "Drive"
 msgstr "Drive"
 
@@ -474,7 +474,7 @@ msgstr "It's your personal space."
 msgid "Language"
 msgstr "Language"
 
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:51
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:61
 msgid "Last modified"
 msgstr "Last modified"
 
@@ -555,7 +555,7 @@ msgstr "Month"
 msgid "My Project"
 msgstr "My Project"
 
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:48
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:52
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:83
 #: apps/web/src/routes/projects/new.tsx:77
 msgid "Name"
@@ -590,7 +590,7 @@ msgstr "No events scheduled"
 msgid "No files linked yet."
 msgstr "No files linked yet."
 
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:85
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:92
 msgid "No files yet"
 msgstr "No files yet"
 
@@ -848,7 +848,7 @@ msgstr "Share"
 msgid "Sign up failed"
 msgstr "Sign up failed"
 
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:52
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:64
 msgid "Size"
 msgstr "Size"
 
@@ -947,7 +947,7 @@ msgstr "Update"
 msgid "Upload failed"
 msgstr "Upload failed"
 
-#: apps/web/src/components/features/drive/suspended-drive-files.tsx:49
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:55
 msgid "Uploaded by"
 msgstr "Uploaded by"
 

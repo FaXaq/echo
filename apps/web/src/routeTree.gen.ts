@@ -19,6 +19,7 @@ import { Route as ProjectsProjectSlugCalendarRouteRouteImport } from './routes/p
 import { Route as ProjectsProjectSlugDriveRouteRouteImport } from './routes/projects/$projectSlug/drive/route'
 import { Route as ProjectsProjectSlugCalendarIndexRouteImport } from './routes/projects/$projectSlug/calendar/index'
 import { Route as ProjectsProjectSlugCalendarEventIdRouteImport } from './routes/projects/$projectSlug/calendar/$eventId'
+import { Route as ProjectsProjectSlugDriveIndexRouteImport } from './routes/projects/$projectSlug/drive/index'
 import { Route as ProjectsProjectSlugSettingsIndexRouteImport } from './routes/projects/$projectSlug/settings/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +78,12 @@ const ProjectsProjectSlugCalendarEventIdRoute =
     path: '/$eventId',
     getParentRoute: () => ProjectsProjectSlugCalendarRouteRoute,
   } as any)
+const ProjectsProjectSlugDriveIndexRoute =
+  ProjectsProjectSlugDriveIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ProjectsProjectSlugDriveRouteRoute,
+  } as any)
 const ProjectsProjectSlugSettingsIndexRoute =
   ProjectsProjectSlugSettingsIndexRouteImport.update({
     id: '/settings/',
@@ -91,10 +98,11 @@ export interface FileRoutesByFullPath {
   '/projects/$projectSlug': typeof ProjectsProjectSlugRouteRouteWithChildren
   '/projects/new': typeof ProjectsNewRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
-  '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveRouteRoute
+  '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveRouteRouteWithChildren
   '/projects/$projectSlug/': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/calendar/': typeof ProjectsProjectSlugCalendarIndexRoute
+  '/projects/$projectSlug/drive/': typeof ProjectsProjectSlugDriveIndexRoute
   '/projects/$projectSlug/settings/': typeof ProjectsProjectSlugSettingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -102,10 +110,10 @@ export interface FileRoutesByTo {
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
   '/projects/new': typeof ProjectsNewRoute
-  '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveRouteRoute
   '/projects/$projectSlug': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarIndexRoute
+  '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveIndexRoute
   '/projects/$projectSlug/settings': typeof ProjectsProjectSlugSettingsIndexRoute
 }
 export interface FileRoutesById {
@@ -116,10 +124,11 @@ export interface FileRoutesById {
   '/projects/$projectSlug': typeof ProjectsProjectSlugRouteRouteWithChildren
   '/projects/new': typeof ProjectsNewRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
-  '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveRouteRoute
+  '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveRouteRouteWithChildren
   '/projects/$projectSlug/': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/calendar/': typeof ProjectsProjectSlugCalendarIndexRoute
+  '/projects/$projectSlug/drive/': typeof ProjectsProjectSlugDriveIndexRoute
   '/projects/$projectSlug/settings/': typeof ProjectsProjectSlugSettingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/projects/$projectSlug/'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/calendar/'
+    | '/projects/$projectSlug/drive/'
     | '/projects/$projectSlug/settings/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -142,10 +152,10 @@ export interface FileRouteTypes {
     | '/accept-invitation'
     | '/reset-password'
     | '/projects/new'
-    | '/projects/$projectSlug/drive'
     | '/projects/$projectSlug'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/calendar'
+    | '/projects/$projectSlug/drive'
     | '/projects/$projectSlug/settings'
   id:
     | '__root__'
@@ -159,6 +169,7 @@ export interface FileRouteTypes {
     | '/projects/$projectSlug/'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/calendar/'
+    | '/projects/$projectSlug/drive/'
     | '/projects/$projectSlug/settings/'
   fileRoutesById: FileRoutesById
 }
@@ -242,6 +253,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectSlugCalendarEventIdRouteImport
       parentRoute: typeof ProjectsProjectSlugCalendarRouteRoute
     }
+    '/projects/$projectSlug/drive/': {
+      id: '/projects/$projectSlug/drive/'
+      path: '/'
+      fullPath: '/projects/$projectSlug/drive/'
+      preLoaderRoute: typeof ProjectsProjectSlugDriveIndexRouteImport
+      parentRoute: typeof ProjectsProjectSlugDriveRouteRoute
+    }
     '/projects/$projectSlug/settings/': {
       id: '/projects/$projectSlug/settings/'
       path: '/settings'
@@ -270,9 +288,23 @@ const ProjectsProjectSlugCalendarRouteRouteWithChildren =
     ProjectsProjectSlugCalendarRouteRouteChildren,
   )
 
+interface ProjectsProjectSlugDriveRouteRouteChildren {
+  ProjectsProjectSlugDriveIndexRoute: typeof ProjectsProjectSlugDriveIndexRoute
+}
+
+const ProjectsProjectSlugDriveRouteRouteChildren: ProjectsProjectSlugDriveRouteRouteChildren =
+  {
+    ProjectsProjectSlugDriveIndexRoute: ProjectsProjectSlugDriveIndexRoute,
+  }
+
+const ProjectsProjectSlugDriveRouteRouteWithChildren =
+  ProjectsProjectSlugDriveRouteRoute._addFileChildren(
+    ProjectsProjectSlugDriveRouteRouteChildren,
+  )
+
 interface ProjectsProjectSlugRouteRouteChildren {
   ProjectsProjectSlugCalendarRouteRoute: typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
-  ProjectsProjectSlugDriveRouteRoute: typeof ProjectsProjectSlugDriveRouteRoute
+  ProjectsProjectSlugDriveRouteRoute: typeof ProjectsProjectSlugDriveRouteRouteWithChildren
   ProjectsProjectSlugIndexRoute: typeof ProjectsProjectSlugIndexRoute
   ProjectsProjectSlugSettingsIndexRoute: typeof ProjectsProjectSlugSettingsIndexRoute
 }
@@ -281,7 +313,8 @@ const ProjectsProjectSlugRouteRouteChildren: ProjectsProjectSlugRouteRouteChildr
   {
     ProjectsProjectSlugCalendarRouteRoute:
       ProjectsProjectSlugCalendarRouteRouteWithChildren,
-    ProjectsProjectSlugDriveRouteRoute: ProjectsProjectSlugDriveRouteRoute,
+    ProjectsProjectSlugDriveRouteRoute:
+      ProjectsProjectSlugDriveRouteRouteWithChildren,
     ProjectsProjectSlugIndexRoute: ProjectsProjectSlugIndexRoute,
     ProjectsProjectSlugSettingsIndexRoute:
       ProjectsProjectSlugSettingsIndexRoute,
