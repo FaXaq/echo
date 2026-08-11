@@ -1,5 +1,5 @@
 import { initTRPC, TRPCError } from "@trpc/server";
-import { AppError } from "@echo/errors";
+import { AppError, QuotaExceededError } from "@echo/errors";
 import { systemRole, type ServerAuth, type ServerSession } from "@echo/auth";
 import type { makeDbAdapter } from "@echo/db";
 import type { makeLogger } from "@echo/logger";
@@ -26,7 +26,22 @@ export type Context = {
   geocoding: GeocodingPort;
 };
 
-const t = initTRPC.context<Context>().create();
+const t = initTRPC.context<Context>().create({
+  errorFormatter({ shape, error }) {
+    if (!(error.cause instanceof QuotaExceededError)) return shape;
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        quota: {
+          limitName: error.cause.limitName,
+          limit: error.cause.limit,
+          current: error.cause.current,
+        },
+      },
+    };
+  },
+});
 
 export const router = t.router;
 export const mergeRouters = t.mergeRouters;

@@ -62,6 +62,20 @@ export class ForbiddenError extends AppError {
   }
 }
 
+export class QuotaExceededError extends AppError {
+  readonly type = "QUOTA_EXCEEDED" as const;
+  readonly limitName: string;
+  readonly limit: number;
+  readonly current: number;
+  constructor(limitName: string, limit: number, current: number) {
+    super(`Quota exceeded: ${limitName}`);
+    this.name = "QuotaExceededError";
+    this.limitName = limitName;
+    this.limit = limit;
+    this.current = current;
+  }
+}
+
 export class UnknownError extends AppError {
   readonly type = "UNKNOWN" as const;
   constructor(message?: string) {
@@ -79,3 +93,12 @@ export const unauthorized = (message: string) => new UnauthorizedError(message);
 export const forbidden = ({ entity, action }: { entity: string; action: string }) =>
   new ForbiddenError(entity, action);
 export const unknownError = (message?: string) => new UnknownError(message);
+export const quotaExceeded = ({
+  limitName,
+  limit,
+  current,
+}: {
+  limitName: string;
+  limit: number;
+  current: number;
+}) => new QuotaExceededError(limitName, limit, current);
