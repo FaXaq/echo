@@ -135,7 +135,7 @@ msgid "Calendar"
 msgstr "Calendar"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:73
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:179
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:183
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:225
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
@@ -193,7 +193,7 @@ msgstr "Could not generate a unique organization slug"
 msgid "Could not load plan usage"
 msgstr "Could not load plan usage"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:209
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
 
@@ -242,7 +242,7 @@ msgstr "Date added"
 msgid "Day"
 msgstr "Day"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:186
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:190
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:232
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
@@ -269,7 +269,7 @@ msgstr "Delete event?"
 msgid "Delete project"
 msgstr "Delete project"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:173
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:177
 msgid "Delete this file?"
 msgstr "Delete this file?"
 
@@ -595,7 +595,7 @@ msgstr "Next"
 msgid "No events scheduled"
 msgstr "No events scheduled"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:163
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:167
 msgid "No files linked yet."
 msgstr "No files linked yet."
 
@@ -931,7 +931,7 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:175
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:179
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 

@@ -135,7 +135,7 @@ msgid "Calendar"
 msgstr "Agenda"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:73
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:179
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:183
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:225
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
@@ -193,7 +193,7 @@ msgstr "Impossible de générer un identifiant unique pour le projet"
 msgid "Could not load plan usage"
 msgstr "Impossible de charger l'utilisation du forfait"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:209
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
@@ -242,7 +242,7 @@ msgstr "Date d'ajout"
 msgid "Day"
 msgstr "Jour"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:186
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:190
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:232
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
@@ -269,7 +269,7 @@ msgstr "Supprimer l'événement ?"
 msgid "Delete project"
 msgstr "Supprimer le projet"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:173
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:177
 msgid "Delete this file?"
 msgstr "Supprimer ce fichier ?"
 
@@ -595,7 +595,7 @@ msgstr "Suivant"
 msgid "No events scheduled"
 msgstr "Aucun événement prévu"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:163
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:167
 msgid "No files linked yet."
 msgstr "Aucun fichier lié pour le moment."
 
@@ -931,7 +931,7 @@ msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses donnée
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "Cette action supprimera définitivement <0>{selectedVersion}</0> et toutes ses données. Cette action est irréversible."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:175
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:179
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
