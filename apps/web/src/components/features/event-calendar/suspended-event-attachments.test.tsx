@@ -1,15 +1,42 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useMutation } from "@tanstack/react-query";
 import { render, screen } from "@/lib/test-utils";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@tanstack/react-router", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@tanstack/react-router")>()),
-  Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+  Link: ({
+    children,
+    to,
+    params,
+  }: {
+    children?: React.ReactNode;
+    to?: string;
+    params?: Record<string, string>;
+  }) => (
+    <a href="#" data-to={to} data-params={JSON.stringify(params)}>
+      {children}
+    </a>
+  ),
   useParams: () => ({ projectSlug: "acme-inc" }),
 }));
 
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
 import * as fileResource from "@/services/resources/file";
+
+function makeFile(name = "demo.mp3") {
+  return new File(["content"], name, { type: "audio/mpeg" });
+}
+
+let uploadRejection: unknown;
+
+function useFailingUploadMutation() {
+  return useMutation({
+    mutationFn: async (_input: { eventId?: string; organizationId?: string; file: File }) => {
+      throw uploadRejection;
+    },
+  });
+}
 
 function renderWithFiles(files: fileResource.EventFile[]) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -56,5 +83,35 @@ describe("SuspendedEventAttachments", () => {
     expect(await screen.findByText("demo.mp3")).toBeInTheDocument();
     expect(screen.getByText("setlist.pdf")).toBeInTheDocument();
     expect(screen.getByText("2 files")).toBeInTheDocument();
+  });
+
+  it("shows an upgrade prompt linking to plan settings when an upload hits the plan quota", async () => {
+    uploadRejection = Object.assign(new Error("Quota exceeded: storageBytes"), {
+      data: { quota: { limitName: "storageBytes", limit: 1000, current: 950 } },
+    });
+    vi.spyOn(fileResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
+
+    const user = userEvent.setup();
+    renderWithFiles([]);
+    const input = screen.getByLabelText("Add files", { selector: "input" });
+    await user.upload(input, makeFile());
+
+    expect(await screen.findByText(/reached its plan limit/)).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: "View plan" });
+    expect(link).toHaveAttribute("data-to", "/projects/$projectSlug/settings");
+    expect(link).toHaveAttribute("data-params", JSON.stringify({ projectSlug: "acme-inc" }));
+  });
+
+  it("shows the generic upload-failed message for a non-quota upload error", async () => {
+    uploadRejection = new Error("Upload failed");
+    vi.spyOn(fileResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
+
+    const user = userEvent.setup();
+    renderWithFiles([]);
+    const input = screen.getByLabelText("Add files", { selector: "input" });
+    await user.upload(input, makeFile());
+
+    expect(await screen.findByText("Upload failed")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "View plan" })).not.toBeInTheDocument();
   });
 });
