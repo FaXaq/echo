@@ -120,6 +120,21 @@ describe("createUpload", () => {
     ).rejects.toBeInstanceOf(QuotaExceededError);
   });
 
+  it("allows a file exactly at the plan's max file size", async () => {
+    const result = await createUpload(
+      {
+        s3Storage: makeFakeS3Storage(),
+        insertPendingFile: makeFakeInsertPendingFile(),
+        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+        ...makeFakePermissionChecks(),
+        ...makeFakeQuotaPorts(),
+      },
+      { ...baseInput, sizeBytes: planCatalog.free.limits.maxFileSizeBytes },
+    );
+
+    expect(result.uploadUrl).toContain("https://fake-s3.local/");
+  });
+
   it("rejects an upload that would exceed the storage quota", async () => {
     await expect(
       createUpload(
