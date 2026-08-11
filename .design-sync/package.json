@@ -1,0 +1,5 @@
+{
+  "name": "@echo/web",
+  "version": "0.0.0",
+  "types": "./.design-sync/entry.d.ts"
+}
