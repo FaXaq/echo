@@ -23,6 +23,7 @@ export type ServerAuthConfig = {
     token: string,
   ) => Promise<void>;
   onOrganizationDeleted?: (organization: { id: string }) => Promise<void>;
+  hasSeatAvailable?: (organizationId: string) => Promise<boolean>;
 };
 
 export const makeServerAuth = (config: ServerAuthConfig) => {
@@ -103,6 +104,22 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
               });
             }
             await config.onOrganizationDeleted?.(organization);
+          },
+          beforeCreateInvitation: async ({ organization }) => {
+            const available = await config.hasSeatAvailable?.(organization.id);
+            if (available === false) {
+              throw new APIError("FORBIDDEN", {
+                message: "This organization has no seats left on its current plan.",
+              });
+            }
+          },
+          beforeAcceptInvitation: async ({ organization }) => {
+            const available = await config.hasSeatAvailable?.(organization.id);
+            if (available === false) {
+              throw new APIError("FORBIDDEN", {
+                message: "This organization has no seats left on its current plan.",
+              });
+            }
           },
         },
       }),
