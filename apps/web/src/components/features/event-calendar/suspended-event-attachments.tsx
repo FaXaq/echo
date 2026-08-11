@@ -1,9 +1,11 @@
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Plural, useLingui } from "@lingui/react/macro";
+import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, useParams } from "@tanstack/react-router";
 import { translateDynamic } from "@/lib/dynamic-messages";
+import { getQuotaError } from "@/lib/quota-error";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -102,6 +104,7 @@ function RenameFileDialog({
 
 function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAttachmentsProps) {
   const { t } = useLingui();
+  const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId }));
   const uploadMutation = useUploadFileMutation();
   const deleteMutation = useDeleteFileMutation();
@@ -125,16 +128,30 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
       </div>
 
       <FileUpload onFilesSelected={handleFilesSelected} disabled={uploadMutation.isPending} />
-      {uploadMutation.isError && (
-        <p className="text-xs text-destructive">
-          {translateDynamic(
-            t,
-            uploadMutation.error instanceof Error && uploadMutation.error.message
-              ? uploadMutation.error.message
-              : "Upload failed",
-          )}
-        </p>
-      )}
+      {uploadMutation.isError &&
+        (getQuotaError(uploadMutation.error) ? (
+          <p className="text-destructive text-xs">
+            <Trans>
+              This project has reached its plan limit.{" "}
+              <Link
+                to="/projects/$projectSlug/settings"
+                params={{ projectSlug }}
+                className="underline"
+              >
+                View plan
+              </Link>
+            </Trans>
+          </p>
+        ) : (
+          <p className="text-destructive text-xs">
+            {translateDynamic(
+              t,
+              uploadMutation.error instanceof Error && uploadMutation.error.message
+                ? uploadMutation.error.message
+                : "Upload failed",
+            )}
+          </p>
+        ))}
 
       {files.length > 0 && (
         <AttachmentList

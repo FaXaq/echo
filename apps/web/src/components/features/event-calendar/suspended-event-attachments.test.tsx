@@ -1,6 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@/lib/test-utils";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tanstack/react-router")>()),
+  Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+  useParams: () => ({ projectSlug: "acme-inc" }),
+}));
+
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
 import * as fileResource from "@/services/resources/file";
 

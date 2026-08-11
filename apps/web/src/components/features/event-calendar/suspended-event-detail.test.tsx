@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("@tanstack/react-router", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@tanstack/react-router")>()),
   Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+  useParams: () => ({ projectSlug: "acme-inc" }),
 }));
 
 import { SuspendedEventDetail } from "./suspended-event-detail";
