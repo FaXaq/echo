@@ -1,21 +1,28 @@
-import type { DB } from "@echo/db";
 import { conflict, notFound } from "@echo/errors";
 import type { FileRecord } from "../domain/index.js";
-import { findFileById, markFileUploaded } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
-import type { Kysely } from "kysely";
+
+export type FindFileByIdPort = (id: string) => Promise<FileRecord | null>;
+export type MarkFileUploadedPort = (
+  id: string,
+  sizeBytes: number | null,
+) => Promise<FileRecord | null>;
 
 export async function confirmUpload(
-  deps: { db: Kysely<DB>; s3Storage: S3StoragePort },
+  deps: {
+    s3Storage: S3StoragePort;
+    findFileById: FindFileByIdPort;
+    markFileUploaded: MarkFileUploadedPort;
+  },
   input: { id: string },
 ): Promise<FileRecord> {
-  const file = await findFileById(deps.db, input.id);
+  const file = await deps.findFileById(input.id);
   if (!file) throw notFound("File");
 
-  const { exists } = await deps.s3Storage.headObject(file.s3Key);
+  const { exists, sizeBytes } = await deps.s3Storage.headObject(file.s3Key);
   if (!exists) throw conflict("Upload was not completed");
 
-  const updated = await markFileUploaded(deps.db, input.id);
+  const updated = await deps.markFileUploaded(input.id, sizeBytes);
   if (!updated) throw notFound("File");
   return updated;
 }

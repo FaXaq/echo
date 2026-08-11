@@ -7,7 +7,11 @@ import {
   listOrganizationFiles,
   renameFile,
 } from "@echo/modules/file/app";
-import { insertPendingFile } from "@echo/modules/file/infrastructure";
+import {
+  findFileById,
+  insertPendingFile,
+  markFileUploaded,
+} from "@echo/modules/file/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
 import {
@@ -49,9 +53,16 @@ export const makeFileRouter = () =>
         ),
       ),
 
-    confirmUpload: authedProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) => confirmUpload({ db: ctx.db, s3Storage: ctx.s3Storage }, input)),
+    confirmUpload: authedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) =>
+      confirmUpload(
+        {
+          s3Storage: ctx.s3Storage,
+          findFileById: (id) => findFileById(ctx.db, id),
+          markFileUploaded: (id, sizeBytes) => markFileUploaded(ctx.db, id, sizeBytes),
+        },
+        input,
+      ),
+    ),
 
     listEventFiles: authedProcedure
       .input(z.object({ eventId: z.string() }))

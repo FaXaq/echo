@@ -11,6 +11,7 @@ import type {
 import type { FileRecord } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import type { GetPersonalOrganizationIdPort, InsertPendingFilePort } from "./create-upload.js";
+import type { FindFileByIdPort, MarkFileUploadedPort } from "./confirm-upload.js";
 
 export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
   const keys = new Set(existingKeys);
@@ -86,4 +87,51 @@ export function makeFakeInsertPendingFile(
     };
     return record;
   };
+}
+
+export function makeFakeFileRecord(overrides: Partial<FileRecord> = {}): FileRecord {
+  return {
+    id: "file-1",
+    eventId: null,
+    organizationId: "org-1",
+    uploadedBy: "user-1",
+    uploadedByName: "Test User",
+    kind: "audio",
+    mimeType: "audio/mpeg",
+    sizeBytes: 1024,
+    filename: "demo.mp3",
+    originalFilename: "demo.mp3",
+    s3Key: "org/org-1/file-1/demo.mp3",
+    status: "pending",
+    createdAt: null,
+    updatedAt: null,
+    ...overrides,
+  };
+}
+
+export function makeFakeHeadObjectS3(result: {
+  exists: boolean;
+  sizeBytes: number | null;
+}): S3StoragePort {
+  return {
+    createUploadUrl: async () => ({ url: "" }),
+    createDownloadUrl: async () => ({ url: "" }),
+    headObject: async () => result,
+    deleteObject: async () => {},
+  };
+}
+
+export function makeFakeMarkFileUploaded(
+  onCall?: (id: string, sizeBytes: number | null) => void,
+): MarkFileUploadedPort {
+  return async (id, sizeBytes) => {
+    onCall?.(id, sizeBytes);
+    return makeFakeFileRecord({ id, status: "uploaded", sizeBytes: sizeBytes ?? 1024 });
+  };
+}
+
+export function makeFakeFindFileById(
+  record: FileRecord | null = makeFakeFileRecord(),
+): FindFileByIdPort {
+  return async () => record;
 }
