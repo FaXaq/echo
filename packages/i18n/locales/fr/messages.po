@@ -18,6 +18,12 @@ msgstr ""
 msgid "{0, plural, one {# file} other {# files}}"
 msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 
+#. placeholder {0}: table.getFilteredSelectedRowModel().rows.length
+#. placeholder {1}: table.getFilteredRowModel().rows.length
+#: apps/web/src/components/ui/data-table-pagination.tsx:25
+msgid "{0} of {1} row(s) selected."
+msgstr "{0} sur {1} ligne(s) sélectionnée(s)."
+
 #: apps/web/src/components/forgot-password-form.tsx:89
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
@@ -77,6 +83,10 @@ msgstr "Voulez-vous vraiment annuler cette invitation ?"
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:173
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Voulez-vous vraiment retirer ce membre du projet ?"
+
+#: apps/web/src/components/ui/data-table-column-header.tsx:48
+msgid "Asc"
+msgstr "Croissant"
 
 #: apps/web/src/lib/dynamic-messages.ts:15
 msgid "At least 12 characters"
@@ -246,6 +256,10 @@ msgstr "Supprimer le projet"
 msgid "Delete this file?"
 msgstr "Supprimer ce fichier ?"
 
+#: apps/web/src/components/ui/data-table-column-header.tsx:52
+msgid "Desc"
+msgstr "Décroissant"
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:225
 msgid "Description"
 msgstr "Description"
@@ -393,9 +407,29 @@ msgstr "Le nom complet est requis"
 msgid "General"
 msgstr "Général"
 
+#: apps/web/src/components/ui/data-table-pagination.tsx:64
+msgid "Go to first page"
+msgstr "Aller à la première page"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:92
+msgid "Go to last page"
+msgstr "Aller à la dernière page"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:82
+msgid "Go to next page"
+msgstr "Aller à la page suivante"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:73
+msgid "Go to previous page"
+msgstr "Aller à la page précédente"
+
 #: apps/web/src/components/ui/event-calendar/colors.ts:27
 msgid "Green"
 msgstr "Vert"
+
+#: apps/web/src/components/ui/data-table-column-header.tsx:60
+msgid "Hide"
+msgstr "Masquer"
 
 #: apps/web/src/lib/dynamic-messages.ts:14
 msgid "Invalid email address"
@@ -550,6 +584,10 @@ msgstr "Pas de membres pour le moment"
 msgid "No places found"
 msgstr "Aucun lieu trouvé"
 
+#: apps/web/src/components/ui/data-table.tsx:49
+msgid "No results."
+msgstr "Aucun résultat."
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:117
 msgid "No, keep it"
 msgstr "Non, la conserver"
@@ -608,6 +646,12 @@ msgstr "Organisateur"
 #: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Owner"
 msgstr "Propriétaire"
+
+#. placeholder {0}: table.state.pagination.pageIndex + 1
+#. placeholder {1}: table.getPageCount()
+#: apps/web/src/components/ui/data-table-pagination.tsx:53
+msgid "Page {0} of {1}"
+msgstr "Page {0} sur {1}"
 
 #: apps/web/src/components/login-form.tsx:77
 #: apps/web/src/components/signup-form.tsx:126
@@ -725,6 +769,10 @@ msgstr "Révoquer l’adhésion"
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:85
 msgid "Role"
 msgstr "Rôle"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:34
+msgid "Rows per page"
+msgstr "Lignes par page"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:72
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
@@ -852,6 +900,10 @@ msgstr "Le titre est requis"
 msgid "Today"
 msgstr "Aujourd'hui"
 
+#: apps/web/src/components/ui/data-table-view-options.tsx:30
+msgid "Toggle columns"
+msgstr "Basculer les colonnes"
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:332
 msgid "Type"
 msgstr "Type"
@@ -875,6 +927,10 @@ msgstr "Nom d'utilisateur"
 #: apps/web/src/lib/dynamic-messages.ts:12
 msgid "Username must be at least 3 characters"
 msgstr "Le nom d'utilisateur doit contenir au moins 3 caractères"
+
+#: apps/web/src/components/ui/data-table-view-options.tsx:27
+msgid "View"
+msgstr "Affichage"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:33
 msgid "Week"

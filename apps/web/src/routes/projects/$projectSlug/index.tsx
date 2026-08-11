@@ -2,7 +2,7 @@ import { getFullOrganizationQueryOptions } from "@/services/resources/organizati
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/projects/$projectSlug/")({
-  beforeLoad: async ({ params, context }) => {
+  beforeLoad: async ({ context }) => {
     const organization = await context.queryClient.ensureQueryData(
       getFullOrganizationQueryOptions({ organizationId: context.organizationId }),
     );
