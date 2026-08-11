@@ -189,7 +189,7 @@ msgstr "Confirm password"
 msgid "Could not generate a unique organization slug"
 msgstr "Could not generate a unique organization slug"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:93
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:89
 msgid "Could not load plan usage"
 msgstr "Could not load plan usage"
 
@@ -538,7 +538,7 @@ msgstr "Manage your project's events and schedule"
 msgid "Maximum 72 characters"
 msgstr "Maximum 72 characters"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:82
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:80
 msgid "Maximum file size"
 msgstr "Maximum file size"
 
@@ -551,7 +551,7 @@ msgid "Member"
 msgstr "Member"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:153
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:75
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:74
 #: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Members"
 msgstr "Members"
@@ -727,7 +727,7 @@ msgstr "Place"
 msgid "Plan"
 msgstr "Plan"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:60
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:59
 msgid "Plan & usage"
 msgstr "Plan & usage"
 
@@ -886,7 +886,7 @@ msgstr "Something went wrong"
 msgid "Start"
 msgstr "Start"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:68
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:67
 msgid "Storage"
 msgstr "Storage"
 
@@ -1004,6 +1004,6 @@ msgstr "Yes, remove"
 msgid "You have been invited to join"
 msgstr "You have been invited to join"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:63
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:62
 msgid "Your current plan and what you have used of it."
 msgstr "Your current plan and what you have used of it."

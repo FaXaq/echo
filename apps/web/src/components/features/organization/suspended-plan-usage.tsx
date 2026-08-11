@@ -13,9 +13,10 @@ export interface SuspendedPlanUsageProps {
 }
 
 function formatBytes(bytes: number) {
-  const gigabytes = bytes / 1_000_000_000;
-  if (gigabytes >= 1) return `${gigabytes.toFixed(1)} GB`;
-  return `${Math.round(bytes / 1_000_000)} MB`;
+  if (bytes >= 1_000_000_000) return `${(bytes / 1_000_000_000).toFixed(1)} GB`;
+  if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(1)} MB`;
+  if (bytes >= 1_000) return `${Math.round(bytes / 1_000)} KB`;
+  return `${bytes} B`;
 }
 
 function UsageBar({
