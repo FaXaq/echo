@@ -5,7 +5,7 @@ import { toFileRecord } from "./map-file.js";
 export type InsertPendingFileInput = {
   id: string;
   eventId: string | null;
-  organizationId: string | null;
+  organizationId: string;
   uploadedBy: string;
   kind: FileKind;
   mimeType: string;

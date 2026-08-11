@@ -54,7 +54,7 @@ export interface File {
   id: string;
   kind: string;
   mime_type: string;
-  organization_id: string | null;
+  organization_id: string;
   original_filename: string;
   s3_key: string;
   size_bytes: number;
