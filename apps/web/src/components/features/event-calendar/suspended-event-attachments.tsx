@@ -102,6 +102,41 @@ function RenameFileDialog({
   );
 }
 
+function UploadError({ error, projectSlug }: { error: unknown; projectSlug: string }) {
+  const { t } = useLingui();
+  const quotaError = getQuotaError(error);
+
+  if (quotaError?.limitName === "maxFileSizeBytes") {
+    return (
+      <p className="text-destructive text-xs">
+        <Trans>This file is too large for your plan.</Trans>
+      </p>
+    );
+  }
+
+  if (quotaError) {
+    return (
+      <p className="text-destructive text-xs">
+        <Trans>
+          This project has reached its plan limit.{" "}
+          <Link to="/projects/$projectSlug/settings" params={{ projectSlug }} className="underline">
+            View plan
+          </Link>
+        </Trans>
+      </p>
+    );
+  }
+
+  return (
+    <p className="text-destructive text-xs">
+      {translateDynamic(
+        t,
+        error instanceof Error && error.message ? error.message : "Upload failed",
+      )}
+    </p>
+  );
+}
+
 function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAttachmentsProps) {
   const { t } = useLingui();
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
@@ -128,30 +163,9 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
       </div>
 
       <FileUpload onFilesSelected={handleFilesSelected} disabled={uploadMutation.isPending} />
-      {uploadMutation.isError &&
-        (getQuotaError(uploadMutation.error) ? (
-          <p className="text-destructive text-xs">
-            <Trans>
-              This project has reached its plan limit.{" "}
-              <Link
-                to="/projects/$projectSlug/settings"
-                params={{ projectSlug }}
-                className="underline"
-              >
-                View plan
-              </Link>
-            </Trans>
-          </p>
-        ) : (
-          <p className="text-destructive text-xs">
-            {translateDynamic(
-              t,
-              uploadMutation.error instanceof Error && uploadMutation.error.message
-                ? uploadMutation.error.message
-                : "Upload failed",
-            )}
-          </p>
-        ))}
+      {uploadMutation.isError && (
+        <UploadError error={uploadMutation.error} projectSlug={projectSlug} />
+      )}
 
       {files.length > 0 && (
         <AttachmentList

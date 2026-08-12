@@ -85,7 +85,7 @@ describe("SuspendedEventAttachments", () => {
     expect(screen.getByText("2 files")).toBeInTheDocument();
   });
 
-  it("shows an upgrade prompt linking to plan settings when an upload hits the plan quota", async () => {
+  it("shows an upgrade prompt linking to plan settings when an upload hits the storage quota", async () => {
     uploadRejection = Object.assign(new Error("Quota exceeded: storageBytes"), {
       data: { quota: { limitName: "storageBytes", limit: 1000, current: 950 } },
     });
@@ -100,6 +100,22 @@ describe("SuspendedEventAttachments", () => {
     const link = screen.getByRole("link", { name: "View plan" });
     expect(link).toHaveAttribute("data-to", "/projects/$projectSlug/settings");
     expect(link).toHaveAttribute("data-params", JSON.stringify({ projectSlug: "acme-inc" }));
+  });
+
+  it("shows a file-too-large message, not the project-full message, when an upload hits the max file size", async () => {
+    uploadRejection = Object.assign(new Error("Quota exceeded: maxFileSizeBytes"), {
+      data: { quota: { limitName: "maxFileSizeBytes", limit: 1000, current: 2000 } },
+    });
+    vi.spyOn(fileResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
+
+    const user = userEvent.setup();
+    renderWithFiles([]);
+    const input = screen.getByLabelText("Add files", { selector: "input" });
+    await user.upload(input, makeFile());
+
+    expect(await screen.findByText(/too large for your plan/)).toBeInTheDocument();
+    expect(screen.queryByText(/reached its plan limit/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "View plan" })).not.toBeInTheDocument();
   });
 
   it("shows the generic upload-failed message for a non-quota upload error", async () => {
