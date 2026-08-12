@@ -1,6 +1,7 @@
 {
   "name": "echo",
   "private": true,
+  "license": "AGPL-3.0-only",
   "scripts": {
     "services:start": "docker compose up -d",
     "dev": "pnpm services:start && turbo dev",
