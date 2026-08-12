@@ -9,6 +9,7 @@ import {
   roles as organizationsRoles,
 } from "./plugins/organization/permissions";
 import { organizationAdditionalFields, userAdditionalFields } from "./additional-fields";
+import { makeOrganizationSeatHooks } from "./organization-seat-hooks";
 
 export type ServerAuthConfig = {
   secret: string;
@@ -23,7 +24,7 @@ export type ServerAuthConfig = {
     token: string,
   ) => Promise<void>;
   onOrganizationDeleted?: (organization: { id: string }) => Promise<void>;
-  hasSeatAvailable?: (organizationId: string) => Promise<boolean>;
+  hasSeatAvailable?: (organizationId: string, excludeInvitationId?: string) => Promise<boolean>;
 };
 
 export const makeServerAuth = (config: ServerAuthConfig) => {
@@ -105,22 +106,7 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
             }
             await config.onOrganizationDeleted?.(organization);
           },
-          beforeCreateInvitation: async ({ organization }) => {
-            const available = await config.hasSeatAvailable?.(organization.id);
-            if (available === false) {
-              throw new APIError("FORBIDDEN", {
-                message: "This organization has no seats left on its current plan.",
-              });
-            }
-          },
-          beforeAcceptInvitation: async ({ organization }) => {
-            const available = await config.hasSeatAvailable?.(organization.id);
-            if (available === false) {
-              throw new APIError("FORBIDDEN", {
-                message: "This organization has no seats left on its current plan.",
-              });
-            }
-          },
+          ...makeOrganizationSeatHooks(config.hasSeatAvailable),
         },
       }),
       username(),

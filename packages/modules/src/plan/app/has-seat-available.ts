@@ -6,8 +6,15 @@ export function seatIsAvailable({ used, limit }: { used: number; limit: number }
   return used < limit;
 }
 
-export async function hasSeatAvailable(deps: { db: KyselyDB }, input: { organizationId: string }) {
+export async function hasSeatAvailable(
+  deps: { db: KyselyDB },
+  input: { organizationId: string; excludeInvitationId?: string },
+) {
   const plan = await resolvePlanQuery(deps.db, input.organizationId);
-  const used = await getOrganizationSeatUsageQuery(deps.db, input.organizationId);
+  const used = await getOrganizationSeatUsageQuery(
+    deps.db,
+    input.organizationId,
+    input.excludeInvitationId,
+  );
   return seatIsAvailable({ used, limit: planCatalog[plan].limits.memberSeats });
 }

@@ -71,7 +71,8 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
       ),
     });
   },
-  hasSeatAvailable: async (organizationId) => hasSeatAvailable({ db }, { organizationId }),
+  hasSeatAvailable: async (organizationId, excludeInvitationId) =>
+    hasSeatAvailable({ db }, { organizationId, excludeInvitationId }),
   sendOrganizationInvitation: async ({ invitation, organization, inviter }) => {
     const i18n = makeServerI18n(toLocale((inviter as { locale?: string }).locale));
     await mailer.send({
