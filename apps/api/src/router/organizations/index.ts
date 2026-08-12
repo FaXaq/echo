@@ -5,9 +5,11 @@ import {
   createOrganizationCommandFactory,
 } from "@echo/modules/organization/infrastructure";
 import { selfListOrganizations, createOrganization } from "@echo/modules/organization/app";
+import { makePlanRouter } from "./plan";
 
 export const makeOrganizationRouter = () =>
   router({
+    plan: makePlanRouter(),
     selfList: authedProcedure.query(({ ctx }) => {
       const listUserOrganizationsQuery = listUserOrganizationsQueryFactory({
         headers: ctx.headers,

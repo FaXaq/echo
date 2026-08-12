@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { ForbiddenError, ConflictError } from "@echo/errors";
+import { ForbiddenError, ConflictError, NotFoundError, QuotaExceededError } from "@echo/errors";
+import { planCatalog } from "@echo/modules/plan/domain";
+import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import { createUpload } from "./create-upload.js";
-import { makeFakeS3Storage, makeFakePermissionChecks } from "./test-fixtures.js";
+import {
+  makeFakeS3Storage,
+  makeFakePermissionChecks,
+  makeFakeInsertPendingFile,
+  makeFakePersonalOrganizationId,
+  makeFakeQuotaPorts,
+} from "./test-fixtures.js";
 
 const baseInput = {
   userId: "user-1",
@@ -15,24 +23,13 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
-          db: {} as never,
+          insertPendingFile: makeFakeInsertPendingFile(),
+          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
           ...makeFakePermissionChecks(),
+          ...makeFakeQuotaPorts(),
         },
         { ...baseInput, mimeType: "application/zip" },
-      ),
-    ).rejects.toBeInstanceOf(ConflictError);
-  });
-
-  it("rejects a file over the size limit", async () => {
-    await expect(
-      createUpload(
-        {
-          db: {} as never,
-          s3Storage: makeFakeS3Storage(),
-          ...makeFakePermissionChecks(),
-        },
-        { ...baseInput, sizeBytes: 200 * 1024 * 1024 },
       ),
     ).rejects.toBeInstanceOf(ConflictError);
   });
@@ -41,11 +38,13 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
-          db: {} as never,
+          insertPendingFile: makeFakeInsertPendingFile(),
+          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
           ...makeFakePermissionChecks({
             userHasPermission: async () => ({ success: false, error: null }),
           }),
+          ...makeFakeQuotaPorts(),
         },
         baseInput,
       ),
@@ -56,7 +55,8 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
-          db: {} as never,
+          insertPendingFile: makeFakeInsertPendingFile(),
+          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
           ...makeFakePermissionChecks({
             userHasPermissionInOrganization: async () => ({
@@ -65,9 +65,140 @@ describe("createUpload", () => {
               role: null,
             }),
           }),
+          ...makeFakeQuotaPorts(),
         },
         { ...baseInput, organizationId: "org-1" },
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
+  it("attributes a personal upload to the user's personal organization", async () => {
+    const inserted: InsertPendingFileInput[] = [];
+
+    await createUpload(
+      {
+        s3Storage: makeFakeS3Storage(),
+        insertPendingFile: makeFakeInsertPendingFile((input) => inserted.push(input)),
+        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+        ...makeFakePermissionChecks(),
+        ...makeFakeQuotaPorts(),
+      },
+      baseInput,
+    );
+
+    expect(inserted).toHaveLength(1);
+    expect(inserted[0].organizationId).toBe("personal-org-1");
+  });
+
+  it("rejects a personal upload when the user has no personal organization", async () => {
+    await expect(
+      createUpload(
+        {
+          s3Storage: makeFakeS3Storage(),
+          insertPendingFile: makeFakeInsertPendingFile(),
+          getPersonalOrganizationId: makeFakePersonalOrganizationId(undefined),
+          ...makeFakePermissionChecks(),
+          ...makeFakeQuotaPorts(),
+        },
+        baseInput,
+      ),
+    ).rejects.toBeInstanceOf(NotFoundError);
+  });
+
+  it("rejects a file larger than the plan's max file size", async () => {
+    await expect(
+      createUpload(
+        {
+          s3Storage: makeFakeS3Storage(),
+          insertPendingFile: makeFakeInsertPendingFile(),
+          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+          ...makeFakePermissionChecks(),
+          ...makeFakeQuotaPorts(),
+        },
+        { ...baseInput, sizeBytes: planCatalog.free.limits.maxFileSizeBytes + 1 },
+      ),
+    ).rejects.toBeInstanceOf(QuotaExceededError);
+  });
+
+  it("allows a file exactly at the plan's max file size", async () => {
+    const result = await createUpload(
+      {
+        s3Storage: makeFakeS3Storage(),
+        insertPendingFile: makeFakeInsertPendingFile(),
+        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+        ...makeFakePermissionChecks(),
+        ...makeFakeQuotaPorts(),
+      },
+      { ...baseInput, sizeBytes: planCatalog.free.limits.maxFileSizeBytes },
+    );
+
+    expect(result.uploadUrl).toContain("https://fake-s3.local/");
+  });
+
+  it("rejects an upload that would exceed the storage quota", async () => {
+    await expect(
+      createUpload(
+        {
+          s3Storage: makeFakeS3Storage(),
+          insertPendingFile: makeFakeInsertPendingFile(),
+          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+          ...makeFakePermissionChecks(),
+          ...makeFakeQuotaPorts({
+            getOrganizationStorageUsage: async () => planCatalog.free.limits.storageBytes - 100,
+          }),
+        },
+        { ...baseInput, sizeBytes: 101 },
+      ),
+    ).rejects.toBeInstanceOf(QuotaExceededError);
+  });
+
+  it("allows an upload that lands exactly on the storage quota", async () => {
+    const result = await createUpload(
+      {
+        s3Storage: makeFakeS3Storage(),
+        insertPendingFile: makeFakeInsertPendingFile(),
+        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+        ...makeFakePermissionChecks(),
+        ...makeFakeQuotaPorts({
+          getOrganizationStorageUsage: async () => planCatalog.free.limits.storageBytes - 100,
+        }),
+      },
+      { ...baseInput, sizeBytes: 100 },
+    );
+
+    expect(result.uploadUrl).toContain("https://fake-s3.local/");
+  });
+
+  it("issues no upload url when the quota rejects the request", async () => {
+    const issued: string[] = [];
+    const s3Storage = makeFakeS3Storage();
+    const trackingS3 = {
+      ...s3Storage,
+      createUploadUrl: async (args: {
+        key: string;
+        contentType: string;
+        contentLength: number;
+      }) => {
+        issued.push(args.key);
+        return s3Storage.createUploadUrl(args);
+      },
+    };
+
+    await expect(
+      createUpload(
+        {
+          s3Storage: trackingS3,
+          insertPendingFile: makeFakeInsertPendingFile(),
+          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+          ...makeFakePermissionChecks(),
+          ...makeFakeQuotaPorts({
+            getOrganizationStorageUsage: async () => planCatalog.free.limits.storageBytes,
+          }),
+        },
+        { ...baseInput, sizeBytes: 1 },
+      ),
+    ).rejects.toBeInstanceOf(QuotaExceededError);
+
+    expect(issued).toEqual([]);
   });
 });

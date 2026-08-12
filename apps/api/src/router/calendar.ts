@@ -99,14 +99,21 @@ export const makeCalendarRouter = () =>
 
     deleteEvent: authedProcedure
       .input(z.object({ id: z.string(), organizationId: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteEvent(
+      .mutation(async ({ ctx, input }) => {
+        const failures = await deleteEvent(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             deleteCalendarEventCommand,
+            s3Storage: ctx.s3Storage,
           },
           { id: input.id, organizationId: input.organizationId },
-        ),
-      ),
+        );
+        for (const failure of failures) {
+          ctx.logger.error(
+            { error: failure.error, fileId: failure.fileId, eventId: input.id },
+            "Failed to delete S3 object during event deletion",
+          );
+        }
+      }),
   });

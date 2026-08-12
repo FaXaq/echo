@@ -7,6 +7,17 @@ import {
   listOrganizationFiles,
   renameFile,
 } from "@echo/modules/file/app";
+import {
+  findFileById,
+  insertPendingFile,
+  markFileUploaded,
+} from "@echo/modules/file/infrastructure";
+import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
+import { resolveEntitlements } from "@echo/modules/plan/app";
+import {
+  getOrganizationStorageUsageQuery,
+  resolvePlanQuery,
+} from "@echo/modules/plan/infrastructure";
 import { authedProcedure, router } from "../trpc";
 
 export const makeFileRouter = () =>
@@ -24,18 +35,34 @@ export const makeFileRouter = () =>
       .mutation(({ ctx, input }) =>
         createUpload(
           {
-            db: ctx.db,
             s3Storage: ctx.s3Storage,
             userHasPermission: ctx.userHasPermission,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            insertPendingFile: (fileInput) => insertPendingFile(ctx.db, fileInput),
+            getPersonalOrganizationId: async (userId: string) =>
+              (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
+            resolveOrganizationEntitlements: (organizationId: string) =>
+              resolveEntitlements(
+                { resolvePlan: (id: string) => resolvePlanQuery(ctx.db, id) },
+                organizationId,
+              ),
+            getOrganizationStorageUsage: (organizationId: string) =>
+              getOrganizationStorageUsageQuery(ctx.db, organizationId),
           },
           { userId: ctx.session.user.id, ...input },
         ),
       ),
 
-    confirmUpload: authedProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) => confirmUpload({ db: ctx.db, s3Storage: ctx.s3Storage }, input)),
+    confirmUpload: authedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) =>
+      confirmUpload(
+        {
+          s3Storage: ctx.s3Storage,
+          findFileById: (id) => findFileById(ctx.db, id),
+          markFileUploaded: (id, sizeBytes) => markFileUploaded(ctx.db, id, sizeBytes),
+        },
+        input,
+      ),
+    ),
 
     listEventFiles: authedProcedure
       .input(z.object({ eventId: z.string() }))

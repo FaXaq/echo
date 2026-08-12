@@ -22,6 +22,8 @@ export const appErrorToTRPC = (e: unknown): TRPCError => {
       return new TRPCError({ code: "FORBIDDEN", message: e.message });
     case "DATA_VALIDATION_FAILED":
       return new TRPCError({ code: "BAD_REQUEST", message: e.message });
+    case "QUOTA_EXCEEDED":
+      return new TRPCError({ code: "FORBIDDEN", message: e.message, cause: e });
     case "DATABASE_ERROR":
     default:
       return new TRPCError({ code: "INTERNAL_SERVER_ERROR" });

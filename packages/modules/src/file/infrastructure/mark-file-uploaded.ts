@@ -3,11 +3,19 @@ import type { FileRecord } from "../domain/index.js";
 import { toFileRecord } from "./map-file.js";
 import { makeSelectFileByIdQuery } from "./common.js";
 
-export async function markFileUploaded(db: KyselyDB, id: string): Promise<FileRecord | null> {
+export async function markFileUploaded(
+  db: KyselyDB,
+  id: string,
+  sizeBytes: number | null,
+): Promise<FileRecord | null> {
   const row = await db.transaction().execute(async (trx) => {
     const { id: fileId } = await trx
       .updateTable("file")
-      .set({ status: "uploaded", updated_at: new Date() })
+      .set({
+        status: "uploaded",
+        updated_at: new Date(),
+        ...(sizeBytes === null ? {} : { size_bytes: sizeBytes }),
+      })
       .where("id", "=", id)
       .returning("id")
       .executeTakeFirstOrThrow();

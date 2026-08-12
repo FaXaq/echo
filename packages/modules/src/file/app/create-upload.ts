@@ -1,19 +1,30 @@
-import type { KyselyDB } from "@echo/db";
-import { conflict, forbidden } from "@echo/errors";
+import { conflict, forbidden, notFound, quotaExceeded } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
 } from "@echo/modules/user/infrastructure";
-import { isValidFileSize, kindForMimeType } from "../domain/index.js";
-import { insertPendingFile } from "../infrastructure/index.js";
+import { exceedsLimit } from "@echo/modules/plan/domain";
+import type {
+  GetOrganizationStorageUsagePort,
+  ResolveEntitlementsPort,
+} from "@echo/modules/plan/app";
+import { kindForMimeType } from "../domain/index.js";
+import type { FileRecord } from "../domain/index.js";
+import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+
+export type InsertPendingFilePort = (input: InsertPendingFileInput) => Promise<FileRecord>;
+export type GetPersonalOrganizationIdPort = (userId: string) => Promise<string | undefined>;
 
 export async function createUpload(
   deps: {
-    db: KyselyDB;
     s3Storage: S3StoragePort;
     userHasPermission: CheckUserPermission;
     userHasPermissionInOrganization: CheckOrganizationPermission;
+    insertPendingFile: InsertPendingFilePort;
+    getPersonalOrganizationId: GetPersonalOrganizationIdPort;
+    resolveOrganizationEntitlements: ResolveEntitlementsPort;
+    getOrganizationStorageUsage: GetOrganizationStorageUsagePort;
   },
   input: {
     userId: string;
@@ -26,7 +37,6 @@ export async function createUpload(
 ): Promise<{ fileId: string; uploadUrl: string }> {
   const kind = kindForMimeType(input.mimeType);
   if (!kind) throw conflict("Unsupported file type");
-  if (!isValidFileSize(input.sizeBytes)) throw conflict("File is too large");
 
   if (input.organizationId) {
     const { success } = await deps.userHasPermissionInOrganization({
@@ -41,15 +51,38 @@ export async function createUpload(
     if (!success) throw forbidden({ entity: "File", action: "create" });
   }
 
+  const organizationId =
+    input.organizationId ?? (await deps.getPersonalOrganizationId(input.userId));
+  if (!organizationId) throw notFound("Personal organization");
+
+  const { limits } = await deps.resolveOrganizationEntitlements(organizationId);
+
+  if (input.sizeBytes > limits.maxFileSizeBytes) {
+    throw quotaExceeded({
+      limitName: "maxFileSizeBytes",
+      limit: limits.maxFileSizeBytes,
+      current: input.sizeBytes,
+    });
+  }
+
+  const usedBytes = await deps.getOrganizationStorageUsage(organizationId);
+  if (exceedsLimit({ current: usedBytes, delta: input.sizeBytes, limit: limits.storageBytes })) {
+    throw quotaExceeded({
+      limitName: "storageBytes",
+      limit: limits.storageBytes,
+      current: usedBytes,
+    });
+  }
+
   const id = crypto.randomUUID();
   const s3Key = input.organizationId
     ? `org/${input.organizationId}/${id}/${input.filename}`
     : `personal/${input.userId}/${id}/${input.filename}`;
 
-  await insertPendingFile(deps.db, {
+  await deps.insertPendingFile({
     id,
     eventId: input.eventId ?? null,
-    organizationId: input.organizationId ?? null,
+    organizationId,
     uploadedBy: input.userId,
     kind,
     mimeType: input.mimeType,

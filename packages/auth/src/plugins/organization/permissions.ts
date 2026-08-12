@@ -26,6 +26,7 @@ const owner = ac.newRole({
   ...ownerAc.statements,
   calendarEvent: [...calendarEventActions],
   file: [...fileActions],
+  "*": ["read"],
 });
 
 // Default Better-Auth role
@@ -33,6 +34,7 @@ const admin = ac.newRole({
   ...adminAc.statements,
   calendarEvent: [...calendarEventActions],
   file: [...fileActions],
+  "*": ["read"],
 });
 
 // Define roles
