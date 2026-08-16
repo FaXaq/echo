@@ -1,3 +1,4 @@
+import { isAPIError } from "@echo/auth";
 import type { OrganizationRole, ServerAuth } from "@echo/auth";
 
 export type OrganizationPermissionsInput = NonNullable<
@@ -23,25 +24,29 @@ export async function userHasPermissionInOrganization(
     return { success: false, error: null, role: null };
   }
 
-  const activeOrganization = await deps.auth.api.getFullOrganization({ headers: deps.headers });
+  const organizationId = input.organizationId;
 
-  if (activeOrganization && activeOrganization.id !== input.organizationId) {
-    return { success: false, error: null, role: null };
+  let role: OrganizationRole | null;
+  try {
+    ({ role } = await deps.auth.api.getActiveMemberRole({
+      headers: deps.headers,
+      query: { organizationId },
+    }));
+  } catch (error) {
+    if (isAPIError(error) && error.status === "FORBIDDEN") {
+      return { success: false, error: null, role: null };
+    }
+    throw error;
   }
 
-  const organizationId = input.organizationId ?? activeOrganization?.id;
+  const permissions = input.permissions ?? {};
+  if (Object.keys(permissions).length === 0) {
+    return { success: true, error: null, role };
+  }
 
   const { success, error } = await deps.auth.api.hasPermission({
     headers: deps.headers,
-    body: {
-      permissions: input.permissions ?? {},
-      organizationId,
-    },
-  });
-
-  const { role } = await deps.auth.api.getActiveMemberRole({
-    headers: deps.headers,
-    query: { organizationId },
+    body: { permissions, organizationId },
   });
 
   return { success, error, role };
