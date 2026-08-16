@@ -1,20 +1,35 @@
 import { z } from "zod";
 import {
   confirmUpload,
+  createFolder,
   createUpload,
   deleteFile,
+  deleteFolder,
   listEventFiles,
+  listFolderContents,
   listOrganizationFiles,
+  moveFile,
+  moveFolder,
   renameFile,
+  renameFolder,
 } from "@echo/modules/file/app";
 import {
   deleteFileByIdCommandFactory,
+  deleteFolderCascadeCommandFactory,
   findFileByIdQueryFactory,
+  findFolderByIdQueryFactory,
+  findFolderByParentAndNameQueryFactory,
+  findFolderDescendantIdsQueryFactory,
+  insertFolderCommandFactory,
   insertPendingFileCommandFactory,
   listFilesByEventQueryFactory,
   listFilesByOrganizationQueryFactory,
+  listFolderContentsQueryFactory,
   markFileUploadedCommandFactory,
+  moveFileToFolderCommandFactory,
+  moveFolderCommandFactory,
   renameFileByIdCommandFactory,
+  renameFolderByIdCommandFactory,
 } from "@echo/modules/file/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
@@ -31,6 +46,15 @@ const listFilesByEventQuery = listFilesByEventQueryFactory();
 const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 const renameFileByIdCommand = renameFileByIdCommandFactory();
+const moveFileToFolderCommand = moveFileToFolderCommandFactory();
+const findFolderByIdQuery = findFolderByIdQueryFactory();
+const findFolderByParentAndNameQuery = findFolderByParentAndNameQueryFactory();
+const insertFolderCommand = insertFolderCommandFactory();
+const renameFolderByIdCommand = renameFolderByIdCommandFactory();
+const moveFolderCommand = moveFolderCommandFactory();
+const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
+const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
+const listFolderContentsQuery = listFolderContentsQueryFactory();
 
 export const makeFileRouter = () =>
   router({
@@ -38,6 +62,7 @@ export const makeFileRouter = () =>
       .input(
         z.object({
           eventId: z.string().optional(),
+          folderId: z.string().nullish(),
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
           filename: z.string().min(1),
@@ -50,6 +75,7 @@ export const makeFileRouter = () =>
             s3Storage: ctx.s3Storage,
             userHasPermission: ctx.userHasPermission,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
             insertPendingFileCommand,
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
@@ -128,6 +154,98 @@ export const makeFileRouter = () =>
             renameFileByIdCommand,
           },
           { id: input.id, scope: ctx.organizationScope, filename: input.filename },
+        ),
+      ),
+
+    moveFile: organizationProcedure
+      .input(z.object({ id: z.string(), folderId: z.string().nullable() }))
+      .mutation(({ ctx, input }) =>
+        moveFile(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
+            moveFileToFolderCommand,
+          },
+          { id: input.id, scope: ctx.organizationScope, folderId: input.folderId },
+        ),
+      ),
+
+    createFolder: organizationProcedure
+      .input(z.object({ parentFolderId: z.string().nullable(), name: z.string().min(1) }))
+      .mutation(({ ctx, input }) =>
+        createFolder(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
+            findFolderByParentAndNameQuery,
+            insertFolderCommand,
+          },
+          {
+            scope: ctx.organizationScope,
+            parentFolderId: input.parentFolderId,
+            name: input.name,
+          },
+        ),
+      ),
+
+    renameFolder: organizationProcedure
+      .input(z.object({ id: z.string(), name: z.string().min(1) }))
+      .mutation(({ ctx, input }) =>
+        renameFolder(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
+            findFolderByParentAndNameQuery,
+            renameFolderByIdCommand,
+          },
+          { id: input.id, scope: ctx.organizationScope, name: input.name },
+        ),
+      ),
+
+    moveFolder: organizationProcedure
+      .input(z.object({ id: z.string(), parentFolderId: z.string().nullable() }))
+      .mutation(({ ctx, input }) =>
+        moveFolder(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
+            findFolderByParentAndNameQuery,
+            findFolderDescendantIdsQuery,
+            moveFolderCommand,
+          },
+          { id: input.id, scope: ctx.organizationScope, parentFolderId: input.parentFolderId },
+        ),
+      ),
+
+    deleteFolder: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .mutation(({ ctx, input }) =>
+        deleteFolder(
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            deleteFolderCascadeCommand,
+          },
+          { id: input.id, scope: ctx.organizationScope },
+        ),
+      ),
+
+    listFolderContents: organizationProcedure
+      .input(z.object({ folderId: z.string().nullable() }))
+      .query(({ ctx, input }) =>
+        listFolderContents(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
+            listFolderContentsQuery,
+          },
+          { scope: ctx.organizationScope, folderId: input.folderId },
         ),
       ),
   });

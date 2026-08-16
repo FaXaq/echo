@@ -22,6 +22,7 @@ export function kindForMimeType(mimeType: string): FileKind | null {
 export type FileRecord = {
   id: string;
   eventId: string | null;
+  folderId: string | null;
   organizationId: string;
   uploadedBy: string;
   uploadedByName: string;
@@ -32,6 +33,15 @@ export type FileRecord = {
   originalFilename: string;
   s3Key: string;
   status: FileStatus;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+};
+
+export type FolderRecord = {
+  id: string;
+  organizationId: string;
+  parentFolderId: string | null;
+  name: string;
   createdAt: Date | null;
   updatedAt: Date | null;
 };

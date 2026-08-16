@@ -1,5 +1,5 @@
 import type { KyselyDB } from "@echo/db";
-import { conflict, forbidden, quotaExceeded } from "@echo/errors";
+import { conflict, forbidden, notFound, quotaExceeded } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
@@ -11,7 +11,10 @@ import type {
 } from "@echo/modules/plan/app";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import { kindForMimeType } from "../domain/index.js";
-import type { InsertPendingFileCommandPort } from "../infrastructure/index.js";
+import type {
+  FindFolderByIdQueryPort,
+  InsertPendingFileCommandPort,
+} from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
 export type GetPersonalOrganizationIdPort = (userId: string) => Promise<string | undefined>;
@@ -22,6 +25,7 @@ export async function createUpload(
     s3Storage: S3StoragePort;
     userHasPermission: CheckUserPermission;
     userHasPermissionInOrganization: CheckOrganizationPermission;
+    findFolderByIdQuery: FindFolderByIdQueryPort;
     insertPendingFileCommand: InsertPendingFileCommandPort;
     getPersonalOrganizationId: GetPersonalOrganizationIdPort;
     resolveOrganizationEntitlements: ResolveEntitlementsPort;
@@ -30,6 +34,7 @@ export async function createUpload(
   input: {
     userId: string;
     eventId?: string;
+    folderId?: string | null;
     scope: OrganizationScope;
     mimeType: string;
     sizeBytes: number;
@@ -44,6 +49,11 @@ export async function createUpload(
     permissions: { file: ["create"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "create" });
+
+  if (input.folderId) {
+    const folder = await deps.findFolderByIdQuery(deps.db, input.scope, { id: input.folderId });
+    if (!folder) throw notFound("Folder");
+  }
 
   const { limits } = await deps.resolveOrganizationEntitlements(input.scope);
 
@@ -70,6 +80,7 @@ export async function createUpload(
   await deps.insertPendingFileCommand(deps.db, input.scope, {
     id,
     eventId: input.eventId ?? null,
+    folderId: input.folderId ?? null,
     uploadedBy: input.userId,
     kind,
     mimeType: input.mimeType,

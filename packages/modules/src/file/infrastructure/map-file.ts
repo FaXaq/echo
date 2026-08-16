@@ -22,6 +22,7 @@ export function toFileRecord(row: FileRow): FileRecord {
   return {
     id: row.id,
     eventId: row.event_id,
+    folderId: row.folder_id,
     organizationId: row.organization_id,
     uploadedBy: row.uploaded_by,
     uploadedByName: row.uploaded_by_name ?? row.uploaded_by,

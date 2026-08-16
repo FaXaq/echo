@@ -19,6 +19,14 @@ Whether a caller may act within an Organization. With no specific permission req
 An Organization's storage usage against the limit its Plan allows: usage summed from its uploaded/pending files, limit read from `planCatalog`. Computed in `plan`'s app layer and exposed via `organization.plan.quota.storage`, gated on the `quota` permission (distinct from `plan`, which gates Plan/features visibility). The single source of truth for storage usage — `plan.overview` does not duplicate it.
 _Avoid_: reading storage usage off `plan.overview` (removed; would drift from the quota endpoint, which is the one invalidated on file upload/delete)
 
+**Drive**:
+The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's file list, which shows only files attached to that Event regardless of which Folder (if any) they sit in — a file can be attached to an Event and organized into a Folder at the same time; the two are independent.
+_Avoid_: File browser
+
+**Folder**:
+A named container for organizing an Organization's Drive files, nestable arbitrarily deep under other Folders. Scoped only to the Organization — a Folder has no Event (or, in future, Song) scoping, unlike `file`. The hierarchy root is implicit: a `null` parent (on a Folder) or a `null` folder (on a file) means "at Drive root," the same nullable-FK convention already used for `file.eventId`.
+_Avoid_: Directory
+
 ## Exceptions
 
 **Invitation lookup by id** (`invitation/infrastructure/get-invitation-by-id.ts`) does not require Organization Scope. An invitee looking up their invitation isn't an Organization member yet, so there's no membership to verify — the invitation id itself is the capability that grants read access, not scope.

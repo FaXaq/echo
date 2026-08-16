@@ -11,6 +11,7 @@ import {
   makeFakeInsertPendingFile,
   makeFakePersonalOrganizationId,
   makeFakeQuotaPorts,
+  makeFakeFindFolderById,
 } from "./test-fixtures.js";
 
 const baseInput = {
@@ -27,6 +28,7 @@ describe("createUpload", () => {
       createUpload(
         {
           db: makeFakeDb(),
+          findFolderByIdQuery: makeFakeFindFolderById(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
@@ -43,6 +45,7 @@ describe("createUpload", () => {
       createUpload(
         {
           db: makeFakeDb(),
+          findFolderByIdQuery: makeFakeFindFolderById(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
@@ -66,6 +69,7 @@ describe("createUpload", () => {
     await createUpload(
       {
         db: makeFakeDb(),
+        findFolderByIdQuery: makeFakeFindFolderById(),
         s3Storage: makeFakeS3Storage(),
         insertPendingFileCommand: makeFakeInsertPendingFile((scope, input) =>
           inserted.push({ scope, input }),
@@ -86,6 +90,7 @@ describe("createUpload", () => {
       createUpload(
         {
           db: makeFakeDb(),
+          findFolderByIdQuery: makeFakeFindFolderById(),
           s3Storage: makeFakeS3Storage(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
@@ -101,6 +106,7 @@ describe("createUpload", () => {
     const result = await createUpload(
       {
         db: makeFakeDb(),
+        findFolderByIdQuery: makeFakeFindFolderById(),
         s3Storage: makeFakeS3Storage(),
         insertPendingFileCommand: makeFakeInsertPendingFile(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
@@ -118,6 +124,7 @@ describe("createUpload", () => {
       createUpload(
         {
           db: makeFakeDb(),
+          findFolderByIdQuery: makeFakeFindFolderById(),
           s3Storage: makeFakeS3Storage(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
@@ -135,6 +142,7 @@ describe("createUpload", () => {
     const result = await createUpload(
       {
         db: makeFakeDb(),
+        findFolderByIdQuery: makeFakeFindFolderById(),
         s3Storage: makeFakeS3Storage(),
         insertPendingFileCommand: makeFakeInsertPendingFile(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
@@ -168,6 +176,7 @@ describe("createUpload", () => {
       createUpload(
         {
           db: makeFakeDb(),
+          findFolderByIdQuery: makeFakeFindFolderById(),
           s3Storage: trackingS3,
           insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),

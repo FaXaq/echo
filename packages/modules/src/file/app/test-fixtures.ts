@@ -11,12 +11,14 @@ import type {
 } from "@echo/modules/plan/app";
 import type {
   FindFileByIdQueryPort,
+  FindFolderByIdQueryPort,
+  FindFolderByParentAndNameQueryPort,
   InsertPendingFileCommandPort,
   InsertPendingFileInput,
   MarkFileUploadedCommandPort,
 } from "../infrastructure/index.js";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { FileRecord } from "../domain/index.js";
+import type { FileRecord, FolderRecord } from "../domain/index.js";
 import type { GetPersonalOrganizationIdPort } from "./create-upload.js";
 
 export function makeFakeDb(): KyselyDB {
@@ -88,6 +90,7 @@ export function makeFakeInsertPendingFile(
     const record: FileRecord = {
       id: input.id,
       eventId: input.eventId,
+      folderId: input.folderId,
       organizationId: scope.organizationId,
       uploadedBy: input.uploadedBy,
       uploadedByName: "Test User",
@@ -109,6 +112,7 @@ export function makeFakeFileRecord(overrides: Partial<FileRecord> = {}): FileRec
   return {
     id: "file-1",
     eventId: null,
+    folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
     uploadedByName: "Test User",
@@ -153,5 +157,29 @@ export function makeFakeMarkFileUploaded(
 export function makeFakeFindFileById(
   record: FileRecord | null = makeFakeFileRecord(),
 ): FindFileByIdQueryPort {
+  return async () => record;
+}
+
+export function makeFakeFolderRecord(overrides: Partial<FolderRecord> = {}): FolderRecord {
+  return {
+    id: "folder-1",
+    organizationId: "org-1",
+    parentFolderId: null,
+    name: "Demos",
+    createdAt: null,
+    updatedAt: null,
+    ...overrides,
+  };
+}
+
+export function makeFakeFindFolderById(
+  record: FolderRecord | null = makeFakeFolderRecord(),
+): FindFolderByIdQueryPort {
+  return async () => record;
+}
+
+export function makeFakeFindFolderByParentAndName(
+  record: FolderRecord | null = null,
+): FindFolderByParentAndNameQueryPort {
   return async () => record;
 }

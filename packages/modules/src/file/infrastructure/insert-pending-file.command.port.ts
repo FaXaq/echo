@@ -5,6 +5,7 @@ import type { FileKind, FileRecord } from "../domain/index.js";
 export type InsertPendingFileInput = {
   id: string;
   eventId: string | null;
+  folderId: string | null;
   uploadedBy: string;
   kind: FileKind;
   mimeType: string;

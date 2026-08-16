@@ -36,3 +36,53 @@ export type {
   RenameFileByIdCommandPort,
 } from "./rename-file-by-id.command.port.js";
 export { renameFileByIdCommandFactory } from "./rename-file-by-id.command.kysely.js";
+
+export type {
+  MoveFileToFolderInput,
+  MoveFileToFolderCommandPort,
+} from "./move-file-to-folder.command.port.js";
+export { moveFileToFolderCommandFactory } from "./move-file-to-folder.command.kysely.js";
+
+export type { InsertFolderInput, InsertFolderCommandPort } from "./insert-folder.command.port.js";
+export { insertFolderCommandFactory } from "./insert-folder.command.kysely.js";
+
+export type {
+  FindFolderByIdQueryInput,
+  FindFolderByIdQueryPort,
+} from "./find-folder-by-id.query.port.js";
+export { findFolderByIdQueryFactory } from "./find-folder-by-id.query.kysely.js";
+
+export type {
+  FindFolderByParentAndNameQueryInput,
+  FindFolderByParentAndNameQueryPort,
+} from "./find-folder-by-parent-and-name.query.port.js";
+export { findFolderByParentAndNameQueryFactory } from "./find-folder-by-parent-and-name.query.kysely.js";
+
+export type {
+  RenameFolderByIdInput,
+  RenameFolderByIdCommandPort,
+} from "./rename-folder-by-id.command.port.js";
+export { renameFolderByIdCommandFactory } from "./rename-folder-by-id.command.kysely.js";
+
+export type { MoveFolderInput, MoveFolderCommandPort } from "./move-folder.command.port.js";
+export { moveFolderCommandFactory } from "./move-folder.command.kysely.js";
+
+export type {
+  FindFolderDescendantIdsQueryInput,
+  FindFolderDescendantIdsQueryPort,
+} from "./find-folder-descendant-ids.query.port.js";
+export { findFolderDescendantIdsQueryFactory } from "./find-folder-descendant-ids.query.kysely.js";
+
+export type {
+  DeleteFolderCascadeInput,
+  DeleteFolderCascadeResult,
+  DeleteFolderCascadeCommandPort,
+} from "./delete-folder-cascade.command.port.js";
+export { deleteFolderCascadeCommandFactory } from "./delete-folder-cascade.command.kysely.js";
+
+export type {
+  ListFolderContentsQueryInput,
+  ListFolderContentsResult,
+  ListFolderContentsQueryPort,
+} from "./list-folder-contents.query.port.js";
+export { listFolderContentsQueryFactory } from "./list-folder-contents.query.kysely.js";

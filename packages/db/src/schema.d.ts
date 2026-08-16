@@ -51,6 +51,7 @@ export interface File {
   created_at: Generated<Timestamp | null>;
   event_id: string | null;
   filename: string;
+  folder_id: string | null;
   id: string;
   kind: string;
   mime_type: string;
@@ -61,6 +62,15 @@ export interface File {
   status: Generated<string>;
   updated_at: Generated<Timestamp | null>;
   uploaded_by: string;
+}
+
+export interface Folder {
+  created_at: Generated<Timestamp | null>;
+  id: string;
+  name: string;
+  organization_id: string;
+  parent_folder_id: string | null;
+  updated_at: Generated<Timestamp | null>;
 }
 
 export interface Invitation {
@@ -137,6 +147,7 @@ export interface DB {
   account: Account;
   calendar_event: CalendarEvent;
   file: File;
+  folder: Folder;
   invitation: Invitation;
   member: Member;
   organization: Organization;
