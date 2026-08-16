@@ -5,6 +5,7 @@ import { createOrganizationScope, type OrganizationScope } from "@echo/modules/s
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import { createUpload } from "./create-upload.js";
 import {
+  makeFakeDb,
   makeFakeS3Storage,
   makeFakePermissionChecks,
   makeFakeInsertPendingFile,
@@ -25,7 +26,8 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
-          insertPendingFile: makeFakeInsertPendingFile(),
+          db: makeFakeDb(),
+          insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
           ...makeFakePermissionChecks(),
@@ -40,7 +42,8 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
-          insertPendingFile: makeFakeInsertPendingFile(),
+          db: makeFakeDb(),
+          insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
           ...makeFakePermissionChecks({
@@ -62,8 +65,9 @@ describe("createUpload", () => {
 
     await createUpload(
       {
+        db: makeFakeDb(),
         s3Storage: makeFakeS3Storage(),
-        insertPendingFile: makeFakeInsertPendingFile((scope, input) =>
+        insertPendingFileCommand: makeFakeInsertPendingFile((scope, input) =>
           inserted.push({ scope, input }),
         ),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
@@ -81,8 +85,9 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
+          db: makeFakeDb(),
           s3Storage: makeFakeS3Storage(),
-          insertPendingFile: makeFakeInsertPendingFile(),
+          insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           ...makeFakePermissionChecks(),
           ...makeFakeQuotaPorts(),
@@ -95,8 +100,9 @@ describe("createUpload", () => {
   it("allows a file exactly at the plan's max file size", async () => {
     const result = await createUpload(
       {
+        db: makeFakeDb(),
         s3Storage: makeFakeS3Storage(),
-        insertPendingFile: makeFakeInsertPendingFile(),
+        insertPendingFileCommand: makeFakeInsertPendingFile(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
         ...makeFakeQuotaPorts(),
@@ -111,8 +117,9 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
+          db: makeFakeDb(),
           s3Storage: makeFakeS3Storage(),
-          insertPendingFile: makeFakeInsertPendingFile(),
+          insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           ...makeFakePermissionChecks(),
           ...makeFakeQuotaPorts({
@@ -127,8 +134,9 @@ describe("createUpload", () => {
   it("allows an upload that lands exactly on the storage quota", async () => {
     const result = await createUpload(
       {
+        db: makeFakeDb(),
         s3Storage: makeFakeS3Storage(),
-        insertPendingFile: makeFakeInsertPendingFile(),
+        insertPendingFileCommand: makeFakeInsertPendingFile(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
         ...makeFakeQuotaPorts({
@@ -159,8 +167,9 @@ describe("createUpload", () => {
     await expect(
       createUpload(
         {
+          db: makeFakeDb(),
           s3Storage: trackingS3,
-          insertPendingFile: makeFakeInsertPendingFile(),
+          insertPendingFileCommand: makeFakeInsertPendingFile(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           ...makeFakePermissionChecks(),
           ...makeFakeQuotaPorts({

@@ -1,3 +1,4 @@
+import type { KyselyDB } from "@echo/db";
 import { conflict, forbidden, quotaExceeded } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
@@ -10,22 +11,18 @@ import type {
 } from "@echo/modules/plan/app";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import { kindForMimeType } from "../domain/index.js";
-import type { FileRecord } from "../domain/index.js";
-import type { InsertPendingFileInput } from "../infrastructure/index.js";
+import type { InsertPendingFileCommandPort } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
-export type InsertPendingFilePort = (
-  scope: OrganizationScope,
-  input: InsertPendingFileInput,
-) => Promise<FileRecord>;
 export type GetPersonalOrganizationIdPort = (userId: string) => Promise<string | undefined>;
 
 export async function createUpload(
   deps: {
+    db: KyselyDB;
     s3Storage: S3StoragePort;
     userHasPermission: CheckUserPermission;
     userHasPermissionInOrganization: CheckOrganizationPermission;
-    insertPendingFile: InsertPendingFilePort;
+    insertPendingFileCommand: InsertPendingFileCommandPort;
     getPersonalOrganizationId: GetPersonalOrganizationIdPort;
     resolveOrganizationEntitlements: ResolveEntitlementsPort;
     getOrganizationStorageUsage: GetOrganizationStorageUsagePort;
@@ -70,7 +67,7 @@ export async function createUpload(
   const id = crypto.randomUUID();
   const s3Key = `org/${input.scope.organizationId}/${id}/${input.filename}`;
 
-  await deps.insertPendingFile(input.scope, {
+  await deps.insertPendingFileCommand(deps.db, input.scope, {
     id,
     eventId: input.eventId ?? null,
     uploadedBy: input.userId,

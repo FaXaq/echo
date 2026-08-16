@@ -1,7 +1,7 @@
 import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
-import { listFilesByEvent } from "@echo/modules/file/infrastructure";
+import type { ListFilesByEventQueryPort } from "@echo/modules/file/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import type { DeleteCalendarEventCommandPort } from "../infrastructure/delete-calendar-event.command.port.js";
@@ -13,6 +13,7 @@ export async function deleteEvent(
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
     deleteCalendarEventCommand: DeleteCalendarEventCommandPort;
+    listFilesByEventQuery: ListFilesByEventQueryPort;
     s3Storage: S3StoragePort;
   },
   input: { id: string; scope: OrganizationScope },
@@ -23,7 +24,7 @@ export async function deleteEvent(
   });
   if (!success) throw forbidden({ entity: "CalendarEvent", action: "delete" });
 
-  const files = await listFilesByEvent(deps.db, input.scope, input.id);
+  const files = await deps.listFilesByEventQuery(deps.db, input.scope, { eventId: input.id });
   const results = await Promise.allSettled(
     files.map((file) => deps.s3Storage.deleteObject(file.s3Key)),
   );

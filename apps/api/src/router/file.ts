@@ -8,9 +8,13 @@ import {
   renameFile,
 } from "@echo/modules/file/app";
 import {
-  findFileById,
-  insertPendingFile,
-  markFileUploaded,
+  deleteFileByIdCommandFactory,
+  findFileByIdQueryFactory,
+  insertPendingFileCommandFactory,
+  listFilesByEventQueryFactory,
+  listFilesByOrganizationQueryFactory,
+  markFileUploadedCommandFactory,
+  renameFileByIdCommandFactory,
 } from "@echo/modules/file/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
@@ -19,6 +23,14 @@ import {
   resolvePlanQuery,
 } from "@echo/modules/plan/infrastructure";
 import { organizationProcedure, router } from "../trpc";
+
+const insertPendingFileCommand = insertPendingFileCommandFactory();
+const findFileByIdQuery = findFileByIdQueryFactory();
+const markFileUploadedCommand = markFileUploadedCommandFactory();
+const listFilesByEventQuery = listFilesByEventQueryFactory();
+const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
+const deleteFileByIdCommand = deleteFileByIdCommandFactory();
+const renameFileByIdCommand = renameFileByIdCommandFactory();
 
 export const makeFileRouter = () =>
   router({
@@ -34,10 +46,11 @@ export const makeFileRouter = () =>
       .mutation(({ ctx, input }) =>
         createUpload(
           {
+            db: ctx.db,
             s3Storage: ctx.s3Storage,
             userHasPermission: ctx.userHasPermission,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            insertPendingFile: (scope, fileInput) => insertPendingFile(ctx.db, scope, fileInput),
+            insertPendingFileCommand,
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
             resolveOrganizationEntitlements: (scope) =>
@@ -56,12 +69,12 @@ export const makeFileRouter = () =>
       .mutation(({ ctx, input }) =>
         confirmUpload(
           {
+            db: ctx.db,
             s3Storage: ctx.s3Storage,
-            findFileById: (id) => findFileById(ctx.db, ctx.organizationScope, id),
-            markFileUploaded: (id, sizeBytes) =>
-              markFileUploaded(ctx.db, ctx.organizationScope, id, sizeBytes),
+            findFileByIdQuery,
+            markFileUploadedCommand,
           },
-          input,
+          { id: input.id, scope: ctx.organizationScope },
         ),
       ),
 
@@ -73,6 +86,7 @@ export const makeFileRouter = () =>
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             s3Storage: ctx.s3Storage,
+            listFilesByEventQuery,
           },
           { eventId: input.eventId, scope: ctx.organizationScope },
         ),
@@ -80,7 +94,11 @@ export const makeFileRouter = () =>
 
     listOrganizationFiles: organizationProcedure.query(({ ctx }) =>
       listOrganizationFiles(
-        { db: ctx.db, userHasPermissionInOrganization: ctx.userHasPermissionInOrganization },
+        {
+          db: ctx.db,
+          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          listFilesByOrganizationQuery,
+        },
         { scope: ctx.organizationScope },
       ),
     ),
@@ -93,6 +111,8 @@ export const makeFileRouter = () =>
             db: ctx.db,
             s3Storage: ctx.s3Storage,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFileByIdQuery,
+            deleteFileByIdCommand,
           },
           { id: input.id, scope: ctx.organizationScope },
         ),
@@ -105,6 +125,7 @@ export const makeFileRouter = () =>
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            renameFileByIdCommand,
           },
           { id: input.id, scope: ctx.organizationScope, filename: input.filename },
         ),

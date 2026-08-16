@@ -3,12 +3,13 @@ import { forbidden } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileRecord } from "../domain/index.js";
-import { listFilesByOrganization } from "../infrastructure/index.js";
+import type { ListFilesByOrganizationQueryPort } from "../infrastructure/index.js";
 
 export async function listOrganizationFiles(
   deps: {
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
+    listFilesByOrganizationQuery: ListFilesByOrganizationQueryPort;
   },
   input: { scope: OrganizationScope },
 ): Promise<FileRecord[]> {
@@ -18,6 +19,6 @@ export async function listOrganizationFiles(
   });
   if (!success) throw forbidden({ entity: "File", action: "read" });
 
-  const files = await listFilesByOrganization(deps.db, input.scope);
+  const files = await deps.listFilesByOrganizationQuery(deps.db, input.scope);
   return files.filter((file) => file.status === "uploaded");
 }

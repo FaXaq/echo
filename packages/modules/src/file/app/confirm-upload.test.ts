@@ -1,11 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { ConflictError, NotFoundError } from "@echo/errors";
+import { createOrganizationScope } from "@echo/modules/shared/domain";
 import { confirmUpload } from "./confirm-upload.js";
 import {
+  makeFakeDb,
   makeFakeFindFileById,
   makeFakeHeadObjectS3,
   makeFakeMarkFileUploaded,
 } from "./test-fixtures.js";
+
+const scope = createOrganizationScope("org-1");
 
 describe("confirmUpload", () => {
   it("persists the size S3 reports, not the declared size", async () => {
@@ -13,13 +17,14 @@ describe("confirmUpload", () => {
 
     await confirmUpload(
       {
+        db: makeFakeDb(),
         s3Storage: makeFakeHeadObjectS3({ exists: true, sizeBytes: 4096 }),
-        findFileById: makeFakeFindFileById(),
-        markFileUploaded: makeFakeMarkFileUploaded((id, sizeBytes) =>
+        findFileByIdQuery: makeFakeFindFileById(),
+        markFileUploadedCommand: makeFakeMarkFileUploaded((id, sizeBytes) =>
           calls.push({ id, sizeBytes }),
         ),
       },
-      { id: "file-1" },
+      { id: "file-1", scope },
     );
 
     expect(calls).toEqual([{ id: "file-1", sizeBytes: 4096 }]);
@@ -30,13 +35,14 @@ describe("confirmUpload", () => {
 
     await confirmUpload(
       {
+        db: makeFakeDb(),
         s3Storage: makeFakeHeadObjectS3({ exists: true, sizeBytes: null }),
-        findFileById: makeFakeFindFileById(),
-        markFileUploaded: makeFakeMarkFileUploaded((id, sizeBytes) =>
+        findFileByIdQuery: makeFakeFindFileById(),
+        markFileUploadedCommand: makeFakeMarkFileUploaded((id, sizeBytes) =>
           calls.push({ id, sizeBytes }),
         ),
       },
-      { id: "file-1" },
+      { id: "file-1", scope },
     );
 
     expect(calls).toEqual([{ id: "file-1", sizeBytes: null }]);
@@ -46,11 +52,12 @@ describe("confirmUpload", () => {
     await expect(
       confirmUpload(
         {
+          db: makeFakeDb(),
           s3Storage: makeFakeHeadObjectS3({ exists: false, sizeBytes: null }),
-          findFileById: makeFakeFindFileById(),
-          markFileUploaded: makeFakeMarkFileUploaded(),
+          findFileByIdQuery: makeFakeFindFileById(),
+          markFileUploadedCommand: makeFakeMarkFileUploaded(),
         },
-        { id: "file-1" },
+        { id: "file-1", scope },
       ),
     ).rejects.toBeInstanceOf(ConflictError);
   });
@@ -59,11 +66,12 @@ describe("confirmUpload", () => {
     await expect(
       confirmUpload(
         {
+          db: makeFakeDb(),
           s3Storage: makeFakeHeadObjectS3({ exists: true, sizeBytes: 4096 }),
-          findFileById: makeFakeFindFileById(null),
-          markFileUploaded: makeFakeMarkFileUploaded(),
+          findFileByIdQuery: makeFakeFindFileById(null),
+          markFileUploadedCommand: makeFakeMarkFileUploaded(),
         },
-        { id: "missing" },
+        { id: "missing", scope },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });

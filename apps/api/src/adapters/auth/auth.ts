@@ -7,6 +7,7 @@ import {
   renderInvitationEmail,
 } from "@echo/modules/notification/infrastructure";
 import { deleteOrganizationFiles } from "@echo/modules/file/app";
+import { listFilesByOrganizationQueryFactory } from "@echo/modules/file/infrastructure";
 import {
   createOrganizationCommandFactory,
   getPersonalOrganizationQuery,
@@ -23,6 +24,7 @@ const { db, pool } = makeDbAdapter(appConfig.db);
 const mailer = makeMailer(appConfig.mailer);
 const s3Storage = makeS3Storage(appConfig.s3);
 const logger = makeLogger();
+const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
 
 const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   secret: appConfig.auth.secret,
@@ -47,7 +49,7 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   },
   onOrganizationDeleted: async (organization) => {
     const failures = await deleteOrganizationFiles(
-      { db, s3Storage },
+      { db, s3Storage, listFilesByOrganizationQuery },
       { scope: createSystemOrganizationScope(organization.id) },
     );
     for (const failure of failures) {

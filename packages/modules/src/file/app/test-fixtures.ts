@@ -1,3 +1,4 @@
+import { makeDbAdapter, type KyselyDB } from "@echo/db";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
@@ -8,11 +9,25 @@ import type {
   GetOrganizationStorageUsagePort,
   ResolveEntitlementsPort,
 } from "@echo/modules/plan/app";
+import type {
+  FindFileByIdQueryPort,
+  InsertPendingFileCommandPort,
+  InsertPendingFileInput,
+  MarkFileUploadedCommandPort,
+} from "../infrastructure/index.js";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileRecord } from "../domain/index.js";
-import type { InsertPendingFileInput } from "../infrastructure/index.js";
-import type { GetPersonalOrganizationIdPort, InsertPendingFilePort } from "./create-upload.js";
-import type { FindFileByIdPort, MarkFileUploadedPort } from "./confirm-upload.js";
+import type { GetPersonalOrganizationIdPort } from "./create-upload.js";
+
+export function makeFakeDb(): KyselyDB {
+  return makeDbAdapter({
+    host: "localhost",
+    port: 5432,
+    user: "test",
+    password: "test",
+    name: "test",
+  }).db;
+}
 
 export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
   const keys = new Set(existingKeys);
@@ -67,8 +82,8 @@ export function makeFakeQuotaPorts(
 
 export function makeFakeInsertPendingFile(
   onInsert?: (scope: OrganizationScope, input: InsertPendingFileInput) => void,
-): InsertPendingFilePort {
-  return async (scope, input) => {
+): InsertPendingFileCommandPort {
+  return async (_db, scope, input) => {
     onInsert?.(scope, input);
     const record: FileRecord = {
       id: input.id,
@@ -124,15 +139,19 @@ export function makeFakeHeadObjectS3(result: {
 
 export function makeFakeMarkFileUploaded(
   onCall?: (id: string, sizeBytes: number | null) => void,
-): MarkFileUploadedPort {
-  return async (id, sizeBytes) => {
-    onCall?.(id, sizeBytes);
-    return makeFakeFileRecord({ id, status: "uploaded", sizeBytes: sizeBytes ?? 1024 });
+): MarkFileUploadedCommandPort {
+  return async (_db, _scope, input) => {
+    onCall?.(input.id, input.sizeBytes);
+    return makeFakeFileRecord({
+      id: input.id,
+      status: "uploaded",
+      sizeBytes: input.sizeBytes ?? 1024,
+    });
   };
 }
 
 export function makeFakeFindFileById(
   record: FileRecord | null = makeFakeFileRecord(),
-): FindFileByIdPort {
+): FindFileByIdQueryPort {
   return async () => record;
 }

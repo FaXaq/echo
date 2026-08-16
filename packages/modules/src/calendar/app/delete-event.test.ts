@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { makeDbAdapter } from "@echo/db";
 import { ForbiddenError, NotFoundError } from "@echo/errors";
 import type { FileRecord } from "@echo/modules/file/domain";
-import * as fileInfra from "@echo/modules/file/infrastructure";
+import type { ListFilesByEventQueryPort } from "@echo/modules/file/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
 import { deleteEvent } from "./delete-event.js";
@@ -38,6 +38,10 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
   };
 }
 
+function makeFakeListFilesByEventQuery(files: FileRecord[]): ListFilesByEventQueryPort {
+  return async () => files;
+}
+
 function makeFakeS3Storage(overrides: Partial<S3StoragePort> = {}): S3StoragePort {
   return {
     createUploadUrl: async () => ({ url: "" }),
@@ -50,7 +54,6 @@ function makeFakeS3Storage(overrides: Partial<S3StoragePort> = {}): S3StoragePor
 
 describe("deleteEvent", () => {
   it("throws ForbiddenError when the user lacks permission, without touching files", async () => {
-    vi.spyOn(fileInfra, "listFilesByEvent").mockResolvedValue([]);
     const deleteObject = vi.fn(async () => {});
     const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => true;
 
@@ -64,6 +67,7 @@ describe("deleteEvent", () => {
             role: null,
           }),
           deleteCalendarEventCommand,
+          listFilesByEventQuery: makeFakeListFilesByEventQuery([]),
           s3Storage: makeFakeS3Storage({ deleteObject }),
         },
         { id: "event-1", scope },
@@ -74,7 +78,6 @@ describe("deleteEvent", () => {
   });
 
   it("deletes S3 objects for attached files before cascading the row delete", async () => {
-    vi.spyOn(fileInfra, "listFilesByEvent").mockResolvedValue([makeFakeFile()]);
     const deletedKeys: string[] = [];
     const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => true;
 
@@ -87,6 +90,7 @@ describe("deleteEvent", () => {
           role: null,
         }),
         deleteCalendarEventCommand,
+        listFilesByEventQuery: makeFakeListFilesByEventQuery([makeFakeFile()]),
         s3Storage: makeFakeS3Storage({
           deleteObject: async (key) => {
             deletedKeys.push(key);
@@ -101,7 +105,6 @@ describe("deleteEvent", () => {
   });
 
   it("throws NotFoundError when the event doesn't exist", async () => {
-    vi.spyOn(fileInfra, "listFilesByEvent").mockResolvedValue([]);
     const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => false;
 
     await expect(
@@ -114,6 +117,7 @@ describe("deleteEvent", () => {
             role: null,
           }),
           deleteCalendarEventCommand,
+          listFilesByEventQuery: makeFakeListFilesByEventQuery([]),
           s3Storage: makeFakeS3Storage(),
         },
         { id: "missing", scope },
@@ -122,7 +126,6 @@ describe("deleteEvent", () => {
   });
 
   it("still cascades the row delete and reports the failure when an S3 delete rejects", async () => {
-    vi.spyOn(fileInfra, "listFilesByEvent").mockResolvedValue([makeFakeFile()]);
     let commandCalled = false;
     const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => {
       commandCalled = true;
@@ -139,6 +142,7 @@ describe("deleteEvent", () => {
           role: null,
         }),
         deleteCalendarEventCommand,
+        listFilesByEventQuery: makeFakeListFilesByEventQuery([makeFakeFile()]),
         s3Storage: makeFakeS3Storage({
           deleteObject: async () => {
             throw error;

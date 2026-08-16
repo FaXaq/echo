@@ -2,17 +2,20 @@ import { describe, expect, it, vi } from "vitest";
 import { ForbiddenError, NotFoundError } from "@echo/errors";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
 import { renameFile } from "./rename-file.js";
-import { makeFakePermissionChecks } from "./test-fixtures.js";
-import * as infra from "../infrastructure/index.js";
+import { makeFakeDb, makeFakeFileRecord, makeFakePermissionChecks } from "./test-fixtures.js";
+import type { RenameFileByIdCommandPort } from "../infrastructure/index.js";
 
 const scope = createOrganizationScope("org-1");
 
 describe("renameFile", () => {
   it("rejects a member without file:update permission", async () => {
+    const renameFileByIdCommand: RenameFileByIdCommandPort = async () => makeFakeFileRecord();
+
     await expect(
       renameFile(
         {
-          db: {} as never,
+          db: makeFakeDb(),
+          renameFileByIdCommand,
           ...makeFakePermissionChecks({
             userHasPermissionInOrganization: async () => ({
               success: false,
@@ -27,36 +30,23 @@ describe("renameFile", () => {
   });
 
   it("throws NotFoundError when the file doesn't exist in this organization", async () => {
-    vi.spyOn(infra, "renameFileById").mockResolvedValue(null);
+    const renameFileByIdCommand: RenameFileByIdCommandPort = async () => null;
 
     await expect(
       renameFile(
-        { db: {} as never, ...makeFakePermissionChecks() },
+        { db: makeFakeDb(), renameFileByIdCommand, ...makeFakePermissionChecks() },
         { id: "missing", scope, filename: "renamed.pdf" },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
 
   it("renames the file when permission succeeds", async () => {
-    vi.spyOn(infra, "renameFileById").mockResolvedValue({
-      id: "f1",
-      eventId: null,
-      organizationId: "org-1",
-      uploadedBy: "user-1",
-      uploadedByName: "user-1",
-      kind: "document",
-      mimeType: "application/pdf",
-      sizeBytes: 100,
-      originalFilename: "old.pdf",
-      filename: "renamed.pdf",
-      s3Key: "key",
-      status: "uploaded",
-      createdAt: null,
-      updatedAt: null,
-    });
+    const renameFileByIdCommand: RenameFileByIdCommandPort = vi.fn(async (_db, _scope, input) =>
+      makeFakeFileRecord({ id: input.id, filename: input.filename }),
+    );
 
     const result = await renameFile(
-      { db: {} as never, ...makeFakePermissionChecks() },
+      { db: makeFakeDb(), renameFileByIdCommand, ...makeFakePermissionChecks() },
       { id: "f1", scope, filename: "renamed.pdf" },
     );
     expect(result.filename).toBe("renamed.pdf");
