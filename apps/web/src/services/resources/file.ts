@@ -10,6 +10,108 @@ export { key };
 
 export type EventFile = RouterOutputs["file"]["listEventFiles"][number];
 export type OrganizationFile = RouterOutputs["file"]["listOrganizationFiles"][number];
+export type Folder = RouterOutputs["file"]["getFolder"];
+export type FolderContents = RouterOutputs["file"]["listFolderContents"];
+
+export function getFolderContentsQueryOptions(opts: {
+  folderId: string | null;
+  organizationId: string;
+}) {
+  return queryOptions({
+    queryKey: getResourceKey("listFolderContents", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.file.listFolderContents.query(params, { signal });
+    },
+  });
+}
+
+export function getFolderQueryOptions(opts: { id: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getFolder", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.file.getFolder.query(params, { signal });
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function getFolderPathQueryKey(opts: { folderId: string | null; organizationId: string }) {
+  return getResourceKey("folderPath", opts);
+}
+
+export function useCreateFolderMutation({
+  onSuccess,
+}: { onSuccess?: (folder: Folder) => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { organizationId: string; parentFolderId: string | null; name: string }) =>
+      apiClient.file.createFolder.mutate(input),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.(result);
+    },
+  });
+}
+
+export function useRenameFolderMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string; organizationId: string; name: string }) =>
+      apiClient.file.renameFolder.mutate(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
+}
+
+export function useMoveFolderMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string; organizationId: string; parentFolderId: string | null }) =>
+      apiClient.file.moveFolder.mutate(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
+}
+
+export function useDeleteFolderMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string; organizationId: string }) =>
+      apiClient.file.deleteFolder.mutate(input),
+    onSuccess: async (_result, input) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        queryClient.invalidateQueries({
+          queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId }).queryKey,
+        }),
+      ]);
+      onSuccess?.();
+    },
+  });
+}
+
+export function useMoveFileMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string; organizationId: string; folderId: string | null }) =>
+      apiClient.file.moveFile.mutate(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
+}
 
 export function getEventFilesQueryOptions(opts: { eventId: string; organizationId: string }) {
   return queryOptions({
@@ -44,9 +146,15 @@ export function useUploadFileMutation({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: { eventId?: string; organizationId: string; file: File }) => {
+    mutationFn: async (input: {
+      eventId?: string;
+      folderId?: string | null;
+      organizationId: string;
+      file: File;
+    }) => {
       const { fileId, uploadUrl } = await apiClient.file.createUpload.mutate({
         eventId: input.eventId,
+        folderId: input.folderId,
         organizationId: input.organizationId,
         mimeType: input.file.type,
         sizeBytes: input.file.size,

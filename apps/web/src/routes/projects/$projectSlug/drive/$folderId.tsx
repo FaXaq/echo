@@ -3,12 +3,13 @@ import { SuspendedDriveQuotaBar } from "@/components/features/drive/suspended-dr
 import { Trans } from "@lingui/react/macro";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/projects/$projectSlug/drive/")({
+export const Route = createFileRoute("/projects/$projectSlug/drive/$folderId")({
+  staticData: { title: "Drive", breadcrumb: "Drive" },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { projectSlug } = Route.useParams();
+  const { projectSlug, folderId } = Route.useParams();
   const { organizationId } = Route.useRouteContext();
 
   return (
@@ -26,7 +27,11 @@ function RouteComponent() {
           <SuspendedDriveQuotaBar organizationId={organizationId} />
         </div>
       </div>
-      <DriveExplorer organizationId={organizationId} projectSlug={projectSlug} folderId={null} />
+      <DriveExplorer
+        organizationId={organizationId}
+        projectSlug={projectSlug}
+        folderId={folderId}
+      />
     </div>
   );
 }

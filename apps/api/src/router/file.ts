@@ -5,6 +5,7 @@ import {
   createUpload,
   deleteFile,
   deleteFolder,
+  getFolder,
   listEventFiles,
   listFolderContents,
   listOrganizationFiles,
@@ -248,4 +249,15 @@ export const makeFileRouter = () =>
           { scope: ctx.organizationScope, folderId: input.folderId },
         ),
       ),
+
+    getFolder: organizationProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) =>
+      getFolder(
+        {
+          db: ctx.db,
+          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          findFolderByIdQuery,
+        },
+        { id: input.id, scope: ctx.organizationScope },
+      ),
+    ),
   });
