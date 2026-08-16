@@ -10,7 +10,7 @@ export { key };
 export type EventFile = RouterOutputs["file"]["listEventFiles"][number];
 export type OrganizationFile = RouterOutputs["file"]["listOrganizationFiles"][number];
 
-export function getEventFilesQueryOptions(opts: { eventId: string }) {
+export function getEventFilesQueryOptions(opts: { eventId: string; organizationId: string }) {
   return queryOptions({
     queryKey: getResourceKey("listEventFiles", opts),
     queryFn: async ({ queryKey, signal }) => {
@@ -59,7 +59,10 @@ export function useUploadFileMutation({
       });
       if (!response.ok) throw new Error("Upload failed");
 
-      return apiClient.file.confirmUpload.mutate({ id: fileId });
+      return apiClient.file.confirmUpload.mutate({
+        id: fileId,
+        organizationId: input.organizationId,
+      });
     },
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: key });
@@ -72,7 +75,8 @@ export function useDeleteFileMutation({ onSuccess }: { onSuccess?: () => void } 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { id: string }) => apiClient.file.deleteFile.mutate(input),
+    mutationFn: (input: { id: string; organizationId: string }) =>
+      apiClient.file.deleteFile.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
@@ -84,7 +88,7 @@ export function useRenameFileMutation({ onSuccess }: { onSuccess?: () => void } 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { id: string; filename: string }) =>
+    mutationFn: (input: { id: string; organizationId: string; filename: string }) =>
       apiClient.file.renameFile.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });

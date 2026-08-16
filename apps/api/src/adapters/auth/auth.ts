@@ -14,6 +14,7 @@ import {
 } from "@echo/modules/organization/infrastructure";
 import { createOrganization } from "@echo/modules/organization/app";
 import { hasSeatAvailable } from "@echo/modules/plan/app";
+import { createSystemOrganizationScope } from "@echo/modules/shared/domain";
 import { makeMailer } from "@echo/adapters/mailer";
 import { makeS3Storage } from "@echo/adapters/s3-storage";
 import { makeLogger } from "@echo/logger";
@@ -47,7 +48,7 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   onOrganizationDeleted: async (organization) => {
     const failures = await deleteOrganizationFiles(
       { db, s3Storage },
-      { organizationId: organization.id },
+      { scope: createSystemOrganizationScope(organization.id) },
     );
     for (const failure of failures) {
       logger.error(
@@ -72,7 +73,10 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
     });
   },
   hasSeatAvailable: async (organizationId, excludeInvitationId) =>
-    hasSeatAvailable({ db }, { organizationId, excludeInvitationId }),
+    hasSeatAvailable(
+      { db },
+      { scope: createSystemOrganizationScope(organizationId), excludeInvitationId },
+    ),
   sendOrganizationInvitation: async ({ invitation, organization, inviter }) => {
     const i18n = makeServerI18n(toLocale((inviter as { locale?: string }).locale));
     await mailer.send({

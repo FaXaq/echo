@@ -1,11 +1,11 @@
 import type { KyselyDB } from "@echo/db";
+import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileKind, FileRecord } from "../domain/index.js";
 import { toFileRecord } from "./map-file.js";
 
 export type InsertPendingFileInput = {
   id: string;
   eventId: string | null;
-  organizationId: string;
   uploadedBy: string;
   kind: FileKind;
   mimeType: string;
@@ -16,6 +16,7 @@ export type InsertPendingFileInput = {
 
 export async function insertPendingFile(
   db: KyselyDB,
+  scope: OrganizationScope,
   input: InsertPendingFileInput,
 ): Promise<FileRecord> {
   const row = await db
@@ -23,7 +24,7 @@ export async function insertPendingFile(
     .values({
       id: input.id,
       event_id: input.eventId,
-      organization_id: input.organizationId,
+      organization_id: scope.organizationId,
       uploaded_by: input.uploadedBy,
       kind: input.kind,
       mime_type: input.mimeType,

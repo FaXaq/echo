@@ -4,8 +4,11 @@ import { ForbiddenError, NotFoundError } from "@echo/errors";
 import type { FileRecord } from "@echo/modules/file/domain";
 import * as fileInfra from "@echo/modules/file/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import { createOrganizationScope } from "@echo/modules/shared/domain";
 import { deleteEvent } from "./delete-event.js";
 import type { DeleteCalendarEventCommandPort } from "../infrastructure/delete-calendar-event.command.port.js";
+
+const scope = createOrganizationScope("org-1");
 
 const { db } = makeDbAdapter({
   host: "localhost",
@@ -63,7 +66,7 @@ describe("deleteEvent", () => {
           deleteCalendarEventCommand,
           s3Storage: makeFakeS3Storage({ deleteObject }),
         },
-        { id: "event-1", organizationId: "org-1" },
+        { id: "event-1", scope },
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
 
@@ -90,7 +93,7 @@ describe("deleteEvent", () => {
           },
         }),
       },
-      { id: "event-1", organizationId: "org-1" },
+      { id: "event-1", scope },
     );
 
     expect(deletedKeys).toEqual(["org/org-1/file-1/demo.mp3"]);
@@ -113,7 +116,7 @@ describe("deleteEvent", () => {
           deleteCalendarEventCommand,
           s3Storage: makeFakeS3Storage(),
         },
-        { id: "missing", organizationId: "org-1" },
+        { id: "missing", scope },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
@@ -142,7 +145,7 @@ describe("deleteEvent", () => {
           },
         }),
       },
-      { id: "event-1", organizationId: "org-1" },
+      { id: "event-1", scope },
     );
 
     expect(commandCalled).toBe(true);

@@ -30,7 +30,10 @@ function withSeededQueryClient() {
     getEventQueryOptions({ eventId: "event-1", organizationId: "org-1" }).queryKey,
     event,
   );
-  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, []);
+  queryClient.setQueryData(
+    getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" }).queryKey,
+    [],
+  );
   return queryClient;
 }
 

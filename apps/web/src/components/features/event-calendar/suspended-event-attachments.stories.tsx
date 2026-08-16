@@ -5,7 +5,10 @@ import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/
 
 function withSeededFiles(files: EventFile[]) {
   const queryClient = new QueryClient();
-  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, files);
+  queryClient.setQueryData(
+    getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" }).queryKey,
+    files,
+  );
   return queryClient;
 }
 

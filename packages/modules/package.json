@@ -4,6 +4,10 @@
   "license": "AGPL-3.0-only",
   "type": "module",
   "exports": {
+    "./shared/domain": {
+      "types": "./src/shared/domain/index.ts",
+      "default": "./src/shared/domain/index.ts"
+    },
     "./invitation/domain": {
       "types": "./src/invitation/domain/index.ts",
       "default": "./src/invitation/domain/index.ts"

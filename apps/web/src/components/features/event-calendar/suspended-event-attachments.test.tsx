@@ -41,7 +41,8 @@ function useFailingUploadMutation() {
 function renderWithFiles(files: fileResource.EventFile[]) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   client.setQueryData(
-    fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey,
+    fileResource.getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" })
+      .queryKey,
     files,
   );
   return render(

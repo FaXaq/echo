@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { ForbiddenError, ConflictError, NotFoundError, QuotaExceededError } from "@echo/errors";
+import { ForbiddenError, ConflictError, QuotaExceededError } from "@echo/errors";
 import { planCatalog } from "@echo/modules/plan/domain";
+import { createOrganizationScope, type OrganizationScope } from "@echo/modules/shared/domain";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import { createUpload } from "./create-upload.js";
 import {
@@ -13,7 +14,7 @@ import {
 
 const baseInput = {
   userId: "user-1",
-  organizationId: "org-1",
+  scope: createOrganizationScope("org-1"),
   mimeType: "audio/mpeg",
   sizeBytes: 1024,
   filename: "demo.mp3",
@@ -35,23 +36,6 @@ describe("createUpload", () => {
     ).rejects.toBeInstanceOf(ConflictError);
   });
 
-  it("rejects a personal upload when the user lacks selfCreate", async () => {
-    await expect(
-      createUpload(
-        {
-          insertPendingFile: makeFakeInsertPendingFile(),
-          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
-          s3Storage: makeFakeS3Storage(),
-          ...makeFakePermissionChecks({
-            userHasPermission: async () => ({ success: false, error: null }),
-          }),
-          ...makeFakeQuotaPorts(),
-        },
-        baseInput,
-      ),
-    ).rejects.toBeInstanceOf(ForbiddenError);
-  });
-
   it("rejects an organization upload when the user lacks org file:create", async () => {
     await expect(
       createUpload(
@@ -68,18 +52,20 @@ describe("createUpload", () => {
           }),
           ...makeFakeQuotaPorts(),
         },
-        { ...baseInput, organizationId: "org-1" },
+        baseInput,
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
   });
 
-  it("attributes a personal upload to the user's personal organization", async () => {
-    const inserted: InsertPendingFileInput[] = [];
+  it("attributes the upload to the requested organization", async () => {
+    const inserted: { scope: OrganizationScope; input: InsertPendingFileInput }[] = [];
 
     await createUpload(
       {
         s3Storage: makeFakeS3Storage(),
-        insertPendingFile: makeFakeInsertPendingFile((input) => inserted.push(input)),
+        insertPendingFile: makeFakeInsertPendingFile((scope, input) =>
+          inserted.push({ scope, input }),
+        ),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
         ...makeFakeQuotaPorts(),
@@ -88,22 +74,7 @@ describe("createUpload", () => {
     );
 
     expect(inserted).toHaveLength(1);
-    expect(inserted[0].organizationId).toBe("personal-org-1");
-  });
-
-  it("rejects a personal upload when the user has no personal organization", async () => {
-    await expect(
-      createUpload(
-        {
-          s3Storage: makeFakeS3Storage(),
-          insertPendingFile: makeFakeInsertPendingFile(),
-          getPersonalOrganizationId: makeFakePersonalOrganizationId(undefined),
-          ...makeFakePermissionChecks(),
-          ...makeFakeQuotaPorts(),
-        },
-        baseInput,
-      ),
-    ).rejects.toBeInstanceOf(NotFoundError);
+    expect(inserted[0].scope.organizationId).toBe("org-1");
   });
 
   it("rejects a file larger than the plan's max file size", async () => {

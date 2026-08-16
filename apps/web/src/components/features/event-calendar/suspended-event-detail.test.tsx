@@ -54,7 +54,8 @@ describe("SuspendedEventDetail", () => {
       makeEvent(),
     );
     client.setQueryData(
-      fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey,
+      fileResource.getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" })
+        .queryKey,
       [],
     );
 

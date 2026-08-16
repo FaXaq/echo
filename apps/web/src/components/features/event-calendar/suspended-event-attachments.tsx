@@ -140,7 +140,7 @@ function UploadError({ error, projectSlug }: { error: unknown; projectSlug: stri
 function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAttachmentsProps) {
   const { t } = useLingui();
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
-  const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId }));
+  const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId, organizationId }));
   const uploadMutation = useUploadFileMutation();
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
@@ -197,7 +197,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
             <AlertDialogCancel>{t`Cancel`}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                if (deletingFileId) deleteMutation.mutate({ id: deletingFileId });
+                if (deletingFileId) deleteMutation.mutate({ id: deletingFileId, organizationId });
                 setDeletingFileId(null);
               }}
             >
@@ -211,7 +211,8 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         file={renamingFile}
         onOpenChange={(open) => !open && setRenamingFile(null)}
         onConfirm={(filename) => {
-          if (renamingFile) renameMutation.mutate({ id: renamingFile.id, filename });
+          if (renamingFile)
+            renameMutation.mutate({ id: renamingFile.id, organizationId, filename });
         }}
       />
     </div>

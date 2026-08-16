@@ -1,9 +1,9 @@
 import type { KyselyDB } from "@echo/db";
+import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { CalendarEvent, EventColor, EventPlace, EventType } from "../domain/index.js";
 
 export type UpdateCalendarEventInput = {
   id: string;
-  organizationId: string;
   userId: string;
   title: string;
   description: string | null;
@@ -17,6 +17,7 @@ export type UpdateCalendarEventInput = {
 
 export type UpdateCalendarEventCommandPort = (
   db: KyselyDB,
+  scope: OrganizationScope,
   input: UpdateCalendarEventInput,
 ) => Promise<CalendarEvent | null>;
 

@@ -8,6 +8,7 @@ import type {
   GetOrganizationStorageUsagePort,
   ResolveEntitlementsPort,
 } from "@echo/modules/plan/app";
+import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileRecord } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import type { GetPersonalOrganizationIdPort, InsertPendingFilePort } from "./create-upload.js";
@@ -65,14 +66,14 @@ export function makeFakeQuotaPorts(
 }
 
 export function makeFakeInsertPendingFile(
-  onInsert?: (input: InsertPendingFileInput) => void,
+  onInsert?: (scope: OrganizationScope, input: InsertPendingFileInput) => void,
 ): InsertPendingFilePort {
-  return async (input) => {
-    onInsert?.(input);
+  return async (scope, input) => {
+    onInsert?.(scope, input);
     const record: FileRecord = {
       id: input.id,
       eventId: input.eventId,
-      organizationId: input.organizationId,
+      organizationId: scope.organizationId,
       uploadedBy: input.uploadedBy,
       uploadedByName: "Test User",
       kind: input.kind,

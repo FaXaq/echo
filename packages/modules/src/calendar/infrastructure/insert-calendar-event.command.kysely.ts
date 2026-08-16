@@ -3,7 +3,7 @@ import { makeSelectCalendarEventByIdQuery } from "./common.js";
 import { toCalendarEvent } from "./map-calendar-event.js";
 
 export const insertCalendarEventCommandFactory: InsertCalendarEventCommandPortFactory =
-  () => async (db, input) => {
+  () => async (db, scope, input) => {
     return db.transaction().execute(async (trx) => {
       const { id } = await trx
         .insertInto("calendar_event")
@@ -16,7 +16,7 @@ export const insertCalendarEventCommandFactory: InsertCalendarEventCommandPortFa
           all_day: input.allDay,
           color: input.color,
           type: input.type,
-          organization_id: input.organizationId,
+          organization_id: scope.organizationId,
           created_by: input.userId,
           updated_by: input.userId,
           place_name: input.place?.name ?? null,
@@ -27,7 +27,7 @@ export const insertCalendarEventCommandFactory: InsertCalendarEventCommandPortFa
         .returning("id")
         .executeTakeFirstOrThrow();
 
-      const row = await makeSelectCalendarEventByIdQuery(trx)(id);
+      const row = await makeSelectCalendarEventByIdQuery(trx)(scope, id);
 
       return toCalendarEvent(row);
     });

@@ -1,13 +1,14 @@
+import type { OrganizationScope } from "@echo/modules/shared/domain";
 import { planCatalog } from "../domain/index.js";
 import type { PlanEntitlements, PlanName } from "../domain/index.js";
 
-export type ResolvePlanPort = (organizationId: string) => Promise<PlanName>;
-export type ResolveEntitlementsPort = (organizationId: string) => Promise<PlanEntitlements>;
-export type GetOrganizationStorageUsagePort = (organizationId: string) => Promise<number>;
+export type ResolvePlanPort = (scope: OrganizationScope) => Promise<PlanName>;
+export type ResolveEntitlementsPort = (scope: OrganizationScope) => Promise<PlanEntitlements>;
+export type GetOrganizationStorageUsagePort = (scope: OrganizationScope) => Promise<number>;
 
 export async function resolveEntitlements(
   deps: { resolvePlan: ResolvePlanPort },
-  organizationId: string,
+  scope: OrganizationScope,
 ) {
-  return planCatalog[await deps.resolvePlan(organizationId)];
+  return planCatalog[await deps.resolvePlan(scope)];
 }

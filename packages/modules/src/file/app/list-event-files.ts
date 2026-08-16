@@ -1,35 +1,26 @@
 import type { KyselyDB } from "@echo/db";
-import type {
-  CheckOrganizationPermission,
-  CheckUserPermission,
-} from "@echo/modules/user/infrastructure";
+import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
+import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileRecord } from "../domain/index.js";
-import { findFileById, listFilesByEvent } from "../infrastructure/index.js";
+import { listFilesByEvent } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
-import { forbidden, notFound } from "@echo/errors";
+import { forbidden } from "@echo/errors";
 
 export async function listEventFiles(
   deps: {
     db: KyselyDB;
-    userHasPermission: CheckUserPermission;
     userHasPermissionInOrganization: CheckOrganizationPermission;
     s3Storage: S3StoragePort;
   },
-  input: { eventId: string; userId: string },
+  input: { eventId: string; scope: OrganizationScope },
 ): Promise<(FileRecord & { downloadUrl: string })[]> {
-  const event = await findFileById(deps.db, input.eventId);
-  if (!event) throw notFound("File");
-
   const { success } = await deps.userHasPermissionInOrganization({
-    organizationId: event.organizationId,
+    organizationId: input.scope.organizationId,
     permissions: { file: ["read"] },
   });
+  if (!success) throw forbidden({ entity: "File", action: "list event files" });
 
-  if (!success) {
-    if (!success) throw forbidden({ entity: "File", action: "list event files" });
-  }
-
-  const files = await listFilesByEvent(deps.db, input.eventId);
+  const files = await listFilesByEvent(deps.db, input.scope, input.eventId);
 
   const readable: (FileRecord & { downloadUrl: string })[] = [];
   for (const file of files) {

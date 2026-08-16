@@ -18,15 +18,14 @@ import {
   getOrganizationStorageUsageQuery,
   resolvePlanQuery,
 } from "@echo/modules/plan/infrastructure";
-import { authedProcedure, router } from "../trpc";
+import { organizationProcedure, router } from "../trpc";
 
 export const makeFileRouter = () =>
   router({
-    createUpload: authedProcedure
+    createUpload: organizationProcedure
       .input(
         z.object({
           eventId: z.string().optional(),
-          organizationId: z.string(),
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
           filename: z.string().min(1),
@@ -38,77 +37,76 @@ export const makeFileRouter = () =>
             s3Storage: ctx.s3Storage,
             userHasPermission: ctx.userHasPermission,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            insertPendingFile: (fileInput) => insertPendingFile(ctx.db, fileInput),
+            insertPendingFile: (scope, fileInput) => insertPendingFile(ctx.db, scope, fileInput),
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
-            resolveOrganizationEntitlements: (organizationId: string) =>
+            resolveOrganizationEntitlements: (scope) =>
               resolveEntitlements(
-                { resolvePlan: (id: string) => resolvePlanQuery(ctx.db, id) },
-                organizationId,
+                { resolvePlan: (planScope) => resolvePlanQuery(ctx.db, planScope) },
+                scope,
               ),
-            getOrganizationStorageUsage: (organizationId: string) =>
-              getOrganizationStorageUsageQuery(ctx.db, organizationId),
+            getOrganizationStorageUsage: (scope) => getOrganizationStorageUsageQuery(ctx.db, scope),
           },
-          { userId: ctx.session.user.id, ...input },
+          { userId: ctx.session.user.id, scope: ctx.organizationScope, ...input },
         ),
       ),
 
-    confirmUpload: authedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) =>
-      confirmUpload(
-        {
-          s3Storage: ctx.s3Storage,
-          findFileById: (id) => findFileById(ctx.db, id),
-          markFileUploaded: (id, sizeBytes) => markFileUploaded(ctx.db, id, sizeBytes),
-        },
-        input,
+    confirmUpload: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .mutation(({ ctx, input }) =>
+        confirmUpload(
+          {
+            s3Storage: ctx.s3Storage,
+            findFileById: (id) => findFileById(ctx.db, ctx.organizationScope, id),
+            markFileUploaded: (id, sizeBytes) =>
+              markFileUploaded(ctx.db, ctx.organizationScope, id, sizeBytes),
+          },
+          input,
+        ),
       ),
-    ),
 
-    listEventFiles: authedProcedure
+    listEventFiles: organizationProcedure
       .input(z.object({ eventId: z.string() }))
       .query(({ ctx, input }) =>
         listEventFiles(
           {
             db: ctx.db,
-            s3Storage: ctx.s3Storage,
-            userHasPermission: ctx.userHasPermission,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            s3Storage: ctx.s3Storage,
           },
-          { eventId: input.eventId, userId: ctx.session.user.id },
+          { eventId: input.eventId, scope: ctx.organizationScope },
         ),
       ),
 
-    listOrganizationFiles: authedProcedure
-      .input(z.object({ organizationId: z.string() }))
-      .query(({ ctx, input }) =>
-        listOrganizationFiles(
-          { db: ctx.db, userHasPermissionInOrganization: ctx.userHasPermissionInOrganization },
-          { organizationId: input.organizationId },
-        ),
-      ),
-
-    deleteFile: authedProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) =>
-      deleteFile(
-        {
-          db: ctx.db,
-          s3Storage: ctx.s3Storage,
-          userHasPermission: ctx.userHasPermission,
-          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-        },
-        { id: input.id, userId: ctx.session.user.id },
+    listOrganizationFiles: organizationProcedure.query(({ ctx }) =>
+      listOrganizationFiles(
+        { db: ctx.db, userHasPermissionInOrganization: ctx.userHasPermissionInOrganization },
+        { scope: ctx.organizationScope },
       ),
     ),
 
-    renameFile: authedProcedure
+    deleteFile: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .mutation(({ ctx, input }) =>
+        deleteFile(
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          },
+          { id: input.id, scope: ctx.organizationScope },
+        ),
+      ),
+
+    renameFile: organizationProcedure
       .input(z.object({ id: z.string(), filename: z.string().min(1) }))
       .mutation(({ ctx, input }) =>
         renameFile(
           {
             db: ctx.db,
-            userHasPermission: ctx.userHasPermission,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           },
-          { id: input.id, userId: ctx.session.user.id, filename: input.filename },
+          { id: input.id, scope: ctx.organizationScope, filename: input.filename },
         ),
       ),
   });

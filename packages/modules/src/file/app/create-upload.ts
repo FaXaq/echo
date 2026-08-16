@@ -8,12 +8,16 @@ import type {
   GetOrganizationStorageUsagePort,
   ResolveEntitlementsPort,
 } from "@echo/modules/plan/app";
+import type { OrganizationScope } from "@echo/modules/shared/domain";
 import { kindForMimeType } from "../domain/index.js";
 import type { FileRecord } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
-export type InsertPendingFilePort = (input: InsertPendingFileInput) => Promise<FileRecord>;
+export type InsertPendingFilePort = (
+  scope: OrganizationScope,
+  input: InsertPendingFileInput,
+) => Promise<FileRecord>;
 export type GetPersonalOrganizationIdPort = (userId: string) => Promise<string | undefined>;
 
 export async function createUpload(
@@ -29,7 +33,7 @@ export async function createUpload(
   input: {
     userId: string;
     eventId?: string;
-    organizationId: string;
+    scope: OrganizationScope;
     mimeType: string;
     sizeBytes: number;
     filename: string;
@@ -39,12 +43,12 @@ export async function createUpload(
   if (!kind) throw conflict("Unsupported file type");
 
   const { success } = await deps.userHasPermissionInOrganization({
-    organizationId: input.organizationId,
+    organizationId: input.scope.organizationId,
     permissions: { file: ["create"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "create" });
 
-  const { limits } = await deps.resolveOrganizationEntitlements(input.organizationId);
+  const { limits } = await deps.resolveOrganizationEntitlements(input.scope);
 
   if (input.sizeBytes > limits.maxFileSizeBytes) {
     throw quotaExceeded({
@@ -54,7 +58,7 @@ export async function createUpload(
     });
   }
 
-  const usedBytes = await deps.getOrganizationStorageUsage(input.organizationId);
+  const usedBytes = await deps.getOrganizationStorageUsage(input.scope);
   if (exceedsLimit({ current: usedBytes, delta: input.sizeBytes, limit: limits.storageBytes })) {
     throw quotaExceeded({
       limitName: "storageBytes",
@@ -64,12 +68,11 @@ export async function createUpload(
   }
 
   const id = crypto.randomUUID();
-  const s3Key = `org/${input.organizationId}/${id}/${input.filename}`;
+  const s3Key = `org/${input.scope.organizationId}/${id}/${input.filename}`;
 
-  await deps.insertPendingFile({
+  await deps.insertPendingFile(input.scope, {
     id,
     eventId: input.eventId ?? null,
-    organizationId: input.organizationId,
     uploadedBy: input.userId,
     kind,
     mimeType: input.mimeType,
