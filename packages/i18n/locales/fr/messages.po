@@ -15,7 +15,7 @@ msgstr ""
 
 #. placeholder {0}: files.length
 #: apps/web/src/components/features/drive/suspended-drive-files.tsx:102
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:163
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:161
 msgid "{0, plural, one {# file} other {# files}}"
 msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 
@@ -69,7 +69,7 @@ msgstr "Agenda"
 msgid "All day"
 msgstr "Toute la journée"
 
-#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:19
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:21
 msgid "All files shared across the project"
 msgstr "Tous les fichiers partagés du projet"
 
@@ -135,7 +135,7 @@ msgid "Calendar"
 msgstr "Agenda"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:73
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:199
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:197
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:225
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
@@ -189,11 +189,11 @@ msgstr "Confirmer le mot de passe"
 msgid "Could not generate a unique organization slug"
 msgstr "Impossible de générer un identifiant unique pour le projet"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:89
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:63
 msgid "Could not load plan usage"
 msgstr "Impossible de charger l'utilisation du forfait"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:227
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:224
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
@@ -242,7 +242,7 @@ msgstr "Date d'ajout"
 msgid "Day"
 msgstr "Jour"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:207
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:204
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:232
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
@@ -269,7 +269,7 @@ msgstr "Supprimer l'événement ?"
 msgid "Delete project"
 msgstr "Supprimer le projet"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:193
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:191
 msgid "Delete this file?"
 msgstr "Supprimer ce fichier ?"
 
@@ -294,7 +294,7 @@ msgid "Drag and drop files here, or click to select"
 msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 
 #: apps/web/src/hooks/use-navigation.ts:68
-#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:16
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:18
 msgid "Drive"
 msgstr "Drive"
 
@@ -490,7 +490,7 @@ msgstr "Lettres, chiffres, _ et - uniquement"
 msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:161
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:159
 msgid "Linked files"
 msgstr "Fichiers liés"
 
@@ -538,7 +538,7 @@ msgstr "Gérez les événements et le planning de votre projet"
 msgid "Maximum 72 characters"
 msgstr "Maximum 72 caractères"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:80
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:54
 msgid "Maximum file size"
 msgstr "Taille maximale de fichier"
 
@@ -551,7 +551,7 @@ msgid "Member"
 msgstr "Membre"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:153
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:74
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:48
 #: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Members"
 msgstr "Membres"
@@ -595,7 +595,7 @@ msgstr "Suivant"
 msgid "No events scheduled"
 msgstr "Aucun événement prévu"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:183
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:181
 msgid "No files linked yet."
 msgstr "Aucun fichier lié pour le moment."
 
@@ -727,7 +727,7 @@ msgstr "Lieu"
 msgid "Plan"
 msgstr "Forfait"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:59
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:33
 msgid "Plan & usage"
 msgstr "Forfait et utilisation"
 
@@ -886,7 +886,8 @@ msgstr "Une erreur est survenue"
 msgid "Start"
 msgstr "Début"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:67
+#: apps/web/src/components/features/drive/suspended-drive-quota-bar.tsx:15
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:41
 msgid "Storage"
 msgstr "Stockage"
 
@@ -935,7 +936,7 @@ msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses donnée
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "Cette action supprimera définitivement <0>{selectedVersion}</0> et toutes ses données. Cette action est irréversible."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:195
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:193
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
@@ -1012,6 +1013,6 @@ msgstr "Oui, retirer"
 msgid "You have been invited to join"
 msgstr "Vous avez été invité(e) à rejoindre"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:62
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:36
 msgid "Your current plan and what you have used of it."
 msgstr "Votre forfait actuel et ce que vous en avez utilisé."

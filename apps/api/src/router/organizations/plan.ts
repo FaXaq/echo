@@ -1,5 +1,6 @@
 import { getOrganizationPlan } from "@echo/modules/plan/app";
 import { organizationProcedure, router } from "../../trpc";
+import { makeQuotaRouter } from "./quota";
 
 export const makePlanRouter = () =>
   router({
@@ -9,4 +10,5 @@ export const makePlanRouter = () =>
         { scope: ctx.organizationScope },
       );
     }),
+    quota: makeQuotaRouter(),
   });

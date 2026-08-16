@@ -3,40 +3,16 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/card";
-import { Progress, ProgressLabel, ProgressValue } from "@/ui/progress";
 import { Skeleton } from "@/ui/skeleton";
-import { getPlanOverviewQueryOptions } from "@/services/resources/plan";
+import { UsageBar, formatBytes } from "@/ui/usage-bar";
+import {
+  getPlanOverviewQueryOptions,
+  getStorageQuotaQueryOptions,
+} from "@/services/resources/plan";
 
 export interface SuspendedPlanUsageProps {
   organizationId: string;
   isPersonal: boolean;
-}
-
-function formatBytes(bytes: number) {
-  if (bytes >= 1_000_000_000) return `${(bytes / 1_000_000_000).toFixed(1)} GB`;
-  if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(1)} MB`;
-  if (bytes >= 1_000) return `${Math.round(bytes / 1_000)} KB`;
-  return `${bytes} B`;
-}
-
-function UsageBar({
-  label,
-  used,
-  limit,
-  ratio,
-}: {
-  label: string;
-  used: string;
-  limit: string;
-  ratio: number;
-}) {
-  const percent = Math.min(100, Math.round(ratio * 100));
-  return (
-    <Progress value={percent}>
-      <ProgressLabel>{label}</ProgressLabel>
-      <ProgressValue>{() => `${used} / ${limit}`}</ProgressValue>
-    </Progress>
-  );
 }
 
 function StatRow({ label, value }: { label: string; value: string }) {
@@ -51,6 +27,7 @@ function StatRow({ label, value }: { label: string; value: string }) {
 function PlanUsageContent({ organizationId, isPersonal }: SuspendedPlanUsageProps) {
   const { t } = useLingui();
   const { data } = useSuspenseQuery(getPlanOverviewQueryOptions({ organizationId }));
+  const { data: quota } = useSuspenseQuery(getStorageQuotaQueryOptions({ organizationId }));
 
   return (
     <Card>
@@ -65,9 +42,9 @@ function PlanUsageContent({ organizationId, isPersonal }: SuspendedPlanUsageProp
       <CardContent className="flex flex-col gap-4">
         <UsageBar
           label={t`Storage`}
-          used={formatBytes(data.usage.storageBytes)}
-          limit={formatBytes(data.limits.storageBytes)}
-          ratio={data.usage.storageBytes / data.limits.storageBytes}
+          used={formatBytes(quota.storageBytes)}
+          limit={formatBytes(quota.limitBytes)}
+          ratio={quota.storageBytes / quota.limitBytes}
         />
         {!isPersonal && (
           <UsageBar

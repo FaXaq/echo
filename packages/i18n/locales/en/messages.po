@@ -15,7 +15,7 @@ msgstr ""
 
 #. placeholder {0}: files.length
 #: apps/web/src/components/features/drive/suspended-drive-files.tsx:102
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:163
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:161
 msgid "{0, plural, one {# file} other {# files}}"
 msgstr "{0, plural, one {# file} other {# files}}"
 
@@ -69,7 +69,7 @@ msgstr "Agenda"
 msgid "All day"
 msgstr "All day"
 
-#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:19
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:21
 msgid "All files shared across the project"
 msgstr "All files shared across the project"
 
@@ -135,7 +135,7 @@ msgid "Calendar"
 msgstr "Calendar"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:73
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:199
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:197
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:225
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
@@ -189,11 +189,11 @@ msgstr "Confirm password"
 msgid "Could not generate a unique organization slug"
 msgstr "Could not generate a unique organization slug"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:89
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:63
 msgid "Could not load plan usage"
 msgstr "Could not load plan usage"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:227
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:224
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
 
@@ -242,7 +242,7 @@ msgstr "Date added"
 msgid "Day"
 msgstr "Day"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:207
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:204
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:232
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
@@ -269,7 +269,7 @@ msgstr "Delete event?"
 msgid "Delete project"
 msgstr "Delete project"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:193
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:191
 msgid "Delete this file?"
 msgstr "Delete this file?"
 
@@ -294,7 +294,7 @@ msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
 #: apps/web/src/hooks/use-navigation.ts:68
-#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:16
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:18
 msgid "Drive"
 msgstr "Drive"
 
@@ -490,7 +490,7 @@ msgstr "Letters, numbers, _ and - only"
 msgid "Link copied to clipboard"
 msgstr "Link copied to clipboard"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:161
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:159
 msgid "Linked files"
 msgstr "Linked files"
 
@@ -538,7 +538,7 @@ msgstr "Manage your project's events and schedule"
 msgid "Maximum 72 characters"
 msgstr "Maximum 72 characters"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:80
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:54
 msgid "Maximum file size"
 msgstr "Maximum file size"
 
@@ -551,7 +551,7 @@ msgid "Member"
 msgstr "Member"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:153
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:74
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:48
 #: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Members"
 msgstr "Members"
@@ -595,7 +595,7 @@ msgstr "Next"
 msgid "No events scheduled"
 msgstr "No events scheduled"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:183
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:181
 msgid "No files linked yet."
 msgstr "No files linked yet."
 
@@ -727,7 +727,7 @@ msgstr "Place"
 msgid "Plan"
 msgstr "Plan"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:59
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:33
 msgid "Plan & usage"
 msgstr "Plan & usage"
 
@@ -886,7 +886,8 @@ msgstr "Something went wrong"
 msgid "Start"
 msgstr "Start"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:67
+#: apps/web/src/components/features/drive/suspended-drive-quota-bar.tsx:15
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:41
 msgid "Storage"
 msgstr "Storage"
 
@@ -935,7 +936,7 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:195
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:193
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 
@@ -1012,6 +1013,6 @@ msgstr "Yes, remove"
 msgid "You have been invited to join"
 msgstr "You have been invited to join"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:62
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:36
 msgid "Your current plan and what you have used of it."
 msgstr "Your current plan and what you have used of it."

@@ -2,6 +2,7 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 import type { RouterOutputs } from "@echo/api/router";
 import { apiClient } from "@/services/api-client";
 import { initResourceKey } from "./init-resource-key";
+import { getStorageQuotaQueryOptions } from "./plan";
 
 const { key, getResourceKey } = initResourceKey("file");
 
@@ -64,8 +65,13 @@ export function useUploadFileMutation({
         organizationId: input.organizationId,
       });
     },
-    onSuccess: async (result) => {
-      await queryClient.invalidateQueries({ queryKey: key });
+    onSuccess: async (result, input) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        queryClient.invalidateQueries({
+          queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId }).queryKey,
+        }),
+      ]);
       onSuccess?.(result);
     },
   });
@@ -77,8 +83,13 @@ export function useDeleteFileMutation({ onSuccess }: { onSuccess?: () => void } 
   return useMutation({
     mutationFn: (input: { id: string; organizationId: string }) =>
       apiClient.file.deleteFile.mutate(input),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
+    onSuccess: async (_result, input) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        queryClient.invalidateQueries({
+          queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId }).queryKey,
+        }),
+      ]);
       onSuccess?.();
     },
   });
