@@ -5,20 +5,23 @@ import z from "zod";
 
 const calendarEventActions = ["create", "read", "update", "delete"] as const;
 const fileActions = ["create", "read", "delete", "update"] as const;
+const planActions = ["create", "read", "delete", "update"] as const;
+const quotaActions = ["create", "read", "delete", "update"] as const;
 
 export const statement = {
   ...defaultStatements,
-  "*": ["read"],
   calendarEvent: [...calendarEventActions],
   file: [...fileActions],
+  plan: [...planActions],
+  quota: [...quotaActions],
 } as const;
 
 export const ac = createAccessControl(statement);
 
 const member = ac.newRole({
-  "*": ["read"],
   calendarEvent: [...calendarEventActions],
   file: [...fileActions],
+  quota: [...quotaActions],
 });
 
 // Default Better-Auth role
@@ -26,7 +29,8 @@ const owner = ac.newRole({
   ...ownerAc.statements,
   calendarEvent: [...calendarEventActions],
   file: [...fileActions],
-  "*": ["read"],
+  plan: [...planActions],
+  quota: [...quotaActions],
 });
 
 // Default Better-Auth role
@@ -34,7 +38,8 @@ const admin = ac.newRole({
   ...adminAc.statements,
   calendarEvent: [...calendarEventActions],
   file: [...fileActions],
-  "*": ["read"],
+  plan: [...planActions],
+  quota: [...quotaActions],
 });
 
 // Define roles

@@ -18,27 +18,11 @@ export async function renameFile(
   const file = await findFileById(deps.db, input.id);
   if (!file) throw notFound("File");
 
-  const isOwner = file.uploadedBy === input.userId;
-
-  if (file.organizationId) {
-    if (!isOwner) {
-      const { success } = await deps.userHasPermissionInOrganization({
-        organizationId: file.organizationId,
-        permissions: { file: ["update"] },
-      });
-      if (!success) throw forbidden({ entity: "File", action: "update" });
-    }
-  } else if (isOwner) {
-    const { success } = await deps.userHasPermission({
-      permissions: { file: ["selfUpdate"] },
-    });
-    if (!success) throw forbidden({ entity: "File", action: "update" });
-  } else {
-    const { success } = await deps.userHasPermission({
-      permissions: { file: ["update"] },
-    });
-    if (!success) throw forbidden({ entity: "File", action: "update" });
-  }
+  const { success } = await deps.userHasPermissionInOrganization({
+    organizationId: file.organizationId,
+    permissions: { file: ["update"] },
+  });
+  if (!success) throw forbidden({ entity: "File", action: "update" });
 
   const updated = await renameFileById(deps.db, input.id, input.filename);
   if (!updated) throw notFound("File");

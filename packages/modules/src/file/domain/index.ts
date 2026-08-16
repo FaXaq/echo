@@ -22,7 +22,7 @@ export function kindForMimeType(mimeType: string): FileKind | null {
 export type FileRecord = {
   id: string;
   eventId: string | null;
-  organizationId: string | null;
+  organizationId: string;
   uploadedBy: string;
   uploadedByName: string;
   kind: FileKind;

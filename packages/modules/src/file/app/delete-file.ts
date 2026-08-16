@@ -19,23 +19,9 @@ export async function deleteFile(
   const file = await findFileById(deps.db, input.id);
   if (!file) throw notFound("File");
 
-  const isOwner = file.uploadedBy === input.userId;
-
   if (file.organizationId) {
-    if (!isOwner) {
-      const { success } = await deps.userHasPermissionInOrganization({
-        organizationId: file.organizationId,
-        permissions: { file: ["delete"] },
-      });
-      if (!success) throw forbidden({ entity: "File", action: "delete" });
-    }
-  } else if (isOwner) {
-    const { success } = await deps.userHasPermission({
-      permissions: { file: ["selfDelete"] },
-    });
-    if (!success) throw forbidden({ entity: "File", action: "delete" });
-  } else {
-    const { success } = await deps.userHasPermission({
+    const { success } = await deps.userHasPermissionInOrganization({
+      organizationId: file.organizationId,
       permissions: { file: ["delete"] },
     });
     if (!success) throw forbidden({ entity: "File", action: "delete" });

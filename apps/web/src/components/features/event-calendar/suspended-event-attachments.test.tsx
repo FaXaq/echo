@@ -32,7 +32,7 @@ let uploadRejection: unknown;
 
 function useFailingUploadMutation() {
   return useMutation({
-    mutationFn: async (_input: { eventId?: string; organizationId?: string; file: File }) => {
+    mutationFn: async (_input: { eventId?: string; organizationId: string; file: File }) => {
       throw uploadRejection;
     },
   });
@@ -46,7 +46,7 @@ function renderWithFiles(files: fileResource.EventFile[]) {
   );
   return render(
     <QueryClientProvider client={client}>
-      <SuspendedEventAttachments eventId="event-1" />
+      <SuspendedEventAttachments eventId="event-1" organizationId="org-1" />
     </QueryClientProvider>,
   );
 }

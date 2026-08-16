@@ -6,6 +6,8 @@ import {
   getOrganizationStorageUsageQuery,
   resolvePlanQuery,
 } from "../infrastructure/index.js";
+import type { CheckOrganizationPermission } from "../../user/infrastructure/user-has-permission-in-organization.js";
+import { forbidden } from "@echo/errors";
 
 export type OrganizationPlanOverview = {
   plan: PlanName;
@@ -15,9 +17,15 @@ export type OrganizationPlanOverview = {
 };
 
 export async function getOrganizationPlan(
-  deps: { db: KyselyDB },
+  deps: { db: KyselyDB; userHasPermissionInOrganization: CheckOrganizationPermission },
   input: { organizationId: string },
 ): Promise<OrganizationPlanOverview> {
+  const { success } = await deps.userHasPermissionInOrganization({
+    organizationId: input.organizationId,
+    permissions: { plan: ["read"], quota: ["read"] },
+  });
+  if (!success) throw forbidden({ entity: "Organization", action: "read" });
+
   const plan = await resolvePlanQuery(deps.db, input.organizationId);
   const { limits, features } = planCatalog[plan];
 

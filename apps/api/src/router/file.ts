@@ -26,7 +26,7 @@ export const makeFileRouter = () =>
       .input(
         z.object({
           eventId: z.string().optional(),
-          organizationId: z.string().optional(),
+          organizationId: z.string(),
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
           filename: z.string().min(1),

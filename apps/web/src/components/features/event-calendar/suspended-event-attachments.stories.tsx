@@ -27,7 +27,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Empty: Story = {
-  args: { eventId: "event-1" },
+  args: { eventId: "event-1", organizationId: "org-1" },
   decorators: [
     (Story) => (
       <QueryClientProvider client={withSeededFiles([])}>
@@ -38,7 +38,7 @@ export const Empty: Story = {
 };
 
 export const WithMixedFiles: Story = {
-  args: { eventId: "event-1" },
+  args: { eventId: "event-1", organizationId: "org-1" },
   decorators: [
     (Story) => (
       <QueryClientProvider

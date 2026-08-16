@@ -41,7 +41,7 @@ import {
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string;
-  organizationId?: string;
+  organizationId: string;
 }
 
 function RenameFileForm({

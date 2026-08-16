@@ -43,7 +43,7 @@ export function useUploadFileMutation({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: { eventId?: string; organizationId?: string; file: File }) => {
+    mutationFn: async (input: { eventId?: string; organizationId: string; file: File }) => {
       const { fileId, uploadUrl } = await apiClient.file.createUpload.mutate({
         eventId: input.eventId,
         organizationId: input.organizationId,

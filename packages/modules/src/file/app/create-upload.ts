@@ -1,4 +1,4 @@
-import { conflict, forbidden, notFound, quotaExceeded } from "@echo/errors";
+import { conflict, forbidden, quotaExceeded } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
@@ -29,7 +29,7 @@ export async function createUpload(
   input: {
     userId: string;
     eventId?: string;
-    organizationId?: string;
+    organizationId: string;
     mimeType: string;
     sizeBytes: number;
     filename: string;
@@ -38,24 +38,13 @@ export async function createUpload(
   const kind = kindForMimeType(input.mimeType);
   if (!kind) throw conflict("Unsupported file type");
 
-  if (input.organizationId) {
-    const { success } = await deps.userHasPermissionInOrganization({
-      organizationId: input.organizationId,
-      permissions: { file: ["create"] },
-    });
-    if (!success) throw forbidden({ entity: "File", action: "create" });
-  } else {
-    const { success } = await deps.userHasPermission({
-      permissions: { file: ["selfCreate"] },
-    });
-    if (!success) throw forbidden({ entity: "File", action: "create" });
-  }
+  const { success } = await deps.userHasPermissionInOrganization({
+    organizationId: input.organizationId,
+    permissions: { file: ["create"] },
+  });
+  if (!success) throw forbidden({ entity: "File", action: "create" });
 
-  const organizationId =
-    input.organizationId ?? (await deps.getPersonalOrganizationId(input.userId));
-  if (!organizationId) throw notFound("Personal organization");
-
-  const { limits } = await deps.resolveOrganizationEntitlements(organizationId);
+  const { limits } = await deps.resolveOrganizationEntitlements(input.organizationId);
 
   if (input.sizeBytes > limits.maxFileSizeBytes) {
     throw quotaExceeded({
@@ -65,7 +54,7 @@ export async function createUpload(
     });
   }
 
-  const usedBytes = await deps.getOrganizationStorageUsage(organizationId);
+  const usedBytes = await deps.getOrganizationStorageUsage(input.organizationId);
   if (exceedsLimit({ current: usedBytes, delta: input.sizeBytes, limit: limits.storageBytes })) {
     throw quotaExceeded({
       limitName: "storageBytes",
@@ -75,14 +64,12 @@ export async function createUpload(
   }
 
   const id = crypto.randomUUID();
-  const s3Key = input.organizationId
-    ? `org/${input.organizationId}/${id}/${input.filename}`
-    : `personal/${input.userId}/${id}/${input.filename}`;
+  const s3Key = `org/${input.organizationId}/${id}/${input.filename}`;
 
   await deps.insertPendingFile({
     id,
     eventId: input.eventId ?? null,
-    organizationId,
+    organizationId: input.organizationId,
     uploadedBy: input.userId,
     kind,
     mimeType: input.mimeType,

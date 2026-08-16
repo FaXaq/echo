@@ -4,7 +4,7 @@ import { renameFile } from "./rename-file.js";
 import { makeFakePermissionChecks } from "./test-fixtures.js";
 import * as infra from "../infrastructure/index.js";
 
-function stubFile(file: { organizationId: string | null; uploadedBy: string } | null) {
+function stubFile(file: { organizationId: string; uploadedBy: string } | null) {
   vi.spyOn(infra, "findFileById").mockResolvedValue(
     file
       ? {
@@ -86,22 +86,6 @@ describe("renameFile", () => {
               error: null,
               role: null,
             }),
-          }),
-        },
-        { id: "f1", userId: "user-1", filename: "renamed.pdf" },
-      ),
-    ).rejects.toBeInstanceOf(ForbiddenError);
-  });
-
-  it("rejects a personal-file owner without selfUpdate permission", async () => {
-    stubFile({ organizationId: null, uploadedBy: "user-1" });
-
-    await expect(
-      renameFile(
-        {
-          db: {} as never,
-          ...makeFakePermissionChecks({
-            userHasPermission: async () => ({ success: false, error: null }),
           }),
         },
         { id: "f1", userId: "user-1", filename: "renamed.pdf" },

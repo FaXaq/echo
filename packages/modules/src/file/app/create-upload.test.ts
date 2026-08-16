@@ -13,6 +13,7 @@ import {
 
 const baseInput = {
   userId: "user-1",
+  organizationId: "org-1",
   mimeType: "audio/mpeg",
   sizeBytes: 1024,
   filename: "demo.mp3",
