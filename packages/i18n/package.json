@@ -1,6 +1,7 @@
 {
   "name": "@echo/i18n",
   "private": true,
+  "license": "AGPL-3.0-only",
   "type": "module",
   "exports": {
     ".": {

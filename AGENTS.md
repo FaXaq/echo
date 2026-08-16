@@ -20,6 +20,20 @@ Echo helps musicians organize their music and creation process:
 
 - TypeScript `as` type assertions, in source and test code. Prefer proper typing instead: typed factories/helpers, type guards, or the library's own inferred types. For example, better-auth hook payloads are typed as `T & Record<string, any>`, so additional fields are already accessible without a cast (e.g. `organization.isPersonal`).
 
+## Agent skills
+
+### Issue tracker
+
+Issues live in Linear (team prefix `ECH`), reached through the `linear-server` MCP server — not GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical roles, each label string equal to its name. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Multi-context — a root `CONTEXT-MAP.md` pointing at per-context `CONTEXT.md` files under `apps/*` and `packages/*`. See `docs/agents/domain.md`.
+
 ## Translations
 
 - UI strings (`apps/web/src`): mark with Lingui macros (`Trans`, `t`, `msg`), then run `pnpm i18n:extract` to add them to `packages/i18n/locales/{locale}/messages.po`, fill in `msgstr` for `fr` by hand, then `pnpm i18n:compile`. In JSX, prefer `<Trans>` over `t`\`...\` — reserve `t` for strings needed outside JSX (attributes, variables, non-component code).
