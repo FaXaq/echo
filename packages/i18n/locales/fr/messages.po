@@ -189,7 +189,7 @@ msgstr "Confirmer le mot de passe"
 msgid "Could not generate a unique organization slug"
 msgstr "Impossible de générer un identifiant unique pour le projet"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:63
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:66
 msgid "Could not load plan usage"
 msgstr "Impossible de charger l'utilisation du forfait"
 
@@ -538,7 +538,7 @@ msgstr "Gérez les événements et le planning de votre projet"
 msgid "Maximum 72 characters"
 msgstr "Maximum 72 caractères"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:54
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:57
 msgid "Maximum file size"
 msgstr "Taille maximale de fichier"
 
@@ -551,7 +551,7 @@ msgid "Member"
 msgstr "Membre"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:153
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:48
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
 #: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Members"
 msgstr "Membres"
@@ -727,7 +727,7 @@ msgstr "Lieu"
 msgid "Plan"
 msgstr "Forfait"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:33
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:36
 msgid "Plan & usage"
 msgstr "Forfait et utilisation"
 
@@ -887,7 +887,7 @@ msgid "Start"
 msgstr "Début"
 
 #: apps/web/src/components/features/drive/suspended-drive-quota-bar.tsx:15
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:41
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:44
 msgid "Storage"
 msgstr "Stockage"
 
@@ -1013,6 +1013,6 @@ msgstr "Oui, retirer"
 msgid "You have been invited to join"
 msgstr "Vous avez été invité(e) à rejoindre"
 
-#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:36
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:39
 msgid "Your current plan and what you have used of it."
 msgstr "Votre forfait actuel et ce que vous en avez utilisé."
