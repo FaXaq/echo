@@ -80,17 +80,17 @@
       "types": "./src/calendar/app/index.ts",
       "default": "./src/calendar/app/index.ts"
     },
-    "./file/domain": {
-      "types": "./src/file/domain/index.ts",
-      "default": "./src/file/domain/index.ts"
+    "./drive/domain": {
+      "types": "./src/drive/domain/index.ts",
+      "default": "./src/drive/domain/index.ts"
     },
-    "./file/infrastructure": {
-      "types": "./src/file/infrastructure/index.ts",
-      "default": "./src/file/infrastructure/index.ts"
+    "./drive/infrastructure": {
+      "types": "./src/drive/infrastructure/index.ts",
+      "default": "./src/drive/infrastructure/index.ts"
     },
-    "./file/app": {
-      "types": "./src/file/app/index.ts",
-      "default": "./src/file/app/index.ts"
+    "./drive/app": {
+      "types": "./src/drive/app/index.ts",
+      "default": "./src/drive/app/index.ts"
     },
     "./place/domain": {
       "types": "./src/place/domain/index.ts",

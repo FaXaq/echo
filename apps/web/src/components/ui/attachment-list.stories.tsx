@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { AttachmentList } from "@/components/ui/attachment-list";
-import type { EventFile } from "@/services/resources/file";
+import type { EventFile } from "@/services/resources/drive";
 
 function makeFile(overrides: Partial<EventFile>): EventFile {
   return {

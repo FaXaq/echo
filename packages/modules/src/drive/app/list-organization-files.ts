@@ -15,7 +15,7 @@ export async function listOrganizationFiles(
 ): Promise<FileRecord[]> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["read"] },
+    permissions: { drive: ["read"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "read" });
 

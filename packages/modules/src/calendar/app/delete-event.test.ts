@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { makeDbAdapter } from "@echo/db";
 import { ForbiddenError, NotFoundError } from "@echo/errors";
-import type { FileRecord } from "@echo/modules/file/domain";
-import type { ListFilesByEventQueryPort } from "@echo/modules/file/infrastructure";
+import type { FileRecord } from "@echo/modules/drive/domain";
+import type { ListFilesByEventQueryPort } from "@echo/modules/drive/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
 import { deleteEvent } from "./delete-event.js";

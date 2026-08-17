@@ -22,7 +22,7 @@ function makeFindFolderDescendantIds(ids: string[] = []): FindFolderDescendantId
 }
 
 describe("moveFolder", () => {
-  it("rejects a member without file:update permission", async () => {
+  it("rejects a member without drive:update permission", async () => {
     const moveFolderCommand: MoveFolderCommandPort = async () => makeFakeFolderRecord();
 
     await expect(

@@ -3,7 +3,7 @@ import {
   getFolderPathQueryKey,
   getFolderQueryOptions,
   type Folder,
-} from "@/services/resources/file";
+} from "@/services/resources/drive";
 
 export function useFolderPath(opts: { folderId: string | null; organizationId: string }): Folder[] {
   const queryClient = useQueryClient();

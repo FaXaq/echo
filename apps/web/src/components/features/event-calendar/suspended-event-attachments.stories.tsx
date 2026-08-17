@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
-import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/file";
+import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/drive";
 
 function withSeededFiles(files: EventFile[]) {
   const queryClient = new QueryClient();

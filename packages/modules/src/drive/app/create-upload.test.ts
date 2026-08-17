@@ -40,7 +40,7 @@ describe("createUpload", () => {
     ).rejects.toBeInstanceOf(ConflictError);
   });
 
-  it("rejects an organization upload when the user lacks org file:create", async () => {
+  it("rejects an organization upload when the user lacks org drive:create", async () => {
     await expect(
       createUpload(
         {

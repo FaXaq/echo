@@ -15,7 +15,7 @@ import {
   listCalendarEventsQueryFactory,
   getCalendarEventByIdFactory,
 } from "@echo/modules/calendar/infrastructure";
-import { listFilesByEventQueryFactory } from "@echo/modules/file/infrastructure";
+import { listFilesByEventQueryFactory } from "@echo/modules/drive/infrastructure";
 
 const colorSchema = z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]);
 

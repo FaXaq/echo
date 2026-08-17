@@ -17,7 +17,7 @@ export async function listEventFiles(
 ): Promise<(FileRecord & { downloadUrl: string })[]> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["read"] },
+    permissions: { drive: ["read"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "list event files" });
 

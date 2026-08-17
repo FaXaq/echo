@@ -6,7 +6,7 @@ import {
   getFolderPathQueryKey,
   type Folder,
   type OrganizationFile,
-} from "@/services/resources/file";
+} from "@/services/resources/drive";
 
 function makeFolder(overrides: Partial<Folder>): Folder {
   return {

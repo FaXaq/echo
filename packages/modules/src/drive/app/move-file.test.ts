@@ -13,7 +13,7 @@ import type { MoveFileToFolderCommandPort } from "../infrastructure/index.js";
 const scope = createOrganizationScope("org-1");
 
 describe("moveFile", () => {
-  it("rejects a member without file:update permission", async () => {
+  it("rejects a member without drive:update permission", async () => {
     const moveFileToFolderCommand: MoveFileToFolderCommandPort = async () => makeFakeFileRecord();
 
     await expect(

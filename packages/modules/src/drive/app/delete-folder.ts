@@ -18,7 +18,7 @@ export async function deleteFolder(
 ): Promise<DeleteFolderFailure[]> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["delete"] },
+    permissions: { drive: ["delete"] },
   });
   if (!success) throw forbidden({ entity: "Folder", action: "delete" });
 

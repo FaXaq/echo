@@ -17,7 +17,7 @@ export async function deleteFile(
 ): Promise<void> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["delete"] },
+    permissions: { drive: ["delete"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "delete" });
 

@@ -4,14 +4,14 @@ import { apiClient } from "@/services/api-client";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
-const { key, getResourceKey } = initResourceKey("file");
+const { key, getResourceKey } = initResourceKey("drive");
 
 export { key };
 
-export type EventFile = RouterOutputs["file"]["listEventFiles"][number];
-export type OrganizationFile = RouterOutputs["file"]["listOrganizationFiles"][number];
-export type Folder = RouterOutputs["file"]["getFolder"];
-export type FolderContents = RouterOutputs["file"]["listFolderContents"];
+export type EventFile = RouterOutputs["drive"]["listEventFiles"][number];
+export type OrganizationFile = RouterOutputs["drive"]["listOrganizationFiles"][number];
+export type Folder = RouterOutputs["drive"]["getFolder"];
+export type FolderContents = RouterOutputs["drive"]["listFolderContents"];
 
 export function getFolderContentsQueryOptions(opts: {
   folderId: string | null;
@@ -21,7 +21,7 @@ export function getFolderContentsQueryOptions(opts: {
     queryKey: getResourceKey("listFolderContents", opts),
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
-      return apiClient.file.listFolderContents.query(params, { signal });
+      return apiClient.drive.listFolderContents.query(params, { signal });
     },
   });
 }
@@ -31,7 +31,7 @@ export function getFolderQueryOptions(opts: { id: string; organizationId: string
     queryKey: getResourceKey("getFolder", opts),
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
-      return apiClient.file.getFolder.query(params, { signal });
+      return apiClient.drive.getFolder.query(params, { signal });
     },
     staleTime: 5 * 60 * 1000,
   });
@@ -48,7 +48,7 @@ export function useCreateFolderMutation({
 
   return useMutation({
     mutationFn: (input: { organizationId: string; parentFolderId: string | null; name: string }) =>
-      apiClient.file.createFolder.mutate(input),
+      apiClient.drive.createFolder.mutate(input),
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.(result);
@@ -61,7 +61,7 @@ export function useRenameFolderMutation({ onSuccess }: { onSuccess?: () => void 
 
   return useMutation({
     mutationFn: (input: { id: string; organizationId: string; name: string }) =>
-      apiClient.file.renameFolder.mutate(input),
+      apiClient.drive.renameFolder.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
@@ -74,7 +74,7 @@ export function useMoveFolderMutation({ onSuccess }: { onSuccess?: () => void } 
 
   return useMutation({
     mutationFn: (input: { id: string; organizationId: string; parentFolderId: string | null }) =>
-      apiClient.file.moveFolder.mutate(input),
+      apiClient.drive.moveFolder.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
@@ -87,7 +87,7 @@ export function useDeleteFolderMutation({ onSuccess }: { onSuccess?: () => void 
 
   return useMutation({
     mutationFn: (input: { id: string; organizationId: string }) =>
-      apiClient.file.deleteFolder.mutate(input),
+      apiClient.drive.deleteFolder.mutate(input),
     onSuccess: async (_result, input) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: key }),
@@ -105,7 +105,7 @@ export function useMoveFileMutation({ onSuccess }: { onSuccess?: () => void } = 
 
   return useMutation({
     mutationFn: (input: { id: string; organizationId: string; folderId: string | null }) =>
-      apiClient.file.moveFile.mutate(input),
+      apiClient.drive.moveFile.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
@@ -118,7 +118,7 @@ export function getEventFilesQueryOptions(opts: { eventId: string; organizationI
     queryKey: getResourceKey("listEventFiles", opts),
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
-      return apiClient.file.listEventFiles.query(params, { signal });
+      return apiClient.drive.listEventFiles.query(params, { signal });
     },
     // Presigned download URLs are re-signed on every server call and expire
     // after an hour; keeping this fresh for a few minutes avoids re-fetching
@@ -133,7 +133,7 @@ export function getOrganizationFilesQueryOptions(opts: { organizationId: string 
     queryKey: getResourceKey("listOrganizationFiles", opts),
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
-      return apiClient.file.listOrganizationFiles.query(params, { signal });
+      return apiClient.drive.listOrganizationFiles.query(params, { signal });
     },
   });
 }
@@ -141,7 +141,7 @@ export function getOrganizationFilesQueryOptions(opts: { organizationId: string 
 export function useUploadFileMutation({
   onSuccess,
 }: {
-  onSuccess?: (file: RouterOutputs["file"]["confirmUpload"]) => void;
+  onSuccess?: (file: RouterOutputs["drive"]["confirmUpload"]) => void;
 } = {}) {
   const queryClient = useQueryClient();
 
@@ -152,7 +152,7 @@ export function useUploadFileMutation({
       organizationId: string;
       file: File;
     }) => {
-      const { fileId, uploadUrl } = await apiClient.file.createUpload.mutate({
+      const { fileId, uploadUrl } = await apiClient.drive.createUpload.mutate({
         eventId: input.eventId,
         folderId: input.folderId,
         organizationId: input.organizationId,
@@ -168,7 +168,7 @@ export function useUploadFileMutation({
       });
       if (!response.ok) throw new Error("Upload failed");
 
-      return apiClient.file.confirmUpload.mutate({
+      return apiClient.drive.confirmUpload.mutate({
         id: fileId,
         organizationId: input.organizationId,
       });
@@ -190,7 +190,7 @@ export function useDeleteFileMutation({ onSuccess }: { onSuccess?: () => void } 
 
   return useMutation({
     mutationFn: (input: { id: string; organizationId: string }) =>
-      apiClient.file.deleteFile.mutate(input),
+      apiClient.drive.deleteFile.mutate(input),
     onSuccess: async (_result, input) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: key }),
@@ -208,7 +208,7 @@ export function useRenameFileMutation({ onSuccess }: { onSuccess?: () => void } 
 
   return useMutation({
     mutationFn: (input: { id: string; organizationId: string; filename: string }) =>
-      apiClient.file.renameFile.mutate(input),
+      apiClient.drive.renameFile.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();

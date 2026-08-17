@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { RouterOutputs } from "@echo/api/router";
 import { SuspendedEventDetail } from "./suspended-event-detail";
 import { getEventQueryOptions } from "@/services/resources/calendar";
-import { getEventFilesQueryOptions } from "@/services/resources/file";
+import { getEventFilesQueryOptions } from "@/services/resources/drive";
 
 type ApiEvent = RouterOutputs["calendar"]["getEventById"];
 

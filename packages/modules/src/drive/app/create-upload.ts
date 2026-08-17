@@ -46,7 +46,7 @@ export async function createUpload(
 
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["create"] },
+    permissions: { drive: ["create"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "create" });
 

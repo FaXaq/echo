@@ -21,7 +21,7 @@ export async function createFolder(
 ): Promise<FolderRecord> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["create"] },
+    permissions: { drive: ["create"] },
   });
   if (!success) throw forbidden({ entity: "Folder", action: "create" });
 

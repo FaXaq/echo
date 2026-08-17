@@ -14,7 +14,7 @@ import type { ListFolderContentsQueryPort } from "../infrastructure/index.js";
 const scope = createOrganizationScope("org-1");
 
 describe("listFolderContents", () => {
-  it("rejects a member without file:read permission", async () => {
+  it("rejects a member without drive:read permission", async () => {
     const listFolderContentsQuery: ListFolderContentsQueryPort = async () => ({
       folders: [],
       files: [],

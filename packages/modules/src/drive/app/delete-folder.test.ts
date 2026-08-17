@@ -8,7 +8,7 @@ import type { DeleteFolderCascadeCommandPort } from "../infrastructure/index.js"
 const scope = createOrganizationScope("org-1");
 
 describe("deleteFolder", () => {
-  it("rejects a member without file:delete permission", async () => {
+  it("rejects a member without drive:delete permission", async () => {
     const deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort = async () => ({
       deletedFiles: [],
     });

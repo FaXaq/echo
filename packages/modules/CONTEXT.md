@@ -1,6 +1,6 @@
 # Modules
 
-Domain modules for Echo: calendar, file, invitation, notification, organization, place, plan, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
+Domain modules for Echo: calendar, drive, invitation, notification, organization, place, plan, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
 
 ## Language
 

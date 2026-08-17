@@ -2,35 +2,26 @@ import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
+import type { RenameFileByIdCommandPort } from "../infrastructure/index.js";
 import type { FileRecord } from "../domain/index.js";
-import type {
-  FindFolderByIdQueryPort,
-  MoveFileToFolderCommandPort,
-} from "../infrastructure/index.js";
 
-export async function moveFile(
+export async function renameFile(
   deps: {
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
-    findFolderByIdQuery: FindFolderByIdQueryPort;
-    moveFileToFolderCommand: MoveFileToFolderCommandPort;
+    renameFileByIdCommand: RenameFileByIdCommandPort;
   },
-  input: { id: string; scope: OrganizationScope; folderId: string | null },
+  input: { id: string; scope: OrganizationScope; filename: string },
 ): Promise<FileRecord> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["update"] },
+    permissions: { drive: ["update"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "update" });
 
-  if (input.folderId !== null) {
-    const folder = await deps.findFolderByIdQuery(deps.db, input.scope, { id: input.folderId });
-    if (!folder) throw notFound("Folder");
-  }
-
-  const updated = await deps.moveFileToFolderCommand(deps.db, input.scope, {
+  const updated = await deps.renameFileByIdCommand(deps.db, input.scope, {
     id: input.id,
-    folderId: input.folderId,
+    filename: input.filename,
   });
   if (!updated) throw notFound("File");
   return updated;

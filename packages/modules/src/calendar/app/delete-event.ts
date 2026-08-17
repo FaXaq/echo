@@ -1,7 +1,7 @@
 import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
-import type { ListFilesByEventQueryPort } from "@echo/modules/file/infrastructure";
+import type { ListFilesByEventQueryPort } from "@echo/modules/drive/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import type { DeleteCalendarEventCommandPort } from "../infrastructure/delete-calendar-event.command.port.js";

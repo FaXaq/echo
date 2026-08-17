@@ -62,7 +62,7 @@ import {
   useUploadFileMutation,
   type Folder,
   type OrganizationFile,
-} from "@/services/resources/file";
+} from "@/services/resources/drive";
 import { useFolderPath } from "@/hooks/use-folder-path";
 import { FolderNameDialog } from "./folder-name-dialog";
 

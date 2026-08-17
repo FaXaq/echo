@@ -6,8 +6,8 @@ import {
   renderResetPasswordEmail,
   renderInvitationEmail,
 } from "@echo/modules/notification/infrastructure";
-import { deleteOrganizationFiles } from "@echo/modules/file/app";
-import { listFilesByOrganizationQueryFactory } from "@echo/modules/file/infrastructure";
+import { deleteOrganizationFiles } from "@echo/modules/drive/app";
+import { listFilesByOrganizationQueryFactory } from "@echo/modules/drive/infrastructure";
 import {
   createOrganizationCommandFactory,
   getPersonalOrganizationQuery,

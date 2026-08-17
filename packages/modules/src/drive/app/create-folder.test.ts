@@ -14,7 +14,7 @@ import type { InsertFolderCommandPort } from "../infrastructure/index.js";
 const scope = createOrganizationScope("org-1");
 
 describe("createFolder", () => {
-  it("rejects a member without file:create permission", async () => {
+  it("rejects a member without drive:create permission", async () => {
     const insertFolderCommand: InsertFolderCommandPort = async () => makeFakeFolderRecord();
 
     await expect(

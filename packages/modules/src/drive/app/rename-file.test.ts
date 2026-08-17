@@ -8,7 +8,7 @@ import type { RenameFileByIdCommandPort } from "../infrastructure/index.js";
 const scope = createOrganizationScope("org-1");
 
 describe("renameFile", () => {
-  it("rejects a member without file:update permission", async () => {
+  it("rejects a member without drive:update permission", async () => {
     const renameFileByIdCommand: RenameFileByIdCommandPort = async () => makeFakeFileRecord();
 
     await expect(

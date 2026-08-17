@@ -13,7 +13,7 @@ import {
   moveFolder,
   renameFile,
   renameFolder,
-} from "@echo/modules/file/app";
+} from "@echo/modules/drive/app";
 import {
   deleteFileByIdCommandFactory,
   deleteFolderCascadeCommandFactory,
@@ -31,7 +31,7 @@ import {
   moveFolderCommandFactory,
   renameFileByIdCommandFactory,
   renameFolderByIdCommandFactory,
-} from "@echo/modules/file/infrastructure";
+} from "@echo/modules/drive/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
 import {
@@ -57,7 +57,7 @@ const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
 const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
 
-export const makeFileRouter = () =>
+export const makeDriveRouter = () =>
   router({
     createUpload: organizationProcedure
       .input(

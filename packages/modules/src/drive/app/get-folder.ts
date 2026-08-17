@@ -15,7 +15,7 @@ export async function getFolder(
 ): Promise<FolderRecord> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["read"] },
+    permissions: { drive: ["read"] },
   });
   if (!success) throw forbidden({ entity: "Folder", action: "read" });
 

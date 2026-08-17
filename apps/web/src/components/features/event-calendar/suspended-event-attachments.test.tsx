@@ -22,7 +22,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => ({
 }));
 
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
-import * as fileResource from "@/services/resources/file";
+import * as driveResource from "@/services/resources/drive";
 
 function makeFile(name = "demo.mp3") {
   return new File(["content"], name, { type: "audio/mpeg" });
@@ -38,10 +38,10 @@ function useFailingUploadMutation() {
   });
 }
 
-function renderWithFiles(files: fileResource.EventFile[]) {
+function renderWithFiles(files: driveResource.EventFile[]) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   client.setQueryData(
-    fileResource.getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" })
+    driveResource.getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" })
       .queryKey,
     files,
   );
@@ -69,7 +69,7 @@ describe("SuspendedEventAttachments", () => {
         downloadUrl: "https://example.com/demo.mp3",
         sizeBytes: 10,
         uploadedByName: "Jane",
-      } as fileResource.EventFile,
+      } as driveResource.EventFile,
       {
         id: "f2",
         kind: "document",
@@ -78,7 +78,7 @@ describe("SuspendedEventAttachments", () => {
         downloadUrl: "https://example.com/setlist.pdf",
         sizeBytes: 20,
         uploadedByName: "Jane",
-      } as fileResource.EventFile,
+      } as driveResource.EventFile,
     ]);
 
     expect(await screen.findByText("demo.mp3")).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe("SuspendedEventAttachments", () => {
     uploadRejection = Object.assign(new Error("Quota exceeded: storageBytes"), {
       data: { quota: { limitName: "storageBytes", limit: 1000, current: 950 } },
     });
-    vi.spyOn(fileResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
+    vi.spyOn(driveResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
 
     const user = userEvent.setup();
     renderWithFiles([]);
@@ -107,7 +107,7 @@ describe("SuspendedEventAttachments", () => {
     uploadRejection = Object.assign(new Error("Quota exceeded: maxFileSizeBytes"), {
       data: { quota: { limitName: "maxFileSizeBytes", limit: 1000, current: 2000 } },
     });
-    vi.spyOn(fileResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
+    vi.spyOn(driveResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
 
     const user = userEvent.setup();
     renderWithFiles([]);
@@ -121,7 +121,7 @@ describe("SuspendedEventAttachments", () => {
 
   it("shows the generic upload-failed message for a non-quota upload error", async () => {
     uploadRejection = new Error("Upload failed");
-    vi.spyOn(fileResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
+    vi.spyOn(driveResource, "useUploadFileMutation").mockImplementation(useFailingUploadMutation);
 
     const user = userEvent.setup();
     renderWithFiles([]);

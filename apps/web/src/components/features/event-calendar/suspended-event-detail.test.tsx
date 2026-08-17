@@ -11,7 +11,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => ({
 
 import { SuspendedEventDetail } from "./suspended-event-detail";
 import * as calendarResource from "@/services/resources/calendar";
-import * as fileResource from "@/services/resources/file";
+import * as driveResource from "@/services/resources/drive";
 
 function makeEvent(): calendarResource.CalendarEvent {
   return {
@@ -54,7 +54,7 @@ describe("SuspendedEventDetail", () => {
       makeEvent(),
     );
     client.setQueryData(
-      fileResource.getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" })
+      driveResource.getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" })
         .queryKey,
       [],
     );

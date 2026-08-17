@@ -37,7 +37,7 @@ import {
   useRenameFileMutation,
   useUploadFileMutation,
   type EventFile,
-} from "@/services/resources/file";
+} from "@/services/resources/drive";
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string;

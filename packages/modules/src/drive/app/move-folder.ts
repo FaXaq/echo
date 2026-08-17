@@ -23,7 +23,7 @@ export async function moveFolder(
 ): Promise<FolderRecord> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { file: ["update"] },
+    permissions: { drive: ["update"] },
   });
   if (!success) throw forbidden({ entity: "Folder", action: "update" });
 

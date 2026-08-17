@@ -7,7 +7,7 @@ import { makeFakeDb, makeFakeFindFolderById, makeFakePermissionChecks } from "./
 const scope = createOrganizationScope("org-1");
 
 describe("getFolder", () => {
-  it("rejects a member without file:read permission", async () => {
+  it("rejects a member without drive:read permission", async () => {
     await expect(
       getFolder(
         {
