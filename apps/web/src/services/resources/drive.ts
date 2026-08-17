@@ -215,3 +215,7 @@ export function useRenameFileMutation({ onSuccess }: { onSuccess?: () => void } 
     },
   });
 }
+
+export function getFileDownloadUrl(input: { id: string; organizationId: string }) {
+  return apiClient.drive.getFileDownloadUrl.query(input);
+}

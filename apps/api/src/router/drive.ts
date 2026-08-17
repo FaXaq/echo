@@ -5,6 +5,7 @@ import {
   createUpload,
   deleteFile,
   deleteFolder,
+  getFileDownloadUrl,
   getFolder,
   listEventFiles,
   listFolderContents,
@@ -155,6 +156,20 @@ export const makeDriveRouter = () =>
             renameFileByIdCommand,
           },
           { id: input.id, scope: ctx.organizationScope, filename: input.filename },
+        ),
+      ),
+
+    getFileDownloadUrl: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .query(({ ctx, input }) =>
+        getFileDownloadUrl(
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFileByIdQuery,
+          },
+          { id: input.id, scope: ctx.organizationScope },
         ),
       ),
 

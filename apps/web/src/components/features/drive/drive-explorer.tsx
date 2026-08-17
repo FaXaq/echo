@@ -6,6 +6,7 @@ import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import dayjs from "dayjs";
 import { DragDropProvider, useDraggable, useDroppable, type DragEndEvent } from "@dnd-kit/react";
 import {
+  Download,
   FileText,
   Folder as FolderIcon,
   FolderOpen,
@@ -50,14 +51,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatSize } from "@/lib/file";
+import { toast } from "@/components/ui/toast";
+import { downloadFile, formatSize } from "@/lib/file";
 import { getInitials } from "@/lib/remeda";
 import {
+  getFileDownloadUrl,
   getFolderContentsQueryOptions,
   useCreateFolderMutation,
+  useDeleteFileMutation,
   useDeleteFolderMutation,
   useMoveFileMutation,
   useMoveFolderMutation,
+  useRenameFileMutation,
   useRenameFolderMutation,
   useUploadFileMutation,
   type Folder,
@@ -138,6 +143,7 @@ function FolderRow({
         <TableCell />
         <TableCell className="text-muted-foreground">{formatDate(folder.createdAt)}</TableCell>
         <TableCell className="text-muted-foreground">{formatDate(folder.updatedAt)}</TableCell>
+        <TableCell />
         <TableCell>
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -192,7 +198,18 @@ function FolderRow({
   );
 }
 
-function FileRow({ file }: { file: OrganizationFile }) {
+function FileRow({
+  file,
+  onRename,
+  onDelete,
+  onDownload,
+}: {
+  file: OrganizationFile;
+  onRename: () => void;
+  onDelete: () => void;
+  onDownload: () => void;
+}) {
+  const { t } = useLingui();
   const Icon = KIND_ICON[file.kind];
   const { isDragging, ref } = useDraggable<DragData>({
     id: `file:${file.id}`,
@@ -200,27 +217,99 @@ function FileRow({ file }: { file: OrganizationFile }) {
   });
 
   return (
-    <TableRow ref={ref} data-dragging={isDragging} className="data-[dragging=true]:opacity-50">
-      <TableCell>
-        <div className="flex items-center gap-2.5">
-          <Icon className="size-4 shrink-0 text-muted-foreground" />
-          <span className="font-medium">{file.filename}</span>
-        </div>
-      </TableCell>
-      <TableCell>
-        <div className="flex items-center gap-2">
-          <Avatar size="sm">
-            <AvatarFallback className="text-[10px]">
-              {getInitials(file.uploadedByName)}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm">{file.uploadedByName}</span>
-        </div>
-      </TableCell>
-      <TableCell className="text-muted-foreground">{formatDate(file.createdAt)}</TableCell>
-      <TableCell className="text-muted-foreground">{formatDate(file.updatedAt)}</TableCell>
-      <TableCell className="text-muted-foreground">{formatSize(file.sizeBytes)}</TableCell>
-    </TableRow>
+    <ContextMenu>
+      <ContextMenuTrigger
+        render={
+          <TableRow
+            ref={ref}
+            data-dragging={isDragging}
+            className="group/row data-[dragging=true]:opacity-50"
+          />
+        }
+      >
+        <TableCell>
+          <div className="flex items-center gap-2.5">
+            <Icon className="size-4 shrink-0 text-muted-foreground" />
+            <span className="font-medium">{file.filename}</span>
+          </div>
+        </TableCell>
+        <TableCell>
+          <div className="flex items-center gap-2">
+            <Avatar size="sm">
+              <AvatarFallback className="text-[10px]">
+                {getInitials(file.uploadedByName)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm">{file.uploadedByName}</span>
+          </div>
+        </TableCell>
+        <TableCell className="text-muted-foreground">{formatDate(file.createdAt)}</TableCell>
+        <TableCell className="text-muted-foreground">{formatDate(file.updatedAt)}</TableCell>
+        <TableCell className="text-muted-foreground">{formatSize(file.sizeBytes)}</TableCell>
+        <TableCell>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="opacity-0 group-hover/row:opacity-100"
+                  aria-label={t`Actions for ${file.filename}`}
+                  onClick={(event) => event.stopPropagation()}
+                />
+              }
+            >
+              <MoreVertical />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onDownload();
+                }}
+              >
+                <Download />
+                {t`Download`}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onRename();
+                }}
+              >
+                <Pen />
+                {t`Rename`}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onDelete();
+                }}
+              >
+                <Trash />
+                {t`Delete`}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </TableCell>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={onDownload}>
+          <Download />
+          {t`Download`}
+        </ContextMenuItem>
+        <ContextMenuItem onClick={onRename}>
+          <Pen />
+          {t`Rename`}
+        </ContextMenuItem>
+        <ContextMenuItem variant="destructive" onClick={onDelete}>
+          <Trash />
+          {t`Delete`}
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
 
@@ -287,6 +376,9 @@ function DriveExplorerContent({
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [renamingFolder, setRenamingFolder] = useState<Folder | null>(null);
   const [deletingFolder, setDeletingFolder] = useState<Folder | null>(null);
+  const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
+  const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
+  const [pendingDeleteIds, setPendingDeleteIds] = useState<Set<string>>(new Set());
 
   const createFolderMutation = useCreateFolderMutation();
   const renameFolderMutation = useRenameFolderMutation();
@@ -294,6 +386,8 @@ function DriveExplorerContent({
   const moveFolderMutation = useMoveFolderMutation();
   const moveFileMutation = useMoveFileMutation();
   const uploadMutation = useUploadFileMutation();
+  const renameFileMutation = useRenameFileMutation();
+  const deleteFileMutation = useDeleteFileMutation();
 
   const navigateToFolder = (id: string | null) => {
     if (id === null) {
@@ -319,7 +413,46 @@ function DriveExplorerContent({
     }
   };
 
-  const isEmpty = data.folders.length === 0 && data.files.length === 0;
+  const clearPendingDelete = (id: string) => {
+    setPendingDeleteIds((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  };
+
+  const scheduleDelete = (id: string, title: string, commit: () => void) => {
+    setPendingDeleteIds((prev) => new Set(prev).add(id));
+    let undone = false;
+    const toastId = toast.add({
+      title,
+      type: "success",
+      actionProps: {
+        children: t`Undo`,
+        onClick: () => {
+          undone = true;
+          clearPendingDelete(id);
+          toast.close(toastId);
+        },
+      },
+      onRemove: () => {
+        if (!undone) commit();
+      },
+    });
+  };
+
+  const handleDownloadFile = async (file: OrganizationFile) => {
+    try {
+      const { downloadUrl } = await getFileDownloadUrl({ id: file.id, organizationId });
+      await downloadFile(downloadUrl, file.filename);
+    } catch {
+      toast.add({ title: t`Couldn't download file`, type: "error" });
+    }
+  };
+
+  const visibleFolders = data.folders.filter((folder) => !pendingDeleteIds.has(folder.id));
+  const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
+  const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
 
   return (
     <div className="flex flex-1 flex-col min-h-0 gap-3">
@@ -378,10 +511,15 @@ function DriveExplorerContent({
               <TableHead>
                 <Trans>Size</Trans>
               </TableHead>
+              <TableHead>
+                <span className="sr-only">
+                  <Trans>Actions</Trans>
+                </span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.folders.map((folder) => (
+            {visibleFolders.map((folder) => (
               <FolderRow
                 key={folder.id}
                 folder={folder}
@@ -390,12 +528,18 @@ function DriveExplorerContent({
                 onDelete={() => setDeletingFolder(folder)}
               />
             ))}
-            {data.files.map((file) => (
-              <FileRow key={file.id} file={file} />
+            {visibleFiles.map((file) => (
+              <FileRow
+                key={file.id}
+                file={file}
+                onRename={() => setRenamingFile(file)}
+                onDelete={() => setDeletingFile(file)}
+                onDownload={() => handleDownloadFile(file)}
+              />
             ))}
             {isEmpty && (
               <TableRow>
-                <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">
+                <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
                   {folderId === null ? t`No files yet` : t`This folder is empty`}
                 </TableCell>
               </TableRow>
@@ -405,7 +549,7 @@ function DriveExplorerContent({
       </DragDropProvider>
 
       <p className="text-xs text-muted-foreground">
-        <Plural value={data.folders.length + data.files.length} one="# item" other="# items" />
+        <Plural value={visibleFolders.length + visibleFiles.length} one="# item" other="# items" />
       </p>
 
       <FolderNameDialog
@@ -424,7 +568,10 @@ function DriveExplorerContent({
         initialName={renamingFolder?.name}
         onConfirm={(name) => {
           if (renamingFolder)
-            renameFolderMutation.mutate({ id: renamingFolder.id, organizationId, name });
+            renameFolderMutation.mutate(
+              { id: renamingFolder.id, organizationId, name },
+              { onError: () => toast.add({ title: t`Couldn't rename folder`, type: "error" }) },
+            );
         }}
       />
 
@@ -436,8 +583,57 @@ function DriveExplorerContent({
         description={t`This permanently deletes the folder and any files inside it that aren't attached to an event or song. Files still attached elsewhere are kept and simply removed from this folder. This action cannot be undone.`}
         confirmLabel={t`Delete`}
         onConfirm={() => {
-          if (deletingFolder)
-            deleteFolderMutation.mutate({ id: deletingFolder.id, organizationId });
+          if (!deletingFolder) return;
+          const { id } = deletingFolder;
+          scheduleDelete(id, t`Folder deleted`, () =>
+            deleteFolderMutation.mutate(
+              { id, organizationId },
+              {
+                onError: () => {
+                  clearPendingDelete(id);
+                  toast.add({ title: t`Couldn't delete folder`, type: "error" });
+                },
+              },
+            ),
+          );
+        }}
+      />
+
+      <FolderNameDialog
+        open={renamingFile !== null}
+        onOpenChange={(open) => !open && setRenamingFile(null)}
+        title={t`Rename file`}
+        initialName={renamingFile?.filename}
+        onConfirm={(filename) => {
+          if (renamingFile)
+            renameFileMutation.mutate(
+              { id: renamingFile.id, organizationId, filename },
+              { onError: () => toast.add({ title: t`Couldn't rename file`, type: "error" }) },
+            );
+        }}
+      />
+
+      <ConfirmDialog
+        open={deletingFile !== null}
+        onOpenChange={(open) => !open && setDeletingFile(null)}
+        variant="destructive"
+        title={t`Delete this file?`}
+        description={t`This permanently deletes the file, including from any event or song it's attached to. This action cannot be undone.`}
+        confirmLabel={t`Delete`}
+        onConfirm={() => {
+          if (!deletingFile) return;
+          const { id } = deletingFile;
+          scheduleDelete(id, t`File deleted`, () =>
+            deleteFileMutation.mutate(
+              { id, organizationId },
+              {
+                onError: () => {
+                  clearPendingDelete(id);
+                  toast.add({ title: t`Couldn't delete file`, type: "error" });
+                },
+              },
+            ),
+          );
         }}
       />
     </div>
