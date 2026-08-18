@@ -39,6 +39,10 @@ _Avoid_: Batch action
 Dragging files from outside the browser (the OS file system) onto the Drive table to upload them — into the current folder, or into a specific Folder row if dropped while hovering it. Not a Bulk Action: it acts on incoming external files, not on a Selection of existing Drive rows, and is a separate mechanism from the Selection drag-to-move despite both ending in a folder as the target. Dropping a whole OS directory (not just files) is rejected, not flattened or recreated.
 _Avoid_: Drag-and-drop upload (ambiguous with Selection drag-to-move)
 
+**Drive Search**:
+A whole-Organization, cross-folder lookup by file or folder name (plain substring match), surfaced as type-ahead results separate from the folder-browsing table rather than filtering it in place. Distinct from folder navigation and from Selection — neither is affected by searching. A matched file's result navigates to its containing Folder; a matched folder's result navigates directly into it.
+_Avoid_: Filter (reserve for the future date/size/event facets, not yet built)
+
 ## Exceptions
 
 **Invitation lookup by id** (`invitation/infrastructure/get-invitation-by-id.ts`) does not require Organization Scope. An invitee looking up their invitation isn't an Organization member yet, so there's no membership to verify — the invitation id itself is the capability that grants read access, not scope.
