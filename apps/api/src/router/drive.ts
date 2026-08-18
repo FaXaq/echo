@@ -14,6 +14,7 @@ import {
   moveFolder,
   renameFile,
   renameFolder,
+  searchDrive,
 } from "@echo/modules/drive/app";
 import {
   deleteFileByIdCommandFactory,
@@ -32,6 +33,7 @@ import {
   moveFolderCommandFactory,
   renameFileByIdCommandFactory,
   renameFolderByIdCommandFactory,
+  searchDriveQueryFactory,
 } from "@echo/modules/drive/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
@@ -60,6 +62,7 @@ const moveFolderCommand = moveFolderCommandFactory();
 const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
 const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
+const searchDriveQuery = searchDriveQueryFactory();
 
 export const makeDriveRouter = () =>
   router({
@@ -133,6 +136,19 @@ export const makeDriveRouter = () =>
         { scope: ctx.organizationScope },
       ),
     ),
+
+    searchDrive: organizationProcedure
+      .input(z.object({ query: z.string().trim().min(1) }))
+      .query(({ ctx, input }) =>
+        searchDrive(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            searchDriveQuery,
+          },
+          { scope: ctx.organizationScope, query: input.query },
+        ),
+      ),
 
     deleteFile: organizationProcedure
       .input(z.object({ id: z.string() }))

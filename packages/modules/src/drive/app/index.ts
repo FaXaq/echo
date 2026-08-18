@@ -15,3 +15,4 @@ export { deleteFolder } from "./delete-folder.js";
 export type { DeleteFolderFailure } from "./delete-folder.js";
 export { listFolderContents } from "./list-folder-contents.js";
 export { getFolder } from "./get-folder.js";
+export { searchDrive } from "./search-drive.js";

@@ -88,3 +88,10 @@ export type {
   ListFolderContentsQueryPort,
 } from "./list-folder-contents.query.port.js";
 export { listFolderContentsQueryFactory } from "./list-folder-contents.query.kysely.js";
+
+export type {
+  SearchDriveQueryInput,
+  SearchDriveResult,
+  SearchDriveQueryPort,
+} from "./search-drive.query.port.js";
+export { searchDriveQueryFactory } from "./search-drive.query.kysely.js";
