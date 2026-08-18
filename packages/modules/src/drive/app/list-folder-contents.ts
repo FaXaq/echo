@@ -4,6 +4,8 @@ import type { CheckOrganizationPermission } from "@echo/modules/user/infrastruct
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileRecord, FolderRecord } from "../domain/index.js";
 import type {
+  DriveSortField,
+  DriveSortOrder,
   FindFolderByIdQueryPort,
   ListFolderContentsQueryPort,
 } from "../infrastructure/index.js";
@@ -15,7 +17,11 @@ export async function listFolderContents(
     findFolderByIdQuery: FindFolderByIdQueryPort;
     listFolderContentsQuery: ListFolderContentsQueryPort;
   },
-  input: { scope: OrganizationScope; folderId: string | null },
+  input: {
+    scope: OrganizationScope;
+    folderId: string | null;
+    sort: { field: DriveSortField; order: DriveSortOrder };
+  },
 ): Promise<{ folders: FolderRecord[]; files: FileRecord[] }> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
@@ -30,6 +36,7 @@ export async function listFolderContents(
 
   const { folders, files } = await deps.listFolderContentsQuery(deps.db, input.scope, {
     folderId: input.folderId,
+    sort: input.sort,
   });
 
   return { folders, files: files.filter((file) => file.status === "uploaded") };

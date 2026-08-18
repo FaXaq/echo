@@ -34,7 +34,7 @@ describe("listFolderContents", () => {
             }),
           }),
         },
-        { scope, folderId: null },
+        { scope, folderId: null, sort: { field: "name", order: "asc" } },
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
   });
@@ -53,7 +53,7 @@ describe("listFolderContents", () => {
           listFolderContentsQuery,
           ...makeFakePermissionChecks(),
         },
-        { scope, folderId: "missing" },
+        { scope, folderId: "missing", sort: { field: "name", order: "asc" } },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
@@ -74,10 +74,30 @@ describe("listFolderContents", () => {
         listFolderContentsQuery,
         ...makeFakePermissionChecks(),
       },
-      { scope, folderId: null },
+      { scope, folderId: null, sort: { field: "name", order: "asc" } },
     );
 
     expect(result.folders).toHaveLength(1);
     expect(result.files).toEqual([expect.objectContaining({ id: "file-1" })]);
+  });
+
+  it("passes the sort input through to the query", async () => {
+    let receivedInput: unknown;
+    const listFolderContentsQuery: ListFolderContentsQueryPort = async (_db, _scope, input) => {
+      receivedInput = input;
+      return { folders: [], files: [] };
+    };
+
+    await listFolderContents(
+      {
+        db: makeFakeDb(),
+        findFolderByIdQuery: makeFakeFindFolderById(),
+        listFolderContentsQuery,
+        ...makeFakePermissionChecks(),
+      },
+      { scope, folderId: null, sort: { field: "name", order: "asc" } },
+    );
+
+    expect(receivedInput).toEqual({ folderId: null, sort: { field: "name", order: "asc" } });
   });
 });

@@ -41,6 +41,9 @@ import {
 } from "@echo/modules/plan/infrastructure";
 import { organizationProcedure, router } from "../trpc";
 
+const driveSortFieldSchema = z.enum(["name", "event", "updatedAt", "sizeBytes"]);
+const driveSortOrderSchema = z.enum(["asc", "desc"]);
+
 const insertPendingFileCommand = insertPendingFileCommandFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
 const markFileUploadedCommand = markFileUploadedCommandFactory();
@@ -252,7 +255,14 @@ export const makeDriveRouter = () =>
       ),
 
     listFolderContents: organizationProcedure
-      .input(z.object({ folderId: z.string().nullable() }))
+      .input(
+        z.object({
+          folderId: z.string().nullable(),
+          sort: z
+            .object({ field: driveSortFieldSchema, order: driveSortOrderSchema })
+            .default({ field: "name", order: "asc" }),
+        }),
+      )
       .query(({ ctx, input }) =>
         listFolderContents(
           {
@@ -261,7 +271,7 @@ export const makeDriveRouter = () =>
             findFolderByIdQuery,
             listFolderContentsQuery,
           },
-          { scope: ctx.organizationScope, folderId: input.folderId },
+          { scope: ctx.organizationScope, folderId: input.folderId, sort: input.sort },
         ),
       ),
 

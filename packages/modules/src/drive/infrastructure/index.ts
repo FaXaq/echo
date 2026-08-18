@@ -81,6 +81,8 @@ export type {
 export { deleteFolderCascadeCommandFactory } from "./delete-folder-cascade.command.kysely.js";
 
 export type {
+  DriveSortField,
+  DriveSortOrder,
   ListFolderContentsQueryInput,
   ListFolderContentsResult,
   ListFolderContentsQueryPort,
