@@ -1,8 +1,14 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { RouterOutputs } from "@echo/api/router";
+import { z } from "zod";
 import { apiClient } from "@/services/api-client";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
+
+export const driveSortFieldSchema = z.enum(["name", "event", "updatedAt", "sizeBytes"]);
+export const driveSortOrderSchema = z.enum(["asc", "desc"]);
+export type DriveSortField = z.infer<typeof driveSortFieldSchema>;
+export type DriveSortOrder = z.infer<typeof driveSortOrderSchema>;
 
 const { key, getResourceKey } = initResourceKey("drive");
 
@@ -16,12 +22,21 @@ export type FolderContents = RouterOutputs["drive"]["listFolderContents"];
 export function getFolderContentsQueryOptions(opts: {
   folderId: string | null;
   organizationId: string;
+  sort: DriveSortField;
+  order: DriveSortOrder;
 }) {
   return queryOptions({
     queryKey: getResourceKey("listFolderContents", opts),
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
-      return apiClient.drive.listFolderContents.query(params, { signal });
+      return apiClient.drive.listFolderContents.query(
+        {
+          organizationId: params.organizationId,
+          folderId: params.folderId,
+          sort: { field: params.sort, order: params.order },
+        },
+        { signal },
+      );
     },
   });
 }
@@ -134,6 +149,19 @@ export function getOrganizationFilesQueryOptions(opts: { organizationId: string 
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
       return apiClient.drive.listOrganizationFiles.query(params, { signal });
+    },
+  });
+}
+
+export function getDriveSearchQueryOptions(opts: { organizationId: string; query: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("searchDrive", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.drive.searchDrive.query(
+        { organizationId: params.organizationId, query: params.query },
+        { signal },
+      );
     },
   });
 }
