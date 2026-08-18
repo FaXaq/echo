@@ -61,7 +61,12 @@ function withSeededDrive(opts: {
 }) {
   const queryClient = new QueryClient();
   queryClient.setQueryData(
-    getFolderContentsQueryOptions({ folderId: opts.folderId, organizationId: "org-1" }).queryKey,
+    getFolderContentsQueryOptions({
+      folderId: opts.folderId,
+      organizationId: "org-1",
+      sort: "name",
+      order: "asc",
+    }).queryKey,
     { folders: opts.folders, files: opts.files },
   );
   queryClient.setQueryData(
@@ -77,7 +82,14 @@ const meta = {
   component: DriveExplorer,
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
-  args: { organizationId: "org-1", projectSlug: "acme", folderId: null },
+  args: {
+    organizationId: "org-1",
+    projectSlug: "acme",
+    folderId: null,
+    sort: "name",
+    order: "asc",
+    onSortChange: () => {},
+  },
   decorators: [
     (Story) => (
       <div className="flex h-[520px] flex-col p-4">
