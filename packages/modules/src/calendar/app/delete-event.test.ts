@@ -22,6 +22,7 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
   return {
     id: "file-1",
     eventId: "event-1",
+    eventTitle: null,
     folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",

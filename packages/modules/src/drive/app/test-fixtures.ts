@@ -90,6 +90,7 @@ export function makeFakeInsertPendingFile(
     const record: FileRecord = {
       id: input.id,
       eventId: input.eventId,
+      eventTitle: null,
       folderId: input.folderId,
       organizationId: scope.organizationId,
       uploadedBy: input.uploadedBy,
@@ -112,6 +113,7 @@ export function makeFakeFileRecord(overrides: Partial<FileRecord> = {}): FileRec
   return {
     id: "file-1",
     eventId: null,
+    eventTitle: null,
     folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
