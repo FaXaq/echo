@@ -16,8 +16,9 @@ export const listFolderContentsQueryFactory: ListFolderContentsQueryPortFactory 
     let fileQuery = db
       .selectFrom("file")
       .innerJoin("user", "file.uploaded_by", "user.id")
+      .leftJoin("calendar_event", "file.event_id", "calendar_event.id")
       .selectAll("file")
-      .select("user.name as uploaded_by_name")
+      .select(["user.name as uploaded_by_name", "calendar_event.title as event_title"])
       .where("file.organization_id", "=", scope.organizationId);
     fileQuery =
       input.folderId === null
