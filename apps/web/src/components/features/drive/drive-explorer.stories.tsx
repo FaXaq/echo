@@ -7,6 +7,17 @@ import {
   type Folder,
   type OrganizationFile,
 } from "@/services/resources/drive";
+import { selfListOrganizations, type Organizations } from "@/services/resources/organization";
+
+function makeOrganization(overrides: Partial<Organizations[number]>): Organizations[number] {
+  return {
+    id: "org-1",
+    name: "Acme Band",
+    slug: "acme",
+    isPersonal: false,
+    ...overrides,
+  };
+}
 
 function makeFolder(overrides: Partial<Folder>): Folder {
   return {
@@ -56,6 +67,7 @@ function withSeededDrive(opts: {
     getFolderPathQueryKey({ folderId: opts.folderId, organizationId: "org-1" }),
     opts.path ?? [],
   );
+  queryClient.setQueryData(selfListOrganizations().queryKey, [makeOrganization({})]);
   return queryClient;
 }
 

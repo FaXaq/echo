@@ -1,6 +1,4 @@
-export async function downloadFile(url: string, filename: string) {
-  const response = await fetch(url);
-  const blob = await response.blob();
+export function downloadBlob(blob: Blob, filename: string) {
   const objectUrl = URL.createObjectURL(blob);
 
   const link = document.createElement("a");
@@ -11,6 +9,12 @@ export async function downloadFile(url: string, filename: string) {
   link.remove();
 
   URL.revokeObjectURL(objectUrl);
+}
+
+export async function downloadFile(url: string, filename: string) {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  downloadBlob(blob, filename);
 }
 
 export function formatSize(bytes: number): string {

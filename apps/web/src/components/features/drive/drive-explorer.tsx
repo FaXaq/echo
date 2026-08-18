@@ -1,10 +1,17 @@
-import { Fragment, Suspense, useRef, useState } from "react";
+import { Fragment, Suspense, useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import dayjs from "dayjs";
-import { DragDropProvider, useDraggable, useDroppable, type DragEndEvent } from "@dnd-kit/react";
+import { tinykeys } from "tinykeys";
+import {
+  DragDropProvider,
+  useDraggable,
+  useDroppable,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/react";
 import {
   Download,
   FileText,
@@ -29,6 +36,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   ContextMenu,
@@ -43,6 +51,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -52,7 +61,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/toast";
-import { downloadFile, formatSize } from "@/lib/file";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { evaluateOsFileDrop, resolveDropTargetFolderId } from "@/lib/drive-drop";
+import { downloadBlob, downloadFile, formatSize } from "@/lib/file";
+import { cn } from "@/lib/utils";
+import {
+  DRIVE_BULK_DOWNLOAD_MAX_BYTES,
+  DRIVE_BULK_DOWNLOAD_MAX_FILES,
+  buildDriveZip,
+  buildDriveZipFilename,
+  isWithinBulkDownloadLimit,
+  type DriveZipEntry,
+} from "@/lib/drive-zip";
 import { getInitials } from "@/lib/remeda";
 import {
   getFileDownloadUrl,
@@ -68,6 +88,7 @@ import {
   type Folder,
   type OrganizationFile,
 } from "@/services/resources/drive";
+import { selfListOrganizations } from "@/services/resources/organization";
 import { useFolderPath } from "@/hooks/use-folder-path";
 import { FolderNameDialog } from "./folder-name-dialog";
 
@@ -82,9 +103,17 @@ function formatDate(date: string | null) {
   return date ? dayjs(date).format("MMM D, YYYY") : "—";
 }
 
+type DriveItemKind = "file" | "folder";
+type SelectionKey = `${DriveItemKind}:${string}`;
+
+function selectionKey(kind: DriveItemKind, id: string): SelectionKey {
+  return `${kind}:${id}`;
+}
+
 type DragData = { kind: "file"; id: string } | { kind: "folder"; id: string };
 
 type DragEndEventPayload = Parameters<DragEndEvent>[0];
+type DragStartEventPayload = Parameters<DragStartEvent>[0];
 
 function readDragData(data: Record<string, unknown> | undefined): DragData | null {
   if (!data) return null;
@@ -93,16 +122,36 @@ function readDragData(data: Record<string, unknown> | undefined): DragData | nul
   return null;
 }
 
+function isFileDrag(event: React.DragEvent) {
+  return event.dataTransfer.types.includes("Files");
+}
+
 function FolderRow({
   folder,
+  selected,
+  selectionCount,
   onNavigate,
+  onToggleSelect,
+  onContextMenuTrigger,
   onRename,
   onDelete,
+  bulkDownloadDisabledReason,
+  onBulkDownload,
+  isBulkDownloading,
+  onOsFilesDropped,
 }: {
   folder: Folder;
+  selected: boolean;
+  selectionCount: number;
   onNavigate: () => void;
+  onToggleSelect: (event: React.MouseEvent) => void;
+  onContextMenuTrigger: () => void;
   onRename: () => void;
   onDelete: () => void;
+  bulkDownloadDisabledReason: string | null;
+  onBulkDownload: () => void;
+  isBulkDownloading: boolean;
+  onOsFilesDropped: (dataTransfer: DataTransfer) => void;
 }) {
   const { t } = useLingui();
   const { isDragging, ref: dragRef } = useDraggable<DragData>({
@@ -113,6 +162,10 @@ function FolderRow({
     id: `folder:${folder.id}`,
     data: { kind: "folder", id: folder.id },
   });
+  const showDragBadge = isDragging && selected && selectionCount > 1;
+  const isBulkSelected = selected && selectionCount > 1;
+  const [isOsDropTarget, setIsOsDropTarget] = useState(false);
+  const osDragDepthRef = useRef(0);
 
   return (
     <ContextMenu>
@@ -125,19 +178,71 @@ function FolderRow({
             }}
             data-dragging={isDragging}
             data-drop-target={isDropTarget}
-            onClick={onNavigate}
-            className="group/row cursor-pointer data-[drop-target=true]:bg-primary/5 data-[dragging=true]:opacity-50"
+            data-os-drop-target={isOsDropTarget}
+            data-state={selected ? "selected" : undefined}
+            onClick={(event) => {
+              if (event.shiftKey || event.metaKey || event.ctrlKey) {
+                onToggleSelect(event);
+              } else {
+                onNavigate();
+              }
+            }}
+            onContextMenu={onContextMenuTrigger}
+            onDragEnter={(event) => {
+              if (!isFileDrag(event)) return;
+              event.preventDefault();
+              event.stopPropagation();
+              osDragDepthRef.current += 1;
+              setIsOsDropTarget(true);
+            }}
+            onDragOver={(event) => {
+              if (!isFileDrag(event)) return;
+              event.preventDefault();
+              event.stopPropagation();
+            }}
+            onDragLeave={(event) => {
+              if (!isFileDrag(event)) return;
+              osDragDepthRef.current -= 1;
+              if (osDragDepthRef.current <= 0) {
+                osDragDepthRef.current = 0;
+                setIsOsDropTarget(false);
+              }
+            }}
+            onDrop={(event) => {
+              if (!isFileDrag(event)) return;
+              event.preventDefault();
+              event.stopPropagation();
+              osDragDepthRef.current = 0;
+              setIsOsDropTarget(false);
+              onOsFilesDropped(event.dataTransfer);
+            }}
+            className="group/row cursor-pointer data-[drop-target=true]:bg-primary/5 data-[dragging=true]:opacity-50 data-[os-drop-target=true]:bg-accent data-[os-drop-target=true]:ring-1 data-[os-drop-target=true]:ring-inset data-[os-drop-target=true]:ring-primary"
           />
         }
       >
+        <TableCell
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleSelect(event);
+          }}
+        >
+          <Checkbox checked={selected} aria-label={t`Select ${folder.name}`} />
+        </TableCell>
         <TableCell>
-          <div className="flex items-center gap-2.5">
-            {isDropTarget ? (
+          <div className="relative flex items-center gap-2.5">
+            {isOsDropTarget ? (
+              <Upload className="size-4 shrink-0 text-primary" />
+            ) : isDropTarget ? (
               <FolderOpen className="size-4 shrink-0 text-primary" />
             ) : (
               <FolderIcon className="size-4 shrink-0 text-muted-foreground" />
             )}
             <span className="font-medium">{folder.name}</span>
+            {showDragBadge && (
+              <span className="absolute -top-2 -left-2 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow">
+                {selectionCount}
+              </span>
+            )}
           </div>
         </TableCell>
         <TableCell />
@@ -185,14 +290,35 @@ function FolderRow({
         </TableCell>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={onRename}>
-          <Pen />
-          {t`Rename`}
-        </ContextMenuItem>
-        <ContextMenuItem variant="destructive" onClick={onDelete}>
-          <Trash />
-          {t`Delete`}
-        </ContextMenuItem>
+        {isBulkSelected ? (
+          bulkDownloadDisabledReason ? (
+            <Tooltip>
+              <TooltipTrigger
+                render={<ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />}
+              >
+                <Download />
+                {t`Download`}
+              </TooltipTrigger>
+              <TooltipContent>{bulkDownloadDisabledReason}</TooltipContent>
+            </Tooltip>
+          ) : (
+            <ContextMenuItem onClick={onBulkDownload} disabled={isBulkDownloading}>
+              {isBulkDownloading ? <Spinner className="size-4" /> : <Download />}
+              {t`Download`}
+            </ContextMenuItem>
+          )
+        ) : (
+          <>
+            <ContextMenuItem onClick={onRename}>
+              <Pen />
+              {t`Rename`}
+            </ContextMenuItem>
+            <ContextMenuItem variant="destructive" onClick={onDelete}>
+              <Trash />
+              {t`Delete`}
+            </ContextMenuItem>
+          </>
+        )}
       </ContextMenuContent>
     </ContextMenu>
   );
@@ -200,14 +326,28 @@ function FolderRow({
 
 function FileRow({
   file,
+  selected,
+  selectionCount,
+  onToggleSelect,
+  onContextMenuTrigger,
   onRename,
   onDelete,
   onDownload,
+  bulkDownloadDisabledReason,
+  onBulkDownload,
+  isBulkDownloading,
 }: {
   file: OrganizationFile;
+  selected: boolean;
+  selectionCount: number;
+  onToggleSelect: (event: React.MouseEvent) => void;
+  onContextMenuTrigger: () => void;
   onRename: () => void;
   onDelete: () => void;
   onDownload: () => void;
+  bulkDownloadDisabledReason: string | null;
+  onBulkDownload: () => void;
+  isBulkDownloading: boolean;
 }) {
   const { t } = useLingui();
   const Icon = KIND_ICON[file.kind];
@@ -215,6 +355,8 @@ function FileRow({
     id: `file:${file.id}`,
     data: { kind: "file", id: file.id },
   });
+  const showDragBadge = isDragging && selected && selectionCount > 1;
+  const isBulkSelected = selected && selectionCount > 1;
 
   return (
     <ContextMenu>
@@ -223,14 +365,34 @@ function FileRow({
           <TableRow
             ref={ref}
             data-dragging={isDragging}
+            data-state={selected ? "selected" : undefined}
+            onClick={(event) => {
+              if (event.shiftKey || event.metaKey || event.ctrlKey) {
+                onToggleSelect(event);
+              }
+            }}
+            onContextMenu={onContextMenuTrigger}
             className="group/row data-[dragging=true]:opacity-50"
           />
         }
       >
+        <TableCell
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleSelect(event);
+          }}
+        >
+          <Checkbox checked={selected} aria-label={t`Select ${file.filename}`} />
+        </TableCell>
         <TableCell>
-          <div className="flex items-center gap-2.5">
+          <div className="relative flex items-center gap-2.5">
             <Icon className="size-4 shrink-0 text-muted-foreground" />
             <span className="font-medium">{file.filename}</span>
+            {showDragBadge && (
+              <span className="absolute -top-2 -left-2 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground shadow">
+                {selectionCount}
+              </span>
+            )}
           </div>
         </TableCell>
         <TableCell>
@@ -296,18 +458,39 @@ function FileRow({
         </TableCell>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={onDownload}>
-          <Download />
-          {t`Download`}
-        </ContextMenuItem>
-        <ContextMenuItem onClick={onRename}>
-          <Pen />
-          {t`Rename`}
-        </ContextMenuItem>
-        <ContextMenuItem variant="destructive" onClick={onDelete}>
-          <Trash />
-          {t`Delete`}
-        </ContextMenuItem>
+        {isBulkSelected ? (
+          bulkDownloadDisabledReason ? (
+            <Tooltip>
+              <TooltipTrigger
+                render={<ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />}
+              >
+                <Download />
+                {t`Download`}
+              </TooltipTrigger>
+              <TooltipContent>{bulkDownloadDisabledReason}</TooltipContent>
+            </Tooltip>
+          ) : (
+            <ContextMenuItem onClick={onBulkDownload} disabled={isBulkDownloading}>
+              {isBulkDownloading ? <Spinner className="size-4" /> : <Download />}
+              {t`Download`}
+            </ContextMenuItem>
+          )
+        ) : (
+          <>
+            <ContextMenuItem onClick={onDownload}>
+              <Download />
+              {t`Download`}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={onRename}>
+              <Pen />
+              {t`Rename`}
+            </ContextMenuItem>
+            <ContextMenuItem variant="destructive" onClick={onDelete}>
+              <Trash />
+              {t`Delete`}
+            </ContextMenuItem>
+          </>
+        )}
       </ContextMenuContent>
     </ContextMenu>
   );
@@ -357,6 +540,56 @@ function DriveBreadcrumbs({ projectSlug, path }: { projectSlug: string; path: Fo
   );
 }
 
+function SelectionActionsMenu({
+  downloadDisabledReason,
+  isDownloading,
+  onDownload,
+  onClear,
+}: {
+  downloadDisabledReason: string | null;
+  isDownloading: boolean;
+  onDownload: () => void;
+  onClear: () => void;
+}) {
+  const { t } = useLingui();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label={t`Selection actions`}
+          />
+        }
+      >
+        <MoreVertical />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {downloadDisabledReason ? (
+          <Tooltip>
+            <TooltipTrigger
+              render={<DropdownMenuItem aria-disabled className="cursor-not-allowed opacity-50" />}
+            >
+              <Download />
+              {t`Download`}
+            </TooltipTrigger>
+            <TooltipContent>{downloadDisabledReason}</TooltipContent>
+          </Tooltip>
+        ) : (
+          <DropdownMenuItem onClick={onDownload} disabled={isDownloading}>
+            {isDownloading ? <Spinner className="size-4" /> : <Download />}
+            {t`Download`}
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={onClear}>{t`Clear selection`}</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 function DriveExplorerContent({
   organizationId,
   projectSlug,
@@ -371,7 +604,9 @@ function DriveExplorerContent({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data } = useSuspenseQuery(getFolderContentsQueryOptions({ folderId, organizationId }));
+  const { data: organizations } = useSuspenseQuery(selfListOrganizations());
   const path = useFolderPath({ folderId, organizationId });
+  const organizationName = organizations.find((org) => org.id === organizationId)?.name ?? "";
 
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [renamingFolder, setRenamingFolder] = useState<Folder | null>(null);
@@ -379,6 +614,25 @@ function DriveExplorerContent({
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
   const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
   const [pendingDeleteIds, setPendingDeleteIds] = useState<Set<string>>(new Set());
+  const [selectedKeys, setSelectedKeys] = useState<Set<SelectionKey>>(new Set());
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isTableDragActive, setIsTableDragActive] = useState(false);
+  const selectionAnchorRef = useRef<number | null>(null);
+  const tableDragDepthRef = useRef(0);
+
+  useEffect(() => {
+    setSelectedKeys(new Set());
+    selectionAnchorRef.current = null;
+  }, [folderId]);
+
+  useEffect(() => {
+    return tinykeys(window, {
+      Escape: () => {
+        setSelectedKeys(new Set());
+        selectionAnchorRef.current = null;
+      },
+    });
+  }, []);
 
   const createFolderMutation = useCreateFolderMutation();
   const renameFolderMutation = useRenameFolderMutation();
@@ -388,6 +642,29 @@ function DriveExplorerContent({
   const uploadMutation = useUploadFileMutation();
   const renameFileMutation = useRenameFileMutation();
   const deleteFileMutation = useDeleteFileMutation();
+
+  const visibleFolders = data.folders.filter((folder) => !pendingDeleteIds.has(folder.id));
+  const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
+  const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
+
+  const rows: { kind: DriveItemKind; id: string }[] = [
+    ...visibleFolders.map((folder) => ({ kind: "folder" as const, id: folder.id })),
+    ...visibleFiles.map((file) => ({ kind: "file" as const, id: file.id })),
+  ];
+
+  const selectedFiles = visibleFiles.filter((file) =>
+    selectedKeys.has(selectionKey("file", file.id)),
+  );
+  const selectedFolderCount = visibleFolders.filter((folder) =>
+    selectedKeys.has(selectionKey("folder", folder.id)),
+  ).length;
+
+  const downloadDisabledReason =
+    selectedFolderCount > 0
+      ? t`Only a selection of files can be downloaded together`
+      : !isWithinBulkDownloadLimit(selectedFiles)
+        ? t`Selections are limited to ${DRIVE_BULK_DOWNLOAD_MAX_FILES} files or ${formatSize(DRIVE_BULK_DOWNLOAD_MAX_BYTES)} total`
+        : null;
 
   const navigateToFolder = (id: string | null) => {
     if (id === null) {
@@ -400,17 +677,156 @@ function DriveExplorerContent({
     }
   };
 
+  const toggleSelection = (kind: DriveItemKind, id: string, options: { shiftKey?: boolean }) => {
+    const key = selectionKey(kind, id);
+    const index = rows.findIndex((row) => row.kind === kind && row.id === id);
+
+    setSelectedKeys((prev) => {
+      if (options.shiftKey && selectionAnchorRef.current !== null) {
+        const start = Math.min(selectionAnchorRef.current, index);
+        const end = Math.max(selectionAnchorRef.current, index);
+        const next = new Set(prev);
+        for (let i = start; i <= end; i++) {
+          next.add(selectionKey(rows[i].kind, rows[i].id));
+        }
+        return next;
+      }
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+
+    if (!options.shiftKey) selectionAnchorRef.current = index;
+  };
+
+  const replaceSelection = (kind: DriveItemKind, id: string) => {
+    selectionAnchorRef.current = rows.findIndex((row) => row.kind === kind && row.id === id);
+    setSelectedKeys(new Set([selectionKey(kind, id)]));
+  };
+
+  const clearSelection = () => {
+    setSelectedKeys(new Set());
+    selectionAnchorRef.current = null;
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedKeys.size === rows.length && rows.length > 0) {
+      clearSelection();
+    } else {
+      setSelectedKeys(new Set(rows.map((row) => selectionKey(row.kind, row.id))));
+    }
+  };
+
+  const handleDragStart = (event: DragStartEventPayload) => {
+    const source = readDragData(event.operation.source?.data);
+    if (!source) return;
+    if (!selectedKeys.has(selectionKey(source.kind, source.id))) {
+      replaceSelection(source.kind, source.id);
+    }
+  };
+
   const handleDragEnd = (event: DragEndEventPayload) => {
     const source = readDragData(event.operation.source?.data);
     const target = readDragData(event.operation.target?.data);
     if (!source || !target || target.kind !== "folder") return;
-    if (source.kind === "folder" && source.id === target.id) return;
 
-    if (source.kind === "file") {
-      moveFileMutation.mutate({ id: source.id, organizationId, folderId: target.id });
-    } else {
-      moveFolderMutation.mutate({ id: source.id, organizationId, parentFolderId: target.id });
+    const sourceKey = selectionKey(source.kind, source.id);
+    const movingKeys = selectedKeys.has(sourceKey) ? Array.from(selectedKeys) : [sourceKey];
+    const movingItems = movingKeys
+      .map((key) => {
+        const [kind, id] = key.split(":") as [DriveItemKind, string];
+        return { kind, id, key };
+      })
+      .filter((item) => !(item.kind === "folder" && item.id === target.id));
+
+    if (movingItems.length === 0) return;
+
+    if (movingItems.length === 1) {
+      const item = movingItems[0];
+      if (item.kind === "file") {
+        moveFileMutation.mutate({ id: item.id, organizationId, folderId: target.id });
+      } else {
+        moveFolderMutation.mutate({ id: item.id, organizationId, parentFolderId: target.id });
+      }
+      setSelectedKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(item.key);
+        return next;
+      });
+      return;
     }
+
+    Promise.allSettled(
+      movingItems.map((item) =>
+        item.kind === "file"
+          ? moveFileMutation.mutateAsync({ id: item.id, organizationId, folderId: target.id })
+          : moveFolderMutation.mutateAsync({
+              id: item.id,
+              organizationId,
+              parentFolderId: target.id,
+            }),
+      ),
+    ).then((results) => {
+      const failedNames: string[] = [];
+      const succeededKeys: SelectionKey[] = [];
+
+      results.forEach((result, index) => {
+        const item = movingItems[index];
+        if (result.status === "fulfilled") {
+          succeededKeys.push(item.key);
+        } else {
+          const name =
+            item.kind === "file"
+              ? visibleFiles.find((file) => file.id === item.id)?.filename
+              : visibleFolders.find((folder) => folder.id === item.id)?.name;
+          failedNames.push(name ?? item.id);
+        }
+      });
+
+      setSelectedKeys((prev) => {
+        const next = new Set(prev);
+        succeededKeys.forEach((key) => next.delete(key));
+        return next;
+      });
+
+      if (failedNames.length === 0) {
+        toast.add({ title: t`${movingItems.length} items moved`, type: "success" });
+      } else {
+        toast.add({
+          title: t`${succeededKeys.length} of ${movingItems.length} moved — failed: ${failedNames.join(", ")}`,
+          type: "error",
+        });
+      }
+    });
+  };
+
+  const uploadFile = (file: File, targetFolderId: string | null) => {
+    uploadMutation.mutate(
+      { organizationId, folderId: targetFolderId, file },
+      { onError: () => toast.add({ title: t`Couldn't upload ${file.name}`, type: "error" }) },
+    );
+  };
+
+  const handleOsDrop = (dataTransfer: DataTransfer, hoveredFolderId: string | null) => {
+    const entries = Array.from(dataTransfer.items)
+      .map((item) => item.webkitGetAsEntry())
+      .filter((entry): entry is FileSystemEntry => entry !== null)
+      .map((entry) => ({ isFile: entry.isFile, isDirectory: entry.isDirectory }));
+
+    const evaluation = evaluateOsFileDrop(entries);
+    if (!evaluation.accepted) {
+      if (evaluation.reason === "contains-directory") {
+        toast.add({ title: t`Folders aren't supported yet — drop files only`, type: "error" });
+      }
+      return;
+    }
+
+    const targetFolderId = resolveDropTargetFolderId({
+      hoveredFolderId,
+      currentFolderId: folderId,
+    });
+    Array.from(dataTransfer.files).forEach((file) => uploadFile(file, targetFolderId));
   };
 
   const clearPendingDelete = (id: string) => {
@@ -450,9 +866,56 @@ function DriveExplorerContent({
     }
   };
 
-  const visibleFolders = data.folders.filter((folder) => !pendingDeleteIds.has(folder.id));
-  const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
-  const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
+  const handleBulkDownload = async () => {
+    if (downloadDisabledReason || isDownloading) return;
+
+    setIsDownloading(true);
+    try {
+      const presignResults = await Promise.allSettled(
+        selectedFiles.map(async (file) => {
+          const { downloadUrl } = await getFileDownloadUrl({ id: file.id, organizationId });
+          return { filename: file.filename, url: downloadUrl } satisfies DriveZipEntry;
+        }),
+      );
+
+      const entries: DriveZipEntry[] = [];
+      const skipped: string[] = [];
+      presignResults.forEach((result, index) => {
+        if (result.status === "fulfilled") entries.push(result.value);
+        else skipped.push(selectedFiles[index].filename);
+      });
+
+      if (entries.length === 0) {
+        toast.add({ title: t`Couldn't download the selected files`, type: "error" });
+        return;
+      }
+
+      const { blob, skipped: fetchSkipped } = await buildDriveZip(entries);
+      const allSkipped = [...skipped, ...fetchSkipped];
+
+      const filename = buildDriveZipFilename({
+        folderName: path.length > 0 ? path[path.length - 1].name : null,
+        organizationName,
+        date: new Date(),
+      });
+      downloadBlob(blob, filename);
+
+      if (allSkipped.length > 0) {
+        toast.add({
+          title: t`Skipped ${allSkipped.length} file(s) that couldn't be downloaded: ${allSkipped.join(", ")}`,
+          type: "error",
+        });
+      }
+      clearSelection();
+    } catch {
+      toast.add({ title: t`Couldn't build the download`, type: "error" });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const allSelected = rows.length > 0 && selectedKeys.size === rows.length;
+  const someSelected = selectedKeys.size > 0 && !allSelected;
 
   return (
     <div className="flex flex-1 flex-col min-h-0 gap-3">
@@ -480,22 +943,63 @@ function DriveExplorerContent({
             aria-label={t`Upload files`}
             onChange={(event) => {
               const files = Array.from(event.target.files ?? []);
-              files.forEach((file) => {
-                uploadMutation.mutate({ organizationId, folderId, file });
-              });
+              files.forEach((file) => uploadFile(file, folderId));
               event.target.value = "";
             }}
           />
+          {selectedKeys.size > 0 && (
+            <SelectionActionsMenu
+              downloadDisabledReason={downloadDisabledReason}
+              isDownloading={isDownloading}
+              onDownload={handleBulkDownload}
+              onClear={clearSelection}
+            />
+          )}
         </div>
       </div>
 
-      <DragDropProvider onDragEnd={handleDragEnd}>
+      <DragDropProvider onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <Table
-          containerClassName="min-h-0 flex-1 border rounded border-border bg-card"
+          containerClassName={cn(
+            "min-h-0 flex-1 border rounded border-border bg-card transition-colors",
+            isTableDragActive && "border-dashed border-primary bg-primary/5",
+          )}
           className="m-0"
+          onDragEnter={(event) => {
+            if (!isFileDrag(event)) return;
+            event.preventDefault();
+            tableDragDepthRef.current += 1;
+            setIsTableDragActive(true);
+          }}
+          onDragOver={(event) => {
+            if (!isFileDrag(event)) return;
+            event.preventDefault();
+          }}
+          onDragLeave={(event) => {
+            if (!isFileDrag(event)) return;
+            tableDragDepthRef.current -= 1;
+            if (tableDragDepthRef.current <= 0) {
+              tableDragDepthRef.current = 0;
+              setIsTableDragActive(false);
+            }
+          }}
+          onDrop={(event) => {
+            if (!isFileDrag(event)) return;
+            event.preventDefault();
+            tableDragDepthRef.current = 0;
+            setIsTableDragActive(false);
+            handleOsDrop(event.dataTransfer, null);
+          }}
         >
           <TableHeader>
             <TableRow>
+              <TableHead onClick={() => toggleSelectAll()}>
+                <Checkbox
+                  checked={allSelected}
+                  indeterminate={someSelected}
+                  aria-label={t`Select all`}
+                />
+              </TableHead>
               <TableHead>
                 <Trans>Name</Trans>
               </TableHead>
@@ -523,23 +1027,50 @@ function DriveExplorerContent({
               <FolderRow
                 key={folder.id}
                 folder={folder}
+                selected={selectedKeys.has(selectionKey("folder", folder.id))}
+                selectionCount={selectedKeys.size}
                 onNavigate={() => navigateToFolder(folder.id)}
+                onToggleSelect={(event) =>
+                  toggleSelection("folder", folder.id, { shiftKey: event.shiftKey })
+                }
+                onContextMenuTrigger={() => {
+                  if (!selectedKeys.has(selectionKey("folder", folder.id))) {
+                    replaceSelection("folder", folder.id);
+                  }
+                }}
                 onRename={() => setRenamingFolder(folder)}
                 onDelete={() => setDeletingFolder(folder)}
+                bulkDownloadDisabledReason={downloadDisabledReason}
+                onBulkDownload={handleBulkDownload}
+                isBulkDownloading={isDownloading}
+                onOsFilesDropped={(dataTransfer) => handleOsDrop(dataTransfer, folder.id)}
               />
             ))}
             {visibleFiles.map((file) => (
               <FileRow
                 key={file.id}
                 file={file}
+                selected={selectedKeys.has(selectionKey("file", file.id))}
+                selectionCount={selectedKeys.size}
+                onToggleSelect={(event) =>
+                  toggleSelection("file", file.id, { shiftKey: event.shiftKey })
+                }
+                onContextMenuTrigger={() => {
+                  if (!selectedKeys.has(selectionKey("file", file.id))) {
+                    replaceSelection("file", file.id);
+                  }
+                }}
                 onRename={() => setRenamingFile(file)}
                 onDelete={() => setDeletingFile(file)}
                 onDownload={() => handleDownloadFile(file)}
+                bulkDownloadDisabledReason={downloadDisabledReason}
+                onBulkDownload={handleBulkDownload}
+                isBulkDownloading={isDownloading}
               />
             ))}
             {isEmpty && (
               <TableRow>
-                <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
                   {folderId === null ? t`No files yet` : t`This folder is empty`}
                 </TableCell>
               </TableRow>
@@ -550,6 +1081,12 @@ function DriveExplorerContent({
 
       <p className="text-xs text-muted-foreground">
         <Plural value={visibleFolders.length + visibleFiles.length} one="# item" other="# items" />
+        {selectedKeys.size > 0 && (
+          <>
+            {" · "}
+            <Plural value={selectedKeys.size} one="# item selected" other="# items selected" />
+          </>
+        )}
       </p>
 
       <FolderNameDialog

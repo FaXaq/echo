@@ -27,6 +27,18 @@ _Avoid_: File browser
 A named container for organizing an Organization's Drive files, nestable arbitrarily deep under other Folders. Scoped only to the Organization — a Folder has no Event (or, in future, Song) scoping, unlike `file`. The hierarchy root is implicit: a `null` parent (on a Folder) or a `null` folder (on a file) means "at Drive root," the same nullable-FK convention already used for `file.eventId`.
 _Avoid_: Directory
 
+**Selection**:
+A set of Drive rows (files and/or folders, any mix) marked for a Bulk Action within the current folder view — via row checkbox or shift/cmd-click. Scoped to one folder view: navigating to a different folder clears it.
+_Avoid_: Multi-select (reserve for the UI mechanism, not the resulting set)
+
+**Bulk Action**:
+An operation applied to an entire Selection at once. Drive supports two: dragging a Selection onto a folder (move — any mix of files/folders), and downloading a Selection (files only — a Selection containing any folder cannot be downloaded as a group).
+_Avoid_: Batch action
+
+**OS File Drop**:
+Dragging files from outside the browser (the OS file system) onto the Drive table to upload them — into the current folder, or into a specific Folder row if dropped while hovering it. Not a Bulk Action: it acts on incoming external files, not on a Selection of existing Drive rows, and is a separate mechanism from the Selection drag-to-move despite both ending in a folder as the target. Dropping a whole OS directory (not just files) is rejected, not flattened or recreated.
+_Avoid_: Drag-and-drop upload (ambiguous with Selection drag-to-move)
+
 ## Exceptions
 
 **Invitation lookup by id** (`invitation/infrastructure/get-invitation-by-id.ts`) does not require Organization Scope. An invitee looking up their invitation isn't an Organization member yet, so there's no membership to verify — the invitation id itself is the capability that grants read access, not scope.
