@@ -13,6 +13,10 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/react";
 import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Calendar as CalendarIcon,
   Download,
   FileText,
   Folder as FolderIcon,
@@ -85,11 +89,14 @@ import {
   useRenameFileMutation,
   useRenameFolderMutation,
   useUploadFileMutation,
+  type DriveSortField,
+  type DriveSortOrder,
   type Folder,
   type OrganizationFile,
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 import { useFolderPath } from "@/hooks/use-folder-path";
+import { DriveSearchCombobox } from "./drive-search-combobox";
 import { FolderNameDialog } from "./folder-name-dialog";
 
 const KIND_ICON = {
@@ -246,7 +253,7 @@ function FolderRow({
           </div>
         </TableCell>
         <TableCell />
-        <TableCell className="text-muted-foreground">{formatDate(folder.createdAt)}</TableCell>
+        <TableCell />
         <TableCell className="text-muted-foreground">{formatDate(folder.updatedAt)}</TableCell>
         <TableCell />
         <TableCell>
@@ -326,6 +333,7 @@ function FolderRow({
 
 function FileRow({
   file,
+  projectSlug,
   selected,
   selectionCount,
   onToggleSelect,
@@ -338,6 +346,7 @@ function FileRow({
   isBulkDownloading,
 }: {
   file: OrganizationFile;
+  projectSlug: string;
   selected: boolean;
   selectionCount: number;
   onToggleSelect: (event: React.MouseEvent) => void;
@@ -396,6 +405,19 @@ function FileRow({
           </div>
         </TableCell>
         <TableCell>
+          {file.eventId && file.eventTitle && (
+            <Link
+              to="/projects/$projectSlug/calendar/$eventId"
+              params={{ projectSlug, eventId: file.eventId }}
+              onClick={(event) => event.stopPropagation()}
+              className="inline-flex max-w-full items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <CalendarIcon className="size-3 shrink-0" />
+              <span className="truncate">{file.eventTitle}</span>
+            </Link>
+          )}
+        </TableCell>
+        <TableCell>
           <div className="flex items-center gap-2">
             <Avatar size="sm">
               <AvatarFallback className="text-[10px]">
@@ -405,7 +427,6 @@ function FileRow({
             <span className="text-sm">{file.uploadedByName}</span>
           </div>
         </TableCell>
-        <TableCell className="text-muted-foreground">{formatDate(file.createdAt)}</TableCell>
         <TableCell className="text-muted-foreground">{formatDate(file.updatedAt)}</TableCell>
         <TableCell className="text-muted-foreground">{formatSize(file.sizeBytes)}</TableCell>
         <TableCell>
@@ -493,6 +514,36 @@ function FileRow({
         )}
       </ContextMenuContent>
     </ContextMenu>
+  );
+}
+
+function SortableHeader({
+  label,
+  field,
+  activeSort,
+  activeOrder,
+  onSortChange,
+}: {
+  label: string;
+  field: DriveSortField;
+  activeSort: DriveSortField;
+  activeOrder: DriveSortOrder;
+  onSortChange: (field: DriveSortField) => void;
+}) {
+  const isActive = activeSort === field;
+  const Icon = isActive ? (activeOrder === "asc" ? ArrowUp : ArrowDown) : ArrowUpDown;
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      className={cn("-ml-3 h-8", !isActive && "text-muted-foreground")}
+      onClick={() => onSortChange(field)}
+    >
+      {label}
+      <Icon className="size-3.5" />
+    </Button>
   );
 }
 
@@ -594,16 +645,24 @@ function DriveExplorerContent({
   organizationId,
   projectSlug,
   folderId,
+  sort,
+  order,
+  onSortChange,
 }: {
   organizationId: string;
   projectSlug: string;
   folderId: string | null;
+  sort: DriveSortField;
+  order: DriveSortOrder;
+  onSortChange: (field: DriveSortField) => void;
 }) {
   const { t } = useLingui();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data } = useSuspenseQuery(getFolderContentsQueryOptions({ folderId, organizationId }));
+  const { data } = useSuspenseQuery(
+    getFolderContentsQueryOptions({ folderId, organizationId, sort, order }),
+  );
   const { data: organizations } = useSuspenseQuery(selfListOrganizations());
   const path = useFolderPath({ folderId, organizationId });
   const organizationName = organizations.find((org) => org.id === organizationId)?.name ?? "";
@@ -922,6 +981,11 @@ function DriveExplorerContent({
       <div className="flex items-center justify-between gap-3">
         <DriveBreadcrumbs projectSlug={projectSlug} path={path} />
         <div className="flex items-center gap-2">
+          <DriveSearchCombobox
+            organizationId={organizationId}
+            onSelectFolder={(id) => navigateToFolder(id)}
+            onSelectFile={(file) => navigateToFolder(file.folderId)}
+          />
           <Button type="button" variant="outline" size="sm" onClick={() => setCreatingFolder(true)}>
             <FolderPlus />
             {t`New Folder`}
@@ -1001,19 +1065,43 @@ function DriveExplorerContent({
                 />
               </TableHead>
               <TableHead>
-                <Trans>Name</Trans>
+                <SortableHeader
+                  label={t`Name`}
+                  field="name"
+                  activeSort={sort}
+                  activeOrder={order}
+                  onSortChange={onSortChange}
+                />
+              </TableHead>
+              <TableHead>
+                <SortableHeader
+                  label={t`Event`}
+                  field="event"
+                  activeSort={sort}
+                  activeOrder={order}
+                  onSortChange={onSortChange}
+                />
               </TableHead>
               <TableHead>
                 <Trans>Uploaded by</Trans>
               </TableHead>
               <TableHead>
-                <Trans>Date added</Trans>
+                <SortableHeader
+                  label={t`Last modified`}
+                  field="updatedAt"
+                  activeSort={sort}
+                  activeOrder={order}
+                  onSortChange={onSortChange}
+                />
               </TableHead>
               <TableHead>
-                <Trans>Last modified</Trans>
-              </TableHead>
-              <TableHead>
-                <Trans>Size</Trans>
+                <SortableHeader
+                  label={t`Size`}
+                  field="sizeBytes"
+                  activeSort={sort}
+                  activeOrder={order}
+                  onSortChange={onSortChange}
+                />
               </TableHead>
               <TableHead>
                 <span className="sr-only">
@@ -1050,6 +1138,7 @@ function DriveExplorerContent({
               <FileRow
                 key={file.id}
                 file={file}
+                projectSlug={projectSlug}
                 selected={selectedKeys.has(selectionKey("file", file.id))}
                 selectionCount={selectedKeys.size}
                 onToggleSelect={(event) =>
@@ -1194,9 +1283,19 @@ export interface DriveExplorerProps {
   organizationId: string;
   projectSlug: string;
   folderId: string | null;
+  sort: DriveSortField;
+  order: DriveSortOrder;
+  onSortChange: (field: DriveSortField) => void;
 }
 
-export function DriveExplorer({ organizationId, projectSlug, folderId }: DriveExplorerProps) {
+export function DriveExplorer({
+  organizationId,
+  projectSlug,
+  folderId,
+  sort,
+  order,
+  onSortChange,
+}: DriveExplorerProps) {
   return (
     <ErrorBoundary FallbackComponent={DriveExplorerError}>
       <Suspense fallback={<DriveExplorerSkeleton />}>
@@ -1204,6 +1303,9 @@ export function DriveExplorer({ organizationId, projectSlug, folderId }: DriveEx
           organizationId={organizationId}
           projectSlug={projectSlug}
           folderId={folderId}
+          sort={sort}
+          order={order}
+          onSortChange={onSortChange}
         />
       </Suspense>
     </ErrorBoundary>
