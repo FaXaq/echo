@@ -35,6 +35,7 @@ function makeFile(overrides: Partial<OrganizationFile>): OrganizationFile {
   return {
     id: Math.random().toString(36),
     eventId: null,
+    eventTitle: null,
     folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
