@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@/lib/test-utils";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { AttachmentList } from "./attachment-list";
-import type { EventFile } from "@/services/resources/file";
+import type { EventFile } from "@/services/resources/drive";
 
 function makeFile(overrides: Partial<EventFile> = {}): EventFile {
   return {

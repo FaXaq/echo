@@ -2,7 +2,14 @@ import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area";
 
 import { cn } from "@/lib/utils";
 
-function ScrollArea({ className, children, ...props }: ScrollAreaPrimitive.Root.Props) {
+function ScrollArea({
+  className,
+  children,
+  orientation = "vertical",
+  ...props
+}: ScrollAreaPrimitive.Root.Props & {
+  orientation?: "vertical" | "horizontal" | "both";
+}) {
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
@@ -15,7 +22,8 @@ function ScrollArea({ className, children, ...props }: ScrollAreaPrimitive.Root.
       >
         {children}
       </ScrollAreaPrimitive.Viewport>
-      <ScrollBar />
+      {orientation !== "horizontal" && <ScrollBar />}
+      {orientation !== "vertical" && <ScrollBar orientation="horizontal" />}
       <ScrollAreaPrimitive.Corner />
     </ScrollAreaPrimitive.Root>
   );
@@ -31,8 +39,9 @@ function ScrollBar({
       data-slot="scroll-area-scrollbar"
       data-orientation={orientation}
       orientation={orientation}
+      style={orientation === "vertical" ? { top: "var(--scroll-area-inset-top, 0px)" } : undefined}
       className={cn(
-        "flex touch-none p-px transition-colors select-none data-horizontal:h-2.5 data-horizontal:flex-col data-horizontal:border-t data-horizontal:border-t-transparent data-vertical:h-full data-vertical:w-2.5 data-vertical:border-s data-vertical:border-s-transparent",
+        "z-20 flex touch-none p-px transition-colors select-none data-horizontal:h-2.5 data-horizontal:flex-col data-horizontal:border-t data-horizontal:border-t-transparent data-vertical:w-2.5 data-vertical:border-s data-vertical:border-s-transparent",
         className,
       )}
       {...props}

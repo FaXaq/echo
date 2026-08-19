@@ -2,7 +2,7 @@ import type { ListCalendarEventsQueryPortFactory } from "./list-calendar-events.
 import { toCalendarEvent } from "./map-calendar-event.js";
 
 export const listCalendarEventsQueryFactory: ListCalendarEventsQueryPortFactory =
-  () => async (db, input) => {
+  () => async (db, scope) => {
     const rows = await db
       .selectFrom("calendar_event")
       .innerJoin("user", "user.id", "created_by")
@@ -10,7 +10,7 @@ export const listCalendarEventsQueryFactory: ListCalendarEventsQueryPortFactory 
       .select("user.name as created_by_name")
       .innerJoin("organization", "organization.id", "calendar_event.organization_id")
       .select(["organization.name as organization_name", "organization.slug as organization_slug"])
-      .where("organization_id", "=", input.organizationId)
+      .where("organization_id", "=", scope.organizationId)
       .execute();
 
     return rows.map(toCalendarEvent);

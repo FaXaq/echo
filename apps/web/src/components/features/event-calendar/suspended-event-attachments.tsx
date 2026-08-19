@@ -1,9 +1,11 @@
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Plural, useLingui } from "@lingui/react/macro";
+import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, useParams } from "@tanstack/react-router";
 import { translateDynamic } from "@/lib/dynamic-messages";
+import { getQuotaError } from "@/lib/quota-error";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,11 +37,11 @@ import {
   useRenameFileMutation,
   useUploadFileMutation,
   type EventFile,
-} from "@/services/resources/file";
+} from "@/services/resources/drive";
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string;
-  organizationId?: string;
+  organizationId: string;
 }
 
 function RenameFileForm({
@@ -100,9 +102,45 @@ function RenameFileDialog({
   );
 }
 
+function UploadError({ error, projectSlug }: { error: unknown; projectSlug: string }) {
+  const { t } = useLingui();
+  const quotaError = getQuotaError(error);
+
+  if (quotaError?.limitName === "maxFileSizeBytes") {
+    return (
+      <p className="text-destructive text-xs">
+        <Trans>This file is too large for your plan.</Trans>
+      </p>
+    );
+  }
+
+  if (quotaError) {
+    return (
+      <p className="text-destructive text-xs">
+        <Trans>
+          This project has reached its plan limit.{" "}
+          <Link to="/projects/$projectSlug/settings" params={{ projectSlug }} className="underline">
+            View plan
+          </Link>
+        </Trans>
+      </p>
+    );
+  }
+
+  return (
+    <p className="text-destructive text-xs">
+      {translateDynamic(
+        t,
+        error instanceof Error && error.message ? error.message : "Upload failed",
+      )}
+    </p>
+  );
+}
+
 function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAttachmentsProps) {
   const { t } = useLingui();
-  const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId }));
+  const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
+  const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId, organizationId }));
   const uploadMutation = useUploadFileMutation();
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
@@ -126,14 +164,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 
       <FileUpload onFilesSelected={handleFilesSelected} disabled={uploadMutation.isPending} />
       {uploadMutation.isError && (
-        <p className="text-xs text-destructive">
-          {translateDynamic(
-            t,
-            uploadMutation.error instanceof Error && uploadMutation.error.message
-              ? uploadMutation.error.message
-              : "Upload failed",
-          )}
-        </p>
+        <UploadError error={uploadMutation.error} projectSlug={projectSlug} />
       )}
 
       {files.length > 0 && (
@@ -166,7 +197,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
             <AlertDialogCancel>{t`Cancel`}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                if (deletingFileId) deleteMutation.mutate({ id: deletingFileId });
+                if (deletingFileId) deleteMutation.mutate({ id: deletingFileId, organizationId });
                 setDeletingFileId(null);
               }}
             >
@@ -180,7 +211,8 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         file={renamingFile}
         onOpenChange={(open) => !open && setRenamingFile(null)}
         onConfirm={(filename) => {
-          if (renamingFile) renameMutation.mutate({ id: renamingFile.id, filename });
+          if (renamingFile)
+            renameMutation.mutate({ id: renamingFile.id, organizationId, filename });
         }}
       />
     </div>

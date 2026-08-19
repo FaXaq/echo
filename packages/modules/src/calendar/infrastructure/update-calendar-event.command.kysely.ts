@@ -3,7 +3,7 @@ import { makeSelectCalendarEventByIdQuery } from "./common.js";
 import { toCalendarEvent } from "./map-calendar-event.js";
 
 export const updateCalendarEventCommandFactory: UpdateCalendarEventCommandPortFactory =
-  () => async (db, input) => {
+  () => async (db, scope, input) => {
     return db.transaction().execute(async (trx) => {
       const updated = await trx
         .updateTable("calendar_event")
@@ -23,12 +23,12 @@ export const updateCalendarEventCommandFactory: UpdateCalendarEventCommandPortFa
           place_lng: input.place?.lng ?? null,
         })
         .where("id", "=", input.id)
-        .where("organization_id", "=", input.organizationId)
+        .where("organization_id", "=", scope.organizationId)
         .returning("id")
         .executeTakeFirst();
       if (!updated) return null;
 
-      const row = await makeSelectCalendarEventByIdQuery(trx)(updated.id);
+      const row = await makeSelectCalendarEventByIdQuery(trx)(scope, updated.id);
 
       return toCalendarEvent(row);
     });

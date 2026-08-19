@@ -1,0 +1,24 @@
+import type { KyselyDB } from "@echo/db";
+import type { OrganizationScope } from "@echo/modules/shared/domain";
+import type { FileRecord, FolderRecord } from "../domain/index.js";
+
+export type DriveSortField = "name" | "event" | "updatedAt" | "sizeBytes";
+export type DriveSortOrder = "asc" | "desc";
+
+export type ListFolderContentsQueryInput = {
+  folderId: string | null;
+  sort: { field: DriveSortField; order: DriveSortOrder };
+};
+
+export type ListFolderContentsResult = {
+  folders: FolderRecord[];
+  files: FileRecord[];
+};
+
+export type ListFolderContentsQueryPort = (
+  db: KyselyDB,
+  scope: OrganizationScope,
+  input: ListFolderContentsQueryInput,
+) => Promise<ListFolderContentsResult>;
+
+export type ListFolderContentsQueryPortFactory = () => ListFolderContentsQueryPort;

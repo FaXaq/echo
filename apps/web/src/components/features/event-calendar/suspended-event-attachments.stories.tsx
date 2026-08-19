@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
-import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/file";
+import { getEventFilesQueryOptions, type EventFile } from "@/services/resources/drive";
 
 function withSeededFiles(files: EventFile[]) {
   const queryClient = new QueryClient();
-  queryClient.setQueryData(getEventFilesQueryOptions({ eventId: "event-1" }).queryKey, files);
+  queryClient.setQueryData(
+    getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" }).queryKey,
+    files,
+  );
   return queryClient;
 }
 
@@ -27,7 +30,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Empty: Story = {
-  args: { eventId: "event-1" },
+  args: { eventId: "event-1", organizationId: "org-1" },
   decorators: [
     (Story) => (
       <QueryClientProvider client={withSeededFiles([])}>
@@ -38,7 +41,7 @@ export const Empty: Story = {
 };
 
 export const WithMixedFiles: Story = {
-  args: { eventId: "event-1" },
+  args: { eventId: "event-1", organizationId: "org-1" },
   decorators: [
     (Story) => (
       <QueryClientProvider

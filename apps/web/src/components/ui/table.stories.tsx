@@ -128,6 +128,39 @@ export const SelectedRow: Story = {
   ),
 };
 
+export const Scrollable: Story = {
+  render: () => (
+    <Table containerClassName="h-72 rounded-xl border">
+      <TableHeader>
+        <TableRow>
+          <TableHead>Invoice</TableHead>
+          <TableHead>Customer</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Method</TableHead>
+          <TableHead>Issued</TableHead>
+          <TableHead>Due</TableHead>
+          <TableHead className="text-right">Amount</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 30 }, (_, index) => (
+          <TableRow key={index}>
+            <TableCell className="font-medium">INV-{String(index + 1).padStart(3, "0")}</TableCell>
+            <TableCell>Customer {index + 1}</TableCell>
+            <TableCell>customer{index + 1}@averylongdomainname.example.com</TableCell>
+            <TableCell>{index % 2 === 0 ? "Paid" : "Pending"}</TableCell>
+            <TableCell>Credit Card</TableCell>
+            <TableCell>2026-01-{String((index % 28) + 1).padStart(2, "0")}</TableCell>
+            <TableCell>2026-02-{String((index % 28) + 1).padStart(2, "0")}</TableCell>
+            <TableCell className="text-right">${(index + 1) * 125}.00</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  ),
+};
+
 export const Empty: Story = {
   render: () => (
     <Table>

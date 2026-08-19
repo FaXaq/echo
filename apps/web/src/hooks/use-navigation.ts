@@ -66,7 +66,7 @@ export function useNavigation() {
             },
             {
               title: t`Drive`,
-              to: "/projects/$projectSlug",
+              to: "/projects/$projectSlug/drive",
               params: { projectSlug: slug },
             },
             ...(isActiveOrganizationAdmin

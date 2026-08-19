@@ -38,6 +38,7 @@ import { useSession } from "@/hooks/use-session";
 import { InviteForm } from "@/routes/projects/$projectSlug/settings/-invite-form";
 import { MembersTable } from "@/routes/projects/$projectSlug/settings/-members-table";
 import { OrganizationNameForm } from "@/routes/projects/$projectSlug/settings/-organization-name-form";
+import { SuspendedPlanUsage } from "@/components/features/organization/suspended-plan-usage";
 
 export interface SuspendedOrganizationSettingsProps {
   organizationId: string;
@@ -136,6 +137,14 @@ function OrganizationSettingsContent({
             </CardContent>
           </Card>
         </div>
+      </section>
+
+      <section className="mb-8 max-w-xl">
+        <h2 className="mb-4 text-xl font-semibold">{t`Plan`}</h2>
+        <SuspendedPlanUsage
+          organizationId={organization.id}
+          isPersonal={organization.isPersonal === true}
+        />
       </section>
 
       {!organization.isPersonal && (

@@ -6,11 +6,12 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("@tanstack/react-router", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@tanstack/react-router")>()),
   Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+  useParams: () => ({ projectSlug: "acme-inc" }),
 }));
 
 import { SuspendedEventDetail } from "./suspended-event-detail";
 import * as calendarResource from "@/services/resources/calendar";
-import * as fileResource from "@/services/resources/file";
+import * as driveResource from "@/services/resources/drive";
 
 function makeEvent(): calendarResource.CalendarEvent {
   return {
@@ -53,7 +54,8 @@ describe("SuspendedEventDetail", () => {
       makeEvent(),
     );
     client.setQueryData(
-      fileResource.getEventFilesQueryOptions({ eventId: "event-1" }).queryKey,
+      driveResource.getEventFilesQueryOptions({ eventId: "event-1", organizationId: "org-1" })
+        .queryKey,
       [],
     );
 

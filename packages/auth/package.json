@@ -23,7 +23,8 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "better-auth": "catalog:",
@@ -34,7 +35,8 @@
     "@echo/config": "workspace:*",
     "@types/node": "catalog:",
     "@types/pg": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "react": ">=19.0.0"

@@ -1,6 +1,7 @@
 import type { KyselyDB } from "@echo/db";
 import { conflict, forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
+import type { OrganizationScope } from "@echo/modules/shared/domain";
 import {
   isValidEventRange,
   type CalendarEvent,
@@ -18,7 +19,7 @@ export async function updateEvent(
   },
   input: {
     id: string;
-    organizationId: string;
+    scope: OrganizationScope;
     userId: string;
     title: string;
     description?: string | null;
@@ -31,7 +32,7 @@ export async function updateEvent(
   },
 ): Promise<CalendarEvent> {
   const { success } = await deps.userHasPermissionInOrganization({
-    organizationId: input.organizationId,
+    organizationId: input.scope.organizationId,
     permissions: { calendarEvent: ["update"] },
   });
   if (!success) throw forbidden({ entity: "CalendarEvent", action: "update" });
@@ -40,9 +41,8 @@ export async function updateEvent(
     throw conflict("End date must be after start date");
   }
 
-  const updated = await deps.updateCalendarEventCommand(deps.db, {
+  const updated = await deps.updateCalendarEventCommand(deps.db, input.scope, {
     id: input.id,
-    organizationId: input.organizationId,
     userId: input.userId,
     title: input.title,
     description: input.description ?? null,

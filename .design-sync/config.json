@@ -1,0 +1,28 @@
+{
+  "projectId": "461b5980-81e9-459b-82e9-799502afdf69",
+  "shape": "storybook",
+  "storybookConfigDir": "apps/web/.storybook",
+  "storybookStatic": ".design-sync/sb-reference",
+  "pkg": "@echo/web",
+  "globalName": "EchoUI",
+  "entry": "./.design-sync/entry.ts",
+  "tsconfig": "./tsconfig.build.json",
+  "cssEntry": "sb-reference/assets/iframe-nfSNOTnC.css",
+  "titleMap": {
+    "UI/EventCalendar": null,
+    "UI/EventDetail": null,
+    "EventCalendar/EventAttachments": null
+  },
+  "storyImports": {
+    "shim": ["/components/ui/"]
+  },
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "Card": { "cardMode": "column" },
+    "Sidebar": {
+      "cardMode": "single",
+      "primaryStory": "Default",
+      "skip": ["ui-sidebar--collapsed"]
+    }
+  }
+}

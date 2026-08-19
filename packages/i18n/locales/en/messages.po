@@ -14,9 +14,41 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:123
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:161
 msgid "{0, plural, one {# file} other {# files}}"
 msgstr "{0, plural, one {# file} other {# files}}"
+
+#. placeholder {0}: selectedKeys.size
+#: apps/web/src/components/features/drive/drive-explorer.tsx:348
+msgid "{0, plural, one {# item selected} other {# items selected}}"
+msgstr "{0, plural, one {# item selected} other {# items selected}}"
+
+#. placeholder {0}: visibleFolders.length + visibleFiles.length
+#: apps/web/src/components/features/drive/drive-explorer.tsx:340
+msgid "{0, plural, one {# item} other {# items}}"
+msgstr "{0, plural, one {# item} other {# items}}"
+
+#. placeholder {0}: movingItems.length
+#: apps/web/src/components/features/drive/use-drive-selection.ts:166
+msgid "{0} items moved"
+msgstr "{0} items moved"
+
+#. placeholder {0}: succeededKeys.length
+#. placeholder {1}: movingItems.length
+#. placeholder {2}: failedNames.join(", ")
+#: apps/web/src/components/features/drive/use-drive-selection.ts:169
+msgid "{0} of {1} moved — failed: {2}"
+msgstr "{0} of {1} moved — failed: {2}"
+
+#. placeholder {0}: table.getFilteredSelectedRowModel().rows.length
+#. placeholder {1}: table.getFilteredRowModel().rows.length
+#: apps/web/src/components/ui/data-table-pagination.tsx:25
+msgid "{0} of {1} row(s) selected."
+msgstr "{0} of {1} row(s) selected."
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:461
+#~ msgid "{count, plural, one {# item selected} other {# items selected}}"
+#~ msgstr "{count, plural, one {# item selected} other {# items selected}}"
 
 #: apps/web/src/components/forgot-password-form.tsx:89
 msgid "<0>Back to login</0>"
@@ -27,11 +59,15 @@ msgstr "<0>Back to login</0>"
 msgid "Accept invitation"
 msgstr "Accept invitation"
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:275
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:86
 msgid "Actions"
 msgstr "Actions"
 
 #. placeholder {0}: file.filename
+#. placeholder {0}: folder.name
+#: apps/web/src/components/features/drive/drive-file-row.tsx:135
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:165
 #: apps/web/src/components/ui/attachment-list.tsx:72
 msgid "Actions for {0}"
 msgstr "Actions for {0}"
@@ -40,7 +76,7 @@ msgstr "Actions for {0}"
 #~ msgid "Add a new member to your organization"
 #~ msgstr "Add a new member to your organization"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:150
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:159
 msgid "Add a new member to your project"
 msgstr "Add a new member to your project"
 
@@ -62,6 +98,11 @@ msgstr "Agenda"
 msgid "All day"
 msgstr "All day"
 
+#: apps/web/src/routes/projects/$projectSlug/drive/$folderId.tsx:31
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:30
+msgid "All files shared across the project"
+msgstr "All files shared across the project"
+
 #: apps/web/src/components/signup-form.tsx:164
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
@@ -77,6 +118,10 @@ msgstr "Are you sure you want to cancel this invitation?"
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:173
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Are you sure you want to remove this member from the project?"
+
+#: apps/web/src/components/ui/data-table-column-header.tsx:50
+msgid "Asc"
+msgstr "Asc"
 
 #: apps/web/src/lib/dynamic-messages.ts:15
 msgid "At least 12 characters"
@@ -119,9 +164,11 @@ msgstr "Blue"
 msgid "Calendar"
 msgstr "Calendar"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:71
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:166
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:216
+#: apps/web/src/components/features/drive/folder-name-dialog.tsx:54
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:73
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:197
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:225
+#: apps/web/src/components/ui/confirm-dialog.tsx:45
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
@@ -157,6 +204,10 @@ msgstr "Class"
 msgid "Clear place"
 msgstr "Clear place"
 
+#: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:57
+msgid "Clear selection"
+msgstr "Clear selection"
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:292
 msgid "Color"
 msgstr "Color"
@@ -174,14 +225,59 @@ msgstr "Confirm password"
 msgid "Could not generate a unique organization slug"
 msgstr "Could not generate a unique organization slug"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:192
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:66
+msgid "Could not load plan usage"
+msgstr "Could not load plan usage"
+
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:128
+msgid "Couldn't build the download"
+msgstr "Couldn't build the download"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:407
+msgid "Couldn't delete file"
+msgstr "Couldn't delete file"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:381
+msgid "Couldn't delete folder"
+msgstr "Couldn't delete folder"
+
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:82
+msgid "Couldn't download file"
+msgstr "Couldn't download file"
+
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:106
+msgid "Couldn't download the selected files"
+msgstr "Couldn't download the selected files"
+
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:224
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:420
+msgid "Couldn't load Drive"
+msgstr "Couldn't load Drive"
+
+#: apps/web/src/components/features/drive/suspended-drive-files.tsx:110
+#~ msgid "Couldn't load files"
+#~ msgstr "Couldn't load files"
 
 #: apps/web/src/components/ui/attachment-list.tsx:61
 #: apps/web/src/components/ui/attachment-list.tsx:121
 msgid "Couldn't load this file"
 msgstr "Couldn't load this file"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:393
+msgid "Couldn't rename file"
+msgstr "Couldn't rename file"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:367
+msgid "Couldn't rename folder"
+msgstr "Couldn't rename folder"
+
+#. placeholder {0}: file.name
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:52
+msgid "Couldn't upload {0}"
+msgstr "Couldn't upload {0}"
 
 #: apps/web/src/routes/projects/new.tsx:69
 msgid "Create a space for your project"
@@ -203,7 +299,7 @@ msgstr "Create an account"
 msgid "Create project"
 msgstr "Create project"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:175
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:184
 msgid "Danger zone"
 msgstr "Danger zone"
 
@@ -211,12 +307,22 @@ msgstr "Danger zone"
 msgid "Date"
 msgstr "Date"
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:1005
+#~ msgid "Date added"
+#~ msgstr "Date added"
+
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:34
 msgid "Day"
 msgstr "Day"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:173
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:223
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:64
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:82
+#: apps/web/src/components/features/drive/drive-file-row.tsx:169
+#: apps/web/src/components/features/drive/drive-file-row.tsx:205
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:190
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:222
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:204
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:232
 #: apps/web/src/components/ui/attachment-list.tsx:102
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:243
@@ -236,15 +342,24 @@ msgstr "Delete event?"
 #~ msgid "Delete organization"
 #~ msgstr "Delete organization"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:185
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:200
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:205
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:194
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:209
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:214
 msgid "Delete project"
 msgstr "Delete project"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:160
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:80
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:191
 msgid "Delete this file?"
 msgstr "Delete this file?"
+
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:62
+msgid "Delete this folder?"
+msgstr "Delete this folder?"
+
+#: apps/web/src/components/ui/data-table-column-header.tsx:54
+msgid "Desc"
+msgstr "Desc"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:225
 msgid "Description"
@@ -254,6 +369,14 @@ msgstr "Description"
 msgid "Don't have an account? <0>Sign up</0>"
 msgstr "Don't have an account? <0>Sign up</0>"
 
+#: apps/web/src/components/features/drive/drive-file-row.tsx:150
+#: apps/web/src/components/features/drive/drive-file-row.tsx:183
+#: apps/web/src/components/features/drive/drive-file-row.tsx:190
+#: apps/web/src/components/features/drive/drive-file-row.tsx:197
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:204
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:211
+#: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:47
+#: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:54
 #: apps/web/src/components/ui/attachment-list.tsx:96
 msgid "Download"
 msgstr "Download"
@@ -262,7 +385,11 @@ msgstr "Download"
 msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
+#: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:23
+#: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:28
 #: apps/web/src/hooks/use-navigation.ts:68
+#: apps/web/src/routes/projects/$projectSlug/drive/$folderId.tsx:28
+#: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:27
 msgid "Drive"
 msgstr "Drive"
 
@@ -306,6 +433,7 @@ msgstr "Enter your email or username to login"
 msgid "Enter your email to receive a reset link"
 msgstr "Enter your email to receive a reset link"
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:245
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:9
 msgid "Event"
 msgstr "Event"
@@ -331,7 +459,7 @@ msgstr "Event not found"
 msgid "Events on {0}"
 msgstr "Events on {0}"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:178
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:187
 msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Every action here is destructive. Please proceed with caution."
 
@@ -351,7 +479,7 @@ msgstr "Failed to create project"
 #~ msgid "Failed to delete organization"
 #~ msgstr "Failed to delete organization"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:93
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:94
 msgid "Failed to delete project"
 msgstr "Failed to delete project"
 
@@ -371,9 +499,29 @@ msgstr "Failed to send reset email"
 msgid "Failed to update project name"
 msgstr "Failed to update project name"
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:401
+msgid "File deleted"
+msgstr "File deleted"
+
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:118
+msgid "Files"
+msgstr "Files"
+
 #: apps/web/src/components/signup-form.tsx:71
 msgid "Fill in the details below to get started"
 msgstr "Fill in the details below to get started"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:375
+msgid "Folder deleted"
+msgstr "Folder deleted"
+
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:98
+msgid "Folders"
+msgstr "Folders"
+
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:65
+msgid "Folders aren't supported yet — drop files only"
+msgstr "Folders aren't supported yet — drop files only"
 
 #: apps/web/src/components/forgot-password-form.tsx:49
 #: apps/web/src/components/login-form.tsx:85
@@ -389,13 +537,33 @@ msgstr "Full name"
 msgid "Full name is required"
 msgstr "Full name is required"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:109
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:110
 msgid "General"
 msgstr "General"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:64
+msgid "Go to first page"
+msgstr "Go to first page"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:92
+msgid "Go to last page"
+msgstr "Go to last page"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:82
+msgid "Go to next page"
+msgstr "Go to next page"
+
+#: apps/web/src/components/ui/data-table-pagination.tsx:73
+msgid "Go to previous page"
+msgstr "Go to previous page"
 
 #: apps/web/src/components/ui/event-calendar/colors.ts:27
 msgid "Green"
 msgstr "Green"
+
+#: apps/web/src/components/ui/data-table-column-header.tsx:62
+msgid "Hide"
+msgstr "Hide"
 
 #: apps/web/src/lib/dynamic-messages.ts:14
 msgid "Invalid email address"
@@ -409,8 +577,8 @@ msgstr "Invitation has expired or already been processed. Please, request a new 
 msgid "Invite"
 msgstr "Invite"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:146
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:149
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:155
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:158
 msgid "Invite a member"
 msgstr "Invite a member"
 
@@ -418,13 +586,17 @@ msgstr "Invite a member"
 msgid "Inviting..."
 msgstr "Inviting..."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:104
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:105
 msgid "It's your personal space."
 msgstr "It's your personal space."
 
 #: apps/web/src/components/user-menu.tsx:98
 msgid "Language"
 msgstr "Language"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:257
+msgid "Last modified"
+msgstr "Last modified"
 
 #: apps/web/src/lib/dynamic-messages.ts:13
 msgid "Letters, numbers, _ and - only"
@@ -434,7 +606,7 @@ msgstr "Letters, numbers, _ and - only"
 msgid "Link copied to clipboard"
 msgstr "Link copied to clipboard"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:121
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:159
 msgid "Linked files"
 msgstr "Linked files"
 
@@ -482,6 +654,10 @@ msgstr "Manage your project's events and schedule"
 msgid "Maximum 72 characters"
 msgstr "Maximum 72 characters"
 
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:57
+msgid "Maximum file size"
+msgstr "Maximum file size"
+
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:13
 msgid "Meeting"
 msgstr "Meeting"
@@ -490,7 +666,8 @@ msgstr "Meeting"
 msgid "Member"
 msgstr "Member"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:144
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:153
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
 #: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Members"
 msgstr "Members"
@@ -503,6 +680,7 @@ msgstr "Month"
 msgid "My Project"
 msgstr "My Project"
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:236
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:83
 #: apps/web/src/routes/projects/new.tsx:77
 msgid "Name"
@@ -514,6 +692,14 @@ msgstr "Name"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:210
 msgid "New event"
 msgstr "New event"
+
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:46
+msgid "New folder"
+msgstr "New folder"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:158
+msgid "New Folder"
+msgstr "New Folder"
 
 #: apps/web/src/components/reset-password-form.tsx:71
 msgid "New password"
@@ -533,9 +719,17 @@ msgstr "Next"
 msgid "No events scheduled"
 msgstr "No events scheduled"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:150
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:181
 msgid "No files linked yet."
 msgstr "No files linked yet."
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:330
+msgid "No files yet"
+msgstr "No files yet"
+
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:96
+msgid "No matches"
+msgstr "No matches"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:192
 msgid "No members yet"
@@ -550,6 +744,10 @@ msgstr "No members yet"
 msgid "No places found"
 msgstr "No places found"
 
+#: apps/web/src/components/ui/data-table.tsx:54
+msgid "No results."
+msgstr "No results."
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:117
 msgid "No, keep it"
 msgstr "No, keep it"
@@ -562,6 +760,10 @@ msgstr "No, keep them"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:360
 msgid "None"
 msgstr "None"
+
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:44
+msgid "Only a selection of files can be downloaded together"
+msgstr "Only a selection of files can be downloaded together"
 
 #. placeholder {0}: file.filename
 #: apps/web/src/components/ui/attachment-list.tsx:54
@@ -609,6 +811,12 @@ msgstr "Organizer"
 msgid "Owner"
 msgstr "Owner"
 
+#. placeholder {0}: table.state.pagination.pageIndex + 1
+#. placeholder {1}: table.getPageCount()
+#: apps/web/src/components/ui/data-table-pagination.tsx:53
+msgid "Page {0} of {1}"
+msgstr "Page {0} of {1}"
+
 #: apps/web/src/components/login-form.tsx:77
 #: apps/web/src/components/signup-form.tsx:126
 msgid "Password"
@@ -634,7 +842,7 @@ msgstr "Pending"
 #~ msgid "Permanently delete this organization and all of its data. This action cannot be undone."
 #~ msgstr "Permanently delete this organization and all of its data. This action cannot be undone."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:187
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:196
 msgid "Permanently delete this project and all of its data. This action cannot be undone."
 msgstr "Permanently delete this project and all of its data. This action cannot be undone."
 
@@ -646,6 +854,14 @@ msgstr "Personal"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:230
 msgid "Place"
 msgstr "Place"
+
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:143
+msgid "Plan"
+msgstr "Plan"
+
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:36
+msgid "Plan & usage"
+msgstr "Plan & usage"
 
 #: apps/web/src/lib/dynamic-messages.ts:21
 msgid "Please confirm your password"
@@ -663,11 +879,11 @@ msgstr "Previous"
 msgid "Project"
 msgstr "Project"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:88
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:89
 msgid "Project deleted"
 msgstr "Project deleted"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:113
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:114
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:58
 msgid "Project name"
 msgstr "Project name"
@@ -676,7 +892,7 @@ msgstr "Project name"
 msgid "Project name is required"
 msgstr "Project name is required"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:120
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:121
 msgid "Project name updated"
 msgstr "Project name updated"
 
@@ -684,7 +900,7 @@ msgstr "Project name updated"
 msgid "Project not found"
 msgstr "Project not found"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:128
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:129
 msgid "Project slug"
 msgstr "Project slug"
 
@@ -700,13 +916,22 @@ msgstr "Red"
 msgid "Rehearsal"
 msgstr "Rehearsal"
 
+#: apps/web/src/components/features/drive/drive-file-row.tsx:159
+#: apps/web/src/components/features/drive/drive-file-row.tsx:201
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:180
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:218
 #: apps/web/src/components/ui/attachment-list.tsx:86
 msgid "Rename"
 msgstr "Rename"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:67
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:71
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:69
 msgid "Rename file"
 msgstr "Rename file"
+
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:53
+msgid "Rename folder"
+msgstr "Rename folder"
 
 #: apps/web/src/components/reset-password-form.tsx:103
 #: apps/web/src/lib/dynamic-messages.ts:43
@@ -726,7 +951,12 @@ msgstr "Revoke membership"
 msgid "Role"
 msgstr "Role"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:72
+#: apps/web/src/components/ui/data-table-pagination.tsx:34
+msgid "Rows per page"
+msgstr "Rows per page"
+
+#: apps/web/src/components/features/drive/folder-name-dialog.tsx:55
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:74
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:67
 msgid "Save"
@@ -744,13 +974,38 @@ msgstr "Saving..."
 msgid "Schedule"
 msgstr "Schedule"
 
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:84
+msgid "Search Drive"
+msgstr "Search Drive"
+
 #: apps/web/src/components/ui/event-calendar/place-field.tsx:117
 msgid "Search for a place"
 msgstr "Search for a place"
 
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:95
 #: apps/web/src/components/ui/event-calendar/place-field.tsx:151
 msgid "Searching…"
 msgstr "Searching…"
+
+#. placeholder {0}: file.filename
+#. placeholder {0}: folder.name
+#: apps/web/src/components/features/drive/drive-file-row.tsx:88
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:133
+msgid "Select {0}"
+msgstr "Select {0}"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:231
+msgid "Select all"
+msgstr "Select all"
+
+#: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:34
+msgid "Selection actions"
+msgstr "Selection actions"
+
+#. placeholder {0}: formatSize(DRIVE_BULK_DOWNLOAD_MAX_BYTES)
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:46
+msgid "Selections are limited to {DRIVE_BULK_DOWNLOAD_MAX_FILES} files or {0} total"
+msgstr "Selections are limited to {DRIVE_BULK_DOWNLOAD_MAX_FILES} files or {0} total"
 
 #: apps/web/src/components/forgot-password-form.tsx:82
 msgid "Send reset link"
@@ -777,6 +1032,16 @@ msgstr "Share"
 msgid "Sign up failed"
 msgstr "Sign up failed"
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:266
+msgid "Size"
+msgstr "Size"
+
+#. placeholder {0}: allSkipped.length
+#. placeholder {1}: allSkipped.join(", ")
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:122
+msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
+msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
+
 #: apps/web/src/routes/organizations/new.tsx:96
 #~ msgid "Slug"
 #~ msgstr "Slug"
@@ -786,13 +1051,17 @@ msgstr "Sign up failed"
 #~ msgstr "Slug is required"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:248
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:257
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:257
 msgid "Start"
 msgstr "Start"
+
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:44
+msgid "Storage"
+msgstr "Storage"
 
 #: apps/web/src/components/user-menu.tsx:82
 msgid "Theme"
@@ -802,15 +1071,23 @@ msgstr "Theme"
 msgid "This event doesn't exist or has been deleted."
 msgstr "This event doesn't exist or has been deleted."
 
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:112
+msgid "This file is too large for your plan."
+msgstr "This file is too large for your plan."
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:330
+msgid "This folder is empty"
+msgstr "This folder is empty"
+
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:157
 #~ msgid "This is the name displayed across your organization."
 #~ msgstr "This is the name displayed across your organization."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:114
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:115
 msgid "This is the name displayed across your project."
 msgstr "This is the name displayed across your project."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:131
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:132
 msgid "This is the slug that appears in the URL. It's auto-generated."
 msgstr "This is the slug that appears in the URL. It's auto-generated."
 
@@ -822,8 +1099,20 @@ msgstr "This is the slug that appears in the URL. It's auto-generated."
 #~ msgid "This is your personal project."
 #~ msgstr "This is your personal project."
 
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:81
+msgid "This permanently deletes the file, including from any event or song it's attached to. This action cannot be undone."
+msgstr "This permanently deletes the file, including from any event or song it's attached to. This action cannot be undone."
+
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:63
+msgid "This permanently deletes the folder and any files inside it that aren't attached to an event or song. Files still attached elsewhere are kept and simply removed from this folder. This action cannot be undone."
+msgstr "This permanently deletes the folder and any files inside it that aren't attached to an event or song. Files still attached elsewhere are kept and simply removed from this folder. This action cannot be undone."
+
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:120
+msgid "This project has reached its plan limit. <0>View plan</0>"
+msgstr "This project has reached its plan limit. <0>View plan</0>"
+
 #. placeholder {0}: organization.name
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:208
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:217
 msgid "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 msgstr "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 
@@ -831,7 +1120,7 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:162
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:193
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 
@@ -852,6 +1141,10 @@ msgstr "Title is required"
 msgid "Today"
 msgstr "Today"
 
+#: apps/web/src/components/ui/data-table-view-options.tsx:32
+msgid "Toggle columns"
+msgstr "Toggle columns"
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:332
 msgid "Type"
 msgstr "Type"
@@ -860,13 +1153,29 @@ msgstr "Type"
 msgid "Unavailability"
 msgstr "Unavailability"
 
+#: apps/web/src/components/features/drive/use-drive-pending-deletes.ts:24
+msgid "Undo"
+msgstr "Undo"
+
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:113
 msgid "Update"
 msgstr "Update"
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:167
+msgid "Upload"
+msgstr "Upload"
+
 #: apps/web/src/lib/dynamic-messages.ts:36
 msgid "Upload failed"
 msgstr "Upload failed"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:174
+msgid "Upload files"
+msgstr "Upload files"
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:253
+msgid "Uploaded by"
+msgstr "Uploaded by"
 
 #: apps/web/src/components/signup-form.tsx:94
 msgid "Username"
@@ -875,6 +1184,10 @@ msgstr "Username"
 #: apps/web/src/lib/dynamic-messages.ts:12
 msgid "Username must be at least 3 characters"
 msgstr "Username must be at least 3 characters"
+
+#: apps/web/src/components/ui/data-table-view-options.tsx:29
+msgid "View"
+msgstr "View"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:33
 msgid "Week"
@@ -895,3 +1208,7 @@ msgstr "Yes, remove"
 #: apps/web/src/routes/accept-invitation.tsx:100
 msgid "You have been invited to join"
 msgstr "You have been invited to join"
+
+#: apps/web/src/components/features/organization/suspended-plan-usage.tsx:39
+msgid "Your current plan and what you have used of it."
+msgstr "Your current plan and what you have used of it."

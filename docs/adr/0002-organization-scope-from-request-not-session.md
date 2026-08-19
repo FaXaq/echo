@@ -1,0 +1,3 @@
+# Organization scope comes from request input, not session state
+
+Organization-scoped data access (files, calendar events, invitations, plan usage) always resolves its `organizationId` from explicit request input, verified against the caller's membership on every call — never from `session.activeOrganizationId`. `activeOrganizationId` is purely UI convenience (which org to preselect in a dropdown); it is never used to authorize a request or resolve scope. We chose this over deriving scope from the session because `activeOrganizationId` lives on the session row, shared across every tab/device using that session token — authorizing off it would let one tab's active-org switch silently change what another concurrently open tab is allowed to read or write.

@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { EventFile } from "@/services/resources/file";
+import type { EventFile } from "@/services/resources/drive";
 import { formatSize } from "@/lib/file";
 
 export interface AttachmentListProps {

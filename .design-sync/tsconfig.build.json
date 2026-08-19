@@ -1,0 +1,11 @@
+{
+  "extends": "../apps/web/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/ui": ["../apps/web/src/components/ui"],
+      "@/ui/*": ["../apps/web/src/components/ui/*"],
+      "@/*": ["../apps/web/src/*"],
+      "@lingui/react/macro": ["./overrides/lingui-macro-shim"]
+    }
+  }
+}

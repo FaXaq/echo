@@ -6,13 +6,16 @@ import {
   renderResetPasswordEmail,
   renderInvitationEmail,
 } from "@echo/modules/notification/infrastructure";
-import { deleteOrganizationFiles } from "@echo/modules/file/app";
+import { deleteOrganizationFiles } from "@echo/modules/drive/app";
+import { listFilesByOrganizationQueryFactory } from "@echo/modules/drive/infrastructure";
 import {
   createOrganizationCommandFactory,
   getPersonalOrganizationQuery,
   markOrganizationPersonal,
 } from "@echo/modules/organization/infrastructure";
 import { createOrganization } from "@echo/modules/organization/app";
+import { hasSeatAvailable } from "@echo/modules/plan/app";
+import { createSystemOrganizationScope } from "@echo/modules/shared/domain";
 import { makeMailer } from "@echo/adapters/mailer";
 import { makeS3Storage } from "@echo/adapters/s3-storage";
 import { makeLogger } from "@echo/logger";
@@ -21,6 +24,7 @@ const { db, pool } = makeDbAdapter(appConfig.db);
 const mailer = makeMailer(appConfig.mailer);
 const s3Storage = makeS3Storage(appConfig.s3);
 const logger = makeLogger();
+const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
 
 const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   secret: appConfig.auth.secret,
@@ -45,8 +49,8 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   },
   onOrganizationDeleted: async (organization) => {
     const failures = await deleteOrganizationFiles(
-      { db, s3Storage },
-      { organizationId: organization.id },
+      { db, s3Storage, listFilesByOrganizationQuery },
+      { scope: createSystemOrganizationScope(organization.id) },
     );
     for (const failure of failures) {
       logger.error(
@@ -70,6 +74,11 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
       ),
     });
   },
+  hasSeatAvailable: async (organizationId, excludeInvitationId) =>
+    hasSeatAvailable(
+      { db },
+      { scope: createSystemOrganizationScope(organizationId), excludeInvitationId },
+    ),
   sendOrganizationInvitation: async ({ invitation, organization, inviter }) => {
     const i18n = makeServerI18n(toLocale((inviter as { locale?: string }).locale));
     await mailer.send({
