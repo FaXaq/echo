@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
 import { Folder as FolderIcon, FileText, Image as ImageIcon, Music, Video } from "lucide-react";
@@ -22,6 +22,7 @@ const KIND_ICON = {
 } as const;
 
 const MIN_QUERY_LENGTH = 2;
+const SEARCH_DEBOUNCE_MS = 300;
 
 // Deliberate exception to the Suspended<Name> convention: a live-search-as-you-type
 // box has no meaningful Suspense state for an empty/short query, so this uses a plain
@@ -42,14 +43,24 @@ export function DriveSearchCombobox({
   const trimmedQuery = query.trim();
   const isSearchable = trimmedQuery.length >= MIN_QUERY_LENGTH;
 
+  const [debouncedQuery, setDebouncedQuery] = useState(trimmedQuery);
+  useEffect(() => {
+    const timeout = setTimeout(() => setDebouncedQuery(trimmedQuery), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timeout);
+  }, [trimmedQuery]);
+
+  const isDebouncePending = isSearchable && debouncedQuery !== trimmedQuery;
+  const isSearchReady = isSearchable && !isDebouncePending;
+
   const { data, isFetching } = useQuery({
-    ...getDriveSearchQueryOptions({ organizationId, query: trimmedQuery }),
-    enabled: isSearchable,
+    ...getDriveSearchQueryOptions({ organizationId, query: debouncedQuery }),
+    enabled: isSearchReady,
   });
 
-  const folders = isSearchable ? (data?.folders ?? []) : [];
-  const files = isSearchable ? (data?.files ?? []) : [];
-  const hasNoResults = isSearchable && !isFetching && folders.length === 0 && files.length === 0;
+  const folders = isSearchReady ? (data?.folders ?? []) : [];
+  const files = isSearchReady ? (data?.files ?? []) : [];
+  const isSearching = isDebouncePending || (isSearchReady && isFetching);
+  const hasNoResults = isSearchReady && !isFetching && folders.length === 0 && files.length === 0;
 
   const closeAndReset = () => {
     setOpen(false);
@@ -81,7 +92,7 @@ export function DriveSearchCombobox({
           finalFocus={false}
         >
           <CommandList>
-            {isFetching && <CommandEmpty>{t`Searching…`}</CommandEmpty>}
+            {isSearching && <CommandEmpty>{t`Searching…`}</CommandEmpty>}
             {hasNoResults && <CommandEmpty>{t`No matches`}</CommandEmpty>}
             {folders.length > 0 && (
               <CommandGroup heading={t`Folders`}>
