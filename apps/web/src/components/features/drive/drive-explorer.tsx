@@ -2,12 +2,14 @@ import { Suspense, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { useTable } from "@tanstack/react-table";
 import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
 import { FolderPlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
+import { dataTableFeatures } from "@/components/ui/data-table-features";
 import {
   Table,
   TableBody,
@@ -38,9 +40,16 @@ import { DriveBreadcrumbs } from "./drive-breadcrumbs";
 import { DriveExplorerDialogs } from "./drive-explorer-dialogs";
 import { FileRow } from "./drive-file-row";
 import { FolderRow } from "./drive-folder-row";
-import { type DriveItemKind, isFileDrag, selectionKey } from "./drive-item-utils";
+import {
+  type DriveItemKind,
+  type DriveRow,
+  isFileDrag,
+  isSelectionKey,
+  selectionKey,
+} from "./drive-item-utils";
 import { SelectionActionsMenu } from "./drive-selection-actions-menu";
 import { SortableHeader } from "./drive-sortable-header";
+import { useDriveTableColumns } from "./drive-table-columns";
 import { useDriveFileTransfer } from "./use-drive-file-transfer";
 import { useDrivePendingDeletes } from "./use-drive-pending-deletes";
 import { useDriveSelection } from "./use-drive-selection";
@@ -96,8 +105,14 @@ function DriveExplorerContent({
     ...visibleFiles.map((file) => ({ kind: "file" as const, id: file.id })),
   ];
 
+  const tableRows: DriveRow[] = [
+    ...visibleFolders.map((folder) => ({ kind: "folder" as const, data: folder })),
+    ...visibleFiles.map((file) => ({ kind: "file" as const, data: file })),
+  ];
+
   const {
     selectedKeys,
+    setSelectedKeys,
     toggleSelection,
     replaceSelection,
     clearSelection,
@@ -107,6 +122,31 @@ function DriveExplorerContent({
     allSelected,
     someSelected,
   } = useDriveSelection({ organizationId, folderId, rows, visibleFolders, visibleFiles });
+
+  const columns = useDriveTableColumns({ sort, order, onSortChange });
+
+  const rowSelection = Object.fromEntries(Array.from(selectedKeys, (key) => [key, true] as const));
+
+  const table = useTable({
+    features: dataTableFeatures,
+    data: tableRows,
+    columns,
+    manualSorting: true,
+    enableRowSelection: true,
+    getRowId: (row) => selectionKey(row.kind, row.data.id),
+    state: { rowSelection },
+    onRowSelectionChange: (updater) => {
+      setSelectedKeys((prev) => {
+        const prevRowSelection = Object.fromEntries(
+          Array.from(prev, (key) => [key, true] as const),
+        );
+        const next = typeof updater === "function" ? updater(prevRowSelection) : updater;
+        return new Set(Object.keys(next).filter(isSelectionKey));
+      });
+    },
+  });
+  // `table` is wired into the JSX by Task 4/5; unused for now.
+  void table;
 
   const selectedFiles = visibleFiles.filter((file) =>
     selectedKeys.has(selectionKey("file", file.id)),
