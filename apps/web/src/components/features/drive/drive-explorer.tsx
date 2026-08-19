@@ -3,7 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useTable } from "@tanstack/react-table";
-import { Plural, Trans, useLingui } from "@lingui/react/macro";
+import { Plural, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
 import { FolderPlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,6 @@ import {
   selectionKey,
 } from "./drive-item-utils";
 import { SelectionActionsMenu } from "./drive-selection-actions-menu";
-import { SortableHeader } from "./drive-sortable-header";
 import { useDriveTableColumns } from "./drive-table-columns";
 import { useDriveFileTransfer } from "./use-drive-file-transfer";
 import { useDrivePendingDeletes } from "./use-drive-pending-deletes";
@@ -116,11 +115,8 @@ function DriveExplorerContent({
     toggleSelection,
     replaceSelection,
     clearSelection,
-    toggleSelectAll,
     handleDragStart,
     handleDragEnd,
-    allSelected,
-    someSelected,
   } = useDriveSelection({ organizationId, folderId, rows, visibleFolders, visibleFiles });
 
   const columns = useDriveTableColumns({ sort, order, onSortChange });
@@ -145,8 +141,6 @@ function DriveExplorerContent({
       });
     },
   });
-  // `table` is wired into the JSX by Task 4/5; unused for now.
-  void table;
 
   const selectedFiles = visibleFiles.filter((file) =>
     selectedKeys.has(selectionKey("file", file.id)),
@@ -263,59 +257,25 @@ function DriveExplorerContent({
           }}
         >
           <TableHeader>
-            <TableRow>
-              <TableHead onClick={() => toggleSelectAll()}>
-                <Checkbox
-                  checked={allSelected}
-                  indeterminate={someSelected}
-                  aria-label={t`Select all`}
-                />
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Name`}
-                  field="name"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Event`}
-                  field="event"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <Trans>Uploaded by</Trans>
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Last modified`}
-                  field="updatedAt"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Size`}
-                  field="sizeBytes"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <span className="sr-only">
-                  <Trans>Actions</Trans>
-                </span>
-              </TableHead>
-            </TableRow>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) =>
+                  header.id === "select" ? (
+                    <TableHead key={header.id} onClick={() => table.toggleAllRowsSelected()}>
+                      <Checkbox
+                        checked={table.getIsAllRowsSelected()}
+                        indeterminate={table.getIsSomeRowsSelected()}
+                        aria-label={t`Select all`}
+                      />
+                    </TableHead>
+                  ) : (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                    </TableHead>
+                  ),
+                )}
+              </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
             {visibleFolders.map((folder) => (
