@@ -33,6 +33,7 @@ import {
 import { selfListOrganizations } from "@/services/resources/organization";
 import { useFolderPath } from "@/hooks/use-folder-path";
 import { DriveSearchCombobox } from "./drive-search-combobox";
+import { SuspendedDriveQuotaBar } from "./suspended-drive-quota-bar";
 import { DriveBreadcrumbs } from "./drive-breadcrumbs";
 import { DriveExplorerDialogs } from "./drive-explorer-dialogs";
 import { FileRow } from "./drive-file-row";
@@ -334,15 +335,22 @@ function DriveExplorerContent({
         </Table>
       </DragDropProvider>
 
-      <p className="text-xs text-muted-foreground">
-        <Plural value={visibleFolders.length + visibleFiles.length} one="# item" other="# items" />
-        {selectedKeys.size > 0 && (
-          <>
-            {" · "}
-            <Plural value={selectedKeys.size} one="# item selected" other="# items selected" />
-          </>
-        )}
-      </p>
+      <div className="flex items-center justify-between gap-6">
+        <p className="text-xs text-muted-foreground">
+          <Plural
+            value={visibleFolders.length + visibleFiles.length}
+            one="# item"
+            other="# items"
+          />
+          {selectedKeys.size > 0 && (
+            <>
+              {" · "}
+              <Plural value={selectedKeys.size} one="# item selected" other="# items selected" />
+            </>
+          )}
+        </p>
+        <SuspendedDriveQuotaBar organizationId={organizationId} />
+      </div>
 
       <DriveExplorerDialogs
         creatingFolder={creatingFolder}

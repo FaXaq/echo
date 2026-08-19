@@ -2,7 +2,6 @@ import { useNavigate, createFileRoute } from "@tanstack/react-router";
 import { Trans } from "@lingui/react/macro";
 import { z } from "zod";
 import { DriveExplorer } from "@/components/features/drive/drive-explorer";
-import { SuspendedDriveQuotaBar } from "@/components/features/drive/suspended-drive-quota-bar";
 import { driveSortFieldSchema, driveSortOrderSchema } from "@/services/resources/drive";
 
 export const Route = createFileRoute("/projects/$projectSlug/drive/")({
@@ -23,18 +22,13 @@ function RouteComponent() {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col p-6">
-      <div className="mb-5 flex items-start justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">
-            <Trans>Drive</Trans>
-          </h1>
-          <p className="text-muted-foreground">
-            <Trans>All files shared across the project</Trans>
-          </p>
-        </div>
-        <div className="w-56 shrink-0 pt-1">
-          <SuspendedDriveQuotaBar organizationId={organizationId} />
-        </div>
+      <div className="mb-5">
+        <h1 className="text-3xl font-bold mb-2">
+          <Trans>Drive</Trans>
+        </h1>
+        <p className="text-muted-foreground">
+          <Trans>All files shared across the project</Trans>
+        </p>
       </div>
       <DriveExplorer
         organizationId={organizationId}

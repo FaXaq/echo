@@ -1,22 +1,25 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLingui } from "@lingui/react/macro";
+import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 import { Skeleton } from "@/ui/skeleton";
-import { UsageBar, formatBytes } from "@/ui/usage-bar";
+import { ProgressIndicator, ProgressTrack, ProgressValue } from "@/ui/progress";
+import { formatBytes } from "@/ui/usage-bar";
 import { getStorageQuotaQueryOptions } from "@/services/resources/plan";
 
 function DriveQuotaBarContent({ organizationId }: { organizationId: string }) {
-  const { t } = useLingui();
   const { data } = useSuspenseQuery(getStorageQuotaQueryOptions({ organizationId }));
+  const percent = Math.min(100, Math.round((data.storageBytes / data.limitBytes) * 100));
 
   return (
-    <UsageBar
-      label={t`Storage`}
-      used={formatBytes(data.storageBytes)}
-      limit={formatBytes(data.limitBytes)}
-      ratio={data.storageBytes / data.limitBytes}
-    />
+    <ProgressPrimitive.Root value={percent} className="flex items-center gap-2">
+      <ProgressValue className="shrink-0 ms-0 text-xs">
+        {() => `${formatBytes(data.storageBytes)} / ${formatBytes(data.limitBytes)}`}
+      </ProgressValue>
+      <ProgressTrack className="w-32">
+        <ProgressIndicator />
+      </ProgressTrack>
+    </ProgressPrimitive.Root>
   );
 }
 
@@ -27,7 +30,7 @@ function DriveQuotaBarError() {
 export function SuspendedDriveQuotaBar({ organizationId }: { organizationId: string }) {
   return (
     <ErrorBoundary FallbackComponent={DriveQuotaBarError}>
-      <Suspense fallback={<Skeleton className="h-8 w-56" />}>
+      <Suspense fallback={<Skeleton className="h-4 w-56" />}>
         <DriveQuotaBarContent organizationId={organizationId} />
       </Suspense>
     </ErrorBoundary>
