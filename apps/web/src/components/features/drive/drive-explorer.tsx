@@ -278,52 +278,54 @@ function DriveExplorerContent({
             ))}
           </TableHeader>
           <TableBody>
-            {visibleFolders.map((folder) => (
-              <FolderRow
-                key={folder.id}
-                folder={folder}
-                selected={selectedKeys.has(selectionKey("folder", folder.id))}
-                selectionCount={selectedKeys.size}
-                onNavigate={() => navigateToFolder(folder.id)}
-                onToggleSelect={(event) =>
-                  toggleSelection("folder", folder.id, { shiftKey: event.shiftKey })
-                }
-                onContextMenuTrigger={() => {
-                  if (!selectedKeys.has(selectionKey("folder", folder.id))) {
-                    replaceSelection("folder", folder.id);
+            {table.getRowModel().rows.map((row) => {
+              const original = row.original;
+              return original.kind === "folder" ? (
+                <FolderRow
+                  key={row.id}
+                  folder={original.data}
+                  selected={row.getIsSelected()}
+                  selectionCount={selectedKeys.size}
+                  onNavigate={() => navigateToFolder(original.data.id)}
+                  onToggleSelect={(event) =>
+                    toggleSelection("folder", original.data.id, { shiftKey: event.shiftKey })
                   }
-                }}
-                onRename={() => setRenamingFolder(folder)}
-                onDelete={() => setDeletingFolder(folder)}
-                bulkDownloadDisabledReason={downloadDisabledReason}
-                onBulkDownload={handleBulkDownload}
-                isBulkDownloading={isDownloading}
-                onOsFilesDropped={(dataTransfer) => handleOsDrop(dataTransfer, folder.id)}
-              />
-            ))}
-            {visibleFiles.map((file) => (
-              <FileRow
-                key={file.id}
-                file={file}
-                projectSlug={projectSlug}
-                selected={selectedKeys.has(selectionKey("file", file.id))}
-                selectionCount={selectedKeys.size}
-                onToggleSelect={(event) =>
-                  toggleSelection("file", file.id, { shiftKey: event.shiftKey })
-                }
-                onContextMenuTrigger={() => {
-                  if (!selectedKeys.has(selectionKey("file", file.id))) {
-                    replaceSelection("file", file.id);
+                  onContextMenuTrigger={() => {
+                    if (!selectedKeys.has(selectionKey("folder", original.data.id))) {
+                      replaceSelection("folder", original.data.id);
+                    }
+                  }}
+                  onRename={() => setRenamingFolder(original.data)}
+                  onDelete={() => setDeletingFolder(original.data)}
+                  bulkDownloadDisabledReason={downloadDisabledReason}
+                  onBulkDownload={handleBulkDownload}
+                  isBulkDownloading={isDownloading}
+                  onOsFilesDropped={(dataTransfer) => handleOsDrop(dataTransfer, original.data.id)}
+                />
+              ) : (
+                <FileRow
+                  key={row.id}
+                  file={original.data}
+                  projectSlug={projectSlug}
+                  selected={row.getIsSelected()}
+                  selectionCount={selectedKeys.size}
+                  onToggleSelect={(event) =>
+                    toggleSelection("file", original.data.id, { shiftKey: event.shiftKey })
                   }
-                }}
-                onRename={() => setRenamingFile(file)}
-                onDelete={() => setDeletingFile(file)}
-                onDownload={() => handleDownloadFile(file)}
-                bulkDownloadDisabledReason={downloadDisabledReason}
-                onBulkDownload={handleBulkDownload}
-                isBulkDownloading={isDownloading}
-              />
-            ))}
+                  onContextMenuTrigger={() => {
+                    if (!selectedKeys.has(selectionKey("file", original.data.id))) {
+                      replaceSelection("file", original.data.id);
+                    }
+                  }}
+                  onRename={() => setRenamingFile(original.data)}
+                  onDelete={() => setDeletingFile(original.data)}
+                  onDownload={() => handleDownloadFile(original.data)}
+                  bulkDownloadDisabledReason={downloadDisabledReason}
+                  onBulkDownload={handleBulkDownload}
+                  isBulkDownloading={isDownloading}
+                />
+              );
+            })}
             {isEmpty && (
               <TableRow>
                 <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
