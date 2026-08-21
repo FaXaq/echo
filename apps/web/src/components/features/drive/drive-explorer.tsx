@@ -2,12 +2,14 @@ import { Suspense, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Plural, Trans, useLingui } from "@lingui/react/macro";
+import { useTable } from "@tanstack/react-table";
+import { Plural, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
 import { FolderPlus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
+import { dataTableFeatures } from "@/components/ui/data-table-features";
 import {
   Table,
   TableBody,
@@ -38,9 +40,15 @@ import { DriveBreadcrumbs } from "./drive-breadcrumbs";
 import { DriveExplorerDialogs } from "./drive-explorer-dialogs";
 import { FileRow } from "./drive-file-row";
 import { FolderRow } from "./drive-folder-row";
-import { type DriveItemKind, isFileDrag, selectionKey } from "./drive-item-utils";
+import {
+  type DriveItemKind,
+  type DriveRow,
+  isFileDrag,
+  isSelectionKey,
+  selectionKey,
+} from "./drive-item-utils";
 import { SelectionActionsMenu } from "./drive-selection-actions-menu";
-import { SortableHeader } from "./drive-sortable-header";
+import { useDriveTableColumns } from "./drive-table-columns";
 import { useDriveFileTransfer } from "./use-drive-file-transfer";
 import { useDrivePendingDeletes } from "./use-drive-pending-deletes";
 import { useDriveSelection } from "./use-drive-selection";
@@ -96,17 +104,43 @@ function DriveExplorerContent({
     ...visibleFiles.map((file) => ({ kind: "file" as const, id: file.id })),
   ];
 
+  const tableRows: DriveRow[] = [
+    ...visibleFolders.map((folder) => ({ kind: "folder" as const, data: folder })),
+    ...visibleFiles.map((file) => ({ kind: "file" as const, data: file })),
+  ];
+
   const {
     selectedKeys,
+    setSelectedKeys,
     toggleSelection,
     replaceSelection,
     clearSelection,
-    toggleSelectAll,
     handleDragStart,
     handleDragEnd,
-    allSelected,
-    someSelected,
   } = useDriveSelection({ organizationId, folderId, rows, visibleFolders, visibleFiles });
+
+  const columns = useDriveTableColumns({ sort, order, onSortChange });
+
+  const rowSelection = Object.fromEntries(Array.from(selectedKeys, (key) => [key, true] as const));
+
+  const table = useTable({
+    features: dataTableFeatures,
+    data: tableRows,
+    columns,
+    manualSorting: true,
+    enableRowSelection: true,
+    getRowId: (row) => selectionKey(row.kind, row.data.id),
+    state: { rowSelection },
+    onRowSelectionChange: (updater) => {
+      setSelectedKeys((prev) => {
+        const prevRowSelection = Object.fromEntries(
+          Array.from(prev, (key) => [key, true] as const),
+        );
+        const next = typeof updater === "function" ? updater(prevRowSelection) : updater;
+        return new Set(Object.keys(next).filter(isSelectionKey));
+      });
+    },
+  });
 
   const selectedFiles = visibleFiles.filter((file) =>
     selectedKeys.has(selectionKey("file", file.id)),
@@ -223,107 +257,75 @@ function DriveExplorerContent({
           }}
         >
           <TableHeader>
-            <TableRow>
-              <TableHead onClick={() => toggleSelectAll()}>
-                <Checkbox
-                  checked={allSelected}
-                  indeterminate={someSelected}
-                  aria-label={t`Select all`}
-                />
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Name`}
-                  field="name"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Event`}
-                  field="event"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <Trans>Uploaded by</Trans>
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Last modified`}
-                  field="updatedAt"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <SortableHeader
-                  label={t`Size`}
-                  field="sizeBytes"
-                  activeSort={sort}
-                  activeOrder={order}
-                  onSortChange={onSortChange}
-                />
-              </TableHead>
-              <TableHead>
-                <span className="sr-only">
-                  <Trans>Actions</Trans>
-                </span>
-              </TableHead>
-            </TableRow>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) =>
+                  header.id === "select" ? (
+                    <TableHead key={header.id} onClick={() => table.toggleAllRowsSelected()}>
+                      <Checkbox
+                        checked={table.getIsAllRowsSelected()}
+                        indeterminate={table.getIsSomeRowsSelected()}
+                        aria-label={t`Select all`}
+                      />
+                    </TableHead>
+                  ) : (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                    </TableHead>
+                  ),
+                )}
+              </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
-            {visibleFolders.map((folder) => (
-              <FolderRow
-                key={folder.id}
-                folder={folder}
-                selected={selectedKeys.has(selectionKey("folder", folder.id))}
-                selectionCount={selectedKeys.size}
-                onNavigate={() => navigateToFolder(folder.id)}
-                onToggleSelect={(event) =>
-                  toggleSelection("folder", folder.id, { shiftKey: event.shiftKey })
-                }
-                onContextMenuTrigger={() => {
-                  if (!selectedKeys.has(selectionKey("folder", folder.id))) {
-                    replaceSelection("folder", folder.id);
+            {table.getRowModel().rows.map((row) => {
+              const original = row.original;
+              return original.kind === "folder" ? (
+                <FolderRow
+                  key={row.id}
+                  folder={original.data}
+                  selected={row.getIsSelected()}
+                  selectionCount={selectedKeys.size}
+                  onNavigate={() => navigateToFolder(original.data.id)}
+                  onToggleSelect={(event) =>
+                    toggleSelection("folder", original.data.id, { shiftKey: event.shiftKey })
                   }
-                }}
-                onRename={() => setRenamingFolder(folder)}
-                onDelete={() => setDeletingFolder(folder)}
-                bulkDownloadDisabledReason={downloadDisabledReason}
-                onBulkDownload={handleBulkDownload}
-                isBulkDownloading={isDownloading}
-                onOsFilesDropped={(dataTransfer) => handleOsDrop(dataTransfer, folder.id)}
-              />
-            ))}
-            {visibleFiles.map((file) => (
-              <FileRow
-                key={file.id}
-                file={file}
-                projectSlug={projectSlug}
-                selected={selectedKeys.has(selectionKey("file", file.id))}
-                selectionCount={selectedKeys.size}
-                onToggleSelect={(event) =>
-                  toggleSelection("file", file.id, { shiftKey: event.shiftKey })
-                }
-                onContextMenuTrigger={() => {
-                  if (!selectedKeys.has(selectionKey("file", file.id))) {
-                    replaceSelection("file", file.id);
+                  onContextMenuTrigger={() => {
+                    if (!selectedKeys.has(selectionKey("folder", original.data.id))) {
+                      replaceSelection("folder", original.data.id);
+                    }
+                  }}
+                  onRename={() => setRenamingFolder(original.data)}
+                  onDelete={() => setDeletingFolder(original.data)}
+                  bulkDownloadDisabledReason={downloadDisabledReason}
+                  onBulkDownload={handleBulkDownload}
+                  isBulkDownloading={isDownloading}
+                  onOsFilesDropped={(dataTransfer) => handleOsDrop(dataTransfer, original.data.id)}
+                />
+              ) : (
+                <FileRow
+                  key={row.id}
+                  file={original.data}
+                  projectSlug={projectSlug}
+                  selected={row.getIsSelected()}
+                  selectionCount={selectedKeys.size}
+                  onToggleSelect={(event) =>
+                    toggleSelection("file", original.data.id, { shiftKey: event.shiftKey })
                   }
-                }}
-                onRename={() => setRenamingFile(file)}
-                onDelete={() => setDeletingFile(file)}
-                onDownload={() => handleDownloadFile(file)}
-                bulkDownloadDisabledReason={downloadDisabledReason}
-                onBulkDownload={handleBulkDownload}
-                isBulkDownloading={isDownloading}
-              />
-            ))}
+                  onContextMenuTrigger={() => {
+                    if (!selectedKeys.has(selectionKey("file", original.data.id))) {
+                      replaceSelection("file", original.data.id);
+                    }
+                  }}
+                  onRename={() => setRenamingFile(original.data)}
+                  onDelete={() => setDeletingFile(original.data)}
+                  onDownload={() => handleDownloadFile(original.data)}
+                  bulkDownloadDisabledReason={downloadDisabledReason}
+                  onBulkDownload={handleBulkDownload}
+                  isBulkDownloading={isDownloading}
+                />
+              );
+            })}
             {isEmpty && (
               <TableRow>
                 <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">

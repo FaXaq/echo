@@ -85,14 +85,6 @@ export function useDriveSelection({
     selectionAnchorRef.current = null;
   };
 
-  const toggleSelectAll = () => {
-    if (selectedKeys.size === rows.length && rows.length > 0) {
-      clearSelection();
-    } else {
-      setSelectedKeys(new Set(rows.map((row) => selectionKey(row.kind, row.id))));
-    }
-  };
-
   const handleDragStart = (event: DragStartEventPayload) => {
     const source = readDragData(event.operation.source?.data);
     if (!source) return;
@@ -173,19 +165,13 @@ export function useDriveSelection({
     });
   };
 
-  const allSelected = rows.length > 0 && selectedKeys.size === rows.length;
-  const someSelected = selectedKeys.size > 0 && !allSelected;
-
   return {
     selectedKeys,
     setSelectedKeys,
     toggleSelection,
     replaceSelection,
     clearSelection,
-    toggleSelectAll,
     handleDragStart,
     handleDragEnd,
-    allSelected,
-    someSelected,
   };
 }
