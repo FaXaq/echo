@@ -387,7 +387,7 @@ msgstr "Drag and drop files here, or click to select"
 
 #: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:23
 #: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:28
-#: apps/web/src/hooks/use-navigation.ts:68
+#: apps/web/src/hooks/use-navigation.ts:63
 #: apps/web/src/routes/projects/$projectSlug/drive/$folderId.tsx:28
 #: apps/web/src/routes/projects/$projectSlug/drive/index.tsx:27
 msgid "Drive"
@@ -1016,10 +1016,10 @@ msgid "Set a new password"
 msgstr "Set a new password"
 
 #: apps/web/src/hooks/use-navigation.ts:63
-msgid "Setlist"
-msgstr "Setlist"
+#~ msgid "Setlist"
+#~ msgstr "Setlist"
 
-#: apps/web/src/hooks/use-navigation.ts:75
+#: apps/web/src/hooks/use-navigation.ts:70
 #: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:43
 msgid "Settings"
 msgstr "Settings"
