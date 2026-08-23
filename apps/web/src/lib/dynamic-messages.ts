@@ -24,6 +24,7 @@ export const DYNAMIC_MESSAGES: Record<string, MessageDescriptor> = {
   "Password is required": msg`Password is required`,
   "Project name is required": msg`Project name is required`,
   "Title is required": msg`Title is required`,
+  "BPM must be a whole number": msg`BPM must be a whole number`,
   "End date must be after start date": msg`End date must be after start date`,
 
   "Login failed": msg`Login failed`,
