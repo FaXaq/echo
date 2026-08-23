@@ -20,7 +20,7 @@ An Organization's storage usage against the limit its Plan allows: usage summed 
 _Avoid_: reading storage usage off `plan.overview` (removed; would drift from the quota endpoint, which is the one invalidated on file upload/delete)
 
 **Drive**:
-The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's or a Song's file list, each of which shows only files attached to that Event/Song regardless of which Folder (if any) they sit in — a file can be attached to an Event, a Song, and organized into a Folder all at the same time; the three attachments are independent, and a file is only removed once none of them remain.
+The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's or a Song's file list, each of which shows only files attached to that Event/Song regardless of which Folder (if any) they sit in — a file can be attached to an Event, a Song, and organized into a Folder all at the same time. Only the Event and Song attachments protect a file from deletion: a file is deleted only once neither remains, independent of whether it also sits in a Folder. Folder membership is a location, not a protecting attachment — it follows Folder's own (pre-existing, unrelated) deletion behavior.
 _Avoid_: File browser
 
 **Folder**:
