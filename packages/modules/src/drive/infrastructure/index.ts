@@ -22,6 +22,12 @@ export type {
 } from "./list-files-by-event.query.port.js";
 export { listFilesByEventQueryFactory } from "./list-files-by-event.query.kysely.js";
 
+export type {
+  ListFilesBySongQueryInput,
+  ListFilesBySongQueryPort,
+} from "./list-files-by-song.query.port.js";
+export { listFilesBySongQueryFactory } from "./list-files-by-song.query.kysely.js";
+
 export type { ListFilesByOrganizationQueryPort } from "./list-files-by-organization.query.port.js";
 export { listFilesByOrganizationQueryFactory } from "./list-files-by-organization.query.kysely.js";
 
