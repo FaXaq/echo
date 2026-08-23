@@ -10,6 +10,7 @@ import {
   listEventFiles,
   listFolderContents,
   listOrganizationFiles,
+  listSongFiles,
   moveFile,
   moveFolder,
   renameFile,
@@ -27,6 +28,7 @@ import {
   insertPendingFileCommandFactory,
   listFilesByEventQueryFactory,
   listFilesByOrganizationQueryFactory,
+  listFilesBySongQueryFactory,
   listFolderContentsQueryFactory,
   markFileUploadedCommandFactory,
   moveFileToFolderCommandFactory,
@@ -50,6 +52,7 @@ const insertPendingFileCommand = insertPendingFileCommandFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
 const markFileUploadedCommand = markFileUploadedCommandFactory();
 const listFilesByEventQuery = listFilesByEventQueryFactory();
+const listFilesBySongQuery = listFilesBySongQueryFactory();
 const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 const renameFileByIdCommand = renameFileByIdCommandFactory();
@@ -70,6 +73,7 @@ export const makeDriveRouter = () =>
       .input(
         z.object({
           eventId: z.string().optional(),
+          songId: z.string().optional(),
           folderId: z.string().nullish(),
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
@@ -123,6 +127,20 @@ export const makeDriveRouter = () =>
             listFilesByEventQuery,
           },
           { eventId: input.eventId, scope: ctx.organizationScope },
+        ),
+      ),
+
+    listSongFiles: organizationProcedure
+      .input(z.object({ songId: z.string() }))
+      .query(({ ctx, input }) =>
+        listSongFiles(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            s3Storage: ctx.s3Storage,
+            listFilesBySongQuery,
+          },
+          { songId: input.songId, scope: ctx.organizationScope },
         ),
       ),
 
