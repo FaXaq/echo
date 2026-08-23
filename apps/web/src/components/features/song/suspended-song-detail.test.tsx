@@ -118,4 +118,40 @@ describe("SuspendedSongDetail", () => {
       }),
     );
   });
+
+  it("does not re-save on unmount once a debounced save has already fired", async () => {
+    const updateLyricsMutationFn = vi.fn(async (input: { id: string; lyrics: string | null }) =>
+      makeSong(input),
+    );
+    vi.spyOn(songResource, "useUpdateSongLyricsMutation").mockImplementation(() =>
+      useMutation({
+        mutationFn: (input: { id: string; lyrics: string | null }) => updateLyricsMutationFn(input),
+      }),
+    );
+
+    const user = userEvent.setup();
+    const { unmount } = renderWithSong(makeSong());
+
+    await screen.findByRole("heading", { name: "Empty Road" });
+    await user.click(screen.getByRole("button", { name: "Simulate lyrics edit" }));
+
+    // Let the 1s debounce actually fire and complete the save.
+    await waitFor(
+      () =>
+        expect(updateLyricsMutationFn).toHaveBeenCalledWith({
+          id: "song-1",
+          lyrics: "Final edit before leaving",
+        }),
+      { timeout: 2000 },
+    );
+
+    // Unmounting well after the save already fired must not re-save: the
+    // debounce ref should have been cleared once the timeout ran. Give any
+    // (buggy) redundant mutate() call a chance to actually reach the
+    // mutation function before asserting it never happened.
+    unmount();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(updateLyricsMutationFn).toHaveBeenCalledTimes(1);
+  });
 });

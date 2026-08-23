@@ -72,6 +72,7 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
     setLyrics(markdown);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
+      debounceRef.current = null;
       updateLyricsMutation.mutate({ id: song.id, lyrics: markdown || null });
     }, LYRICS_AUTOSAVE_DEBOUNCE_MS);
   };
