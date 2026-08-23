@@ -1,6 +1,7 @@
 export { createUpload } from "./create-upload.js";
 export { confirmUpload } from "./confirm-upload.js";
 export { listEventFiles } from "./list-event-files.js";
+export { listSongFiles } from "./list-song-files.js";
 export { listOrganizationFiles } from "./list-organization-files.js";
 export { deleteFile } from "./delete-file.js";
 export { getFileDownloadUrl } from "./get-file-download-url.js";
