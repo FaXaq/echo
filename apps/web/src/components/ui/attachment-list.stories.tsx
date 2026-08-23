@@ -7,6 +7,7 @@ function makeFile(overrides: Partial<EventFile>): EventFile {
     id: Math.random().toString(36),
     eventId: "event-1",
     eventTitle: null,
+    songId: null,
     folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
