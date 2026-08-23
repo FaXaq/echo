@@ -59,6 +59,7 @@ export interface File {
   original_filename: string;
   s3_key: string;
   size_bytes: number;
+  song_id: string | null;
   status: Generated<string>;
   updated_at: Generated<Timestamp | null>;
   uploaded_by: string;
@@ -116,6 +117,21 @@ export interface Session {
   userId: string;
 }
 
+export interface Song {
+  artist: string | null;
+  bpm: number | null;
+  created_at: Generated<Timestamp>;
+  created_by: string;
+  id: string;
+  key: string | null;
+  lyrics: string | null;
+  organization_id: string;
+  title: string;
+  type: string | null;
+  updated_at: Generated<Timestamp | null>;
+  updated_by: string | null;
+}
+
 export interface User {
   banExpires: Timestamp | null;
   banned: boolean | null;
@@ -152,6 +168,7 @@ export interface DB {
   member: Member;
   organization: Organization;
   session: Session;
+  song: Song;
   user: User;
   verification: Verification;
 }
