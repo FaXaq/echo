@@ -18,7 +18,7 @@ import {
   getSongByIdQueryFactory,
 } from "@echo/modules/song/infrastructure";
 import {
-  listFilesBySongQueryFactory,
+  listAllFilesBySongQueryFactory,
   deleteFileByIdCommandFactory,
 } from "@echo/modules/drive/infrastructure";
 
@@ -36,7 +36,7 @@ const updateSongLyricsCommand = updateSongLyricsCommandFactory();
 const deleteSongCommand = deleteSongCommandFactory();
 const listSongsQuery = listSongsQueryFactory();
 const getSongByIdQuery = getSongByIdQueryFactory();
-const listFilesBySongQuery = listFilesBySongQueryFactory();
+const listAllFilesBySongQuery = listAllFilesBySongQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 
 export const makeSongRouter = () =>
@@ -93,7 +93,7 @@ export const makeSongRouter = () =>
           {
             db: ctx.db,
             deleteSongCommand,
-            listFilesBySongQuery,
+            listFilesBySongQuery: listAllFilesBySongQuery,
             deleteFileByIdCommand,
             s3Storage: ctx.s3Storage,
           },

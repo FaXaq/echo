@@ -2,7 +2,7 @@ import type { KyselyDB } from "@echo/db";
 import { notFound } from "@echo/errors";
 import type {
   DeleteFileByIdCommandPort,
-  ListFilesBySongQueryPort,
+  ListAllFilesBySongQueryPort,
 } from "@echo/modules/drive/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
@@ -14,7 +14,7 @@ export async function deleteSong(
   deps: {
     db: KyselyDB;
     deleteSongCommand: DeleteSongCommandPort;
-    listFilesBySongQuery: ListFilesBySongQueryPort;
+    listFilesBySongQuery: ListAllFilesBySongQueryPort;
     deleteFileByIdCommand: DeleteFileByIdCommandPort;
     s3Storage: S3StoragePort;
   },

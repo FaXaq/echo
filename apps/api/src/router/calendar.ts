@@ -16,7 +16,7 @@ import {
   getCalendarEventByIdFactory,
 } from "@echo/modules/calendar/infrastructure";
 import {
-  listFilesByEventQueryFactory,
+  listAllFilesByEventQueryFactory,
   deleteFileByIdCommandFactory,
 } from "@echo/modules/drive/infrastructure";
 
@@ -46,7 +46,7 @@ const updateCalendarEventCommand = updateCalendarEventCommandFactory();
 const deleteCalendarEventCommand = deleteCalendarEventCommandFactory();
 const listCalendarEventsQuery = listCalendarEventsQueryFactory();
 const getCalendarEventById = getCalendarEventByIdFactory();
-const listFilesByEventQuery = listFilesByEventQueryFactory();
+const listAllFilesByEventQuery = listAllFilesByEventQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 
 export const makeCalendarRouter = () =>
@@ -107,7 +107,7 @@ export const makeCalendarRouter = () =>
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             deleteCalendarEventCommand,
-            listFilesByEventQuery,
+            listFilesByEventQuery: listAllFilesByEventQuery,
             deleteFileByIdCommand,
             s3Storage: ctx.s3Storage,
           },

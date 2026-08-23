@@ -3,7 +3,7 @@ import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type {
   DeleteFileByIdCommandPort,
-  ListFilesByEventQueryPort,
+  ListAllFilesByEventQueryPort,
 } from "@echo/modules/drive/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
@@ -16,7 +16,7 @@ export async function deleteEvent(
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
     deleteCalendarEventCommand: DeleteCalendarEventCommandPort;
-    listFilesByEventQuery: ListFilesByEventQueryPort;
+    listFilesByEventQuery: ListAllFilesByEventQueryPort;
     deleteFileByIdCommand: DeleteFileByIdCommandPort;
     s3Storage: S3StoragePort;
   },

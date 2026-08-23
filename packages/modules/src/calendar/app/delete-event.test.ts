@@ -4,7 +4,7 @@ import { ForbiddenError, NotFoundError } from "@echo/errors";
 import type { FileRecord } from "@echo/modules/drive/domain";
 import type {
   DeleteFileByIdCommandPort,
-  ListFilesByEventQueryPort,
+  ListAllFilesByEventQueryPort,
 } from "@echo/modules/drive/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
@@ -44,7 +44,7 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
   };
 }
 
-function makeFakeListFilesByEventQuery(files: FileRecord[]): ListFilesByEventQueryPort {
+function makeFakeListFilesByEventQuery(files: FileRecord[]): ListAllFilesByEventQueryPort {
   return async () => files;
 }
 
@@ -201,5 +201,74 @@ describe("deleteEvent", () => {
     expect(commandCalled).toBe(true);
     expect(deletedFileIds).toEqual(["file-1"]);
     expect(failures).toEqual([{ fileId: "file-1", error }]);
+  });
+
+  it("deletes the S3 object and file row for a pending, not-yet-confirmed orphaned file", async () => {
+    const deletedKeys: string[] = [];
+    const deletedFileIds: string[] = [];
+    const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => true;
+
+    const failures = await deleteEvent(
+      {
+        db,
+        userHasPermissionInOrganization: async () => ({
+          success: true,
+          error: null,
+          role: null,
+        }),
+        deleteCalendarEventCommand,
+        listFilesByEventQuery: makeFakeListFilesByEventQuery([makeFakeFile({ status: "pending" })]),
+        deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
+        s3Storage: makeFakeS3Storage({
+          deleteObject: async (key) => {
+            deletedKeys.push(key);
+          },
+        }),
+      },
+      { id: "event-1", scope },
+    );
+
+    expect(deletedKeys).toEqual(["org/org-1/file-1/demo.mp3"]);
+    expect(deletedFileIds).toEqual(["file-1"]);
+    expect(failures).toEqual([]);
+  });
+
+  it("attributes S3 delete failures to the correct file id in a mixed orphaned/attached list", async () => {
+    const deletedKeys: string[] = [];
+    const deletedFileIds: string[] = [];
+    const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => true;
+    const error = new Error("s3 down");
+
+    const orphanedFile = makeFakeFile({ id: "file-orphan", s3Key: "org/org-1/file-orphan/a.mp3" });
+    const attachedFile = makeFakeFile({
+      id: "file-attached",
+      s3Key: "org/org-1/file-attached/b.mp3",
+      songId: "song-1",
+    });
+
+    const failures = await deleteEvent(
+      {
+        db,
+        userHasPermissionInOrganization: async () => ({
+          success: true,
+          error: null,
+          role: null,
+        }),
+        deleteCalendarEventCommand,
+        listFilesByEventQuery: makeFakeListFilesByEventQuery([attachedFile, orphanedFile]),
+        deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
+        s3Storage: makeFakeS3Storage({
+          deleteObject: async (key) => {
+            if (key === orphanedFile.s3Key) throw error;
+            deletedKeys.push(key);
+          },
+        }),
+      },
+      { id: "event-1", scope },
+    );
+
+    expect(deletedKeys).toEqual([]);
+    expect(deletedFileIds).toEqual(["file-orphan"]);
+    expect(failures).toEqual([{ fileId: "file-orphan", error }]);
   });
 });
