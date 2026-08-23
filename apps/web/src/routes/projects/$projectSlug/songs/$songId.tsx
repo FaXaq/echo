@@ -16,6 +16,7 @@ function OrganizationSongDetailPage() {
   return (
     <div className="p-6 h-full">
       <SuspendedSongDetail
+        key={songId}
         songId={songId}
         organizationId={organizationId}
         pathname={`/${projectSlug}/songs/${songId}`}

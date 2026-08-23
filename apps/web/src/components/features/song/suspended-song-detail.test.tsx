@@ -1,5 +1,5 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@/lib/test-utils";
+import { QueryClient, QueryClientProvider, useMutation } from "@tanstack/react-query";
+import { render, screen, waitFor } from "@/lib/test-utils";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -7,6 +7,23 @@ vi.mock("@tanstack/react-router", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@tanstack/react-router")>()),
   Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
   useParams: () => ({ projectSlug: "acme-inc" }),
+}));
+
+vi.mock("@/components/ui/lyrics-editor", () => ({
+  LyricsEditor: ({
+    markdown,
+    onChange,
+  }: {
+    markdown: string;
+    onChange: (markdown: string) => void;
+  }) => (
+    <div>
+      <p>{markdown}</p>
+      <button type="button" onClick={() => onChange("Final edit before leaving")}>
+        Simulate lyrics edit
+      </button>
+    </div>
+  ),
 }));
 
 import { SuspendedSongDetail } from "./suspended-song-detail";
@@ -72,5 +89,33 @@ describe("SuspendedSongDetail", () => {
 
     expect(screen.getByRole("heading", { name: "Edit song" })).toBeInTheDocument();
     expect(screen.getByLabelText("Title")).toHaveValue("Empty Road");
+  });
+
+  it("flushes a pending lyrics autosave with the latest value on unmount", async () => {
+    const updateLyricsMutationFn = vi.fn(async (input: { id: string; lyrics: string | null }) =>
+      makeSong(input),
+    );
+    vi.spyOn(songResource, "useUpdateSongLyricsMutation").mockImplementation(() =>
+      useMutation({
+        mutationFn: (input: { id: string; lyrics: string | null }) => updateLyricsMutationFn(input),
+      }),
+    );
+
+    const user = userEvent.setup();
+    const { unmount } = renderWithSong(makeSong());
+
+    await screen.findByRole("heading", { name: "Empty Road" });
+    await user.click(screen.getByRole("button", { name: "Simulate lyrics edit" }));
+
+    // Unmount immediately, well within the 1s debounce window: the pending
+    // save must still fire with the latest value instead of being dropped.
+    unmount();
+
+    await waitFor(() =>
+      expect(updateLyricsMutationFn).toHaveBeenCalledWith({
+        id: "song-1",
+        lyrics: "Final edit before leaving",
+      }),
+    );
   });
 });

@@ -36,17 +36,16 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
   const [dialogState, setDialogState] = useState<SongDialogState>(null);
   const [lyrics, setLyrics] = useState(() => song.lyrics ?? "");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lyricsRef = useRef(lyrics);
+  lyricsRef.current = lyrics;
 
   useSyncPageMeta(pathname, song.title, song.title);
 
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, []);
-
   const updateSongMutation = useUpdateSongMutation({ onSuccess: () => setDialogState(null) });
-  const updateLyricsMutation = useUpdateSongLyricsMutation({ organizationId });
+  const updateLyricsMutation = useUpdateSongLyricsMutation({
+    organizationId,
+    onError: () => toast.add({ type: "error", title: t`Failed to save lyrics` }),
+  });
   const deleteSongMutation = useDeleteSongMutation({
     organizationId,
     onSuccess: () => {
@@ -54,6 +53,15 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
       onBack();
     },
   });
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        updateLyricsMutation.mutate({ id: song.id, lyrics: lyricsRef.current || null });
+      }
+    };
+  }, [song.id, updateLyricsMutation.mutate]);
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);

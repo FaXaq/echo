@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Link } from "@tanstack/react-router";
 import { useLingui } from "@lingui/react/macro";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Music, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SongDialog, type SongDialogState } from "@/components/ui/song/song-dialog";
 import { getSongsQueryOptions, useCreateSongMutation, type Song } from "@/services/resources/song";
 
@@ -14,13 +16,9 @@ export interface SuspendedSongListProps {
   onSongCreated: (song: Song) => void;
 }
 
-export function SuspendedSongList({
-  organizationId,
-  projectSlug,
-  onSongCreated,
-}: SuspendedSongListProps) {
+function SongListContent({ organizationId, projectSlug, onSongCreated }: SuspendedSongListProps) {
   const { t } = useLingui();
-  const { data: songs = [] } = useQuery(getSongsQueryOptions({ organizationId }));
+  const { data: songs } = useSuspenseQuery(getSongsQueryOptions({ organizationId }));
   const [dialogState, setDialogState] = useState<SongDialogState>(null);
 
   const createSongMutation = useCreateSongMutation({
@@ -78,5 +76,39 @@ export function SuspendedSongList({
         }}
       />
     </div>
+  );
+}
+
+function SongListError() {
+  const { t } = useLingui();
+  return <p className="p-6 text-sm text-destructive">{t`Couldn't load songs`}</p>;
+}
+
+function SongListLoader() {
+  return (
+    <div className="p-6 flex flex-col gap-2">
+      <Skeleton className="h-9 w-48" />
+      <Skeleton className="h-16 w-full" />
+      <Skeleton className="h-16 w-full" />
+      <Skeleton className="h-16 w-full" />
+    </div>
+  );
+}
+
+export function SuspendedSongList({
+  organizationId,
+  projectSlug,
+  onSongCreated,
+}: SuspendedSongListProps) {
+  return (
+    <ErrorBoundary FallbackComponent={SongListError}>
+      <Suspense fallback={<SongListLoader />}>
+        <SongListContent
+          organizationId={organizationId}
+          projectSlug={projectSlug}
+          onSongCreated={onSongCreated}
+        />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

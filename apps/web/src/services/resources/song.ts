@@ -58,9 +58,11 @@ export function useUpdateSongMutation({ onSuccess }: { onSuccess?: (song: Song) 
 export function useUpdateSongLyricsMutation({
   organizationId,
   onSuccess,
+  onError,
 }: {
   organizationId: string;
   onSuccess?: () => void;
+  onError?: (error: unknown) => void;
 }) {
   const queryClient = useQueryClient();
 
@@ -71,6 +73,7 @@ export function useUpdateSongLyricsMutation({
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
     },
+    onError,
   });
 }
 

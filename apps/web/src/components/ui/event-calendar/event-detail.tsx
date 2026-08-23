@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "@/lib/dayjs";
 import dayjs from "dayjs";
-import { MoreVertical, Share2 } from "lucide-react";
+import { MapPin, MoreVertical, Share2, Timer, User } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 import { capitalize } from "remeda";
 
@@ -74,6 +74,12 @@ export function EventDetail({
           <span className="truncate text-[13px] font-medium">{event.createdByName}</span>
         </div>
       ),
+      badge: (
+        <>
+          <User data-icon="inline-start" />
+          {event.createdByName}
+        </>
+      ),
     },
     {
       label: t`Date`,
@@ -81,6 +87,12 @@ export function EventDetail({
         <>
           <div className="text-[13px] font-medium">{dateLabel}</div>
           <div className="text-xs text-muted-foreground">{timeLabel}</div>
+        </>
+      ),
+      badge: (
+        <>
+          <Timer data-icon="inline-start" />
+          {dayjs(event.startDate).format("LLL")}
         </>
       ),
     },
@@ -102,6 +114,12 @@ export function EventDetail({
       ) : (
         <div className="text-[13px] font-medium">—</div>
       ),
+      badge: event.place ? (
+        <>
+          <MapPin data-icon="inline-start" />
+          {event.place.name}
+        </>
+      ) : undefined,
     },
     {
       label: t`Category`,
@@ -110,6 +128,12 @@ export function EventDetail({
           <EventTypeIcon type={event.type} className="size-3.5" data-icon="inline-start" />
           {t(getEventLabel(event.type))}
         </Badge>
+      ),
+      badge: (
+        <>
+          <EventTypeIcon type={event.type} className="size-3.5" data-icon="inline-start" />
+          {t(getEventLabel(event.type))}
+        </>
       ),
     },
   ];

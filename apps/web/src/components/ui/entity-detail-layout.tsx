@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 export interface SidebarItem {
   label: string;
   value: React.ReactNode;
+  badge?: React.ReactNode;
 }
 
 export interface EntityDetailLayoutProps {
@@ -69,7 +70,7 @@ export function EntityDetailLayout({
             <div className="flex flex-row gap-1.5">
               {sidebarItems.map((item) => (
                 <Badge key={item.label} variant="secondary">
-                  {item.value}
+                  {item.badge ?? item.value}
                 </Badge>
               ))}
             </div>
