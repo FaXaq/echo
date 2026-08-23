@@ -161,7 +161,7 @@ msgstr "Back to calendar"
 msgid "Back to home"
 msgstr "Back to home"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:134
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:135
 msgid "Back to songs"
 msgstr "Back to songs"
 
@@ -1167,7 +1167,7 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:257
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:128
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
@@ -1183,7 +1183,7 @@ msgstr "Song deleted"
 msgid "Song details"
 msgstr "Song details"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:128
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
 msgid "Song not found"
 msgstr "Song not found"
 
@@ -1251,7 +1251,7 @@ msgstr "This permanently deletes the folder and any files inside it that aren't 
 msgid "This project has reached its plan limit. <0>View plan</0>"
 msgstr "This project has reached its plan limit. <0>View plan</0>"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:131
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:132
 msgid "This song doesn't exist or has been deleted."
 msgstr "This song doesn't exist or has been deleted."
 

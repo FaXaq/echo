@@ -161,7 +161,7 @@ msgstr "Retour au calendrier"
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:134
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:135
 msgid "Back to songs"
 msgstr "Retour aux chansons"
 
@@ -1167,7 +1167,7 @@ msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:257
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:128
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
 
@@ -1183,7 +1183,7 @@ msgstr "Chanson supprimée"
 msgid "Song details"
 msgstr "Détails de la chanson"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:128
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
 msgid "Song not found"
 msgstr "Chanson introuvable"
 
@@ -1251,7 +1251,7 @@ msgstr "Cette action supprime définitivement le dossier ainsi que les fichiers 
 msgid "This project has reached its plan limit. <0>View plan</0>"
 msgstr "Ce projet a atteint la limite de son forfait. <0>Voir le forfait</0>"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:131
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:132
 msgid "This song doesn't exist or has been deleted."
 msgstr "Cette chanson n'existe pas ou a été supprimée."
 
