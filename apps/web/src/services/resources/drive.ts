@@ -15,6 +15,7 @@ const { key, getResourceKey } = initResourceKey("drive");
 export { key };
 
 export type EventFile = RouterOutputs["drive"]["listEventFiles"][number];
+export type SongFile = RouterOutputs["drive"]["listSongFiles"][number];
 export type OrganizationFile = RouterOutputs["drive"]["listOrganizationFiles"][number];
 export type Folder = RouterOutputs["drive"]["getFolder"];
 export type FolderContents = RouterOutputs["drive"]["listFolderContents"];
@@ -143,6 +144,19 @@ export function getEventFilesQueryOptions(opts: { eventId: string; organizationI
   });
 }
 
+export function getSongFilesQueryOptions(opts: { songId: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("listSongFiles", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.drive.listSongFiles.query(params, { signal });
+    },
+    // Same rationale as getEventFilesQueryOptions: presigned URLs are
+    // re-signed per call and expire after an hour.
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function getOrganizationFilesQueryOptions(opts: { organizationId: string }) {
   return queryOptions({
     queryKey: getResourceKey("listOrganizationFiles", opts),
@@ -176,12 +190,14 @@ export function useUploadFileMutation({
   return useMutation({
     mutationFn: async (input: {
       eventId?: string;
+      songId?: string;
       folderId?: string | null;
       organizationId: string;
       file: File;
     }) => {
       const { fileId, uploadUrl } = await apiClient.drive.createUpload.mutate({
         eventId: input.eventId,
+        songId: input.songId,
         folderId: input.folderId,
         organizationId: input.organizationId,
         mimeType: input.file.type,
