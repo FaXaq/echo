@@ -111,6 +111,18 @@
     "./plan/app": {
       "types": "./src/plan/app/index.ts",
       "default": "./src/plan/app/index.ts"
+    },
+    "./song/domain": {
+      "types": "./src/song/domain/index.ts",
+      "default": "./src/song/domain/index.ts"
+    },
+    "./song/infrastructure": {
+      "types": "./src/song/infrastructure/index.ts",
+      "default": "./src/song/infrastructure/index.ts"
+    },
+    "./song/app": {
+      "types": "./src/song/app/index.ts",
+      "default": "./src/song/app/index.ts"
     }
   },
   "scripts": {
