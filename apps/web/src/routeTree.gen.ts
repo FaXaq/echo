@@ -24,6 +24,7 @@ import { Route as ProjectsProjectSlugDriveIndexRouteImport } from './routes/proj
 import { Route as ProjectsProjectSlugDriveFolderIdRouteImport } from './routes/projects/$projectSlug/drive/$folderId'
 import { Route as ProjectsProjectSlugSettingsIndexRouteImport } from './routes/projects/$projectSlug/settings/index'
 import { Route as ProjectsProjectSlugSongsIndexRouteImport } from './routes/projects/$projectSlug/songs/index'
+import { Route as ProjectsProjectSlugSongsSongIdRouteImport } from './routes/projects/$projectSlug/songs/$songId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -111,6 +112,12 @@ const ProjectsProjectSlugSongsIndexRoute =
     path: '/',
     getParentRoute: () => ProjectsProjectSlugSongsRouteRoute,
   } as any)
+const ProjectsProjectSlugSongsSongIdRoute =
+  ProjectsProjectSlugSongsSongIdRouteImport.update({
+    id: '/$songId',
+    path: '/$songId',
+    getParentRoute: () => ProjectsProjectSlugSongsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/projects/$projectSlug/': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/drive/$folderId': typeof ProjectsProjectSlugDriveFolderIdRoute
+  '/projects/$projectSlug/songs/$songId': typeof ProjectsProjectSlugSongsSongIdRoute
   '/projects/$projectSlug/calendar/': typeof ProjectsProjectSlugCalendarIndexRoute
   '/projects/$projectSlug/drive/': typeof ProjectsProjectSlugDriveIndexRoute
   '/projects/$projectSlug/settings/': typeof ProjectsProjectSlugSettingsIndexRoute
@@ -137,6 +145,7 @@ export interface FileRoutesByTo {
   '/projects/$projectSlug': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/drive/$folderId': typeof ProjectsProjectSlugDriveFolderIdRoute
+  '/projects/$projectSlug/songs/$songId': typeof ProjectsProjectSlugSongsSongIdRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarIndexRoute
   '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveIndexRoute
   '/projects/$projectSlug/settings': typeof ProjectsProjectSlugSettingsIndexRoute
@@ -155,6 +164,7 @@ export interface FileRoutesById {
   '/projects/$projectSlug/': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/drive/$folderId': typeof ProjectsProjectSlugDriveFolderIdRoute
+  '/projects/$projectSlug/songs/$songId': typeof ProjectsProjectSlugSongsSongIdRoute
   '/projects/$projectSlug/calendar/': typeof ProjectsProjectSlugCalendarIndexRoute
   '/projects/$projectSlug/drive/': typeof ProjectsProjectSlugDriveIndexRoute
   '/projects/$projectSlug/settings/': typeof ProjectsProjectSlugSettingsIndexRoute
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/projects/$projectSlug/'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/drive/$folderId'
+    | '/projects/$projectSlug/songs/$songId'
     | '/projects/$projectSlug/calendar/'
     | '/projects/$projectSlug/drive/'
     | '/projects/$projectSlug/settings/'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/projects/$projectSlug'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/drive/$folderId'
+    | '/projects/$projectSlug/songs/$songId'
     | '/projects/$projectSlug/calendar'
     | '/projects/$projectSlug/drive'
     | '/projects/$projectSlug/settings'
@@ -204,6 +216,7 @@ export interface FileRouteTypes {
     | '/projects/$projectSlug/'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/drive/$folderId'
+    | '/projects/$projectSlug/songs/$songId'
     | '/projects/$projectSlug/calendar/'
     | '/projects/$projectSlug/drive/'
     | '/projects/$projectSlug/settings/'
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsProjectSlugSongsIndexRouteImport
       parentRoute: typeof ProjectsProjectSlugSongsRouteRoute
     }
+    '/projects/$projectSlug/songs/$songId': {
+      id: '/projects/$projectSlug/songs/$songId'
+      path: '/$songId'
+      fullPath: '/projects/$projectSlug/songs/$songId'
+      preLoaderRoute: typeof ProjectsProjectSlugSongsSongIdRouteImport
+      parentRoute: typeof ProjectsProjectSlugSongsRouteRoute
+    }
   }
 }
 
@@ -364,11 +384,13 @@ const ProjectsProjectSlugDriveRouteRouteWithChildren =
   )
 
 interface ProjectsProjectSlugSongsRouteRouteChildren {
+  ProjectsProjectSlugSongsSongIdRoute: typeof ProjectsProjectSlugSongsSongIdRoute
   ProjectsProjectSlugSongsIndexRoute: typeof ProjectsProjectSlugSongsIndexRoute
 }
 
 const ProjectsProjectSlugSongsRouteRouteChildren: ProjectsProjectSlugSongsRouteRouteChildren =
   {
+    ProjectsProjectSlugSongsSongIdRoute: ProjectsProjectSlugSongsSongIdRoute,
     ProjectsProjectSlugSongsIndexRoute: ProjectsProjectSlugSongsIndexRoute,
   }
 
