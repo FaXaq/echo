@@ -1,0 +1,7 @@
+# Entity detail pages share a layout shell, split by what must stay identical vs. what varies
+
+Extracting `EntityDetailLayout` (`apps/web/src/components/ui/entity-detail-layout.tsx`) out of `EventDetail` so the new song detail page (ECH-24) can reuse it forced a choice about which pieces of a detail page are boilerplate and which are page-specific. We fixed the organization-link header, the `sidebarItems: { label, value }[]` desktop sidebar, and the mobile condensed-badge row as chrome the layout owns outright: every entity-detail page needs an org link and a sidebar, and deriving the mobile row from `sidebarItems` (rather than a separate prop) structurally prevents the mobile and desktop views from drifting apart. We left the header `actions` and the leading `icon` as open `ReactNode` slots, because what a detail page's actions look like genuinely varies per entity (events: Share + Edit + Delete; songs: still open) and forcing a fixed `onShare`/`onEdit`/`onDelete` shape would mean fabricating no-op props for entities that don't need all of them.
+
+One consequence: the delete-confirmation `AlertDialog`, previously local state inside `EventDetail`, moves out of the shared layout and into each consumer instead, since it's triggered from within the (now consumer-owned) `actions` slot rather than by a callback the layout could own itself.
+
+Decided while resolving the wayfinder ticket "Reusable layout: extract event detail page into a shared component" on the [ECH-24](https://linear.app/marinpro/issue/ECH-24) map.
