@@ -34,6 +34,7 @@ export async function createUpload(
   input: {
     userId: string;
     eventId?: string;
+    songId?: string;
     folderId?: string | null;
     scope: OrganizationScope;
     mimeType: string;
@@ -80,6 +81,7 @@ export async function createUpload(
   await deps.insertPendingFileCommand(deps.db, input.scope, {
     id,
     eventId: input.eventId ?? null,
+    songId: input.songId ?? null,
     folderId: input.folderId ?? null,
     uploadedBy: input.userId,
     kind,

@@ -91,7 +91,7 @@ export function makeFakeInsertPendingFile(
       id: input.id,
       eventId: input.eventId,
       eventTitle: null,
-      songId: null,
+      songId: input.songId,
       folderId: input.folderId,
       organizationId: scope.organizationId,
       uploadedBy: input.uploadedBy,
