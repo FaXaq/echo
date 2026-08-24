@@ -12,7 +12,7 @@ function Table({
     <ScrollArea
       data-slot="table-container"
       orientation="both"
-      className={cn("w-full [--scroll-area-inset-top:--spacing(10)]", containerClassName)}
+      className={cn("w-full [--scroll-area-inset-top:--spacing(13)]", containerClassName)}
     >
       <table
         data-slot="table"
