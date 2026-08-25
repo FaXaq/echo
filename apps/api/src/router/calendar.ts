@@ -15,7 +15,10 @@ import {
   listCalendarEventsQueryFactory,
   getCalendarEventByIdFactory,
 } from "@echo/modules/calendar/infrastructure";
-import { listFilesByEventQueryFactory } from "@echo/modules/drive/infrastructure";
+import {
+  listAllFilesByEventQueryFactory,
+  deleteFileByIdCommandFactory,
+} from "@echo/modules/drive/infrastructure";
 
 const colorSchema = z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]);
 
@@ -43,7 +46,8 @@ const updateCalendarEventCommand = updateCalendarEventCommandFactory();
 const deleteCalendarEventCommand = deleteCalendarEventCommandFactory();
 const listCalendarEventsQuery = listCalendarEventsQueryFactory();
 const getCalendarEventById = getCalendarEventByIdFactory();
-const listFilesByEventQuery = listFilesByEventQueryFactory();
+const listAllFilesByEventQuery = listAllFilesByEventQueryFactory();
+const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 
 export const makeCalendarRouter = () =>
   router({
@@ -103,7 +107,8 @@ export const makeCalendarRouter = () =>
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             deleteCalendarEventCommand,
-            listFilesByEventQuery,
+            listFilesByEventQuery: listAllFilesByEventQuery,
+            deleteFileByIdCommand,
             s3Storage: ctx.s3Storage,
           },
           { id: input.id, scope: ctx.organizationScope },

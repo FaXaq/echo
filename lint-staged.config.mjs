@@ -1,6 +1,8 @@
 export default {
   "*.{js,jsx,ts,tsx,json,css}": (files) => {
-    const formattable = files.filter((file) => !file.includes("packages/i18n/locales/"));
+    const formattable = files.filter(
+      (file) => !file.includes("packages/i18n/locales/") && !file.endsWith(".d.ts"),
+    );
     return formattable.length ? [`oxfmt ${formattable.map((file) => `"${file}"`).join(" ")}`] : [];
   },
 };

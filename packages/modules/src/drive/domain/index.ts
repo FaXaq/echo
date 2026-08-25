@@ -23,6 +23,7 @@ export type FileRecord = {
   id: string;
   eventId: string | null;
   eventTitle: string | null;
+  songId: string | null;
   folderId: string | null;
   organizationId: string;
   uploadedBy: string;

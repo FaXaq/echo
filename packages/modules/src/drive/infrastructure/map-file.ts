@@ -24,6 +24,7 @@ export function toFileRecord(row: FileRow): FileRecord {
     id: row.id,
     eventId: row.event_id,
     eventTitle: row.event_title ?? null,
+    songId: row.song_id,
     folderId: row.folder_id,
     organizationId: row.organization_id,
     uploadedBy: row.uploaded_by,

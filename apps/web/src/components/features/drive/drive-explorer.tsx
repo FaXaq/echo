@@ -128,6 +128,7 @@ function DriveExplorerContent({
     data: tableRows,
     columns,
     manualSorting: true,
+    manualPagination: true,
     enableRowSelection: true,
     getRowId: (row) => selectionKey(row.kind, row.data.id),
     state: { rowSelection },

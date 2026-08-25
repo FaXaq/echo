@@ -15,16 +15,17 @@ msgstr ""
 
 #. placeholder {0}: files.length
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:161
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:161
 msgid "{0, plural, one {# file} other {# files}}"
 msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 
 #. placeholder {0}: selectedKeys.size
-#: apps/web/src/components/features/drive/drive-explorer.tsx:350
+#: apps/web/src/components/features/drive/drive-explorer.tsx:351
 msgid "{0, plural, one {# item selected} other {# items selected}}"
 msgstr "{0, plural, one {# élément sélectionné} other {# éléments sélectionnés}}"
 
 #. placeholder {0}: visibleFolders.length + visibleFiles.length
-#: apps/web/src/components/features/drive/drive-explorer.tsx:342
+#: apps/web/src/components/features/drive/drive-explorer.tsx:343
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# élément} other {# éléments}}"
 
@@ -54,7 +55,7 @@ msgstr "{0} sur {1} ligne(s) sélectionnée(s)."
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
 
-#: apps/web/src/lib/dynamic-messages.ts:42
+#: apps/web/src/lib/dynamic-messages.ts:45
 #: apps/web/src/routes/accept-invitation.tsx:105
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
@@ -84,7 +85,11 @@ msgstr "Ajouter un nouveau membre à votre projet"
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
-#: apps/web/src/lib/dynamic-messages.ts:46
+#: apps/web/src/components/ui/song/song-detail.tsx:57
+msgid "Added by"
+msgstr "Ajouté par"
+
+#: apps/web/src/lib/dynamic-messages.ts:49
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -92,7 +97,7 @@ msgstr "Administrateur"
 msgid "Agenda"
 msgstr "Agenda"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:60
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:58
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:287
 #: apps/web/src/components/ui/event-calendar/time-grid-view.tsx:158
 msgid "All day"
@@ -118,6 +123,11 @@ msgstr "Voulez-vous vraiment annuler cette invitation ?"
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:173
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Voulez-vous vraiment retirer ce membre du projet ?"
+
+#: apps/web/src/components/ui/song/song-detail.tsx:53
+#: apps/web/src/components/ui/song/song-dialog.tsx:117
+msgid "Artist"
+msgstr "Artiste"
 
 #: apps/web/src/components/ui/data-table-column-header.tsx:50
 msgid "Asc"
@@ -151,6 +161,10 @@ msgstr "Retour au calendrier"
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:135
+msgid "Back to songs"
+msgstr "Retour aux chansons"
+
 #: apps/web/src/hooks/use-navigation.ts:62
 #~ msgid "Backlog"
 #~ msgstr "Backlog"
@@ -159,8 +173,25 @@ msgstr "Retour à l'accueil"
 msgid "Blue"
 msgstr "Bleu"
 
+#: apps/web/src/components/ui/lyrics-editor.tsx:62
+msgid "Bold"
+msgstr "Gras"
+
+#: apps/web/src/components/ui/song/song-detail.tsx:54
+#: apps/web/src/components/ui/song/song-dialog.tsx:123
+msgid "BPM"
+msgstr "BPM"
+
+#: apps/web/src/lib/dynamic-messages.ts:27
+msgid "BPM must be a whole number"
+msgstr "Le BPM doit être un nombre entier"
+
+#: apps/web/src/components/ui/lyrics-editor.tsx:90
+msgid "Bullet list"
+msgstr "Liste à puces"
+
 #: apps/web/src/hooks/use-navigation.ts:58
-#: apps/web/src/lib/dynamic-messages.ts:38
+#: apps/web/src/lib/dynamic-messages.ts:39
 msgid "Calendar"
 msgstr "Agenda"
 
@@ -168,10 +199,14 @@ msgstr "Agenda"
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:73
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:197
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:225
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:73
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:197
 #: apps/web/src/components/ui/confirm-dialog.tsx:45
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:236
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:203
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
+#: apps/web/src/components/ui/song/song-detail.tsx:120
+#: apps/web/src/components/ui/song/song-dialog.tsx:164
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:107
 msgid "Cancel"
 msgstr "Annuler"
@@ -184,11 +219,11 @@ msgstr "Annuler l'invitation"
 msgid "Cannot find the invitation you're looking for"
 msgstr "Impossible de trouver l’invitation que vous recherchez"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:218
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:125
 msgid "Category"
 msgstr "Catégorie"
 
-#: apps/web/src/lib/dynamic-messages.ts:32
+#: apps/web/src/lib/dynamic-messages.ts:33
 msgid "Check your email for a password reset link"
 msgstr "Vérifiez votre email pour le lien de réinitialisation"
 
@@ -221,7 +256,7 @@ msgstr "Concert"
 msgid "Confirm password"
 msgstr "Confirmer le mot de passe"
 
-#: apps/web/src/lib/dynamic-messages.ts:35
+#: apps/web/src/lib/dynamic-messages.ts:36
 msgid "Could not generate a unique organization slug"
 msgstr "Impossible de générer un identifiant unique pour le projet"
 
@@ -233,11 +268,11 @@ msgstr "Impossible de charger l'utilisation du forfait"
 msgid "Couldn't build the download"
 msgstr "Impossible de préparer le téléchargement"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:409
+#: apps/web/src/components/features/drive/drive-explorer.tsx:410
 msgid "Couldn't delete file"
 msgstr "Impossible de supprimer le fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:383
+#: apps/web/src/components/features/drive/drive-explorer.tsx:384
 msgid "Couldn't delete folder"
 msgstr "Impossible de supprimer le dossier"
 
@@ -250,10 +285,11 @@ msgid "Couldn't download the selected files"
 msgstr "Impossible de télécharger les fichiers sélectionnés"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:224
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:224
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:422
+#: apps/web/src/components/features/drive/drive-explorer.tsx:423
 msgid "Couldn't load Drive"
 msgstr "Impossible de charger le Drive"
 
@@ -261,16 +297,20 @@ msgstr "Impossible de charger le Drive"
 #~ msgid "Couldn't load files"
 #~ msgstr "Impossible de charger les fichiers"
 
+#: apps/web/src/components/features/song/suspended-song-list.tsx:84
+msgid "Couldn't load songs"
+msgstr "Impossible de charger les chansons"
+
 #: apps/web/src/components/ui/attachment-list.tsx:61
 #: apps/web/src/components/ui/attachment-list.tsx:121
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:395
+#: apps/web/src/components/features/drive/drive-explorer.tsx:396
 msgid "Couldn't rename file"
 msgstr "Impossible de renommer le fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:369
+#: apps/web/src/components/features/drive/drive-explorer.tsx:370
 msgid "Couldn't rename folder"
 msgstr "Impossible de renommer le dossier"
 
@@ -278,6 +318,12 @@ msgstr "Impossible de renommer le dossier"
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:52
 msgid "Couldn't upload {0}"
 msgstr "Impossible d'importer {0}"
+
+#: apps/web/src/components/features/song/suspended-song-list.tsx:62
+#: apps/web/src/components/ui/song/song-detail.tsx:50
+#: apps/web/src/components/ui/song/song-dialog.tsx:152
+msgid "Cover"
+msgstr "Reprise"
 
 #: apps/web/src/routes/projects/new.tsx:69
 msgid "Create a space for your project"
@@ -299,11 +345,15 @@ msgstr "Créer un compte"
 msgid "Create project"
 msgstr "Créer le projet"
 
+#: apps/web/src/components/ui/song/song-dialog.tsx:167
+msgid "Create song"
+msgstr "Créer la chanson"
+
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:184
 msgid "Danger zone"
 msgstr "Zone de danger"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:186
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:85
 msgid "Date"
 msgstr "Date"
 
@@ -323,15 +373,18 @@ msgstr "Jour"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:204
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:232
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:204
 #: apps/web/src/components/ui/attachment-list.tsx:102
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:243
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:179
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:210
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:385
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:397
+#: apps/web/src/components/ui/song/song-detail.tsx:98
+#: apps/web/src/components/ui/song/song-detail.tsx:127
 msgid "Delete"
 msgstr "Supprimer"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:230
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:197
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 msgid "Delete event?"
 msgstr "Supprimer l'événement ?"
@@ -348,8 +401,13 @@ msgstr "Supprimer l'événement ?"
 msgid "Delete project"
 msgstr "Supprimer le projet"
 
+#: apps/web/src/components/ui/song/song-detail.tsx:114
+msgid "Delete song?"
+msgstr "Supprimer la chanson ?"
+
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:80
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:191
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:191
 msgid "Delete this file?"
 msgstr "Supprimer ce fichier ?"
 
@@ -398,6 +456,11 @@ msgstr "Drive"
 msgid "Edit event"
 msgstr "Modifier l'événement"
 
+#: apps/web/src/components/ui/song/song-dialog.tsx:103
+#: apps/web/src/components/ui/song/song-dialog.tsx:105
+msgid "Edit song"
+msgstr "Modifier la chanson"
+
 #: apps/web/src/components/forgot-password-form.tsx:65
 #: apps/web/src/components/signup-form.tsx:111
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:67
@@ -417,7 +480,7 @@ msgstr "Email ou nom d'utilisateur requis"
 msgid "End"
 msgstr "Fin"
 
-#: apps/web/src/lib/dynamic-messages.ts:27
+#: apps/web/src/lib/dynamic-messages.ts:28
 msgid "End date must be after start date"
 msgstr "La date de fin doit être postérieure à la date de début"
 
@@ -438,7 +501,7 @@ msgstr "Entrez votre email pour recevoir un lien de réinitialisation"
 msgid "Event"
 msgstr "Événement"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:106
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:170
 msgid "Event actions"
 msgstr "Actions de l'événement"
 
@@ -446,7 +509,7 @@ msgstr "Actions de l'événement"
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
-#: apps/web/src/lib/dynamic-messages.ts:39
+#: apps/web/src/lib/dynamic-messages.ts:41
 msgid "Event details"
 msgstr "Détails de l'événement"
 
@@ -471,7 +534,7 @@ msgstr "Échec de l'acceptation de l'invitation"
 #~ msgid "Failed to create organization"
 #~ msgstr "Échec de la création du groupe"
 
-#: apps/web/src/lib/dynamic-messages.ts:34
+#: apps/web/src/lib/dynamic-messages.ts:35
 msgid "Failed to create project"
 msgstr "Échec de la création du projet"
 
@@ -487,7 +550,11 @@ msgstr "Échec de la suppression du projet"
 msgid "Failed to invite member"
 msgstr "Échec de l'invitation"
 
-#: apps/web/src/lib/dynamic-messages.ts:31
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:47
+msgid "Failed to save lyrics"
+msgstr "Échec de l'enregistrement des paroles"
+
+#: apps/web/src/lib/dynamic-messages.ts:32
 msgid "Failed to send reset email"
 msgstr "Échec de l'envoi de l'email de réinitialisation"
 
@@ -499,7 +566,7 @@ msgstr "Échec de l'envoi de l'email de réinitialisation"
 msgid "Failed to update project name"
 msgstr "Échec de la mise à jour du nom du projet"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:403
+#: apps/web/src/components/features/drive/drive-explorer.tsx:404
 msgid "File deleted"
 msgstr "Fichier supprimé"
 
@@ -511,7 +578,7 @@ msgstr "Fichiers"
 msgid "Fill in the details below to get started"
 msgstr "Remplissez les informations ci-dessous pour commencer"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:377
+#: apps/web/src/components/features/drive/drive-explorer.tsx:378
 msgid "Folder deleted"
 msgstr "Dossier supprimé"
 
@@ -561,6 +628,14 @@ msgstr "Aller à la page précédente"
 msgid "Green"
 msgstr "Vert"
 
+#: apps/web/src/components/ui/lyrics-editor.tsx:73
+msgid "Heading 1"
+msgstr "Titre 1"
+
+#: apps/web/src/components/ui/lyrics-editor.tsx:81
+msgid "Heading 2"
+msgstr "Titre 2"
+
 #: apps/web/src/components/ui/data-table-column-header.tsx:62
 msgid "Hide"
 msgstr "Masquer"
@@ -590,6 +665,15 @@ msgstr "Invitation en cours..."
 msgid "It's your personal space."
 msgstr "C'est votre espace personnel."
 
+#: apps/web/src/components/ui/lyrics-editor.tsx:65
+msgid "Italic"
+msgstr "Italique"
+
+#: apps/web/src/components/ui/song/song-detail.tsx:55
+#: apps/web/src/components/ui/song/song-dialog.tsx:128
+msgid "Key"
+msgstr "Tonalité"
+
 #: apps/web/src/components/user-menu.tsx:98
 msgid "Language"
 msgstr "Langue"
@@ -603,14 +687,16 @@ msgid "Letters, numbers, _ and - only"
 msgstr "Lettres, chiffres, _ et - uniquement"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:52
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:68
 msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:159
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:159
 msgid "Linked files"
 msgstr "Fichiers liés"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:195
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:100
 msgid "Location"
 msgstr "Lieu"
 
@@ -622,7 +708,7 @@ msgstr "Se déconnecter"
 msgid "Login"
 msgstr "Connexion"
 
-#: apps/web/src/lib/dynamic-messages.ts:29
+#: apps/web/src/lib/dynamic-messages.ts:30
 msgid "Login failed"
 msgstr "Échec de la connexion"
 
@@ -633,6 +719,10 @@ msgstr "Connexion à votre compte"
 #: apps/web/src/lib/dynamic-messages.ts:27
 #~ msgid "Lowercase letters, numbers and hyphens only"
 #~ msgstr "Lettres minuscules, chiffres et tirets uniquement"
+
+#: apps/web/src/components/ui/lyrics-editor.tsx:60
+msgid "Lyrics"
+msgstr "Paroles"
 
 #: apps/web/src/routes/organizations/$organizationSlug/members/index.tsx:85
 #~ msgid "Manage members and invitations for your project"
@@ -662,13 +752,13 @@ msgstr "Taille maximale de fichier"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:45
+#: apps/web/src/lib/dynamic-messages.ts:48
 msgid "Member"
 msgstr "Membre"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:153
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
-#: apps/web/src/lib/dynamic-messages.ts:40
+#: apps/web/src/lib/dynamic-messages.ts:43
 msgid "Members"
 msgstr "Membres"
 
@@ -697,7 +787,7 @@ msgstr "Nouvel événement"
 msgid "New folder"
 msgstr "Nouveau dossier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:192
+#: apps/web/src/components/features/drive/drive-explorer.tsx:193
 msgid "New Folder"
 msgstr "Nouveau dossier"
 
@@ -706,10 +796,16 @@ msgid "New password"
 msgstr "Nouveau mot de passe"
 
 #: apps/web/src/components/version-switcher.tsx:77
-#: apps/web/src/lib/dynamic-messages.ts:41
+#: apps/web/src/lib/dynamic-messages.ts:44
 #: apps/web/src/routes/projects/new.tsx:66
 msgid "New project"
 msgstr "Nouveau projet"
+
+#: apps/web/src/components/features/song/suspended-song-list.tsx:40
+#: apps/web/src/components/ui/song/song-dialog.tsx:103
+#: apps/web/src/components/ui/song/song-dialog.tsx:105
+msgid "New song"
+msgstr "Nouvelle chanson"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:152
 msgid "Next"
@@ -720,10 +816,11 @@ msgid "No events scheduled"
 msgstr "Aucun événement prévu"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:181
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:181
 msgid "No files linked yet."
 msgstr "Aucun fichier lié pour le moment."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:332
+#: apps/web/src/components/features/drive/drive-explorer.tsx:333
 msgid "No files yet"
 msgstr "Aucun fichier pour l'instant"
 
@@ -748,6 +845,10 @@ msgstr "Aucun lieu trouvé"
 msgid "No results."
 msgstr "Aucun résultat."
 
+#: apps/web/src/components/features/song/suspended-song-list.tsx:45
+msgid "No songs yet."
+msgstr "Aucune chanson pour le moment."
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:117
 msgid "No, keep it"
 msgstr "Non, la conserver"
@@ -770,7 +871,7 @@ msgstr "Seule une sélection de fichiers peut être téléchargée en groupe"
 msgid "Open {0}"
 msgstr "Ouvrir {0}"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:207
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:111
 msgid "Open in Maps"
 msgstr "Ouvrir dans Maps"
 
@@ -803,11 +904,17 @@ msgstr "Orange"
 #~ msgid "Organization not found"
 #~ msgstr "Organisation introuvable"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:173
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:66
 msgid "Organizer"
 msgstr "Organisateur"
 
-#: apps/web/src/lib/dynamic-messages.ts:47
+#: apps/web/src/components/features/song/suspended-song-list.tsx:62
+#: apps/web/src/components/ui/song/song-detail.tsx:50
+#: apps/web/src/components/ui/song/song-dialog.tsx:145
+msgid "Original"
+msgstr "Original"
+
+#: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -826,7 +933,7 @@ msgstr "Mot de passe"
 msgid "Password is required"
 msgstr "Mot de passe requis"
 
-#: apps/web/src/lib/dynamic-messages.ts:33
+#: apps/web/src/lib/dynamic-messages.ts:34
 msgid "Password reset failed"
 msgstr "Échec de la réinitialisation du mot de passe"
 
@@ -908,6 +1015,10 @@ msgstr "Identifiant du projet"
 msgid "Purple"
 msgstr "Violet"
 
+#: apps/web/src/components/ui/lyrics-editor.tsx:98
+msgid "Quote"
+msgstr "Citation"
+
 #: apps/web/src/components/ui/event-calendar/colors.ts:28
 msgid "Red"
 msgstr "Rouge"
@@ -926,6 +1037,7 @@ msgstr "Renommer"
 
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:71
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:69
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:69
 msgid "Rename file"
 msgstr "Renommer le fichier"
 
@@ -934,7 +1046,7 @@ msgid "Rename folder"
 msgstr "Renommer le dossier"
 
 #: apps/web/src/components/reset-password-form.tsx:103
-#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -957,12 +1069,14 @@ msgstr "Lignes par page"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:55
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:74
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:74
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:67
 msgid "Save"
 msgstr "Enregistrer"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
+#: apps/web/src/components/ui/song/song-dialog.tsx:167
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -994,7 +1108,7 @@ msgstr "Recherche…"
 msgid "Select {0}"
 msgstr "Sélectionner {0}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:268
+#: apps/web/src/components/features/drive/drive-explorer.tsx:269
 msgid "Select all"
 msgstr "Tout sélectionner"
 
@@ -1016,19 +1130,20 @@ msgid "Set a new password"
 msgstr "Définir un nouveau mot de passe"
 
 #: apps/web/src/hooks/use-navigation.ts:63
-msgid "Setlist"
-msgstr "Setlist"
+#~ msgid "Setlist"
+#~ msgstr "Setlist"
 
 #: apps/web/src/hooks/use-navigation.ts:75
 #: apps/web/src/routes/projects/$projectSlug/settings/index.tsx:43
 msgid "Settings"
 msgstr "Paramètres"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:94
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:158
+#: apps/web/src/components/ui/song/song-detail.tsx:77
 msgid "Share"
 msgstr "Partager"
 
-#: apps/web/src/lib/dynamic-messages.ts:30
+#: apps/web/src/lib/dynamic-messages.ts:31
 msgid "Sign up failed"
 msgstr "Échec de l'inscription"
 
@@ -1052,8 +1167,31 @@ msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:257
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
+
+#: apps/web/src/components/ui/song/song-detail.tsx:89
+msgid "Song actions"
+msgstr "Actions de la chanson"
+
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:52
+msgid "Song deleted"
+msgstr "Chanson supprimée"
+
+#: apps/web/src/lib/dynamic-messages.ts:42
+msgid "Song details"
+msgstr "Détails de la chanson"
+
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
+msgid "Song not found"
+msgstr "Chanson introuvable"
+
+#: apps/web/src/components/features/song/suspended-song-list.tsx:35
+#: apps/web/src/hooks/use-navigation.ts:63
+#: apps/web/src/lib/dynamic-messages.ts:40
+msgid "Songs"
+msgstr "Chansons"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:257
 msgid "Start"
@@ -1072,10 +1210,11 @@ msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:112
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:112
 msgid "This file is too large for your plan."
 msgstr "Ce fichier est trop volumineux pour votre forfait."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:332
+#: apps/web/src/components/features/drive/drive-explorer.tsx:333
 msgid "This folder is empty"
 msgstr "Ce dossier est vide"
 
@@ -1108,8 +1247,13 @@ msgid "This permanently deletes the folder and any files inside it that aren't a
 msgstr "Cette action supprime définitivement le dossier ainsi que les fichiers qu'il contient et qui ne sont rattachés à aucun événement ou morceau. Les fichiers encore rattachés ailleurs sont conservés et simplement retirés de ce dossier. Cette action est irréversible."
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:120
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:120
 msgid "This project has reached its plan limit. <0>View plan</0>"
 msgstr "Ce projet a atteint la limite de son forfait. <0>Voir le forfait</0>"
+
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:132
+msgid "This song doesn't exist or has been deleted."
+msgstr "Cette chanson n'existe pas ou a été supprimée."
 
 #. placeholder {0}: organization.name
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:217
@@ -1121,15 +1265,21 @@ msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses donnée
 #~ msgstr "Cette action supprimera définitivement <0>{selectedVersion}</0> et toutes ses données. Cette action est irréversible."
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:193
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:193
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:232
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:199
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "Cette action supprimera définitivement cet événement. Cette action est irréversible."
 
+#: apps/web/src/components/ui/song/song-detail.tsx:116
+msgid "This will permanently delete this song. This action cannot be undone."
+msgstr "Cette action supprimera définitivement cette chanson. Cette action est irréversible."
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:217
+#: apps/web/src/components/ui/song/song-dialog.tsx:111
 msgid "Title"
 msgstr "Titre"
 
@@ -1146,6 +1296,8 @@ msgid "Toggle columns"
 msgstr "Basculer les colonnes"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:332
+#: apps/web/src/components/ui/song/song-detail.tsx:56
+#: apps/web/src/components/ui/song/song-dialog.tsx:134
 msgid "Type"
 msgstr "Type"
 
@@ -1157,19 +1309,20 @@ msgstr "Indisponibilité"
 msgid "Undo"
 msgstr "Annuler"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:113
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:177
+#: apps/web/src/components/ui/song/song-detail.tsx:96
 msgid "Update"
 msgstr "Modifier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:201
+#: apps/web/src/components/features/drive/drive-explorer.tsx:202
 msgid "Upload"
 msgstr "Importer"
 
-#: apps/web/src/lib/dynamic-messages.ts:36
+#: apps/web/src/lib/dynamic-messages.ts:37
 msgid "Upload failed"
 msgstr "Échec de l'envoi"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:208
+#: apps/web/src/components/features/drive/drive-explorer.tsx:209
 msgid "Upload files"
 msgstr "Importer des fichiers"
 
@@ -1193,6 +1346,10 @@ msgstr "Affichage"
 msgid "Week"
 msgstr "Semaine"
 
+#: apps/web/src/components/ui/lyrics-editor.tsx:50
+msgid "Write the lyrics…"
+msgstr "Écrivez les paroles…"
+
 #: apps/web/src/components/ui/event-calendar/colors.ts:29
 msgid "Yellow"
 msgstr "Jaune"
@@ -1212,3 +1369,7 @@ msgstr "Vous avez été invité(e) à rejoindre"
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:39
 msgid "Your current plan and what you have used of it."
 msgstr "Votre forfait actuel et ce que vous en avez utilisé."
+
+#: apps/web/src/components/features/song/suspended-song-list.tsx:36
+msgid "Your project's songs and lyrics"
+msgstr "Les chansons et paroles de votre projet"

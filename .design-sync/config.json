@@ -7,14 +7,15 @@
   "globalName": "EchoUI",
   "entry": "./.design-sync/entry.ts",
   "tsconfig": "./tsconfig.build.json",
-  "cssEntry": "sb-reference/assets/iframe-nfSNOTnC.css",
+  "cssEntry": "sb-reference/assets/iframe-DXtVpVIt.css",
   "titleMap": {
     "UI/EventCalendar": null,
     "UI/EventDetail": null,
     "EventCalendar/EventAttachments": null
   },
   "storyImports": {
-    "shim": ["/components/ui/"]
+    "shim": ["/components/ui/"],
+    "bundle": ["data-table-features"]
   },
   "readmeHeader": ".design-sync/conventions.md",
   "overrides": {
@@ -23,6 +24,14 @@
       "cardMode": "single",
       "primaryStory": "Default",
       "skip": ["ui-sidebar--collapsed"]
-    }
+    },
+    "AspectRatio": { "cardMode": "column" },
+    "Attachment": { "cardMode": "column" },
+    "AttachmentList": { "cardMode": "column", "skip": ["ui-attachmentlist--empty"] },
+    "DataTable": { "cardMode": "column" },
+    "Item": { "cardMode": "column" },
+    "Popover": { "cardMode": "single", "primaryStory": "Default" },
+    "Command": { "skip": ["ui-command--dialog"] },
+    "UsageBar": { "cardMode": "single", "primaryStory": "Default" }
   }
 }

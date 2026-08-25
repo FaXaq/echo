@@ -67,7 +67,7 @@ describe("EventDetail", () => {
     );
 
     expect(screen.getAllByText(/Le Duplex/)[0]).toBeInTheDocument();
-    const link = screen.getByRole("link", { name: "Open in Maps" });
+    const link = screen.getAllByRole("link", { name: "Open in Maps" })[0];
     expect(link).toHaveAttribute(
       "href",
       "https://www.google.com/maps/search/?api=1&query=45.764,4.8357",

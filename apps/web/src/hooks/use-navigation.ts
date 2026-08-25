@@ -60,8 +60,8 @@ export function useNavigation() {
               params: { projectSlug: slug },
             },
             {
-              title: t`Setlist`,
-              to: "/projects/$projectSlug",
+              title: t`Songs`,
+              to: "/projects/$projectSlug/songs",
               params: { projectSlug: slug },
             },
             {

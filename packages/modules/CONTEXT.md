@@ -20,12 +20,16 @@ An Organization's storage usage against the limit its Plan allows: usage summed 
 _Avoid_: reading storage usage off `plan.overview` (removed; would drift from the quota endpoint, which is the one invalidated on file upload/delete)
 
 **Drive**:
-The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's file list, which shows only files attached to that Event regardless of which Folder (if any) they sit in — a file can be attached to an Event and organized into a Folder at the same time; the two are independent.
+The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's or a Song's file list, each of which shows only files attached to that Event/Song regardless of which Folder (if any) they sit in — a file can be attached to an Event, a Song, and organized into a Folder all at the same time. Only the Event and Song attachments protect a file from deletion: a file is deleted only once neither remains, independent of whether it also sits in a Folder. Folder membership is a location, not a protecting attachment — it follows Folder's own (pre-existing, unrelated) deletion behavior.
 _Avoid_: File browser
 
 **Folder**:
-A named container for organizing an Organization's Drive files, nestable arbitrarily deep under other Folders. Scoped only to the Organization — a Folder has no Event (or, in future, Song) scoping, unlike `file`. The hierarchy root is implicit: a `null` parent (on a Folder) or a `null` folder (on a file) means "at Drive root," the same nullable-FK convention already used for `file.eventId`.
+A named container for organizing an Organization's Drive files, nestable arbitrarily deep under other Folders. Scoped only to the Organization — a Folder has no Event or Song scoping, unlike `file`. The hierarchy root is implicit: a `null` parent (on a Folder) or a `null` folder (on a file) means "at Drive root," the same nullable-FK convention already used for `file.eventId`/`file.songId`.
 _Avoid_: Directory
+
+**Song**:
+An Organization-scoped creative work: title (required), and optional artist, BPM, musical key, markdown lyrics, and `'original' | 'cover'` type. Like an Event, a Song has its own file list (`file.songId`); a file can be attached to an Event and a Song at the same time (see Drive), and deleting a Song only clears that reference — the file itself is deleted only once it is attached to nothing at all.
+_Avoid_: Track
 
 **Selection**:
 A set of Drive rows (files and/or folders, any mix) marked for a Bulk Action within the current folder view — via row checkbox or shift/cmd-click. Scoped to one folder view: navigating to a different folder clears it.
