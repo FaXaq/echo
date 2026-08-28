@@ -16,6 +16,7 @@ COPY lingui.config.js ./lingui.config.js
 RUN pnpm turbo build --filter=@echo/web
 
 FROM nginx:alpine AS runner
+RUN apk add --no-cache curl
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 

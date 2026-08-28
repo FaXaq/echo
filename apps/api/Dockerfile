@@ -15,6 +15,7 @@ COPY --from=pruner /app/out/full/ .
 RUN pnpm turbo build --filter=@echo/api
 
 FROM base AS runner
+RUN apk add --no-cache curl
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 api
 USER api
 COPY --from=builder --chown=api:nodejs /app .
