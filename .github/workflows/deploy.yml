@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release tag to deploy (e.g. v0.2.0) — must already be built and pushed to ghcr.io'
+        description: "Release tag to deploy (e.g. v0.2.0) — must already be built and pushed to ghcr.io"
         required: true
         type: string
 

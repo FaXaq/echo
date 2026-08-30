@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       cli_image_tag:
-        description: 'echo-cli image tag to deploy and roll back with (e.g. v0.2.0)'
+        description: "echo-cli image tag to deploy and roll back with (e.g. v0.2.0)"
         required: true
         type: string
         default: latest
