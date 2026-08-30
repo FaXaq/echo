@@ -1,3 +1,9 @@
+## [0.2.0](https://github.com/FaXaq/echo/compare/v0.1.4...v0.2.0) (2026-08-30)
+
+### ✨ Features
+
+* **web:** support cross-origin API deployment via VITE_API_URL ([#18](https://github.com/FaXaq/echo/issues/18)) ([05503bc](https://github.com/FaXaq/echo/commit/05503bcac4add067be56fd450a1e1a7f58b6546a))
+
 ## [0.1.4](https://github.com/FaXaq/echo/compare/v0.1.3...v0.1.4) (2026-08-30)
 
 ### 🐛 Bug Fixes
