@@ -1,9 +1,9 @@
 {
   "extends": "@echo/config/tsconfig.node.json",
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "composite": true
   },
-  "include": ["src"]
+  "include": ["src", "migrations"]
 }
