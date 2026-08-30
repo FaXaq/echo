@@ -32,7 +32,6 @@
     "db:schema:generate": "pnpm --filter @echo/db schema:generate",
     "db:migrate": "pnpm cli db migrate",
     "db:migrate:down": "pnpm cli db migrate-down",
-    "create-admin": "pnpm --filter @echo/api create-admin",
     "release": "semantic-release",
     "prepare": "husky"
   },

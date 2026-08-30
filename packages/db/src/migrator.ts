@@ -1,10 +1,10 @@
-import { Migrator, FileMigrationProvider } from "kysely";
-import { promises as fs } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { Migrator, type MigrationProvider } from "kysely";
+import { migrations } from "../migrations/index";
 import { makeDbAdapter, type DBConfig } from "./adapters/db";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const migrationProvider: MigrationProvider = {
+  getMigrations: async () => migrations,
+};
 
 export const makeDbMigrator = (dbConfig: DBConfig) => {
   const runMigrations = async () => {
@@ -14,11 +14,7 @@ export const makeDbMigrator = (dbConfig: DBConfig) => {
 
     const migrator = new Migrator({
       db,
-      provider: new FileMigrationProvider({
-        fs,
-        path,
-        migrationFolder: path.join(__dirname, "../migrations"),
-      }),
+      provider: migrationProvider,
     });
 
     const { error, results } = await migrator.migrateToLatest();
@@ -48,11 +44,7 @@ export const makeDbMigrator = (dbConfig: DBConfig) => {
 
     const migrator = new Migrator({
       db,
-      provider: new FileMigrationProvider({
-        fs,
-        path,
-        migrationFolder: path.join(__dirname, "../migrations"),
-      }),
+      provider: migrationProvider,
     });
 
     const { error, results } = await migrator.migrateDown();

@@ -31,3 +31,13 @@ export const makeDbAdapter = (config: DBConfig) => {
 
   return { pool, db, dialect };
 };
+
+export const testDbConnection = async (config: DBConfig) => {
+  const { pool } = makeDbAdapter(config);
+
+  try {
+    await pool.query("SELECT 1");
+  } finally {
+    await pool.end();
+  }
+};

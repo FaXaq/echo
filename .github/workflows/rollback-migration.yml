@@ -21,7 +21,7 @@ jobs:
       COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
       COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Deploy the target cli image
         run: .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_CLI_UUID }}" "${{ inputs.cli_image_tag }}"

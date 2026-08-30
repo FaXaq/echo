@@ -30,3 +30,4 @@ export async function down(db: Kysely<unknown>): Promise<void> {
 
 writeFileSync(filepath, template);
 console.log(`✅ Created migration: migrations/${filename}`);
+console.log(`⚠️  Add it to migrations/index.ts (import + "${timestamp}_${name}" key)`);
