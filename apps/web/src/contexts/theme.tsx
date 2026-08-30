@@ -2,6 +2,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
 
+const THEMES = new Set<string>(["dark", "light", "system"] satisfies Theme[]);
+
+export function isTheme(value: string): value is Theme {
+  return THEMES.has(value);
+}
+
 type ThemeProviderProps = {
   children: React.ReactNode;
   defaultTheme?: Theme;

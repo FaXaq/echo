@@ -39,6 +39,8 @@ jobs:
           context: .
           file: apps/${{ matrix.app }}/Dockerfile
           push: true
+          build-args: |
+            VITE_API_URL=${{ matrix.app == 'web' && vars.VITE_API_URL || '' }}
           tags: |
             ghcr.io/${{ steps.owner.outputs.lowercase }}/echo-${{ matrix.app }}:${{ inputs.version }}
             ghcr.io/${{ steps.owner.outputs.lowercase }}/echo-${{ matrix.app }}:latest

@@ -12,6 +12,7 @@ import type { MyRouterContext } from "../router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "../lib/trpc";
+import { apiUrl } from "../lib/api-url";
 import { queryClient } from "../lib/query-client";
 import { getSessionQueryOptions } from "@/services/resources/session";
 import { useSignOutMutation } from "@/services/resources/auth";
@@ -22,7 +23,7 @@ import { TooltipProvider } from "@/ui/tooltip";
 import type { ClientSession } from "@echo/auth";
 import { Landing } from "./-landing";
 import { UserMenu } from "@/components/user-menu";
-import { ThemeProvider } from "@/contexts/theme";
+import { isTheme, ThemeProvider } from "@/contexts/theme";
 import { SessionProvider } from "@/hooks/use-session";
 import { Toaster } from "@/components/ui/toast";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
@@ -37,7 +38,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   },
   loader: async ({ context }) => {
     const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
-    i18n.activate(session?.user.locale ? toLocale(session.user.locale) : detectBrowserLocale());
+    i18n.activate(session?.user?.locale ? toLocale(session.user.locale) : detectBrowserLocale());
     return { session };
   },
   staleTime: Infinity,
@@ -48,11 +49,17 @@ function RootLayout() {
   const { session } = Route.useLoaderData();
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      links: [httpBatchLink({ url: "/trpc" })],
+      links: [
+        httpBatchLink({
+          url: `${apiUrl}/trpc`,
+          fetch: (url, options) => fetch(url, { ...options, credentials: "include" }),
+        }),
+      ],
     }),
   );
 
-  const serverTheme = session?.user.theme as "light" | "dark" | "system" | undefined;
+  const serverTheme =
+    session?.user?.theme && isTheme(session.user.theme) ? session.user.theme : undefined;
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>

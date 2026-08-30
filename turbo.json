@@ -4,7 +4,7 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
-      "passThroughEnv": ["SENTRY_AUTH_TOKEN", "VITE_SENTRY_RELEASE", "VITE_MODE"]
+      "passThroughEnv": ["SENTRY_AUTH_TOKEN", "VITE_SENTRY_RELEASE", "VITE_MODE", "VITE_API_URL"]
     },
     "dev": {
       "cache": false,
