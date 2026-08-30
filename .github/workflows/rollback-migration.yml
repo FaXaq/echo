@@ -1,0 +1,35 @@
+name: Rollback Migration
+
+on:
+  workflow_dispatch:
+    inputs:
+      cli_image_tag:
+        description: "echo-cli image tag to deploy and roll back with (e.g. v0.2.0)"
+        required: true
+        type: string
+        default: latest
+      confirm:
+        description: 'Type "rollback" to confirm rolling back the last migration on production'
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    if: inputs.confirm == 'rollback'
+    runs-on: ubuntu-latest
+    env:
+      COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy the target cli image
+        run: .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_CLI_UUID }}" "${{ inputs.cli_image_tag }}"
+
+      - name: Roll back last migration on production
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.COOLIFY_SSH_HOST }}
+          username: ${{ secrets.COOLIFY_SSH_USER }}
+          key: ${{ secrets.COOLIFY_SSH_KEY }}
+          script: docker exec ${{ secrets.COOLIFY_CLI_UUID }} node dist/main.js db migrate-down

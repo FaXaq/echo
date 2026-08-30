@@ -1,0 +1,41 @@
+name: Docker Build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      apps:
+        required: false
+        type: string
+        default: '["api","web","cli"]'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        app: ${{ fromJSON(inputs.apps) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/${{ matrix.app }}/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/echo-${{ matrix.app }}:${{ inputs.version }}
+            ghcr.io/${{ github.repository_owner }}/echo-${{ matrix.app }}:latest

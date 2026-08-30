@@ -33,6 +33,7 @@
     "db:migrate": "pnpm cli db migrate",
     "db:migrate:down": "pnpm cli db migrate-down",
     "create-admin": "pnpm --filter @echo/api create-admin",
+    "release": "semantic-release",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "lint-staged": "^17.3.0",
     "oxfmt": "^0.62.0",
     "oxlint": "^1.77.0",
+    "semantic-release": "^25.0.9",
     "turbo": "^2.10.6",
     "typescript": "^7.0.2"
   },

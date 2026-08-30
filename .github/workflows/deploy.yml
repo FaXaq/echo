@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release tag to deploy (e.g. v0.2.0) — must already be built and pushed to ghcr.io"
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Record currently deployed tags
+        id: previous
+        run: |
+          echo "cli=$(.github/scripts/coolify-current-tag.sh "${{ secrets.COOLIFY_CLI_UUID }}")" >> "$GITHUB_OUTPUT"
+          echo "api=$(.github/scripts/coolify-current-tag.sh "${{ secrets.COOLIFY_API_UUID }}")" >> "$GITHUB_OUTPUT"
+          echo "web=$(.github/scripts/coolify-current-tag.sh "${{ secrets.COOLIFY_WEB_UUID }}")" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy cli
+        id: deploy_cli
+        run: .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_CLI_UUID }}" "${{ inputs.version }}"
+
+      - name: Run pending migrations on the new cli container
+        id: migrate
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.COOLIFY_SSH_HOST }}
+          username: ${{ secrets.COOLIFY_SSH_USER }}
+          key: ${{ secrets.COOLIFY_SSH_KEY }}
+          script: docker exec ${{ secrets.COOLIFY_CLI_UUID }} node dist/main.js db migrate
+
+      - name: Deploy api and web
+        id: deploy
+        run: |
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_API_UUID }}" "${{ inputs.version }}"
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_WEB_UUID }}" "${{ inputs.version }}"
+
+      - name: Roll back all to previous version on failure
+        if: failure() && steps.previous.outcome == 'success'
+        run: |
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_CLI_UUID }}" "${{ steps.previous.outputs.cli }}"
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_API_UUID }}" "${{ steps.previous.outputs.api }}"
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_WEB_UUID }}" "${{ steps.previous.outputs.web }}"
