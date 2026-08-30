@@ -9,7 +9,7 @@ on:
       apps:
         required: false
         type: string
-        default: '["api","web"]'
+        default: '["api","web","cli"]'
 
 jobs:
   docker:

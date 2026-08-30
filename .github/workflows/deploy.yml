@@ -37,7 +37,7 @@ jobs:
           host: ${{ secrets.COOLIFY_SSH_HOST }}
           username: ${{ secrets.COOLIFY_SSH_USER }}
           key: ${{ secrets.COOLIFY_SSH_KEY }}
-          script: docker exec ${{ secrets.COOLIFY_CLI_UUID }} node_modules/.bin/tsx src/main.ts db migrate
+          script: docker exec ${{ secrets.COOLIFY_CLI_UUID }} node dist/main.js db migrate
 
       - name: Deploy api and web
         id: deploy

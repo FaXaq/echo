@@ -5,5 +5,5 @@
 if [ "$#" -eq 0 ]; then
   exec sleep infinity
 else
-  exec node_modules/.bin/tsx src/main.ts "$@"
+  exec node dist/main.js "$@"
 fi

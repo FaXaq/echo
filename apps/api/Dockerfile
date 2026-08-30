@@ -22,4 +22,4 @@ COPY --from=builder --chown=api:nodejs /app .
 
 WORKDIR /app/apps/api
 EXPOSE 3000
-CMD ["node_modules/.bin/tsx", "src/server.ts"]
+CMD ["node", "dist/server.js"]

@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "execute": "tsx src/main.ts",
-    "build": "tsc --build",
+    "build": "build-node src/main.ts dist/main.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "auth:migrate": "pnpm exec better-auth migrate --config ./src/adapters/auth.ts",
@@ -37,6 +37,7 @@
     "commander": "^13.1.0",
     "dotenv": "catalog:",
     "kysely": "catalog:",
+    "pg": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
