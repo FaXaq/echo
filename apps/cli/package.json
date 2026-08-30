@@ -12,8 +12,7 @@
     "build": "build-node src/main.ts dist/main.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "auth:migrate": "pnpm exec better-auth migrate --config ./src/adapters/auth.ts",
-    "db:migrate": "pnpm run auth:migrate && node dist/main.js db migrate",
+    "db:migrate": "node dist/main.js db migrate",
     "user:create": "node dist/main.js user create",
     "user:list": "node dist/main.js user list",
     "user:get": "node dist/main.js user get",
@@ -41,7 +40,6 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@better-auth/cli": "catalog:",
     "@echo/config": "workspace:*",
     "@types/node": "catalog:",
     "tsx": "catalog:",
