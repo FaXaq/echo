@@ -20,5 +20,5 @@ USER cli
 COPY --from=builder --chown=cli:nodejs /app .
 
 WORKDIR /app/apps/cli
-ENTRYPOINT ["node_modules/.bin/tsx", "src/main.ts"]
-CMD ["db", "migrate"]
+RUN chmod +x entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
