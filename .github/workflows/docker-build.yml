@@ -6,6 +6,10 @@ on:
       version:
         required: true
         type: string
+      apps:
+        required: false
+        type: string
+        default: '["api","web"]'
 
 jobs:
   docker:
@@ -15,7 +19,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        app: [api, web]
+        app: ${{ fromJSON(inputs.apps) }}
     steps:
       - uses: actions/checkout@v4
         with:

@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release tag to deploy (e.g. v0.2.0) — must already be built and pushed to ghcr.io'
+        required: true
+        type: string
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run pending migrations on production
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.COOLIFY_SSH_HOST }}
+          username: ${{ secrets.COOLIFY_SSH_USER }}
+          key: ${{ secrets.COOLIFY_SSH_KEY }}
+          script: |
+            docker run --rm \
+              -e DATABASE_HOST="${{ secrets.DATABASE_HOST }}" \
+              -e DATABASE_PORT="${{ secrets.DATABASE_PORT }}" \
+              -e DATABASE_USER="${{ secrets.DATABASE_USER }}" \
+              -e DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
+              -e DATABASE_NAME="${{ secrets.DATABASE_NAME }}" \
+              -e DATABASE_SSL="true" \
+              -e PORT="3000" \
+              -e HOST="0.0.0.0" \
+              -e AUTH_SECRET="${{ secrets.AUTH_SECRET }}" \
+              -e AUTH_BASE_URL="${{ secrets.AUTH_BASE_URL }}" \
+              -e CLI_ADMIN_EMAIL="${{ secrets.CLI_ADMIN_EMAIL }}" \
+              -e CLI_ADMIN_PASSWORD="${{ secrets.CLI_ADMIN_PASSWORD }}" \
+              ghcr.io/${{ github.repository_owner }}/echo-cli:${{ inputs.version }} \
+              db migrate
+
+  deploy:
+    needs: migrate
+    runs-on: ubuntu-latest
+    env:
+      COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Record currently deployed tags
+        id: previous
+        run: |
+          echo "api=$(.github/scripts/coolify-current-tag.sh "${{ secrets.COOLIFY_API_UUID }}")" >> "$GITHUB_OUTPUT"
+          echo "web=$(.github/scripts/coolify-current-tag.sh "${{ secrets.COOLIFY_WEB_UUID }}")" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy api and web
+        id: deploy
+        run: |
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_API_UUID }}" "${{ inputs.version }}"
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_WEB_UUID }}" "${{ inputs.version }}"
+
+      - name: Roll back to previous version on failure
+        if: failure() && steps.previous.outcome == 'success'
+        run: |
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_API_UUID }}" "${{ steps.previous.outputs.api }}"
+          .github/scripts/coolify-deploy.sh "${{ secrets.COOLIFY_WEB_UUID }}" "${{ steps.previous.outputs.web }}"

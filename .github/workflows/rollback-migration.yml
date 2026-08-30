@@ -1,0 +1,42 @@
+name: Rollback Migration
+
+on:
+  workflow_dispatch:
+    inputs:
+      cli_image_tag:
+        description: 'echo-cli image tag to run the rollback with (the down-migration just needs to exist in this image)'
+        required: true
+        type: string
+        default: latest
+      confirm:
+        description: 'Type "rollback" to confirm rolling back the last migration on production'
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    if: inputs.confirm == 'rollback'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Roll back last migration on production
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.COOLIFY_SSH_HOST }}
+          username: ${{ secrets.COOLIFY_SSH_USER }}
+          key: ${{ secrets.COOLIFY_SSH_KEY }}
+          script: |
+            docker run --rm \
+              -e DATABASE_HOST="${{ secrets.DATABASE_HOST }}" \
+              -e DATABASE_PORT="${{ secrets.DATABASE_PORT }}" \
+              -e DATABASE_USER="${{ secrets.DATABASE_USER }}" \
+              -e DATABASE_PASSWORD="${{ secrets.DATABASE_PASSWORD }}" \
+              -e DATABASE_NAME="${{ secrets.DATABASE_NAME }}" \
+              -e DATABASE_SSL="true" \
+              -e PORT="3000" \
+              -e HOST="0.0.0.0" \
+              -e AUTH_SECRET="${{ secrets.AUTH_SECRET }}" \
+              -e AUTH_BASE_URL="${{ secrets.AUTH_BASE_URL }}" \
+              -e CLI_ADMIN_EMAIL="${{ secrets.CLI_ADMIN_EMAIL }}" \
+              -e CLI_ADMIN_PASSWORD="${{ secrets.CLI_ADMIN_PASSWORD }}" \
+              ghcr.io/${{ github.repository_owner }}/echo-cli:${{ inputs.cli_image_tag }} \
+              db migrate-down

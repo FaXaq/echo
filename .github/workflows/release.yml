@@ -38,7 +38,7 @@ jobs:
       - id: tag
         run: echo "version=$(git describe --tags --exact-match HEAD 2>/dev/null || true)" >> "$GITHUB_OUTPUT"
 
-  docker:
+  build-images:
     needs: release
     if: needs.release.outputs.version != ''
     uses: ./.github/workflows/docker-build.yml
@@ -47,3 +47,4 @@ jobs:
       packages: write
     with:
       version: ${{ needs.release.outputs.version }}
+      apps: '["api","web","cli"]'
