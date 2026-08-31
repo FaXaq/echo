@@ -16,6 +16,12 @@ export const emailMessages = {
     message: "You have been invited to join {orgName}",
   },
   invitationButton: { id: "email.invitation.button", message: "Accept invitation" },
+  verifyEmailSubject: { id: "email.verifyEmail.subject", message: "Verify your Echo email" },
+  verifyEmailBody: {
+    id: "email.verifyEmail.body",
+    message: "Confirm your email address to finish creating your Echo account.",
+  },
+  verifyEmailButton: { id: "email.verifyEmail.button", message: "Verify my email" },
 } satisfies Record<string, MessageDescriptor>;
 
 // These ids live outside apps/web/src, so `lingui extract` never finds them and
@@ -28,4 +34,8 @@ export const emailTranslationsFr: Record<string, string> = {
   "email.invitation.subject": "Invitation à rejoindre {orgName}",
   "email.invitation.body": "Vous avez été invité(e) à rejoindre {orgName}",
   "email.invitation.button": "Accepter l'invitation",
+  "email.verifyEmail.subject": "Vérifiez votre adresse e-mail Echo",
+  "email.verifyEmail.body":
+    "Confirmez votre adresse e-mail pour terminer la création de votre compte Echo.",
+  "email.verifyEmail.button": "Vérifier mon e-mail",
 };

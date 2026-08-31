@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import type { OrganizationOptions } from "better-auth/plugins";
 import { admin as adminPlugin, organization, username } from "better-auth/plugins";
 import type { Pool } from "pg";
@@ -23,6 +23,7 @@ export type ServerAuthConfig = {
     user: { email: string; locale: string },
     token: string,
   ) => Promise<void>;
+  sendVerificationEmail?: (user: { email: string; locale: string }, token: string) => Promise<void>;
   onOrganizationDeleted?: (organization: { id: string }) => Promise<void>;
   hasSeatAvailable?: (organizationId: string, excludeInvitationId?: string) => Promise<boolean>;
 };
@@ -64,8 +65,20 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
     emailAndPassword: {
       enabled: true,
       revokeSessionsOnPasswordReset: true,
+      requireEmailVerification: true,
       sendResetPassword: async ({ user, token }) => {
         return await config.sendResetPasswordEmail?.(
+          {
+            email: user.email,
+            locale: (user as { locale?: string }).locale ?? "en",
+          },
+          token,
+        );
+      },
+    },
+    emailVerification: {
+      sendVerificationEmail: async ({ user, token }) => {
+        return await config.sendVerificationEmail?.(
           {
             email: user.email,
             locale: (user as { locale?: string }).locale ?? "en",
@@ -78,6 +91,13 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
       ipAddress: {
         disableIpTracking: false,
       },
+    },
+    hooks: {
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path === "/sign-in/username") {
+          throw new APIError("NOT_FOUND");
+        }
+      }),
     },
     database: config.pool,
     baseURL: config.baseUrl,

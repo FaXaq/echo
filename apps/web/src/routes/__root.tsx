@@ -84,7 +84,11 @@ function RootContent({ session }: { session: ClientSession | null }) {
   const signOutMutation = useSignOutMutation();
 
   if (!session) {
-    if (pathname === "/reset-password" || pathname === "/accept-invitation") {
+    if (
+      pathname === "/reset-password" ||
+      pathname === "/accept-invitation" ||
+      pathname === "/verify-email"
+    ) {
       return <Outlet />;
     }
     return <Landing />;

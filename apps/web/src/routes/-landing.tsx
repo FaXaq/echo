@@ -7,58 +7,76 @@ import {
   type ForgotPasswordFormValues,
 } from "@/components/forgot-password-form";
 import { useRouter } from "@tanstack/react-router";
+import { useLingui } from "@lingui/react/macro";
 import { logger } from "@/lib/logger";
+import { toast } from "@/components/ui/toast";
 import {
   useSignInEmailMutation,
-  useSignInUsernameMutation,
   useSignUpEmailMutation,
   useRequestPasswordResetMutation,
+  useResendVerificationEmailMutation,
 } from "@/services/resources/auth";
 
 type View = "login" | "signup" | "forgot-password";
 
 export const Landing = () => {
+  const { t } = useLingui();
   const [view, setView] = useState<View>("login");
   const [serverError, setServerError] = useState<string | undefined>();
   const [serverSuccess, setServerSuccess] = useState<string | undefined>();
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | undefined>();
   const router = useRouter();
   const signInEmailMutation = useSignInEmailMutation();
-  const signInUsernameMutation = useSignInUsernameMutation();
   const signUpEmailMutation = useSignUpEmailMutation();
   const requestPasswordResetMutation = useRequestPasswordResetMutation();
+  const resendVerificationEmailMutation = useResendVerificationEmailMutation();
 
   const isLoading =
     signInEmailMutation.isPending ||
-    signInUsernameMutation.isPending ||
     signUpEmailMutation.isPending ||
     requestPasswordResetMutation.isPending;
 
   const handleLogin = (values: LoginFormValues) => {
     setServerError(undefined);
+    setServerSuccess(undefined);
+    setUnverifiedEmail(undefined);
 
-    const onSuccess = async () => {
-      await router.invalidate();
-      router.navigate({ to: "/" });
-    };
-    const onError = (error: Error) => {
-      setServerError(error.message);
-    };
+    signInEmailMutation.mutate(
+      { email: values.email, password: values.password },
+      {
+        onSuccess: async () => {
+          await router.invalidate();
+          router.navigate({ to: "/" });
+        },
+        onError: (error) => {
+          setServerError(error.message);
+          if (error.message === "Email not verified") {
+            setUnverifiedEmail(values.email);
+          }
+        },
+      },
+    );
+  };
 
-    if (values.login.includes("@")) {
-      signInEmailMutation.mutate(
-        { email: values.login, password: values.password },
-        { onSuccess, onError },
-      );
-    } else {
-      signInUsernameMutation.mutate(
-        { username: values.login, password: values.password },
-        { onSuccess, onError },
-      );
-    }
+  const handleResendVerification = () => {
+    if (!unverifiedEmail) return;
+
+    resendVerificationEmailMutation.mutate(
+      { email: unverifiedEmail },
+      {
+        onSuccess: () => {
+          toast.add({ type: "success", title: t`Verification email sent` });
+        },
+        onError: (error) => {
+          setServerError(error.message);
+        },
+      },
+    );
   };
 
   const handleSignup = (values: SignupFormValues) => {
     setServerError(undefined);
+    setServerSuccess(undefined);
 
     signUpEmailMutation.mutate(
       {
@@ -69,9 +87,8 @@ export const Landing = () => {
         locale: navigator.language.split("-")[0] ?? "en",
       },
       {
-        onSuccess: async () => {
-          await router.invalidate();
-          router.navigate({ to: "/" });
+        onSuccess: () => {
+          setServerSuccess("Check your email to verify your account");
         },
         onError: (error) => {
           logger.error(error);
@@ -101,6 +118,7 @@ export const Landing = () => {
   const switchView = (next: View) => {
     setServerError(undefined);
     setServerSuccess(undefined);
+    setUnverifiedEmail(undefined);
     setView(next);
   };
 
@@ -124,6 +142,9 @@ export const Landing = () => {
                 onForgotPasswordClick={() => switchView("forgot-password")}
                 isLoading={isLoading}
                 serverError={serverError}
+                showResendVerification={!!unverifiedEmail}
+                onResendVerification={handleResendVerification}
+                isResendingVerification={resendVerificationEmailMutation.isPending}
               />
             ) : view === "signup" ? (
               <SignupForm
@@ -131,6 +152,7 @@ export const Landing = () => {
                 onLoginClick={() => switchView("login")}
                 isLoading={isLoading}
                 serverError={serverError}
+                serverSuccess={serverSuccess}
               />
             ) : (
               <ForgotPasswordForm

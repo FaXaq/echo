@@ -40,6 +40,7 @@ export interface SignupFormProps {
   onLoginClick?: () => void;
   isLoading?: boolean;
   serverError?: string;
+  serverSuccess?: string;
   className?: string;
 }
 
@@ -48,6 +49,7 @@ export function SignupForm({
   onLoginClick,
   isLoading = false,
   serverError,
+  serverSuccess,
   className,
 }: SignupFormProps) {
   const { t } = useLingui();
@@ -74,90 +76,102 @@ export function SignupForm({
 
         {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
-        <Field>
-          <FieldLabel htmlFor="name">
-            <Trans>Full name</Trans>
-          </FieldLabel>
-          <Input
-            id="name"
-            type="text"
-            placeholder="John Doe"
-            autoComplete="name"
-            className="bg-background"
-            {...register("name")}
-          />
-          {errors.name && <FieldError>{translateDynamic(t, errors.name.message!)}</FieldError>}
-        </Field>
+        {serverSuccess && (
+          <p className="rounded-md bg-green-50 p-3 text-center text-sm text-green-700 dark:bg-green-950 dark:text-green-300">
+            {translateDynamic(t, serverSuccess)}
+          </p>
+        )}
 
-        <Field>
-          <FieldLabel htmlFor="username">
-            <Trans>Username</Trans>
-          </FieldLabel>
-          <Input
-            id="username"
-            type="text"
-            placeholder="johndoe"
-            autoComplete="username"
-            className="bg-background"
-            {...register("username")}
-          />
-          {errors.username && (
-            <FieldError>{translateDynamic(t, errors.username.message!)}</FieldError>
-          )}
-        </Field>
+        {!serverSuccess && (
+          <>
+            <Field>
+              <FieldLabel htmlFor="name">
+                <Trans>Full name</Trans>
+              </FieldLabel>
+              <Input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                autoComplete="name"
+                className="bg-background"
+                {...register("name")}
+              />
+              {errors.name && <FieldError>{translateDynamic(t, errors.name.message!)}</FieldError>}
+            </Field>
 
-        <Field>
-          <FieldLabel htmlFor="email">
-            <Trans>Email</Trans>
-          </FieldLabel>
-          <Input
-            id="email"
-            type="email"
-            placeholder="m@example.com"
-            autoComplete="email"
-            className="bg-background"
-            {...register("email")}
-          />
-          {errors.email && <FieldError>{translateDynamic(t, errors.email.message!)}</FieldError>}
-        </Field>
+            <Field>
+              <FieldLabel htmlFor="username">
+                <Trans>Username</Trans>
+              </FieldLabel>
+              <Input
+                id="username"
+                type="text"
+                placeholder="johndoe"
+                autoComplete="username"
+                className="bg-background"
+                {...register("username")}
+              />
+              {errors.username && (
+                <FieldError>{translateDynamic(t, errors.username.message!)}</FieldError>
+              )}
+            </Field>
 
-        <Field>
-          <FieldLabel htmlFor="password">
-            <Trans>Password</Trans>
-          </FieldLabel>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            className="bg-background"
-            {...register("password")}
-          />
-          {errors.password && (
-            <FieldError>{translateDynamic(t, errors.password.message!)}</FieldError>
-          )}
-        </Field>
+            <Field>
+              <FieldLabel htmlFor="email">
+                <Trans>Email</Trans>
+              </FieldLabel>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                autoComplete="email"
+                className="bg-background"
+                {...register("email")}
+              />
+              {errors.email && (
+                <FieldError>{translateDynamic(t, errors.email.message!)}</FieldError>
+              )}
+            </Field>
 
-        <Field>
-          <FieldLabel htmlFor="confirmPassword">
-            <Trans>Confirm password</Trans>
-          </FieldLabel>
-          <Input
-            id="confirmPassword"
-            type="password"
-            autoComplete="new-password"
-            className="bg-background"
-            {...register("confirmPassword")}
-          />
-          {errors.confirmPassword && (
-            <FieldError>{translateDynamic(t, errors.confirmPassword.message!)}</FieldError>
-          )}
-        </Field>
+            <Field>
+              <FieldLabel htmlFor="password">
+                <Trans>Password</Trans>
+              </FieldLabel>
+              <Input
+                id="password"
+                type="password"
+                autoComplete="new-password"
+                className="bg-background"
+                {...register("password")}
+              />
+              {errors.password && (
+                <FieldError>{translateDynamic(t, errors.password.message!)}</FieldError>
+              )}
+            </Field>
 
-        <Field>
-          <Button type="submit" isLoading={isLoading}>
-            <Trans>Create account</Trans>
-          </Button>
-        </Field>
+            <Field>
+              <FieldLabel htmlFor="confirmPassword">
+                <Trans>Confirm password</Trans>
+              </FieldLabel>
+              <Input
+                id="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                className="bg-background"
+                {...register("confirmPassword")}
+              />
+              {errors.confirmPassword && (
+                <FieldError>{translateDynamic(t, errors.confirmPassword.message!)}</FieldError>
+              )}
+            </Field>
+
+            <Field>
+              <Button type="submit" isLoading={isLoading}>
+                <Trans>Create account</Trans>
+              </Button>
+            </Field>
+          </>
+        )}
 
         {onLoginClick && (
           <p className="text-center text-sm text-muted-foreground">
