@@ -82,6 +82,12 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
     database: config.pool,
     baseURL: config.baseUrl,
     trustedOrigins: config.trustedOrigins,
+    rateLimit: {
+      storage: "database",
+      customRules: {
+        "/sign-up/email": { window: 3600, max: 5 },
+      },
+    },
     plugins: [
       adminPlugin({
         ac: adminAc,
