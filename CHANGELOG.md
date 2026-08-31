@@ -1,3 +1,9 @@
+## [0.2.1](https://github.com/FaXaq/echo/compare/v0.2.0...v0.2.1) (2026-08-31)
+
+### 🐛 Bug Fixes
+
+* **api:** add SMTP auth support and fix S3 presigned URL 403s ([43b4212](https://github.com/FaXaq/echo/commit/43b4212f1b21614897d0b5f4a3fbb7066fa89149))
+
 ## [0.2.0](https://github.com/FaXaq/echo/compare/v0.1.4...v0.2.0) (2026-08-30)
 
 ### ✨ Features
