@@ -106,38 +106,6 @@ function OrganizationSettingsContent({
           </p>
         </section>
       )}
-      <section className="mb-8 max-w-xl">
-        <h2 className="mb-4 text-xl font-semibold">{t`General`}</h2>
-        <div className="flex flex-col gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t`Project name`}</CardTitle>
-              <CardDescription>{t`This is the name displayed across your project.`}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <OrganizationNameForm
-                organizationId={organization.id}
-                defaultName={organization.name}
-                onSuccess={() => toast.add({ type: "success", title: t`Project name updated` })}
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                <Trans>Project slug</Trans>
-              </CardTitle>
-              <CardDescription>
-                <Trans>This is the slug that appears in the URL. It's auto-generated.</Trans>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <code>{organization.slug}</code>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
 
       <section className="mb-8 max-w-xl">
         <h2 className="mb-4 text-xl font-semibold">{t`Plan`}</h2>

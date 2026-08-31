@@ -31,10 +31,6 @@ function SongListContent({ organizationId, projectSlug, onSongCreated }: Suspend
   return (
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">{t`Songs`}</h1>
-          <p className="text-muted-foreground">{t`Your project's songs and lyrics`}</p>
-        </div>
         <Button type="button" onClick={() => setDialogState({ mode: "create" })}>
           <Plus data-icon="inline-start" />
           {t`New song`}
