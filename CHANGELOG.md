@@ -1,3 +1,9 @@
+## [0.3.0](https://github.com/FaXaq/echo/compare/v0.2.1...v0.3.0) (2026-08-31)
+
+### ✨ Features
+
+* **auth:** rate-limit & account confirmation ([#19](https://github.com/FaXaq/echo/issues/19)) ([f688806](https://github.com/FaXaq/echo/commit/f688806ff501097fcc6a71c6ec7369739b23716e))
+
 ## [0.2.1](https://github.com/FaXaq/echo/compare/v0.2.0...v0.2.1) (2026-08-31)
 
 ### 🐛 Bug Fixes
