@@ -5,6 +5,7 @@ import { appConfig } from "../config/index";
 import {
   renderResetPasswordEmail,
   renderInvitationEmail,
+  renderVerifyEmail,
 } from "@echo/modules/notification/infrastructure";
 import { deleteOrganizationFiles } from "@echo/modules/drive/app";
 import { listFilesByOrganizationQueryFactory } from "@echo/modules/drive/infrastructure";
@@ -67,6 +68,20 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
       html: await renderResetPasswordEmail(
         {
           email,
+          token,
+          appBaseUrl: appConfig.appBaseUrl,
+        },
+        i18n,
+      ),
+    });
+  },
+  sendVerificationEmail: async ({ email, locale }, token) => {
+    const i18n = makeServerI18n(toLocale(locale));
+    await mailer.send({
+      to: email,
+      subject: i18n._(emailMessages.verifyEmailSubject),
+      html: await renderVerifyEmail(
+        {
           token,
           appBaseUrl: appConfig.appBaseUrl,
         },

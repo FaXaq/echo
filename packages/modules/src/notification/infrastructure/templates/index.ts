@@ -63,6 +63,34 @@ export async function renderResetPasswordEmail(
   return html;
 }
 
+export async function renderVerifyEmail(
+  data: {
+    appBaseUrl: string;
+    token: string;
+  },
+  i18n: I18n,
+): Promise<string> {
+  const bodyText = i18n._(emailMessages.verifyEmailBody);
+  const buttonText = i18n._(emailMessages.verifyEmailButton);
+
+  const { html, errors } = await mjml2html(`
+    <mjml>
+      <mj-body>
+        <mj-section>
+          <mj-column>
+            <mj-text>${bodyText}</mj-text>
+            <mj-button href="${data.appBaseUrl}/verify-email?token=${data.token}">
+              ${buttonText}
+            </mj-button>
+          </mj-column>
+        </mj-section>
+      </mj-body>
+    </mjml>
+  `);
+  if (errors.length) throw new Error(errors.map((e) => e.formattedMessage).join("\n"));
+  return html;
+}
+
 export async function renderExampleEmail(data: { name: string }): Promise<string> {
   const { html, errors } = await mjml2html(`
     <mjml>

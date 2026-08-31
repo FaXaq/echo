@@ -55,7 +55,7 @@ msgstr "{0} sur {1} ligne(s) sélectionnée(s)."
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
 
-#: apps/web/src/lib/dynamic-messages.ts:45
+#: apps/web/src/lib/dynamic-messages.ts:48
 #: apps/web/src/routes/accept-invitation.tsx:105
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
@@ -89,7 +89,7 @@ msgstr "Ajouter des fichiers"
 msgid "Added by"
 msgstr "Ajouté par"
 
-#: apps/web/src/lib/dynamic-messages.ts:49
+#: apps/web/src/lib/dynamic-messages.ts:52
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -108,7 +108,7 @@ msgstr "Toute la journée"
 msgid "All files shared across the project"
 msgstr "Tous les fichiers partagés du projet"
 
-#: apps/web/src/components/signup-form.tsx:164
+#: apps/web/src/components/signup-form.tsx:178
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Déjà un compte ? <0>Se connecter</0>"
 
@@ -161,6 +161,10 @@ msgstr "Retour au calendrier"
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
+#: apps/web/src/routes/verify-email.tsx:60
+msgid "Back to login"
+msgstr "Retour à la connexion"
+
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:135
 msgid "Back to songs"
 msgstr "Retour aux chansons"
@@ -182,7 +186,7 @@ msgstr "Gras"
 msgid "BPM"
 msgstr "BPM"
 
-#: apps/web/src/lib/dynamic-messages.ts:27
+#: apps/web/src/lib/dynamic-messages.ts:26
 msgid "BPM must be a whole number"
 msgstr "Le BPM doit être un nombre entier"
 
@@ -191,7 +195,7 @@ msgid "Bullet list"
 msgstr "Liste à puces"
 
 #: apps/web/src/hooks/use-navigation.ts:58
-#: apps/web/src/lib/dynamic-messages.ts:39
+#: apps/web/src/lib/dynamic-messages.ts:42
 msgid "Calendar"
 msgstr "Agenda"
 
@@ -223,9 +227,13 @@ msgstr "Impossible de trouver l’invitation que vous recherchez"
 msgid "Category"
 msgstr "Catégorie"
 
-#: apps/web/src/lib/dynamic-messages.ts:33
+#: apps/web/src/lib/dynamic-messages.ts:32
 msgid "Check your email for a password reset link"
 msgstr "Vérifiez votre email pour le lien de réinitialisation"
+
+#: apps/web/src/lib/dynamic-messages.ts:33
+msgid "Check your email to verify your account"
+msgstr "Consultez votre e-mail pour vérifier votre compte"
 
 #: apps/web/src/components/reset-password-form.tsx:63
 msgid "Choose a strong password for your account"
@@ -252,11 +260,11 @@ msgid "Concert"
 msgstr "Concert"
 
 #: apps/web/src/components/reset-password-form.tsx:87
-#: apps/web/src/components/signup-form.tsx:142
+#: apps/web/src/components/signup-form.tsx:154
 msgid "Confirm password"
 msgstr "Confirmer le mot de passe"
 
-#: apps/web/src/lib/dynamic-messages.ts:36
+#: apps/web/src/lib/dynamic-messages.ts:39
 msgid "Could not generate a unique organization slug"
 msgstr "Impossible de générer un identifiant unique pour le projet"
 
@@ -329,11 +337,11 @@ msgstr "Reprise"
 msgid "Create a space for your project"
 msgstr "Créez un espace pour votre projet"
 
-#: apps/web/src/components/signup-form.tsx:158
+#: apps/web/src/components/signup-form.tsx:170
 msgid "Create account"
 msgstr "Créer un compte"
 
-#: apps/web/src/components/signup-form.tsx:68
+#: apps/web/src/components/signup-form.tsx:70
 msgid "Create an account"
 msgstr "Créer un compte"
 
@@ -423,7 +431,7 @@ msgstr "Décroissant"
 msgid "Description"
 msgstr "Description"
 
-#: apps/web/src/components/login-form.tsx:113
+#: apps/web/src/components/login-form.tsx:130
 msgid "Don't have an account? <0>Sign up</0>"
 msgstr "Pas encore de compte ? <0>S’inscrire</0>"
 
@@ -462,25 +470,34 @@ msgid "Edit song"
 msgstr "Modifier la chanson"
 
 #: apps/web/src/components/forgot-password-form.tsx:65
-#: apps/web/src/components/signup-form.tsx:111
+#: apps/web/src/components/login-form.tsx:78
+#: apps/web/src/components/signup-form.tsx:121
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:67
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:84
 msgid "Email"
 msgstr "Email"
 
-#: apps/web/src/components/login-form.tsx:61
-msgid "Email or username"
-msgstr "Email ou nom d'utilisateur"
+#: apps/web/src/lib/dynamic-messages.ts:35
+msgid "Email not verified"
+msgstr "E-mail non vérifié"
+
+#: apps/web/src/components/login-form.tsx:85
+#~ msgid "Email or username"
+#~ msgstr "Email ou nom d'utilisateur"
 
 #: apps/web/src/lib/dynamic-messages.ts:23
-msgid "Email or username is required"
-msgstr "Email ou nom d'utilisateur requis"
+#~ msgid "Email or username is required"
+#~ msgstr "Email ou nom d'utilisateur requis"
+
+#: apps/web/src/lib/dynamic-messages.ts:36
+msgid "Email verification failed"
+msgstr "Échec de la vérification de l'e-mail"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:267
 msgid "End"
 msgstr "Fin"
 
-#: apps/web/src/lib/dynamic-messages.ts:28
+#: apps/web/src/lib/dynamic-messages.ts:27
 msgid "End date must be after start date"
 msgstr "La date de fin doit être postérieure à la date de début"
 
@@ -488,9 +505,13 @@ msgstr "La date de fin doit être postérieure à la date de début"
 msgid "Enter email address"
 msgstr "Entrez l'adresse email"
 
-#: apps/web/src/components/login-form.tsx:53
-msgid "Enter your email or username to login"
-msgstr "Entrez votre email ou nom d'utilisateur pour vous connecter"
+#: apps/web/src/components/login-form.tsx:61
+#~ msgid "Enter your email or username to login"
+#~ msgstr "Entrez votre email ou nom d'utilisateur pour vous connecter"
+
+#: apps/web/src/components/login-form.tsx:59
+msgid "Enter your email to login"
+msgstr "Entrez votre email pour vous connecter"
 
 #: apps/web/src/components/forgot-password-form.tsx:52
 msgid "Enter your email to receive a reset link"
@@ -509,7 +530,7 @@ msgstr "Actions de l'événement"
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
-#: apps/web/src/lib/dynamic-messages.ts:41
+#: apps/web/src/lib/dynamic-messages.ts:44
 msgid "Event details"
 msgstr "Détails de l'événement"
 
@@ -534,7 +555,7 @@ msgstr "Échec de l'acceptation de l'invitation"
 #~ msgid "Failed to create organization"
 #~ msgstr "Échec de la création du groupe"
 
-#: apps/web/src/lib/dynamic-messages.ts:35
+#: apps/web/src/lib/dynamic-messages.ts:38
 msgid "Failed to create project"
 msgstr "Échec de la création du projet"
 
@@ -550,11 +571,15 @@ msgstr "Échec de la suppression du projet"
 msgid "Failed to invite member"
 msgstr "Échec de l'invitation"
 
+#: apps/web/src/lib/dynamic-messages.ts:37
+msgid "Failed to resend verification email"
+msgstr "Échec de l'envoi de l'e-mail de vérification"
+
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:47
 msgid "Failed to save lyrics"
 msgstr "Échec de l'enregistrement des paroles"
 
-#: apps/web/src/lib/dynamic-messages.ts:32
+#: apps/web/src/lib/dynamic-messages.ts:31
 msgid "Failed to send reset email"
 msgstr "Échec de l'envoi de l'email de réinitialisation"
 
@@ -574,7 +599,7 @@ msgstr "Fichier supprimé"
 msgid "Files"
 msgstr "Fichiers"
 
-#: apps/web/src/components/signup-form.tsx:71
+#: apps/web/src/components/signup-form.tsx:73
 msgid "Fill in the details below to get started"
 msgstr "Remplissez les informations ci-dessous pour commencer"
 
@@ -591,12 +616,12 @@ msgid "Folders aren't supported yet — drop files only"
 msgstr "Les dossiers ne sont pas encore pris en charge — déposez uniquement des fichiers"
 
 #: apps/web/src/components/forgot-password-form.tsx:49
-#: apps/web/src/components/login-form.tsx:85
-#: apps/web/src/components/login-form.tsx:89
+#: apps/web/src/components/login-form.tsx:102
+#: apps/web/src/components/login-form.tsx:106
 msgid "Forgot your password?"
 msgstr "Mot de passe oublié ?"
 
-#: apps/web/src/components/signup-form.tsx:79
+#: apps/web/src/components/signup-form.tsx:89
 msgid "Full name"
 msgstr "Nom complet"
 
@@ -704,15 +729,15 @@ msgstr "Lieu"
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: apps/web/src/components/login-form.tsx:107
+#: apps/web/src/components/login-form.tsx:124
 msgid "Login"
 msgstr "Connexion"
 
-#: apps/web/src/lib/dynamic-messages.ts:30
+#: apps/web/src/lib/dynamic-messages.ts:29
 msgid "Login failed"
 msgstr "Échec de la connexion"
 
-#: apps/web/src/components/login-form.tsx:50
+#: apps/web/src/components/login-form.tsx:56
 msgid "Login to your account"
 msgstr "Connexion à votre compte"
 
@@ -752,13 +777,13 @@ msgstr "Taille maximale de fichier"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:48
+#: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Member"
 msgstr "Membre"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:153
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
-#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Members"
 msgstr "Membres"
 
@@ -796,7 +821,7 @@ msgid "New password"
 msgstr "Nouveau mot de passe"
 
 #: apps/web/src/components/version-switcher.tsx:77
-#: apps/web/src/lib/dynamic-messages.ts:44
+#: apps/web/src/lib/dynamic-messages.ts:47
 #: apps/web/src/routes/projects/new.tsx:66
 msgid "New project"
 msgstr "Nouveau projet"
@@ -914,7 +939,7 @@ msgstr "Organisateur"
 msgid "Original"
 msgstr "Original"
 
-#: apps/web/src/lib/dynamic-messages.ts:50
+#: apps/web/src/lib/dynamic-messages.ts:53
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -924,12 +949,12 @@ msgstr "Propriétaire"
 msgid "Page {0} of {1}"
 msgstr "Page {0} sur {1}"
 
-#: apps/web/src/components/login-form.tsx:77
-#: apps/web/src/components/signup-form.tsx:126
+#: apps/web/src/components/login-form.tsx:94
+#: apps/web/src/components/signup-form.tsx:138
 msgid "Password"
 msgstr "Mot de passe"
 
-#: apps/web/src/lib/dynamic-messages.ts:24
+#: apps/web/src/lib/dynamic-messages.ts:23
 msgid "Password is required"
 msgstr "Mot de passe requis"
 
@@ -995,7 +1020,7 @@ msgstr "Projet supprimé"
 msgid "Project name"
 msgstr "Nom du projet"
 
-#: apps/web/src/lib/dynamic-messages.ts:25
+#: apps/web/src/lib/dynamic-messages.ts:24
 msgid "Project name is required"
 msgstr "Le nom du projet est requis"
 
@@ -1045,8 +1070,12 @@ msgstr "Renommer le fichier"
 msgid "Rename folder"
 msgstr "Renommer le dossier"
 
+#: apps/web/src/components/login-form.tsx:72
+msgid "Resend verification email"
+msgstr "Renvoyer l'e-mail de vérification"
+
 #: apps/web/src/components/reset-password-form.tsx:103
-#: apps/web/src/lib/dynamic-messages.ts:46
+#: apps/web/src/lib/dynamic-messages.ts:49
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -1143,7 +1172,7 @@ msgstr "Paramètres"
 msgid "Share"
 msgstr "Partager"
 
-#: apps/web/src/lib/dynamic-messages.ts:31
+#: apps/web/src/lib/dynamic-messages.ts:30
 msgid "Sign up failed"
 msgstr "Échec de l'inscription"
 
@@ -1179,7 +1208,7 @@ msgstr "Actions de la chanson"
 msgid "Song deleted"
 msgstr "Chanson supprimée"
 
-#: apps/web/src/lib/dynamic-messages.ts:42
+#: apps/web/src/lib/dynamic-messages.ts:45
 msgid "Song details"
 msgstr "Détails de la chanson"
 
@@ -1189,7 +1218,7 @@ msgstr "Chanson introuvable"
 
 #: apps/web/src/components/features/song/suspended-song-list.tsx:35
 #: apps/web/src/hooks/use-navigation.ts:63
-#: apps/web/src/lib/dynamic-messages.ts:40
+#: apps/web/src/lib/dynamic-messages.ts:43
 msgid "Songs"
 msgstr "Chansons"
 
@@ -1283,7 +1312,7 @@ msgstr "Cette action supprimera définitivement cette chanson. Cette action est 
 msgid "Title"
 msgstr "Titre"
 
-#: apps/web/src/lib/dynamic-messages.ts:26
+#: apps/web/src/lib/dynamic-messages.ts:25
 msgid "Title is required"
 msgstr "Le titre est requis"
 
@@ -1318,7 +1347,7 @@ msgstr "Modifier"
 msgid "Upload"
 msgstr "Importer"
 
-#: apps/web/src/lib/dynamic-messages.ts:37
+#: apps/web/src/lib/dynamic-messages.ts:40
 msgid "Upload failed"
 msgstr "Échec de l'envoi"
 
@@ -1330,13 +1359,21 @@ msgstr "Importer des fichiers"
 msgid "Uploaded by"
 msgstr "Ajouté par"
 
-#: apps/web/src/components/signup-form.tsx:94
+#: apps/web/src/components/signup-form.tsx:104
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
 #: apps/web/src/lib/dynamic-messages.ts:12
 msgid "Username must be at least 3 characters"
 msgstr "Le nom d'utilisateur doit contenir au moins 3 caractères"
+
+#: apps/web/src/routes/-landing.tsx:68
+msgid "Verification email sent"
+msgstr "E-mail de vérification envoyé"
+
+#: apps/web/src/routes/verify-email.tsx:56
+msgid "Verifying your email..."
+msgstr "Vérification de votre e-mail..."
 
 #: apps/web/src/components/ui/data-table-view-options.tsx:29
 msgid "View"
@@ -1369,6 +1406,10 @@ msgstr "Vous avez été invité(e) à rejoindre"
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:39
 msgid "Your current plan and what you have used of it."
 msgstr "Votre forfait actuel et ce que vous en avez utilisé."
+
+#: apps/web/src/routes/verify-email.tsx:50
+msgid "Your email has been verified. You can now sign in."
+msgstr "Votre e-mail a été vérifié. Vous pouvez maintenant vous connecter."
 
 #: apps/web/src/components/features/song/suspended-song-list.tsx:36
 msgid "Your project's songs and lyrics"

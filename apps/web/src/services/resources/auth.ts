@@ -17,21 +17,6 @@ export function useSignInEmailMutation() {
   });
 }
 
-export function useSignInUsernameMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (input: { username: string; password: string }) => {
-      const { data, error } = await authClient.signIn.username(input);
-      if (error) throw new Error(error.message ?? "Login failed");
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: getSessionQueryOptions().queryKey });
-    },
-  });
-}
-
 export type SignUpEmailInput = {
   name: string;
   username: string;
@@ -74,6 +59,26 @@ export function useRequestPasswordResetMutation() {
     mutationFn: async (input: { email: string; redirectTo: string }) => {
       const { data, error } = await authClient.requestPasswordReset(input);
       if (error) throw new Error(error.message ?? "Failed to send reset email");
+      return data;
+    },
+  });
+}
+
+export function useResendVerificationEmailMutation() {
+  return useMutation({
+    mutationFn: async (input: { email: string }) => {
+      const { data, error } = await authClient.sendVerificationEmail(input);
+      if (error) throw new Error(error.message ?? "Failed to resend verification email");
+      return data;
+    },
+  });
+}
+
+export function useVerifyEmailMutation() {
+  return useMutation({
+    mutationFn: async (input: { token: string }) => {
+      const { data, error } = await authClient.verifyEmail({ query: input });
+      if (error) throw new Error(error.message ?? "Email verification failed");
       return data;
     },
   });

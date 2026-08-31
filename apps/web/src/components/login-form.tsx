@@ -9,7 +9,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { translateDynamic } from "@/lib/dynamic-messages";
 
 const schema = z.object({
-  login: z.string().min(1, "Email or username is required"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -21,6 +21,9 @@ export interface LoginFormProps {
   onForgotPasswordClick?: () => void;
   isLoading?: boolean;
   serverError?: string;
+  showResendVerification?: boolean;
+  onResendVerification?: () => void;
+  isResendingVerification?: boolean;
   className?: string;
 }
 
@@ -30,6 +33,9 @@ export function LoginForm({
   onForgotPasswordClick,
   isLoading = false,
   serverError,
+  showResendVerification = false,
+  onResendVerification,
+  isResendingVerification = false,
   className,
 }: LoginFormProps) {
   const { t } = useLingui();
@@ -50,25 +56,36 @@ export function LoginForm({
             <Trans>Login to your account</Trans>
           </h1>
           <p className="text-sm text-balance text-muted-foreground">
-            <Trans>Enter your email or username to login</Trans>
+            <Trans>Enter your email to login</Trans>
           </p>
         </div>
 
         {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
 
+        {showResendVerification && (
+          <button
+            type="button"
+            className="text-center text-sm text-foreground underline underline-offset-4 hover:opacity-80"
+            onClick={onResendVerification}
+            disabled={isResendingVerification}
+          >
+            <Trans>Resend verification email</Trans>
+          </button>
+        )}
+
         <Field>
-          <FieldLabel htmlFor="login">
-            <Trans>Email or username</Trans>
+          <FieldLabel htmlFor="email">
+            <Trans>Email</Trans>
           </FieldLabel>
           <Input
-            id="login"
-            type="text"
+            id="email"
+            type="email"
             placeholder="m@example.com"
-            autoComplete="username"
+            autoComplete="email"
             className="bg-background"
-            {...register("login")}
+            {...register("email")}
           />
-          {errors.login && <FieldError>{translateDynamic(t, errors.login.message!)}</FieldError>}
+          {errors.email && <FieldError>{translateDynamic(t, errors.email.message!)}</FieldError>}
         </Field>
 
         <Field>

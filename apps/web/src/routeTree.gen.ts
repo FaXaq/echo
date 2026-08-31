@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as ProjectsProjectSlugRouteRouteImport } from './routes/projects/$projectSlug/route'
 import { Route as ProjectsNewRouteImport } from './routes/projects/new'
 import { Route as ProjectsProjectSlugIndexRouteImport } from './routes/projects/$projectSlug/index'
@@ -39,6 +40,11 @@ const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsProjectSlugRouteRoute =
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/projects/$projectSlug': typeof ProjectsProjectSlugRouteRouteWithChildren
   '/projects/new': typeof ProjectsNewRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/projects/new': typeof ProjectsNewRoute
   '/projects/$projectSlug': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/accept-invitation': typeof AcceptInvitationRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/projects/$projectSlug': typeof ProjectsProjectSlugRouteRouteWithChildren
   '/projects/new': typeof ProjectsNewRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation'
     | '/reset-password'
+    | '/verify-email'
     | '/projects/$projectSlug'
     | '/projects/new'
     | '/projects/$projectSlug/calendar'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation'
     | '/reset-password'
+    | '/verify-email'
     | '/projects/new'
     | '/projects/$projectSlug'
     | '/projects/$projectSlug/calendar/$eventId'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation'
     | '/reset-password'
+    | '/verify-email'
     | '/projects/$projectSlug'
     | '/projects/new'
     | '/projects/$projectSlug/calendar'
@@ -227,6 +239,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcceptInvitationRoute: typeof AcceptInvitationRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   ProjectsProjectSlugRouteRoute: typeof ProjectsProjectSlugRouteRouteWithChildren
   ProjectsNewRoute: typeof ProjectsNewRoute
 }
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/$projectSlug': {
@@ -429,6 +449,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcceptInvitationRoute: AcceptInvitationRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   ProjectsProjectSlugRouteRoute: ProjectsProjectSlugRouteRouteWithChildren,
   ProjectsNewRoute: ProjectsNewRoute,
 }
