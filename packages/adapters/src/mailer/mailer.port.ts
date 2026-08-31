@@ -8,4 +8,9 @@ export interface MailerPort {
   send: (options: SendMailOptions) => Promise<void>;
 }
 
-export type MailerConfig = { host: string; port: number; from: string };
+export type MailerConfig = {
+  host: string;
+  port: number;
+  from: string;
+  auth?: { user: string; pass: string };
+};

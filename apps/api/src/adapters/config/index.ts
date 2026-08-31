@@ -22,13 +22,17 @@ export const appConfig = {
     host: env.SMTP_HOST,
     port: env.SMTP_PORT,
     from: env.SMTP_FROM,
+    auth:
+      env.SMTP_USER && env.SMTP_PASSWORD
+        ? { user: env.SMTP_USER, pass: env.SMTP_PASSWORD }
+        : undefined,
   },
   appBaseUrl: env.APP_BASE_URL,
   s3: {
     bucket: env.S3_BUCKET_NAME,
     region: env.S3_REGION,
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: env.S3_ACCESS_KEY_ID,
+    secretAccessKey: env.S3_SECRET_ACCESS_KEY,
     endpoint: env.S3_ENDPOINT_URL,
   },
   mapbox: {

@@ -23,6 +23,7 @@ export function makeS3Storage(config: {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey,
     },
+    requestChecksumCalculation: "WHEN_REQUIRED",
   });
 
   return {

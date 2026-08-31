@@ -5,6 +5,7 @@ export const makeMailer = (config: MailerConfig): MailerPort => {
   const transport = nodemailer.createTransport({
     host: config.host,
     port: config.port,
+    auth: config.auth,
   });
   return {
     send: async (options: SendMailOptions) => {
