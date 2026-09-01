@@ -85,7 +85,11 @@ export function FileRow({
             onToggleSelect(event);
           }}
         >
-          <Checkbox checked={selected} aria-label={t`Select ${file.filename}`} />
+          <Checkbox
+            checked={selected}
+            aria-label={t`Select ${file.filename}`}
+            className="pointer-events-none"
+          />
         </TableCell>
         <TableCell>
           <div className="relative flex items-center gap-2.5">
