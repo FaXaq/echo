@@ -13,8 +13,6 @@ export interface SidebarItem {
 }
 
 export interface EntityDetailLayoutProps {
-  organizationName: string;
-  organizationSlug: string;
   icon?: React.ReactNode;
   title: string;
   actions?: React.ReactNode;
@@ -25,8 +23,6 @@ export interface EntityDetailLayoutProps {
 }
 
 export function EntityDetailLayout({
-  organizationName,
-  organizationSlug,
   icon,
   title,
   actions,
@@ -39,29 +35,12 @@ export function EntityDetailLayout({
     <div data-slot="entity-detail" className={cn("flex flex-wrap-reverse gap-9 h-full", className)}>
       <ScrollArea className="h-full min-w-70 flex-[999_1_400px] pr-4">
         <div className="flex flex-col gap-5">
-          <div className="flex items-center justify-between gap-2.5">
-            <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
-              <Link
-                to="/projects/$projectSlug"
-                params={{ projectSlug: organizationSlug }}
-                className="flex items-center gap-1.5 font-medium text-foreground"
-              >
-                <Avatar size="sm" className="h-5 w-5">
-                  <AvatarFallback className="text-[10px]">
-                    {getInitials(organizationName)}
-                  </AvatarFallback>
-                </Avatar>
-                {organizationName}
-              </Link>
-            </div>
-            {actions}
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            {icon}
+          <div className="flex flex-row gap-2.5 w-full">
+            <div className="self-center">{icon}</div>
             <h1 className="m-0 text-[clamp(22px,4vw,26px)] leading-tight font-semibold tracking-tight">
               {title}
             </h1>
+            <div className="flex items-center justify-between m-0 ml-auto">{actions}</div>
           </div>
 
           <Separator />
