@@ -1,9 +1,6 @@
-import { Link } from "@tanstack/react-router";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { getInitials } from "@/lib/remeda";
 import { cn } from "@/lib/utils";
 
 export interface SidebarItem {

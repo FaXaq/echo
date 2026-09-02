@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import { useLingui } from "@lingui/react/macro";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { EventCalendar, calendarViewSchema } from "@/ui/event-calendar";
@@ -23,7 +22,6 @@ export const Route = createFileRoute("/projects/$projectSlug/calendar/")({
 });
 
 function OrganizationCalendarPage() {
-  const { t } = useLingui();
   const { organizationId } = Route.useRouteContext();
   const { projectSlug } = Route.useParams();
   const search = Route.useSearch();
