@@ -1,3 +1,13 @@
+## [0.4.0](https://github.com/FaXaq/echo/compare/v0.3.0...v0.4.0) (2026-09-02)
+
+### ✨ Features
+
+* **audio:** app-wide audio player ([#21](https://github.com/FaXaq/echo/issues/21)) ([e6202c5](https://github.com/FaXaq/echo/commit/e6202c5c7bb68c9cb224d97f5490880e5298934f))
+
+### 🔧 Chores
+
+* **ui:** cleanup ([#20](https://github.com/FaXaq/echo/issues/20)) ([ed254e3](https://github.com/FaXaq/echo/commit/ed254e375c6b0dd2f18dd7d41c70b310c17acc29))
+
 ## [0.3.0](https://github.com/FaXaq/echo/compare/v0.2.1...v0.3.0) (2026-08-31)
 
 ### ✨ Features
