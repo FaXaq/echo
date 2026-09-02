@@ -259,6 +259,10 @@ msgstr "Clear place"
 msgid "Clear selection"
 msgstr "Clear selection"
 
+#: apps/web/src/components/ui/audio-player-dock.tsx:188
+msgid "Close"
+msgstr "Close"
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:292
 msgid "Color"
 msgstr "Color"
