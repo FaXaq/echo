@@ -265,8 +265,11 @@ function DriveExplorerContent({
                     <TableHead key={header.id} onClick={() => table.toggleAllRowsSelected()}>
                       <Checkbox
                         checked={table.getIsAllRowsSelected()}
-                        indeterminate={table.getIsSomeRowsSelected()}
+                        indeterminate={
+                          table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
+                        }
                         aria-label={t`Select all`}
+                        className="pointer-events-none"
                       />
                     </TableHead>
                   ) : (

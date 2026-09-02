@@ -4,17 +4,6 @@ import { describe, expect, it, vi } from "vitest";
 import { LyricsEditor } from "./lyrics-editor";
 
 describe("LyricsEditor", () => {
-  it("renders the toolbar controls", () => {
-    render(<LyricsEditor markdown="" onChange={vi.fn()} />);
-
-    expect(screen.getByRole("button", { name: "Bold" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Italic" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Heading 1" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Heading 2" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Bullet list" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Quote" })).toBeInTheDocument();
-  });
-
   it("renders the initial markdown content", async () => {
     render(<LyricsEditor markdown="**Hold on**, hold on to me" onChange={vi.fn()} />);
 

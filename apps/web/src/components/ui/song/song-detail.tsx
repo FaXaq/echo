@@ -60,11 +60,9 @@ export function SongDetail({
   return (
     <>
       <EntityDetailLayout
-        organizationName={song.organization.name}
-        organizationSlug={song.organization.slug}
         icon={
-          <span className="flex size-6 shrink-0 items-center justify-center rounded-[6px] bg-muted">
-            <Music className="size-3.5" />
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-[6px] bg-muted">
+            <Music className="size-4" />
           </span>
         }
         title={song.title}

@@ -130,7 +130,11 @@ export function FolderRow({
             onToggleSelect(event);
           }}
         >
-          <Checkbox checked={selected} aria-label={t`Select ${folder.name}`} />
+          <Checkbox
+            checked={selected}
+            aria-label={t`Select ${folder.name}`}
+            className="pointer-events-none"
+          />
         </TableCell>
         <TableCell>
           <div className="relative flex items-center gap-2.5">

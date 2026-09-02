@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Trans } from "@lingui/react/macro";
 import { isOrganizationAdmin } from "@echo/modules/user/domain";
 import type { OrganizationRole } from "@echo/auth";
 import { getActiveMemberRoleQueryOptions } from "@/services/resources/session";
@@ -38,12 +37,6 @@ function SettingsPage() {
 
   return (
     <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          <Trans>Settings</Trans>
-        </h1>
-      </div>
-
       <SuspendedOrganizationSettings
         organizationId={organizationId}
         currentMemberRole={currentMemberRole}

@@ -21,7 +21,7 @@ import {
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedSongAttachments } from "./suspended-song-attachments";
 
-const LYRICS_AUTOSAVE_DEBOUNCE_MS = 1000;
+const LYRICS_AUTOSAVE_DEBOUNCE_MS = 300;
 
 export interface SuspendedSongDetailProps {
   songId: string;
