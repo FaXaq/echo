@@ -1,5 +1,4 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Trans } from "@lingui/react/macro";
 import { isOrganizationAdmin } from "@echo/modules/user/domain";
 import type { OrganizationRole } from "@echo/auth";
 import { getActiveMemberRoleQueryOptions } from "@/services/resources/session";

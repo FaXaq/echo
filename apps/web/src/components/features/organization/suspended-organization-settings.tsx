@@ -37,7 +37,6 @@ import { listMembersQueryOptions, listInvitationsQueryOptions } from "@/services
 import { useSession } from "@/hooks/use-session";
 import { InviteForm } from "@/routes/projects/$projectSlug/settings/-invite-form";
 import { MembersTable } from "@/routes/projects/$projectSlug/settings/-members-table";
-import { OrganizationNameForm } from "@/routes/projects/$projectSlug/settings/-organization-name-form";
 import { SuspendedPlanUsage } from "@/components/features/organization/suspended-plan-usage";
 
 export interface SuspendedOrganizationSettingsProps {

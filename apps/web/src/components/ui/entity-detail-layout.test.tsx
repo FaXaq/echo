@@ -1,21 +1,14 @@
 import { render, screen } from "@/lib/test-utils";
-import { describe, expect, it, vi } from "vitest";
-
-vi.mock("@tanstack/react-router", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@tanstack/react-router")>()),
-  Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
-}));
+import { describe, expect, it } from "vitest";
 
 import { EntityDetailLayout } from "./entity-detail-layout";
 
 const noop = <div />;
 
 describe("EntityDetailLayout", () => {
-  it("renders the organization name, title, and icon slot", () => {
+  it("renders the title and icon slot", () => {
     render(
       <EntityDetailLayout
-        organizationName="Acme Inc"
-        organizationSlug="acme-inc"
         icon={<span data-testid="icon" />}
         title="Empty Road"
         sidebarItems={[]}
@@ -23,7 +16,6 @@ describe("EntityDetailLayout", () => {
       />,
     );
 
-    expect(screen.getByText("Acme Inc")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Empty Road" })).toBeInTheDocument();
     expect(screen.getByTestId("icon")).toBeInTheDocument();
   });
@@ -31,8 +23,6 @@ describe("EntityDetailLayout", () => {
   it("renders each sidebar item's label and value on the desktop panel", () => {
     render(
       <EntityDetailLayout
-        organizationName="Acme Inc"
-        organizationSlug="acme-inc"
         title="Empty Road"
         sidebarItems={[{ label: "Artist", value: "The Wayfinders" }]}
         attachments={noop}
@@ -46,8 +36,6 @@ describe("EntityDetailLayout", () => {
   it("renders the actions slot", () => {
     render(
       <EntityDetailLayout
-        organizationName="Acme Inc"
-        organizationSlug="acme-inc"
         title="Empty Road"
         actions={<button type="button">Share</button>}
         sidebarItems={[]}
@@ -61,8 +49,6 @@ describe("EntityDetailLayout", () => {
   it("renders children between the mobile badge row and the attachments slot", () => {
     render(
       <EntityDetailLayout
-        organizationName="Acme Inc"
-        organizationSlug="acme-inc"
         title="Empty Road"
         sidebarItems={[]}
         attachments={<div data-testid="attachments-slot" />}

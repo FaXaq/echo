@@ -141,8 +141,6 @@ export function EventDetail({
   return (
     <>
       <EntityDetailLayout
-        organizationName={event.organization.name}
-        organizationSlug={event.organization.slug}
         icon={
           <span
             className={cn("block size-2.5 shrink-0 rounded-[3px]", eventDotClasses[event.color])}
