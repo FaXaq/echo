@@ -179,6 +179,17 @@ export function AudioPlayerDock({
           />
         </PopoverContent>
       </Popover>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-xs"
+        className="shrink-0 rounded-full"
+        aria-label={t`Close`}
+        onClick={onDismiss}
+      >
+        <X />
+      </Button>
     </div>
   );
 }
