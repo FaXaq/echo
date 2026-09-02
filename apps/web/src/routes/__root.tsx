@@ -17,6 +17,7 @@ import { queryClient } from "../lib/query-client";
 import { getSessionQueryOptions } from "@/services/resources/session";
 import { useSignOutMutation } from "@/services/resources/auth";
 import { AppSidebar } from "@/components/app-sidebar";
+import { AudioPlayerDockContainer } from "@/components/features/audio-player/audio-player-dock-container";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/ui/tooltip";
@@ -127,6 +128,7 @@ function RootContent({ session }: { session: ClientSession | null }) {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      <AudioPlayerDockContainer />
     </SessionProvider>
   );
 }

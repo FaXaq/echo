@@ -38,6 +38,7 @@ import {
   useUploadFileMutation,
   type SongFile,
 } from "@/services/resources/drive";
+import { useAudioPlayerStore } from "@/stores/audio-player-store";
 
 export interface SuspendedSongAttachmentsProps {
   songId: string;
@@ -146,6 +147,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const renameMutation = useRenameFileMutation();
   const [renamingFile, setRenamingFile] = useState<SongFile | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
+  const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
@@ -173,6 +175,14 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
           onDelete={(file) => setDeletingFileId(file.id)}
           onRename={(file) => setRenamingFile(file)}
           onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
+          onPlayAudio={(file) =>
+            requestPlay({
+              id: file.id,
+              filename: file.filename,
+              downloadUrl: file.downloadUrl,
+              contextLabel: file.eventTitle ?? undefined,
+            })
+          }
         />
       )}
 

@@ -34,6 +34,8 @@ import {
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 import { useFolderPath } from "@/hooks/use-folder-path";
+import { getFileDownloadUrl } from "@/services/resources/drive";
+import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { DriveSearchCombobox } from "./drive-search-combobox";
 import { SuspendedDriveQuotaBar } from "./suspended-drive-quota-bar";
 import { DriveBreadcrumbs } from "./drive-breadcrumbs";
@@ -88,6 +90,7 @@ function DriveExplorerContent({
   const tableDragDepthRef = useRef(0);
 
   const { pendingDeleteIds, scheduleDelete, clearPendingDelete } = useDrivePendingDeletes();
+  const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
 
   const createFolderMutation = useCreateFolderMutation();
   const renameFolderMutation = useRenameFolderMutation();
@@ -324,6 +327,18 @@ function DriveExplorerContent({
                   onRename={() => setRenamingFile(original.data)}
                   onDelete={() => setDeletingFile(original.data)}
                   onDownload={() => handleDownloadFile(original.data)}
+                  onPlay={async () => {
+                    const { downloadUrl } = await getFileDownloadUrl({
+                      id: original.data.id,
+                      organizationId,
+                    });
+                    requestPlay({
+                      id: original.data.id,
+                      filename: original.data.filename,
+                      downloadUrl,
+                      contextLabel: original.data.eventTitle ?? undefined,
+                    });
+                  }}
                   bulkDownloadDisabledReason={downloadDisabledReason}
                   onBulkDownload={handleBulkDownload}
                   isBulkDownloading={isDownloading}
