@@ -1,3 +1,9 @@
+## [0.5.0](https://github.com/FaXaq/echo/compare/v0.4.0...v0.5.0) (2026-09-02)
+
+### ✨ Features
+
+* **audio:** add close button to app-wide audio player dock ([#22](https://github.com/FaXaq/echo/issues/22)) ([c632170](https://github.com/FaXaq/echo/commit/c6321701f139cf4029e2367a78e3c1e61a12a2a8))
+
 ## [0.4.0](https://github.com/FaXaq/echo/compare/v0.3.0...v0.4.0) (2026-09-02)
 
 ### ✨ Features
