@@ -35,6 +35,7 @@ export function FileRow({
   onRename,
   onDelete,
   onDownload,
+  onPlay,
   bulkDownloadDisabledReason,
   onBulkDownload,
   isBulkDownloading,
@@ -48,6 +49,7 @@ export function FileRow({
   onRename: () => void;
   onDelete: () => void;
   onDownload: () => void;
+  onPlay?: () => void;
   bulkDownloadDisabledReason: string | null;
   onBulkDownload: () => void;
   isBulkDownloading: boolean;
@@ -72,6 +74,8 @@ export function FileRow({
             onClick={(event) => {
               if (event.shiftKey || event.metaKey || event.ctrlKey) {
                 onToggleSelect(event);
+              } else if (file.kind === "audio" && onPlay) {
+                onPlay();
               }
             }}
             onContextMenu={onContextMenuTrigger}

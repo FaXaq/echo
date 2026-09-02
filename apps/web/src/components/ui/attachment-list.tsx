@@ -26,9 +26,16 @@ export interface AttachmentListProps {
   onDelete?: (file: EventFile) => void;
   onRename?: (file: EventFile) => void;
   onDownload?: (file: EventFile) => void;
+  onPlayAudio?: (file: EventFile) => void;
 }
 
-export function AttachmentList({ files, onDelete, onRename, onDownload }: AttachmentListProps) {
+export function AttachmentList({
+  files,
+  onDelete,
+  onRename,
+  onDownload,
+  onPlayAudio,
+}: AttachmentListProps) {
   const { t } = useLingui();
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
@@ -52,7 +59,9 @@ export function AttachmentList({ files, onDelete, onRename, onDownload }: Attach
               >
                 <AttachmentTrigger
                   aria-label={t`Open ${file.filename}`}
-                  onClick={() => setPreviewId(file.id)}
+                  onClick={() =>
+                    file.kind === "audio" && onPlayAudio ? onPlayAudio(file) : setPreviewId(file.id)
+                  }
                 />
                 <AttachmentMedia>{failed ? <FileWarning /> : <FileText />}</AttachmentMedia>
                 <AttachmentContent>
