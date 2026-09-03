@@ -2,7 +2,15 @@ export type FileKind = "audio" | "video" | "image" | "document";
 export type FileStatus = "pending" | "uploaded";
 
 export const MIME_TYPES_BY_KIND: Record<FileKind, readonly string[]> = {
-  audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/flac", "audio/mp4"],
+  audio: [
+    "audio/mpeg",
+    "audio/wav",
+    "audio/ogg",
+    "audio/flac",
+    "audio/mp4",
+    /* old itunes codec used by iphone voice-recorder */
+    "audio/x-m4a",
+  ],
   video: ["video/mp4", "video/webm", "video/quicktime"],
   image: ["image/png", "image/jpeg", "image/webp", "image/gif"],
   document: [
