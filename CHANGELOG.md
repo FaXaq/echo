@@ -1,3 +1,9 @@
+## [0.5.1](https://github.com/FaXaq/echo/compare/v0.5.0...v0.5.1) (2026-09-03)
+
+### 🐛 Bug Fixes
+
+* **organization-settings:** bump default seats to 4 & can remove member from organization ([#23](https://github.com/FaXaq/echo/issues/23)) ([2b3c574](https://github.com/FaXaq/echo/commit/2b3c574c5bdcf598806d8af5005d3495f7b0f55a))
+
 ## [0.5.0](https://github.com/FaXaq/echo/compare/v0.4.0...v0.5.0) (2026-09-02)
 
 ### ✨ Features
