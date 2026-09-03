@@ -39,6 +39,7 @@ import {
   type SongFile,
 } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
+import { FileUp, Link2, Paperclip } from "lucide-react";
 
 export interface SuspendedSongAttachmentsProps {
   songId: string;
@@ -157,14 +158,18 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
 
   return (
     <div className="flex flex-col gap-3.5">
-      <div className="flex items-center gap-2">
-        <span className="flex-1 text-[13px] font-semibold">{t`Linked files`}</span>
+      <div className="flex items-center justify-end gap-2">
         <Badge variant="outline">
           <Plural value={files.length} one="# file" other="# files" />
         </Badge>
+        <FileUpload
+          onFilesSelected={handleFilesSelected}
+          disabled={uploadMutation.isPending}
+          variant="icon"
+          loading={uploadMutation.isPending}
+        />
       </div>
 
-      <FileUpload onFilesSelected={handleFilesSelected} disabled={uploadMutation.isPending} />
       {uploadMutation.isError && (
         <UploadError error={uploadMutation.error} projectSlug={projectSlug} />
       )}

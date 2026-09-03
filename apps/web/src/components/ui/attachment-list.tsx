@@ -56,6 +56,7 @@ export function AttachmentList({
                 orientation="horizontal"
                 className="w-full"
                 state={failed ? "error" : "done"}
+                size="sm"
               >
                 <AttachmentTrigger
                   aria-label={t`Open ${file.filename}`}
