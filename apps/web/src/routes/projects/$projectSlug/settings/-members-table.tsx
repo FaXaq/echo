@@ -27,6 +27,7 @@ import {
 import type { OrganizationRole, ClientMember, ClientInvitation } from "@echo/auth";
 import { logger } from "@/lib/logger";
 import { translateDynamic } from "@/lib/dynamic-messages";
+import { toast } from "@/components/ui/toast";
 
 interface MembersTableProps {
   members: ClientMember[];
@@ -55,21 +56,39 @@ export function MembersTable({
   const handleCancelInvitation = (invitationId: string) => {
     cancelInvitationMutation.mutate(
       { invitationId },
-      { onError: (error) => logger.error(error, "Failed to cancel invitation:") },
+      {
+        onSuccess: () => toast.add({ title: t`Invitation sent`, type: "success" }),
+        onError: (error) => {
+          toast.add({ title: t`Failed to cancel invitation`, type: "error" });
+          logger.error(error, "Failed to cancel invitation:");
+        },
+      },
     );
   };
 
-  const handleRevoke = (userId: string) => {
+  const handleRevoke = (memberId: string) => {
     removeMemberMutation.mutate(
-      { memberIdOrEmail: userId, organizationId },
-      { onError: (error) => logger.error(error, "Failed to revoke membership:") },
+      { memberIdOrEmail: memberId, organizationId },
+      {
+        onSuccess: () => toast.add({ title: t`Member removed`, type: "success" }),
+        onError: (error) => {
+          toast.add({ title: t`Failed to revoke membership`, type: "error" });
+          logger.error(error, "Failed to revoke membership:");
+        },
+      },
     );
   };
 
   const handleUpdateRole = (memberId: string, role: OrganizationRole) => {
     updateMemberRoleMutation.mutate(
       { memberId, role, organizationId },
-      { onError: (error) => logger.error(error, "Failed to update member role:") },
+      {
+        onSuccess: () => toast.add({ title: t`Role updated`, type: "success" }),
+        onError: (error) => {
+          toast.add({ title: t`Failed to update member role`, type: "error" });
+          logger.error(error, "Failed to update member role:");
+        },
+      },
     );
   };
 
@@ -175,7 +194,7 @@ export function MembersTable({
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>{t`No, keep them`}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleRevoke(member.userId)}>
+                            <AlertDialogAction onClick={() => handleRevoke(member.id)}>
                               {t`Yes, remove`}
                             </AlertDialogAction>
                           </AlertDialogFooter>
