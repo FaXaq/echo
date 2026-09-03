@@ -4,7 +4,7 @@ export const planCatalog = {
   free: {
     limits: {
       storageBytes: 1_000_000_000,
-      memberSeats: 3,
+      memberSeats: 4,
       maxFileSizeBytes: 50_000_000,
     },
     features: {

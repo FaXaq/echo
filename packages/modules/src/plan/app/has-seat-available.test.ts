@@ -8,7 +8,8 @@ describe("seatIsAvailable", () => {
   });
 
   it("rejects a join when seats are exactly full", () => {
-    expect(seatIsAvailable({ used: 3, limit: planCatalog.free.limits.memberSeats })).toBe(false);
+    const limit = planCatalog.free.limits.memberSeats;
+    expect(seatIsAvailable({ used: limit, limit })).toBe(false);
   });
 
   it("rejects a join when already over the seat limit", () => {

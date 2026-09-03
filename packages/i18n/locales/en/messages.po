@@ -66,7 +66,7 @@ msgid "Accept invitation"
 msgstr "Accept invitation"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:74
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:86
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:105
 msgid "Actions"
 msgstr "Actions"
 
@@ -116,7 +116,7 @@ msgstr "All files shared across the project"
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:113
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:132
 msgid "Are you sure you want to cancel this invitation?"
 msgstr "Are you sure you want to cancel this invitation?"
 
@@ -124,7 +124,7 @@ msgstr "Are you sure you want to cancel this invitation?"
 #~ msgid "Are you sure you want to remove this member from the organization?"
 #~ msgstr "Are you sure you want to remove this member from the organization?"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:173
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:192
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Are you sure you want to remove this member from the project?"
 
@@ -219,11 +219,11 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:409
 #: apps/web/src/components/ui/song/song-detail.tsx:118
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:107
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:126
 msgid "Cancel"
 msgstr "Cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:111
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:130
 msgid "Cancel invitation"
 msgstr "Cancel invitation"
 
@@ -488,7 +488,7 @@ msgstr "Edit song"
 #: apps/web/src/components/login-form.tsx:78
 #: apps/web/src/components/signup-form.tsx:121
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:67
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:84
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:103
 msgid "Email"
 msgstr "Email"
 
@@ -566,6 +566,10 @@ msgstr "Every action here is destructive. Please proceed with caution."
 msgid "Failed to accept invitation"
 msgstr "Failed to accept invitation"
 
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:62
+msgid "Failed to cancel invitation"
+msgstr "Failed to cancel invitation"
+
 #: apps/web/src/lib/dynamic-messages.ts:35
 #~ msgid "Failed to create organization"
 #~ msgstr "Failed to create organization"
@@ -590,6 +594,10 @@ msgstr "Failed to invite member"
 msgid "Failed to resend verification email"
 msgstr "Failed to resend verification email"
 
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:75
+msgid "Failed to revoke membership"
+msgstr "Failed to revoke membership"
+
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:47
 msgid "Failed to save lyrics"
 msgstr "Failed to save lyrics"
@@ -597,6 +605,10 @@ msgstr "Failed to save lyrics"
 #: apps/web/src/lib/dynamic-messages.ts:31
 msgid "Failed to send reset email"
 msgstr "Failed to send reset email"
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:88
+msgid "Failed to update member role"
+msgstr "Failed to update member role"
 
 #: apps/web/src/routes/organizations/$organizationSlug/settings/-organization-name-form.tsx:48
 #~ msgid "Failed to update organization name"
@@ -687,6 +699,10 @@ msgstr "Invalid email address"
 #: apps/web/src/routes/accept-invitation.tsx:62
 msgid "Invitation has expired or already been processed. Please, request a new one."
 msgstr "Invitation has expired or already been processed. Please, request a new one."
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:60
+msgid "Invitation sent"
+msgstr "Invitation sent"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:108
 msgid "Invite"
@@ -796,6 +812,10 @@ msgstr "Meeting"
 msgid "Member"
 msgstr "Member"
 
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:73
+msgid "Member removed"
+msgstr "Member removed"
+
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:120
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
 #: apps/web/src/lib/dynamic-messages.ts:46
@@ -811,7 +831,7 @@ msgid "My Project"
 msgstr "My Project"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:83
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:102
 #: apps/web/src/routes/projects/new.tsx:77
 msgid "Name"
 msgstr "Name"
@@ -868,7 +888,7 @@ msgstr "No files yet"
 msgid "No matches"
 msgstr "No matches"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:192
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:211
 msgid "No members yet"
 msgstr "No members yet"
 
@@ -889,11 +909,11 @@ msgstr "No results."
 msgid "No songs yet."
 msgstr "No songs yet."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:117
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:136
 msgid "No, keep it"
 msgstr "No, keep it"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:177
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:196
 msgid "No, keep them"
 msgstr "No, keep them"
 
@@ -985,7 +1005,7 @@ msgstr "Passwords do not match"
 msgid "Pause"
 msgstr "Pause"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:99
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:118
 msgid "Pending"
 msgstr "Pending"
 
@@ -1111,18 +1131,22 @@ msgstr "Reset password"
 msgid "Retry"
 msgstr "Retry"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:167
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:186
 msgid "Revoke"
 msgstr "Revoke"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:171
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:190
 msgid "Revoke membership"
 msgstr "Revoke membership"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:83
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:85
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:104
 msgid "Role"
 msgstr "Role"
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:86
+msgid "Role updated"
+msgstr "Role updated"
 
 #: apps/web/src/components/ui/data-table-pagination.tsx:34
 msgid "Rows per page"
@@ -1425,11 +1449,11 @@ msgstr "Write the lyrics…"
 msgid "Yellow"
 msgstr "Yellow"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:119
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:138
 msgid "Yes, cancel"
 msgstr "Yes, cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:179
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:198
 msgid "Yes, remove"
 msgstr "Yes, remove"
 
