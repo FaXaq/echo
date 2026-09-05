@@ -1,3 +1,9 @@
+## [0.6.2](https://github.com/FaXaq/echo/compare/v0.6.1...v0.6.2) (2026-09-05)
+
+### 🐛 Bug Fixes
+
+* **posthog:** cookieless mode ([#26](https://github.com/FaXaq/echo/issues/26)) ([4f48a21](https://github.com/FaXaq/echo/commit/4f48a2186278c0cfefad6e687e2bda0a3ecb8204))
+
 ## [0.6.1](https://github.com/FaXaq/echo/compare/v0.6.0...v0.6.1) (2026-09-05)
 
 ### 🔧 Chores
