@@ -225,12 +225,7 @@ function DriveExplorerContent({
                 <FolderPlus />
                 <span className="hidden md:inline">{t`New Folder`}</span>
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload />
                 <span className="hidden md:inline">{t`Upload`}</span>
               </Button>
@@ -264,7 +259,7 @@ function DriveExplorerContent({
       <DragDropProvider onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <Table
           containerClassName={cn(
-            "min-h-0 flex-1 border rounded border-border bg-card transition-colors",
+            "min-h-0 border rounded border-border bg-card transition-colors",
             isTableDragActive && "border-dashed border-primary bg-primary/5",
           )}
           className="m-0"
