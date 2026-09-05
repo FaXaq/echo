@@ -20,6 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     accept: "audio/*,video/*,image/*",
+    variant: "box",
     onFilesSelected: (files) => console.log("selected", files),
   },
 };
@@ -27,6 +28,7 @@ export const Default: Story = {
 export const Disabled: Story = {
   args: {
     disabled: true,
+    variant: "box",
     onFilesSelected: (files) => console.log("selected", files),
   },
 };

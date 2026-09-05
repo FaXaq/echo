@@ -17,22 +17,22 @@ export function DriveBreadcrumbs({ projectSlug, path }: { projectSlug: string; p
 
   return (
     <Breadcrumb>
-      <BreadcrumbList className="list-none">
-        <BreadcrumbItem>
+      <BreadcrumbList className="list-none p-0 pb-2 m-0">
+        <BreadcrumbItem className="m-0">
           {isRoot ? (
-            <BreadcrumbPage>{t`Drive`}</BreadcrumbPage>
+            <BreadcrumbPage>{t`/`}</BreadcrumbPage>
           ) : (
             <BreadcrumbLink
               render={<Link to="/projects/$projectSlug/drive" params={{ projectSlug }} />}
             >
-              {t`Drive`}
+              {t`/`}
             </BreadcrumbLink>
           )}
         </BreadcrumbItem>
         {path.map((folder, index) => (
           <Fragment key={folder.id}>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
+            <BreadcrumbSeparator className="m-0" />
+            <BreadcrumbItem className="m-0">
               {index === path.length - 1 ? (
                 <BreadcrumbPage>{folder.name}</BreadcrumbPage>
               ) : (

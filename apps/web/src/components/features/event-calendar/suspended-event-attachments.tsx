@@ -1,23 +1,13 @@
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Plural, Trans, useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { getQuotaError } from "@/lib/quota-error";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog,
   DialogClose,
@@ -30,15 +20,16 @@ import { AttachmentList } from "@/ui/attachment-list";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/components/ui/toast";
 import { downloadFile } from "@/lib/file";
 import {
   getEventFilesQueryOptions,
   useDeleteFileMutation,
   useRenameFileMutation,
-  useUploadFileMutation,
   type EventFile,
 } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
+import { useEventUploadingFiles, useEventUploadMutation } from "./event-upload-context";
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string;
@@ -142,11 +133,13 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const { t } = useLingui();
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId, organizationId }));
-  const uploadMutation = useUploadFileMutation();
+  const uploadMutation = useEventUploadMutation();
+  const pendingFiles = useEventUploadingFiles(eventId);
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
   const [renamingFile, setRenamingFile] = useState<EventFile | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
 
   const handleFilesSelected = (selected: File[]) => {
@@ -155,67 +148,67 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
     });
   };
 
+  const handleDeleteSelected = async (filesToDelete: EventFile[]) => {
+    await Promise.all(
+      filesToDelete.map((file) => deleteMutation.mutateAsync({ id: file.id, organizationId })),
+    );
+    setSelectedIds(new Set());
+    toast.add({ title: t`${filesToDelete.length} files deleted`, type: "success" });
+  };
+
   return (
     <div className="flex flex-col gap-3.5">
-      <div className="flex items-center gap-2">
-        <span className="flex-1 text-[13px] font-semibold">{t`Linked files`}</span>
-        <Badge variant="outline">
-          <Plural value={files.length} one="# file" other="# files" />
-        </Badge>
-      </div>
-
-      <FileUpload onFilesSelected={handleFilesSelected} disabled={uploadMutation.isPending} />
       {uploadMutation.isError && (
         <UploadError error={uploadMutation.error} projectSlug={projectSlug} />
       )}
 
-      {files.length > 0 && (
-        <AttachmentList
-          files={files}
-          onDelete={(file) => setDeletingFileId(file.id)}
-          onRename={(file) => setRenamingFile(file)}
-          onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
-          onPlayAudio={(file) =>
-            requestPlay({
-              id: file.id,
-              filename: file.filename,
-              downloadUrl: file.downloadUrl,
-              contextLabel: file.eventTitle ?? undefined,
-            })
-          }
-        />
-      )}
+      <AttachmentList
+        actions={
+          <FileUpload
+            onFilesSelected={handleFilesSelected}
+            disabled={uploadMutation.isPending}
+            variant="icon"
+            loading={pendingFiles.length > 0}
+          />
+        }
+        files={files}
+        pendingFiles={pendingFiles}
+        selectedIds={selectedIds}
+        onSelect={(file) => setSelectedIds((prev) => new Set(prev).add(file.id))}
+        onUnselect={(file) =>
+          setSelectedIds((prev) => {
+            const next = new Set(prev);
+            next.delete(file.id);
+            return next;
+          })
+        }
+        onDeleteSelected={handleDeleteSelected}
+        onDelete={(file) => setDeletingFileId(file.id)}
+        onRename={(file) => setRenamingFile(file)}
+        onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
+        onPlayAudio={(file) =>
+          requestPlay({
+            id: file.id,
+            filename: file.filename,
+            downloadUrl: file.downloadUrl,
+            contextLabel: file.eventTitle ?? undefined,
+          })
+        }
+      />
 
-      {files.length === 0 && (
-        <p className="py-5 text-center text-[13px] text-muted-foreground">
-          {t`No files linked yet.`}
-        </p>
-      )}
-
-      <AlertDialog
+      <ConfirmDialog
         open={deletingFileId !== null}
         onOpenChange={(open) => !open && setDeletingFileId(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t`Delete this file?`}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t`This will permanently delete the file. This action cannot be undone.`}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t`Cancel`}</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (deletingFileId) deleteMutation.mutate({ id: deletingFileId, organizationId });
-                setDeletingFileId(null);
-              }}
-            >
-              {t`Delete`}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        variant="destructive"
+        title={t`Delete this file?`}
+        description={t`This will permanently delete the file. This action cannot be undone.`}
+        confirmLabel={t`Delete`}
+        onConfirm={async () => {
+          if (!deletingFileId) return;
+          await deleteMutation.mutateAsync({ id: deletingFileId, organizationId });
+          toast.add({ title: t`File deleted`, type: "success" });
+        }}
+      />
 
       <RenameFileDialog
         file={renamingFile}

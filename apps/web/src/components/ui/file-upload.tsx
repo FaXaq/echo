@@ -1,13 +1,16 @@
 import * as React from "react";
-import { UploadCloud } from "lucide-react";
+import { FileUp, Loader, UploadCloud } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 export interface FileUploadProps {
   accept?: string;
   multiple?: boolean;
   disabled?: boolean;
   onFilesSelected: (files: File[]) => void;
+  variant: "box" | "icon";
+  loading?: boolean;
 }
 
 export function FileUpload({
@@ -15,6 +18,8 @@ export function FileUpload({
   multiple = true,
   disabled = false,
   onFilesSelected,
+  variant,
+  loading,
 }: FileUploadProps) {
   const { t } = useLingui();
   const [isDragging, setIsDragging] = React.useState(false);
@@ -24,6 +29,35 @@ export function FileUpload({
     if (disabled || !fileList || fileList.length === 0) return;
     onFilesSelected(Array.from(fileList));
   };
+
+  if (variant === "icon") {
+    return (
+      <>
+        <input
+          ref={inputRef}
+          type="file"
+          aria-label={t`Add files`}
+          className="sr-only"
+          accept={accept}
+          multiple={multiple}
+          disabled={disabled}
+          onChange={(e) => {
+            handleFiles(e.target.files);
+            e.target.value = "";
+          }}
+        />
+        <Button
+          size="icon-sm"
+          variant="outline"
+          aria-label="Submit"
+          className="rounded-full"
+          onClick={() => inputRef.current?.click()}
+        >
+          {loading ? <Loader /> : <FileUp />}
+        </Button>
+      </>
+    );
+  }
 
   return (
     <div

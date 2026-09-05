@@ -1,3 +1,9 @@
+## [0.6.0](https://github.com/FaXaq/echo/compare/v0.5.1...v0.6.0) (2026-09-05)
+
+### ✨ Features
+
+* **files:** new file management for attachment & fix ui on drive + attachments ([#24](https://github.com/FaXaq/echo/issues/24)) ([e7fd5b5](https://github.com/FaXaq/echo/commit/e7fd5b52c9eeb5a83f65cbd49681bcc4f4e4e098))
+
 ## [0.5.1](https://github.com/FaXaq/echo/compare/v0.5.0...v0.5.1) (2026-09-03)
 
 ### 🐛 Bug Fixes

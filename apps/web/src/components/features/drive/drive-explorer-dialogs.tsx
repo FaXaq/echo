@@ -1,4 +1,4 @@
-import { useLingui } from "@lingui/react/macro";
+import { Plural, useLingui } from "@lingui/react/macro";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { Folder, OrganizationFile } from "@/services/resources/drive";
 import { FolderNameDialog } from "./folder-name-dialog";
@@ -19,6 +19,9 @@ export function DriveExplorerDialogs({
   deletingFile,
   onDeletingFileChange,
   onConfirmDeleteFile,
+  bulkDeleteCount,
+  onBulkDeleteCountChange,
+  onConfirmBulkDeleteFiles,
 }: {
   creatingFolder: boolean;
   onCreatingFolderChange: (open: boolean) => void;
@@ -34,7 +37,10 @@ export function DriveExplorerDialogs({
   onRenameFile: (filename: string) => void;
   deletingFile: OrganizationFile | null;
   onDeletingFileChange: (open: boolean) => void;
-  onConfirmDeleteFile: () => void;
+  onConfirmDeleteFile: () => void | Promise<void>;
+  bulkDeleteCount: number;
+  onBulkDeleteCountChange: (open: boolean) => void;
+  onConfirmBulkDeleteFiles: () => Promise<void>;
 }) {
   const { t } = useLingui();
 
@@ -81,6 +87,16 @@ export function DriveExplorerDialogs({
         description={t`This permanently deletes the file, including from any event or song it's attached to. This action cannot be undone.`}
         confirmLabel={t`Delete`}
         onConfirm={onConfirmDeleteFile}
+      />
+
+      <ConfirmDialog
+        open={bulkDeleteCount > 0}
+        onOpenChange={onBulkDeleteCountChange}
+        variant="destructive"
+        title={<Plural value={bulkDeleteCount} one="Delete # file?" other="Delete # files?" />}
+        description={t`This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone.`}
+        confirmLabel={t`Delete`}
+        onConfirm={onConfirmBulkDeleteFiles}
       />
     </>
   );
