@@ -1,5 +1,4 @@
 import { useNavigate, createFileRoute } from "@tanstack/react-router";
-import { Trans } from "@lingui/react/macro";
 import { z } from "zod";
 import { DriveExplorer } from "@/components/features/drive/drive-explorer";
 import { driveSortFieldSchema, driveSortOrderSchema } from "@/services/resources/drive";

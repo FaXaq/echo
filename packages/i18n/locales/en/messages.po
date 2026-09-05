@@ -19,12 +19,12 @@ msgstr ""
 #~ msgstr "{0, plural, one {# file} other {# files}}"
 
 #. placeholder {0}: selectedKeys.size
-#: apps/web/src/components/features/drive/drive-explorer.tsx:394
+#: apps/web/src/components/features/drive/drive-explorer.tsx:403
 msgid "{0, plural, one {# item selected} other {# items selected}}"
 msgstr "{0, plural, one {# item selected} other {# items selected}}"
 
 #. placeholder {0}: visibleFolders.length + visibleFiles.length
-#: apps/web/src/components/features/drive/drive-explorer.tsx:386
+#: apps/web/src/components/features/drive/drive-explorer.tsx:395
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# item} other {# items}}"
 
@@ -78,6 +78,11 @@ msgstr "{bulkDeleteCount, plural, one {Delete # file?} other {Delete # files?}}"
 #: apps/web/src/components/features/drive/drive-explorer.tsx:461
 #~ msgid "{count, plural, one {# item selected} other {# items selected}}"
 #~ msgstr "{count, plural, one {# item selected} other {# items selected}}"
+
+#: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:23
+#: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:28
+msgid "/"
+msgstr "/"
 
 #: apps/web/src/components/forgot-password-form.tsx:89
 msgid "<0>Back to login</0>"
@@ -138,8 +143,8 @@ msgid "All day"
 msgstr "All day"
 
 #: apps/web/src/routes/projects/$projectSlug/drive/$folderId.tsx:31
-msgid "All files shared across the project"
-msgstr "All files shared across the project"
+#~ msgid "All files shared across the project"
+#~ msgstr "All files shared across the project"
 
 #: apps/web/src/components/signup-form.tsx:178
 msgid "Already have an account? <0>Sign in</0>"
@@ -320,11 +325,11 @@ msgstr "Could not load plan usage"
 msgid "Couldn't build the download"
 msgstr "Couldn't build the download"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:450
+#: apps/web/src/components/features/drive/drive-explorer.tsx:459
 msgid "Couldn't delete file"
 msgstr "Couldn't delete file"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:427
+#: apps/web/src/components/features/drive/drive-explorer.tsx:436
 msgid "Couldn't delete folder"
 msgstr "Couldn't delete folder"
 
@@ -341,7 +346,7 @@ msgstr "Couldn't download the selected files"
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:463
+#: apps/web/src/components/features/drive/drive-explorer.tsx:472
 msgid "Couldn't load Drive"
 msgstr "Couldn't load Drive"
 
@@ -359,11 +364,11 @@ msgstr "Couldn't load songs"
 msgid "Couldn't load this file"
 msgstr "Couldn't load this file"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:439
+#: apps/web/src/components/features/drive/drive-explorer.tsx:448
 msgid "Couldn't rename file"
 msgstr "Couldn't rename file"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:413
+#: apps/web/src/components/features/drive/drive-explorer.tsx:422
 msgid "Couldn't rename folder"
 msgstr "Couldn't rename folder"
 
@@ -512,10 +517,7 @@ msgstr "Download"
 msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
-#: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:23
-#: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:28
 #: apps/web/src/hooks/use-navigation.ts:68
-#: apps/web/src/routes/projects/$projectSlug/drive/$folderId.tsx:28
 msgid "Drive"
 msgstr "Drive"
 
@@ -668,7 +670,7 @@ msgstr "Failed to update member role"
 msgid "Failed to update project name"
 msgstr "Failed to update project name"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:448
+#: apps/web/src/components/features/drive/drive-explorer.tsx:457
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:209
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:209
 msgid "File deleted"
@@ -682,7 +684,7 @@ msgstr "Files"
 msgid "Fill in the details below to get started"
 msgstr "Fill in the details below to get started"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:421
+#: apps/web/src/components/features/drive/drive-explorer.tsx:430
 msgid "Folder deleted"
 msgstr "Folder deleted"
 
@@ -908,7 +910,7 @@ msgstr "New event"
 msgid "New folder"
 msgstr "New folder"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:219
+#: apps/web/src/components/features/drive/drive-explorer.tsx:226
 msgid "New Folder"
 msgstr "New Folder"
 
@@ -946,7 +948,7 @@ msgstr "No files here yet."
 #~ msgid "No files linked yet."
 #~ msgstr "No files linked yet."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:376
+#: apps/web/src/components/features/drive/drive-explorer.tsx:385
 msgid "No files yet"
 msgstr "No files yet"
 
@@ -1270,7 +1272,7 @@ msgstr "Select"
 msgid "Select {0}"
 msgstr "Select {0}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:299
+#: apps/web/src/components/features/drive/drive-explorer.tsx:308
 msgid "Select all"
 msgstr "Select all"
 
@@ -1374,7 +1376,7 @@ msgstr "This event doesn't exist or has been deleted."
 msgid "This file is too large for your plan."
 msgstr "This file is too large for your plan."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:376
+#: apps/web/src/components/features/drive/drive-explorer.tsx:385
 msgid "This folder is empty"
 msgstr "This folder is empty"
 
@@ -1482,7 +1484,7 @@ msgstr "Undo"
 msgid "Update"
 msgstr "Update"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:228
+#: apps/web/src/components/features/drive/drive-explorer.tsx:235
 msgid "Upload"
 msgstr "Upload"
 
@@ -1490,7 +1492,7 @@ msgstr "Upload"
 msgid "Upload failed"
 msgstr "Upload failed"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:235
+#: apps/web/src/components/features/drive/drive-explorer.tsx:242
 msgid "Upload files"
 msgstr "Upload files"
 
