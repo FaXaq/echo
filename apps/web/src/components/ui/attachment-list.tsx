@@ -1,6 +1,17 @@
 import { useState, type ReactNode } from "react";
-import { Trans, useLingui } from "@lingui/react/macro";
-import { DownloadIcon, FileText, FileWarning, MoreVertical, Music, Pen, Trash } from "lucide-react";
+import { Plural, Trans, useLingui } from "@lingui/react/macro";
+import {
+  DownloadIcon,
+  FileText,
+  FileWarning,
+  ListChecks,
+  MoreVertical,
+  Music,
+  Pen,
+  Square,
+  SquareCheck,
+  Trash,
+} from "lucide-react";
 import type { FileKind } from "@echo/modules/drive/domain";
 import {
   Attachment,
@@ -12,11 +23,13 @@ import {
   AttachmentTrigger,
 } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -37,6 +50,10 @@ export interface AttachmentListProps {
   files: EventFile[];
   pendingFiles?: PendingAttachment[];
   actions?: ReactNode;
+  selectedIds?: Set<string>;
+  onSelect?: (file: EventFile) => void;
+  onUnselect?: (file: EventFile) => void;
+  onDeleteSelected?: (files: EventFile[]) => Promise<void>;
   onDelete?: (file: EventFile) => void;
   onRename?: (file: EventFile) => void;
   onDownload?: (file: EventFile) => void;
@@ -46,6 +63,7 @@ export interface AttachmentListProps {
 type AttachmentTab = "audio" | "gallery" | "misc";
 
 const TAB_ORDER: AttachmentTab[] = ["audio", "gallery", "misc"];
+const EMPTY_SELECTION: Set<string> = new Set();
 
 function tabForKind(kind: FileKind | null | undefined): AttachmentTab {
   if (kind === "audio") return "audio";
@@ -67,6 +85,8 @@ function AttachmentListItems({
   files,
   pendingFiles,
   failedIds,
+  selectedIds,
+  onToggleSelect,
   onOpen,
   onPlayAudio,
   onRename,
@@ -76,6 +96,8 @@ function AttachmentListItems({
   files: EventFile[];
   pendingFiles: PendingAttachment[];
   failedIds: Set<string>;
+  selectedIds: Set<string>;
+  onToggleSelect: (file: EventFile) => void;
   onOpen: (id: string) => void;
   onPlayAudio?: (file: EventFile) => void;
   onRename?: (file: EventFile) => void;
@@ -110,12 +132,13 @@ function AttachmentListItems({
       ))}
       {files.map((file) => {
         const failed = failedIds.has(file.id);
+        const selected = selectedIds.has(file.id);
         return (
           <li key={file.id} className="m-0 p-0 list-none">
             <Attachment
               orientation="horizontal"
               className="w-full"
-              state={failed ? "error" : "done"}
+              state={failed ? "error" : selected ? "selected" : "done"}
               size="sm"
               onContextMenu={(event) => {
                 event.preventDefault();
@@ -124,9 +147,15 @@ function AttachmentListItems({
             >
               <AttachmentTrigger
                 aria-label={t`Open ${file.filename}`}
-                onClick={() =>
-                  file.kind === "audio" && onPlayAudio ? onPlayAudio(file) : onOpen(file.id)
-                }
+                onClick={(event) => {
+                  if (event.ctrlKey || event.metaKey) {
+                    event.preventDefault();
+                    onToggleSelect(file);
+                    return;
+                  }
+                  if (file.kind === "audio" && onPlayAudio) onPlayAudio(file);
+                  else onOpen(file.id);
+                }}
               />
               <AttachmentMedia>
                 {match({ failed, kind: file.kind })
@@ -160,6 +189,11 @@ function AttachmentListItems({
                     <MoreVertical />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => onToggleSelect(file)}>
+                      {selected ? <SquareCheck /> : <Square />}
+                      {selected ? t`Deselect` : t`Select`}
+                    </DropdownMenuItem>
+                    {(onRename || onDownload || onDelete) && <DropdownMenuSeparator />}
                     {onRename && (
                       <DropdownMenuItem
                         onClick={() => {
@@ -201,6 +235,8 @@ function AttachmentGalleryGrid({
   files,
   pendingFiles,
   failedIds,
+  selectedIds,
+  onToggleSelect,
   onOpen,
   onRename,
   onDownload,
@@ -209,6 +245,8 @@ function AttachmentGalleryGrid({
   files: EventFile[];
   pendingFiles: PendingAttachment[];
   failedIds: Set<string>;
+  selectedIds: Set<string>;
+  onToggleSelect: (file: EventFile) => void;
   onOpen: (id: string) => void;
   onRename?: (file: EventFile) => void;
   onDownload?: (file: EventFile) => void;
@@ -242,12 +280,13 @@ function AttachmentGalleryGrid({
       ))}
       {files.map((file) => {
         const failed = failedIds.has(file.id);
+        const selected = selectedIds.has(file.id);
         return (
           <li key={file.id} className="m-0 p-0 list-none">
             <Attachment
               orientation="vertical"
               className="w-full"
-              state={failed ? "error" : "done"}
+              state={failed ? "error" : selected ? "selected" : "done"}
               size="default"
               onContextMenu={(event) => {
                 event.preventDefault();
@@ -256,7 +295,14 @@ function AttachmentGalleryGrid({
             >
               <AttachmentTrigger
                 aria-label={t`Open ${file.filename}`}
-                onClick={() => onOpen(file.id)}
+                onClick={(event) => {
+                  if (event.ctrlKey || event.metaKey) {
+                    event.preventDefault();
+                    onToggleSelect(file);
+                    return;
+                  }
+                  onOpen(file.id);
+                }}
               />
               <AttachmentMedia variant={failed ? "icon" : "image"}>
                 {match({ failed, kind: file.kind })
@@ -303,6 +349,11 @@ function AttachmentGalleryGrid({
                     <MoreVertical />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => onToggleSelect(file)}>
+                      {selected ? <SquareCheck /> : <Square />}
+                      {selected ? t`Deselect` : t`Select`}
+                    </DropdownMenuItem>
+                    {(onRename || onDownload || onDelete) && <DropdownMenuSeparator />}
                     {onRename && (
                       <DropdownMenuItem
                         onClick={() => {
@@ -340,10 +391,60 @@ function AttachmentGalleryGrid({
   );
 }
 
+function AttachmentSelectionMenu({
+  files,
+  onDeleteSelected,
+}: {
+  files: EventFile[];
+  onDeleteSelected: (files: EventFile[]) => Promise<void>;
+}) {
+  const { t } = useLingui();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label={t`Actions for selected files`}
+            />
+          }
+        >
+          <ListChecks />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
+            <Trash />
+            {t`Delete`}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        variant="destructive"
+        title={<Plural value={files.length} one="Delete # file?" other="Delete # files?" />}
+        description={t`This will permanently delete the selected files. This action cannot be undone.`}
+        confirmLabel={t`Delete`}
+        onConfirm={() => onDeleteSelected(files)}
+      />
+    </>
+  );
+}
+
 export function AttachmentList({
   files,
   pendingFiles = [],
   actions,
+  selectedIds = EMPTY_SELECTION,
+  onSelect,
+  onUnselect,
+  onDeleteSelected,
   onDelete,
   onRename,
   onDownload,
@@ -359,7 +460,11 @@ export function AttachmentList({
   const markFailed = (id: string) =>
     setFailedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
 
+  const onToggleSelect = (file: EventFile) =>
+    selectedIds.has(file.id) ? onUnselect?.(file) : onSelect?.(file);
+
   const previewFile = files.find((file) => file.id === previewId);
+  const selectedFiles = files.filter((file) => selectedIds.has(file.id));
 
   const audioFiles = files.filter((file) => tabForKind(file.kind) === "audio");
   const galleryFiles = files.filter((file) => tabForKind(file.kind) === "gallery");
@@ -370,6 +475,8 @@ export function AttachmentList({
 
   const sharedProps = {
     failedIds,
+    selectedIds,
+    onToggleSelect,
     onOpen: setPreviewId,
     onPlayAudio,
     onRename,
@@ -392,7 +499,12 @@ export function AttachmentList({
               <Trans>Misc ({miscFiles.length + miscPending.length})</Trans>
             </TabsTrigger>
           </TabsList>
-          {actions}
+          <div className="flex items-center gap-1.5">
+            {actions}
+            {selectedFiles.length > 0 && onDeleteSelected && (
+              <AttachmentSelectionMenu files={selectedFiles} onDeleteSelected={onDeleteSelected} />
+            )}
+          </div>
         </div>
         <ScrollArea className="max-h-[420px]">
           <TabsContent value="audio">
@@ -403,6 +515,8 @@ export function AttachmentList({
               files={galleryFiles}
               pendingFiles={galleryPending}
               failedIds={failedIds}
+              selectedIds={selectedIds}
+              onToggleSelect={onToggleSelect}
               onOpen={setPreviewId}
               onRename={onRename}
               onDownload={onDownload}

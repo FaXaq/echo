@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@/lib/test-utils";
+import { fireEvent, render, screen, waitFor } from "@/lib/test-utils";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { AttachmentList } from "./attachment-list";
@@ -157,6 +157,74 @@ describe("AttachmentList", () => {
 
     await user.click(await screen.findByText("Delete"));
     expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ id: "image-1" }));
+  });
+
+  it("toggles selection with ctrl+click instead of opening the preview", async () => {
+    const onSelect = vi.fn();
+    const onUnselect = vi.fn();
+    const { rerender } = render(
+      <AttachmentList files={[makeFile()]} onSelect={onSelect} onUnselect={onUnselect} />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Open setlist.pdf" }), { ctrlKey: true });
+    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    rerender(
+      <AttachmentList
+        files={[makeFile()]}
+        selectedIds={new Set(["doc-1"])}
+        onSelect={onSelect}
+        onUnselect={onUnselect}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Open setlist.pdf" }), { ctrlKey: true });
+    expect(onUnselect).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
+  });
+
+  it("toggles selection via the Select entry in the actions menu", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(<AttachmentList files={[makeFile()]} onSelect={onSelect} />);
+
+    await user.click(screen.getByRole("button", { name: "Actions for setlist.pdf" }));
+    await user.click(await screen.findByText("Select"));
+
+    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
+  });
+
+  it("shows a bulk actions menu that deletes the selection with a loader until it completes", async () => {
+    const user = userEvent.setup();
+    let resolveDelete: () => void = () => {};
+    const onDeleteSelected = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveDelete = resolve;
+        }),
+    );
+
+    render(
+      <AttachmentList
+        files={[makeFile(), makeFile({ id: "doc-2", filename: "chart.pdf" })]}
+        selectedIds={new Set(["doc-1", "doc-2"])}
+        onDeleteSelected={onDeleteSelected}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Actions for selected files" }));
+    await user.click(await screen.findByText("Delete"));
+
+    expect(await screen.findByText("Delete 2 files?")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+    expect(onDeleteSelected).toHaveBeenCalledWith([
+      expect.objectContaining({ id: "doc-1" }),
+      expect.objectContaining({ id: "doc-2" }),
+    ]);
+    expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
+
+    resolveDelete();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
   it("shows an error state in the row and preview dialog when the file fails to load", async () => {

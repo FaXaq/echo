@@ -86,6 +86,7 @@ function DriveExplorerContent({
   const [deletingFolder, setDeletingFolder] = useState<Folder | null>(null);
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
   const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
+  const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
   const [isTableDragActive, setIsTableDragActive] = useState(false);
   const tableDragDepthRef = useRef(0);
 
@@ -170,6 +171,28 @@ function DriveExplorerContent({
     clearSelection,
   });
 
+  const deleteDisabledReason =
+    selectedFolderCount > 0 ? t`Only a selection of files can be deleted together` : null;
+
+  const handleBulkDeleteFiles = async () => {
+    const results = await Promise.allSettled(
+      selectedFiles.map((file) => deleteFileMutation.mutateAsync({ id: file.id, organizationId })),
+    );
+    const failedNames = results.flatMap((result, index) =>
+      result.status === "rejected" ? [selectedFiles[index].filename] : [],
+    );
+
+    clearSelection();
+    if (failedNames.length === 0) {
+      toast.add({ title: t`${selectedFiles.length} files deleted`, type: "success" });
+    } else {
+      toast.add({
+        title: t`${selectedFiles.length - failedNames.length} of ${selectedFiles.length} deleted — failed: ${failedNames.join(", ")}`,
+        type: "error",
+      });
+    }
+  };
+
   const navigateToFolder = (id: string | null) => {
     if (id === null) {
       navigate({ to: "/projects/$projectSlug/drive", params: { projectSlug } });
@@ -184,46 +207,57 @@ function DriveExplorerContent({
   return (
     <div className="flex flex-1 flex-col min-h-0 gap-3">
       <div className="flex items-center justify-between gap-3">
-        <DriveBreadcrumbs projectSlug={projectSlug} path={path} />
-        <div className="flex items-center gap-2">
-          <DriveSearchCombobox
-            organizationId={organizationId}
-            onSelectFolder={(id) => navigateToFolder(id)}
-            onSelectFile={(file) => navigateToFolder(file.folderId)}
-          />
-          <Button type="button" variant="outline" size="sm" onClick={() => setCreatingFolder(true)}>
-            <FolderPlus />
-            {t`New Folder`}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Upload />
-            {t`Upload`}
-          </Button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            className="sr-only"
-            aria-label={t`Upload files`}
-            onChange={(event) => {
-              const files = Array.from(event.target.files ?? []);
-              files.forEach((file) => uploadFile(file, folderId));
-              event.target.value = "";
-            }}
-          />
-          {selectedKeys.size > 0 && (
-            <SelectionActionsMenu
-              downloadDisabledReason={downloadDisabledReason}
-              isDownloading={isDownloading}
-              onDownload={handleBulkDownload}
-              onClear={clearSelection}
+        <div className="flex flex-col w-full">
+          <DriveBreadcrumbs projectSlug={projectSlug} path={path} />
+          <div className="flex items-center justify-between gap-2 w-full">
+            <DriveSearchCombobox
+              organizationId={organizationId}
+              onSelectFolder={(id) => navigateToFolder(id)}
+              onSelectFile={(file) => navigateToFolder(file.folderId)}
             />
-          )}
+            <div className="flex gap-2 items-center">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setCreatingFolder(true)}
+              >
+                <FolderPlus />
+                <span className="hidden md:inline">{t`New Folder`}</span>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload />
+                <span className="hidden md:inline">{t`Upload`}</span>
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                className="sr-only"
+                aria-label={t`Upload files`}
+                onChange={(event) => {
+                  const files = Array.from(event.target.files ?? []);
+                  files.forEach((file) => uploadFile(file, folderId));
+                  event.target.value = "";
+                }}
+              />
+              {selectedKeys.size > 0 && (
+                <SelectionActionsMenu
+                  downloadDisabledReason={downloadDisabledReason}
+                  isDownloading={isDownloading}
+                  onDownload={handleBulkDownload}
+                  deleteDisabledReason={deleteDisabledReason}
+                  onDelete={() => setConfirmingBulkDelete(true)}
+                  onClear={clearSelection}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -347,7 +381,7 @@ function DriveExplorerContent({
             })}
             {isEmpty && (
               <TableRow>
-                <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   {folderId === null ? t`No files yet` : t`This folder is empty`}
                 </TableCell>
               </TableRow>
@@ -416,21 +450,18 @@ function DriveExplorerContent({
         }}
         deletingFile={deletingFile}
         onDeletingFileChange={(open) => !open && setDeletingFile(null)}
-        onConfirmDeleteFile={() => {
+        onConfirmDeleteFile={async () => {
           if (!deletingFile) return;
-          const { id } = deletingFile;
-          scheduleDelete(id, t`File deleted`, () =>
-            deleteFileMutation.mutate(
-              { id, organizationId },
-              {
-                onError: () => {
-                  clearPendingDelete(id);
-                  toast.add({ title: t`Couldn't delete file`, type: "error" });
-                },
-              },
-            ),
-          );
+          try {
+            await deleteFileMutation.mutateAsync({ id: deletingFile.id, organizationId });
+            toast.add({ title: t`File deleted`, type: "success" });
+          } catch {
+            toast.add({ title: t`Couldn't delete file`, type: "error" });
+          }
         }}
+        bulkDeleteCount={confirmingBulkDelete ? selectedFiles.length : 0}
+        onBulkDeleteCountChange={(open) => !open && setConfirmingBulkDelete(false)}
+        onConfirmBulkDeleteFiles={handleBulkDeleteFiles}
       />
     </div>
   );

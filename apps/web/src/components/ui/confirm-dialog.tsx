@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useLingui } from "@lingui/react/macro";
 import {
   AlertDialog,
@@ -10,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Spinner } from "@/components/ui/spinner";
 
 export interface ConfirmDialogProps {
   open: boolean;
@@ -19,7 +20,7 @@ export interface ConfirmDialogProps {
   confirmLabel: ReactNode;
   cancelLabel?: ReactNode;
   variant?: "default" | "destructive";
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
 }
 
 export function ConfirmDialog({
@@ -33,24 +34,36 @@ export function ConfirmDialog({
   onConfirm,
 }: ConfirmDialogProps) {
   const { t } = useLingui();
+  const [isPending, setIsPending] = useState(false);
+
+  const handleConfirm = async () => {
+    const result = onConfirm();
+    if (result instanceof Promise) {
+      setIsPending(true);
+      try {
+        await result;
+      } finally {
+        setIsPending(false);
+      }
+    }
+    onOpenChange(false);
+  };
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onOpenChange={(next) => !isPending && onOpenChange(next)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{cancelLabel ?? t`Cancel`}</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>{cancelLabel ?? t`Cancel`}</AlertDialogCancel>
           <AlertDialogAction
             variant={variant === "destructive" ? "destructive" : undefined}
-            onClick={() => {
-              onConfirm();
-              onOpenChange(false);
-            }}
+            disabled={isPending}
+            onClick={handleConfirm}
           >
-            {confirmLabel}
+            {isPending ? <Spinner /> : confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

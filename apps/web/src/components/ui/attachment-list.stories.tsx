@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { AttachmentList } from "@/components/ui/attachment-list";
 import { Button } from "@/components/ui/button";
@@ -157,4 +158,49 @@ export const WithActions: Story = {
     onRename: () => {},
     onDownload: () => {},
   },
+};
+
+function WithSelectionDemo() {
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const files = [
+    makeFile({ id: "file-1", filename: "setlist.pdf" }),
+    makeFile({
+      id: "file-2",
+      kind: "audio",
+      mimeType: "audio/mpeg",
+      filename: "demo.mp3",
+      originalFilename: "demo.mp3",
+      sizeBytes: 6_400_000,
+    }),
+  ];
+
+  return (
+    <AttachmentList
+      files={files}
+      selectedIds={selectedIds}
+      onSelect={(file) => setSelectedIds((prev) => new Set(prev).add(file.id))}
+      onUnselect={(file) =>
+        setSelectedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(file.id);
+          return next;
+        })
+      }
+      onDeleteSelected={async (deleted) => {
+        setSelectedIds((prev) => {
+          const next = new Set(prev);
+          deleted.forEach((file) => next.delete(file.id));
+          return next;
+        });
+      }}
+      onDelete={() => {}}
+      onRename={() => {}}
+      onDownload={() => {}}
+    />
+  );
+}
+
+export const WithSelection: Story = {
+  args: { files: [] },
+  render: () => <WithSelectionDemo />,
 };
