@@ -1,3 +1,9 @@
+## [0.6.1](https://github.com/FaXaq/echo/compare/v0.6.0...v0.6.1) (2026-09-05)
+
+### 🔧 Chores
+
+* **posthog:** first integration ([#25](https://github.com/FaXaq/echo/issues/25)) ([51989b7](https://github.com/FaXaq/echo/commit/51989b7db1c09bbc757469188675c878cf1bad92))
+
 ## [0.6.0](https://github.com/FaXaq/echo/compare/v0.5.1...v0.6.0) (2026-09-05)
 
 ### ✨ Features
