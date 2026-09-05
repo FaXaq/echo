@@ -14,6 +14,8 @@ const { key, getResourceKey } = initResourceKey("drive");
 
 export { key };
 
+export const uploadFileMutationKey = ["drive", "uploadFile"] as const;
+
 export type EventFile = RouterOutputs["drive"]["listEventFiles"][number];
 export type SongFile = RouterOutputs["drive"]["listSongFiles"][number];
 export type OrganizationFile = RouterOutputs["drive"]["listOrganizationFiles"][number];
@@ -180,6 +182,14 @@ export function getDriveSearchQueryOptions(opts: { organizationId: string; query
   });
 }
 
+export interface UploadFileInput {
+  eventId?: string;
+  songId?: string;
+  folderId?: string | null;
+  organizationId: string;
+  file: File;
+}
+
 export function useUploadFileMutation({
   onSuccess,
 }: {
@@ -188,13 +198,8 @@ export function useUploadFileMutation({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: {
-      eventId?: string;
-      songId?: string;
-      folderId?: string | null;
-      organizationId: string;
-      file: File;
-    }) => {
+    mutationKey: uploadFileMutationKey,
+    mutationFn: async (input: UploadFileInput) => {
       const { fileId, uploadUrl } = await apiClient.drive.createUpload.mutate({
         eventId: input.eventId,
         songId: input.songId,
