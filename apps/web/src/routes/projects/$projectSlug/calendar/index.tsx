@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { usePostHog } from "posthog-js/react";
 
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -26,6 +27,7 @@ function OrganizationCalendarPage() {
   const { projectSlug } = Route.useParams();
   const search = Route.useSearch();
   const navigate = useNavigate();
+  const posthog = usePostHog();
   const { data: events = [] } = useQuery(getEventsQueryOptions({ organizationId }));
 
   const createEventMutation = useCreateEventMutation();
@@ -37,14 +39,17 @@ function OrganizationCalendarPage() {
 
   const handleEventCreate = async (event: ViewEvent) => {
     await createEventMutation.mutateAsync(fromViewEvent(event));
+    posthog.capture("calendar_event_created");
   };
 
   const handleEventUpdate = async (event: ViewEvent) => {
     await updateEventMutation.mutateAsync({ id: event.id, ...fromViewEvent(event) });
+    posthog.capture("calendar_event_updated");
   };
 
   const handleEventDelete = async (id: string) => {
     await deleteEventMutation.mutateAsync({ id });
+    posthog.capture("calendar_event_deleted");
   };
 
   const handleEventClick = (event: ViewEvent) => {

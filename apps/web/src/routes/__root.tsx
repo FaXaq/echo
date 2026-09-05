@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import posthog from "posthog-js";
+import { PostHogProvider } from "posthog-js/react";
 import { i18n } from "@lingui/core";
 import { toLocale } from "@echo/i18n";
 import { detectBrowserLocale } from "../i18n";
@@ -30,6 +32,29 @@ import { Toaster } from "@/components/ui/toast";
 import { DynamicBreadcrumb } from "./-dynamic-breadcrumb";
 import { DynamicTitle } from "./-dynamic-title";
 import { PageMetaProvider } from "@/contexts/page-meta";
+
+const posthogProjectToken = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
+const posthogHost = import.meta.env.VITE_PUBLIC_POSTHOG_HOST;
+const missingPostHogVariable = !posthogProjectToken
+  ? "VITE_PUBLIC_POSTHOG_PROJECT_TOKEN"
+  : !posthogHost
+    ? "VITE_PUBLIC_POSTHOG_HOST"
+    : undefined;
+
+if (missingPostHogVariable && import.meta.env.DEV) {
+  throw new Error(
+    `${missingPostHogVariable} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${missingPostHogVariable} is configured`,
+  );
+}
+
+if (posthogProjectToken && posthogHost) {
+  posthog.init(posthogProjectToken, {
+    api_host: posthogHost,
+    defaults: "2026-01-30",
+    capture_exceptions: true,
+    debug: import.meta.env.DEV,
+  });
+}
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: () => {
@@ -63,26 +88,55 @@ function RootLayout() {
     session?.user?.theme && isTheme(session.user.theme) ? session.user.theme : undefined;
 
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
-            <PageMetaProvider>
-              <DynamicTitle />
-              <RootContent session={session} />
-              <Toaster />
-            </PageMetaProvider>
-          </ThemeProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </trpc.Provider>
+    <PostHogRoot>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
+              <PageMetaProvider>
+                <DynamicTitle />
+                <RootContent session={session} />
+                <Toaster />
+              </PageMetaProvider>
+            </ThemeProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </trpc.Provider>
+    </PostHogRoot>
   );
+}
+
+function PostHogRoot({ children }: { children: ReactNode }) {
+  if (missingPostHogVariable) {
+    return children;
+  }
+
+  return <PostHogProvider client={posthog}>{children}</PostHogProvider>;
 }
 
 function RootContent({ session }: { session: ClientSession | null }) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const signOutMutation = useSignOutMutation();
+  const identifiedUserId = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (!session || missingPostHogVariable || identifiedUserId.current === session.user.id) {
+      return;
+    }
+
+    if (identifiedUserId.current) {
+      posthog.reset();
+    }
+
+    posthog.identify(session.user.id, {
+      email: session.user.email,
+      name: session.user.name,
+      username: session.user.username,
+      impersonatedBy: session.session.impersonatedBy,
+    });
+    identifiedUserId.current = session.user.id;
+  }, [session?.user.id]);
 
   if (!session) {
     if (
@@ -98,6 +152,10 @@ function RootContent({ session }: { session: ClientSession | null }) {
   const handleLogout = () => {
     signOutMutation.mutate(undefined, {
       onSuccess: async () => {
+        if (!missingPostHogVariable) {
+          posthog.reset();
+          identifiedUserId.current = undefined;
+        }
         await router.invalidate();
         router.navigate({ to: "/" });
       },

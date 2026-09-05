@@ -3,6 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
+import { usePostHog } from "posthog-js/react";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,6 +33,7 @@ export interface SuspendedSongDetailProps {
 
 function SongDetailContent({ songId, organizationId, pathname, onBack }: SuspendedSongDetailProps) {
   const { t } = useLingui();
+  const posthog = usePostHog();
   const { data: song } = useSuspenseQuery(getSongQueryOptions({ songId, organizationId }));
   const [dialogState, setDialogState] = useState<SongDialogState>(null);
   const [lyrics, setLyrics] = useState(() => song.lyrics ?? "");
@@ -41,7 +43,12 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
 
   useSyncPageMeta(pathname, song.title, song.title);
 
-  const updateSongMutation = useUpdateSongMutation({ onSuccess: () => setDialogState(null) });
+  const updateSongMutation = useUpdateSongMutation({
+    onSuccess: () => {
+      posthog.capture("song_updated");
+      setDialogState(null);
+    },
+  });
   const updateLyricsMutation = useUpdateSongLyricsMutation({
     organizationId,
     onError: () => toast.add({ type: "error", title: t`Failed to save lyrics` }),
@@ -49,6 +56,7 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
   const deleteSongMutation = useDeleteSongMutation({
     organizationId,
     onSuccess: () => {
+      posthog.capture("song_deleted");
       toast.add({ type: "success", title: t`Song deleted` });
       onBack();
     },

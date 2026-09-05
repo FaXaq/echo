@@ -115,7 +115,7 @@ msgstr "Actions for selected files"
 #~ msgid "Add a new member to your organization"
 #~ msgstr "Add a new member to your organization"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:126
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:129
 msgid "Add a new member to your project"
 msgstr "Add a new member to your project"
 
@@ -208,7 +208,7 @@ msgstr "Back to home"
 msgid "Back to login"
 msgstr "Back to login"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:135
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:143
 msgid "Back to songs"
 msgstr "Back to songs"
 
@@ -248,7 +248,7 @@ msgstr "Can't play {filename}"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:54
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:65
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:192
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:195
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:65
 #: apps/web/src/components/ui/confirm-dialog.tsx:60
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:201
@@ -321,7 +321,7 @@ msgstr "Could not generate a unique organization slug"
 msgid "Could not load plan usage"
 msgstr "Could not load plan usage"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:128
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:133
 msgid "Couldn't build the download"
 msgstr "Couldn't build the download"
 
@@ -333,11 +333,11 @@ msgstr "Couldn't delete file"
 msgid "Couldn't delete folder"
 msgstr "Couldn't delete folder"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:82
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:87
 msgid "Couldn't download file"
 msgstr "Couldn't download file"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:106
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:111
 msgid "Couldn't download the selected files"
 msgstr "Couldn't download the selected files"
 
@@ -354,7 +354,7 @@ msgstr "Couldn't load Drive"
 #~ msgid "Couldn't load files"
 #~ msgstr "Couldn't load files"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:93
+#: apps/web/src/components/features/song/suspended-song-list.tsx:96
 msgid "Couldn't load songs"
 msgstr "Couldn't load songs"
 
@@ -373,17 +373,17 @@ msgid "Couldn't rename folder"
 msgstr "Couldn't rename folder"
 
 #. placeholder {0}: file.name
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:52
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:56
 msgid "Couldn't upload {0}"
 msgstr "Couldn't upload {0}"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:71
+#: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:50
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
 msgid "Cover"
 msgstr "Cover"
 
-#: apps/web/src/routes/projects/new.tsx:69
+#: apps/web/src/routes/projects/new.tsx:72
 msgid "Create a space for your project"
 msgstr "Create a space for your project"
 
@@ -399,7 +399,7 @@ msgstr "Create an account"
 #~ msgid "Create organization"
 #~ msgstr "Create organization"
 
-#: apps/web/src/routes/projects/new.tsx:91
+#: apps/web/src/routes/projects/new.tsx:94
 msgid "Create project"
 msgstr "Create project"
 
@@ -407,7 +407,7 @@ msgstr "Create project"
 msgid "Create song"
 msgstr "Create song"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:151
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:154
 msgid "Danger zone"
 msgstr "Danger zone"
 
@@ -433,7 +433,7 @@ msgstr "Day"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:68
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:75
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:199
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:202
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:205
 #: apps/web/src/components/ui/attachment-list.tsx:220
 #: apps/web/src/components/ui/attachment-list.tsx:380
@@ -459,9 +459,9 @@ msgstr "Delete event?"
 #~ msgid "Delete organization"
 #~ msgstr "Delete organization"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:161
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:176
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:181
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:164
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:179
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:184
 msgid "Delete project"
 msgstr "Delete project"
 
@@ -539,7 +539,7 @@ msgstr "Edit song"
 #: apps/web/src/components/forgot-password-form.tsx:65
 #: apps/web/src/components/login-form.tsx:78
 #: apps/web/src/components/signup-form.tsx:121
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:67
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:70
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:103
 msgid "Email"
 msgstr "Email"
@@ -568,7 +568,7 @@ msgstr "End"
 msgid "End date must be after start date"
 msgstr "End date must be after start date"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:72
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:75
 msgid "Enter email address"
 msgstr "Enter email address"
 
@@ -610,7 +610,7 @@ msgstr "Event not found"
 msgid "Events on {0}"
 msgstr "Events on {0}"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:154
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:157
 msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Every action here is destructive. Please proceed with caution."
 
@@ -634,11 +634,11 @@ msgstr "Failed to create project"
 #~ msgid "Failed to delete organization"
 #~ msgstr "Failed to delete organization"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:93
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:96
 msgid "Failed to delete project"
 msgstr "Failed to delete project"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:57
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:60
 msgid "Failed to invite member"
 msgstr "Failed to invite member"
 
@@ -650,7 +650,7 @@ msgstr "Failed to resend verification email"
 msgid "Failed to revoke membership"
 msgstr "Failed to revoke membership"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:47
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:54
 msgid "Failed to save lyrics"
 msgstr "Failed to save lyrics"
 
@@ -692,7 +692,7 @@ msgstr "Folder deleted"
 msgid "Folders"
 msgstr "Folders"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:65
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:70
 msgid "Folders aren't supported yet — drop files only"
 msgstr "Folders aren't supported yet — drop files only"
 
@@ -763,20 +763,20 @@ msgstr "Invitation has expired or already been processed. Please, request a new 
 msgid "Invitation sent"
 msgstr "Invitation sent"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:108
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:111
 msgid "Invite"
 msgstr "Invite"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:122
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:125
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:128
 msgid "Invite a member"
 msgstr "Invite a member"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:108
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:111
 msgid "Inviting..."
 msgstr "Inviting..."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:104
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:107
 msgid "It's your personal space."
 msgstr "It's your personal space."
 
@@ -802,7 +802,7 @@ msgid "Letters, numbers, _ and - only"
 msgstr "Letters, numbers, _ and - only"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:52
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:68
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:76
 msgid "Link copied to clipboard"
 msgstr "Link copied to clipboard"
 
@@ -874,7 +874,7 @@ msgstr "Member"
 msgid "Member removed"
 msgstr "Member removed"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:120
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:123
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
 #: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Members"
@@ -889,13 +889,13 @@ msgstr "Misc ({0})"
 msgid "Month"
 msgstr "Month"
 
-#: apps/web/src/routes/projects/new.tsx:82
+#: apps/web/src/routes/projects/new.tsx:85
 msgid "My Project"
 msgstr "My Project"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:102
-#: apps/web/src/routes/projects/new.tsx:77
+#: apps/web/src/routes/projects/new.tsx:80
 msgid "Name"
 msgstr "Name"
 
@@ -920,11 +920,11 @@ msgstr "New password"
 
 #: apps/web/src/components/version-switcher.tsx:77
 #: apps/web/src/lib/dynamic-messages.ts:47
-#: apps/web/src/routes/projects/new.tsx:66
+#: apps/web/src/routes/projects/new.tsx:69
 msgid "New project"
 msgstr "New project"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:49
+#: apps/web/src/components/features/song/suspended-song-list.tsx:52
 #: apps/web/src/components/ui/song/song-dialog.tsx:103
 #: apps/web/src/components/ui/song/song-dialog.tsx:105
 msgid "New song"
@@ -973,7 +973,7 @@ msgstr "No places found"
 msgid "No results."
 msgstr "No results."
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:54
+#: apps/web/src/components/features/song/suspended-song-list.tsx:57
 msgid "No songs yet."
 msgstr "No songs yet."
 
@@ -994,7 +994,7 @@ msgstr "None"
 msgid "Only a selection of files can be deleted together"
 msgstr "Only a selection of files can be deleted together"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:44
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:46
 msgid "Only a selection of files can be downloaded together"
 msgstr "Only a selection of files can be downloaded together"
 
@@ -1041,7 +1041,7 @@ msgstr "Orange"
 msgid "Organizer"
 msgstr "Organizer"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:71
+#: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:50
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
 msgid "Original"
@@ -1086,7 +1086,7 @@ msgstr "Pending"
 #~ msgid "Permanently delete this organization and all of its data. This action cannot be undone."
 #~ msgstr "Permanently delete this organization and all of its data. This action cannot be undone."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:163
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:166
 msgid "Permanently delete this project and all of its data. This action cannot be undone."
 msgstr "Permanently delete this project and all of its data. This action cannot be undone."
 
@@ -1099,7 +1099,7 @@ msgstr "Personal"
 msgid "Place"
 msgstr "Place"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:110
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:113
 msgid "Plan"
 msgstr "Plan"
 
@@ -1133,7 +1133,7 @@ msgstr "Previous"
 msgid "Project"
 msgstr "Project"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:88
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:91
 msgid "Project deleted"
 msgstr "Project deleted"
 
@@ -1149,7 +1149,7 @@ msgstr "Project name is required"
 #~ msgid "Project name updated"
 #~ msgstr "Project name updated"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:44
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:46
 msgid "Project not found"
 msgstr "Project not found"
 
@@ -1213,7 +1213,7 @@ msgstr "Revoke"
 msgid "Revoke membership"
 msgstr "Revoke membership"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:83
+#: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:86
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:104
 msgid "Role"
 msgstr "Role"
@@ -1281,7 +1281,7 @@ msgid "Selection actions"
 msgstr "Selection actions"
 
 #. placeholder {0}: formatSize(DRIVE_BULK_DOWNLOAD_MAX_BYTES)
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:46
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:48
 msgid "Selections are limited to {DRIVE_BULK_DOWNLOAD_MAX_FILES} files or {0} total"
 msgstr "Selections are limited to {DRIVE_BULK_DOWNLOAD_MAX_FILES} files or {0} total"
 
@@ -1316,7 +1316,7 @@ msgstr "Size"
 
 #. placeholder {0}: allSkipped.length
 #. placeholder {1}: allSkipped.join(", ")
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:122
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:127
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
@@ -1329,8 +1329,8 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 #~ msgstr "Slug is required"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:106
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:224
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:137
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
@@ -1338,7 +1338,7 @@ msgstr "Something went wrong"
 msgid "Song actions"
 msgstr "Song actions"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:52
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:60
 msgid "Song deleted"
 msgstr "Song deleted"
 
@@ -1346,7 +1346,7 @@ msgstr "Song deleted"
 msgid "Song details"
 msgstr "Song details"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:129
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:137
 msgid "Song not found"
 msgstr "Song not found"
 
@@ -1417,12 +1417,12 @@ msgstr "This permanently deletes the selected files, including from any event or
 msgid "This project has reached its plan limit. <0>View plan</0>"
 msgstr "This project has reached its plan limit. <0>View plan</0>"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:132
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:140
 msgid "This song doesn't exist or has been deleted."
 msgstr "This song doesn't exist or has been deleted."
 
 #. placeholder {0}: organization.name
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:184
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:187
 msgid "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 msgstr "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 
@@ -1513,7 +1513,7 @@ msgstr "Username"
 msgid "Username must be at least 3 characters"
 msgstr "Username must be at least 3 characters"
 
-#: apps/web/src/routes/-landing.tsx:68
+#: apps/web/src/routes/-landing.tsx:70
 msgid "Verification email sent"
 msgstr "Verification email sent"
 

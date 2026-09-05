@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { usePostHog } from "posthog-js/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,6 +28,7 @@ function NewOrganizationPage() {
   const { t } = useLingui();
   const { session } = useSession();
   const router = useRouter();
+  const posthog = usePostHog();
   const [serverError, setServerError] = useState<string | undefined>();
   const createOrganizationMutation = useCreateOrganizationMutation();
 
@@ -46,6 +48,7 @@ function NewOrganizationPage() {
     setServerError(undefined);
     createOrganizationMutation.mutate(values, {
       onSuccess: (res) => {
+        posthog.capture("project_created");
         router.navigate({ to: "/projects/$projectSlug", params: { projectSlug: res.slug } });
       },
       onError: (error) => {

@@ -41,6 +41,13 @@ jobs:
           push: true
           build-args: |
             VITE_API_URL=${{ matrix.app == 'web' && vars.VITE_API_URL || '' }}
+            VITE_PUBLIC_POSTHOG_PROJECT_TOKEN=${{ matrix.app == 'web' && vars.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN || '' }}
+            VITE_PUBLIC_POSTHOG_HOST=${{ matrix.app == 'web' && vars.VITE_PUBLIC_POSTHOG_HOST || '' }}
+            RELEASE_VERSION=${{ matrix.app == 'web' && inputs.version || '' }}
+            POSTHOG_CLI_PROJECT_ID=${{ matrix.app == 'web' && vars.POSTHOG_CLI_PROJECT_ID || '' }}
+            POSTHOG_CLI_HOST=${{ matrix.app == 'web' && vars.POSTHOG_CLI_HOST || '' }}
+          secrets: |
+            posthog_cli_api_key=${{ matrix.app == 'web' && secrets.POSTHOG_CLI_API_KEY || '' }}
           tags: |
             ghcr.io/${{ steps.owner.outputs.lowercase }}/echo-${{ matrix.app }}:${{ inputs.version }}
             ghcr.io/${{ steps.owner.outputs.lowercase }}/echo-${{ matrix.app }}:latest

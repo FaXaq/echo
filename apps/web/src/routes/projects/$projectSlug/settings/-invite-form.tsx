@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLingui } from "@lingui/react/macro";
+import { usePostHog } from "posthog-js/react";
 import { useInviteMemberMutation } from "@/services/resources/member";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
@@ -23,6 +24,7 @@ interface InviteFormProps {
 
 export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
   const { t } = useLingui();
+  const posthog = usePostHog();
   const [serverError, setServerError] = useState<string | undefined>();
   const inviteMemberMutation = useInviteMemberMutation();
   const {
@@ -50,6 +52,7 @@ export function InviteForm({ organizationId, onSuccess }: InviteFormProps) {
       { email: values.email, role: values.role, organizationId },
       {
         onSuccess: () => {
+          posthog.capture("project_member_invited", { role: values.role });
           reset();
           onSuccess?.();
         },
