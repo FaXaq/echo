@@ -29,9 +29,22 @@ function SongListContent({ organizationId, projectSlug, onSongCreated }: Suspend
   });
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <Button type="button" onClick={() => setDialogState({ mode: "create" })}>
+    <div className="p-6 flex flex-col gap-2">
+      <div className="flex items-center justify-end">
+        <Button
+          type="button"
+          onClick={() => setDialogState({ mode: "create" })}
+          size="icon"
+          className="md:hidden"
+        >
+          <Plus />
+        </Button>
+        <Button
+          type="button"
+          onClick={() => setDialogState({ mode: "create" })}
+          size="sm"
+          className="hidden md:inline-flex"
+        >
           <Plus data-icon="inline-start" />
           {t`New song`}
         </Button>

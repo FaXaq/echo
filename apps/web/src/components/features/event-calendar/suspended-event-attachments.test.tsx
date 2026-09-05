@@ -53,13 +53,14 @@ function renderWithFiles(files: driveResource.EventFile[]) {
 }
 
 describe("SuspendedEventAttachments", () => {
-  it("shows the empty state and a zero file-count badge when there are no files", async () => {
+  it("shows the empty state and an upload button when there are no files", async () => {
     renderWithFiles([]);
-    expect(await screen.findByText("No files linked yet.")).toBeInTheDocument();
-    expect(screen.getByText("0 files")).toBeInTheDocument();
+    expect(await screen.findByText("No files here yet.")).toBeInTheDocument();
+    expect(screen.getByLabelText("Add files", { selector: "input" })).toBeInTheDocument();
   });
 
-  it("renders every linked file with a file-count badge", async () => {
+  it("renders every linked file grouped by tab", async () => {
+    const user = userEvent.setup();
     renderWithFiles([
       {
         id: "f1",
@@ -82,8 +83,9 @@ describe("SuspendedEventAttachments", () => {
     ]);
 
     expect(await screen.findByText("demo.mp3")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: /Misc/ }));
     expect(screen.getByText("setlist.pdf")).toBeInTheDocument();
-    expect(screen.getByText("2 files")).toBeInTheDocument();
   });
 
   it("shows an upgrade prompt linking to plan settings when an upload hits the storage quota", async () => {

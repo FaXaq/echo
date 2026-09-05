@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useNavigation } from "@/hooks/use-navigation";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -19,6 +20,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { orgOptions, activeOrganization, setActiveOrganization, navGroups } = useNavigation();
   const navigate = useNavigate();
+  const { setOpenMobile } = useSidebar();
 
   const activeOrgId = activeOrganization?.id ?? orgOptions[0]?.id ?? "";
   const versions = orgOptions.map((o) => ({ id: o.id, name: o.name, isPersonal: o.isPersonal }));
@@ -48,7 +50,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       isActive={item.isActive}
-                      render={<Link to={item.to} params={item.params} />}
+                      render={
+                        <Link
+                          to={item.to}
+                          params={item.params}
+                          onClick={() => setOpenMobile(false)}
+                        />
+                      }
                     >
                       {item.title}
                     </SidebarMenuButton>

@@ -11,7 +11,7 @@ describe("FileUpload", () => {
   it("calls onFilesSelected when a file is picked via the input", async () => {
     const user = userEvent.setup();
     const onFilesSelected = vi.fn();
-    render(<FileUpload onFilesSelected={onFilesSelected} />);
+    render(<FileUpload variant="box" onFilesSelected={onFilesSelected} />);
 
     const input = screen.getByLabelText("Add files", { selector: "input" });
     await user.upload(input, makeFile());
@@ -21,7 +21,7 @@ describe("FileUpload", () => {
 
   it("calls onFilesSelected when a file is dropped", () => {
     const onFilesSelected = vi.fn();
-    render(<FileUpload onFilesSelected={onFilesSelected} />);
+    render(<FileUpload variant="box" onFilesSelected={onFilesSelected} />);
 
     const dropzone = screen.getByRole("button");
     fireEvent.drop(dropzone, { dataTransfer: { files: [makeFile("cover.png", "image/png")] } });
@@ -31,7 +31,7 @@ describe("FileUpload", () => {
 
   it("does not call onFilesSelected when disabled", () => {
     const onFilesSelected = vi.fn();
-    render(<FileUpload disabled onFilesSelected={onFilesSelected} />);
+    render(<FileUpload disabled variant="box" onFilesSelected={onFilesSelected} />);
 
     const dropzone = screen.getByRole("button");
     fireEvent.drop(dropzone, { dataTransfer: { files: [makeFile()] } });
