@@ -3,6 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLingui, Trans } from "@lingui/react/macro";
 import { useRouter } from "@tanstack/react-router";
+import { usePostHog } from "posthog-js/react";
 import { authClient } from "@/lib/auth";
 import { isOrganizationAdmin } from "@echo/modules/user/domain";
 import type { OrganizationRole } from "@echo/auth";
@@ -54,6 +55,7 @@ function OrganizationSettingsContent({
 }: SuspendedOrganizationSettingsProps) {
   const { t } = useLingui();
   const router = useRouter();
+  const posthog = usePostHog();
   const { session } = useSession();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -85,6 +87,7 @@ function OrganizationSettingsContent({
       { organizationId },
       {
         onSuccess: () => {
+          posthog.capture("project_deleted");
           toast.add({ type: "success", title: t`Project deleted` });
           setIsDeleteDialogOpen(false);
           router.navigate({ to: "/" });

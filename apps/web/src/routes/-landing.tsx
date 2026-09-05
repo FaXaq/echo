@@ -7,6 +7,7 @@ import {
   type ForgotPasswordFormValues,
 } from "@/components/forgot-password-form";
 import { useRouter } from "@tanstack/react-router";
+import { usePostHog } from "posthog-js/react";
 import { useLingui } from "@lingui/react/macro";
 import { logger } from "@/lib/logger";
 import { toast } from "@/components/ui/toast";
@@ -26,6 +27,7 @@ export const Landing = () => {
   const [serverSuccess, setServerSuccess] = useState<string | undefined>();
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | undefined>();
   const router = useRouter();
+  const posthog = usePostHog();
   const signInEmailMutation = useSignInEmailMutation();
   const signUpEmailMutation = useSignUpEmailMutation();
   const requestPasswordResetMutation = useRequestPasswordResetMutation();
@@ -88,6 +90,7 @@ export const Landing = () => {
       },
       {
         onSuccess: () => {
+          posthog.capture("account_signed_up");
           setServerSuccess("Check your email to verify your account");
         },
         onError: (error) => {

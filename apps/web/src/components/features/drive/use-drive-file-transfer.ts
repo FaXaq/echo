@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLingui } from "@lingui/react/macro";
+import { usePostHog } from "posthog-js/react";
 import { toast } from "@/components/ui/toast";
 import { evaluateOsFileDrop, resolveDropTargetFolderId } from "@/lib/drive-drop";
 import { downloadBlob, downloadFile, formatSize } from "@/lib/file";
@@ -36,6 +37,7 @@ export function useDriveFileTransfer({
   clearSelection: () => void;
 }) {
   const { t } = useLingui();
+  const posthog = usePostHog();
   const uploadMutation = useUploadFileMutation();
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -49,7 +51,10 @@ export function useDriveFileTransfer({
   const uploadFile = (file: File, targetFolderId: string | null) => {
     uploadMutation.mutate(
       { organizationId, folderId: targetFolderId, file },
-      { onError: () => toast.add({ title: t`Couldn't upload ${file.name}`, type: "error" }) },
+      {
+        onSuccess: () => posthog.capture("drive_file_uploaded", { file_type: file.type }),
+        onError: () => toast.add({ title: t`Couldn't upload ${file.name}`, type: "error" }),
+      },
     );
   };
 

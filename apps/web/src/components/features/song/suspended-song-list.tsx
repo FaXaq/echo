@@ -1,6 +1,7 @@
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Link } from "@tanstack/react-router";
+import { usePostHog } from "posthog-js/react";
 import { useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Music, Plus } from "lucide-react";
@@ -18,11 +19,13 @@ export interface SuspendedSongListProps {
 
 function SongListContent({ organizationId, projectSlug, onSongCreated }: SuspendedSongListProps) {
   const { t } = useLingui();
+  const posthog = usePostHog();
   const { data: songs } = useSuspenseQuery(getSongsQueryOptions({ organizationId }));
   const [dialogState, setDialogState] = useState<SongDialogState>(null);
 
   const createSongMutation = useCreateSongMutation({
     onSuccess: (song) => {
+      posthog.capture("song_created");
       setDialogState(null);
       onSongCreated(song);
     },
