@@ -1,7 +1,7 @@
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Plural, Trans, useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { translateDynamic } from "@/lib/dynamic-messages";
@@ -16,7 +16,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -35,10 +34,10 @@ import {
   getEventFilesQueryOptions,
   useDeleteFileMutation,
   useRenameFileMutation,
-  useUploadFileMutation,
   type EventFile,
 } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
+import { useEventUploadingFiles, useEventUploadMutation } from "./event-upload-context";
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string;
@@ -142,7 +141,8 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const { t } = useLingui();
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId, organizationId }));
-  const uploadMutation = useUploadFileMutation();
+  const uploadMutation = useEventUploadMutation();
+  const pendingFiles = useEventUploadingFiles(eventId);
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
   const [renamingFile, setRenamingFile] = useState<EventFile | null>(null);
@@ -157,40 +157,33 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 
   return (
     <div className="flex flex-col gap-3.5">
-      <div className="flex items-center gap-2">
-        <span className="flex-1 text-[13px] font-semibold">{t`Linked files`}</span>
-        <Badge variant="outline">
-          <Plural value={files.length} one="# file" other="# files" />
-        </Badge>
-      </div>
-
-      <FileUpload onFilesSelected={handleFilesSelected} disabled={uploadMutation.isPending} />
       {uploadMutation.isError && (
         <UploadError error={uploadMutation.error} projectSlug={projectSlug} />
       )}
 
-      {files.length > 0 && (
-        <AttachmentList
-          files={files}
-          onDelete={(file) => setDeletingFileId(file.id)}
-          onRename={(file) => setRenamingFile(file)}
-          onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
-          onPlayAudio={(file) =>
-            requestPlay({
-              id: file.id,
-              filename: file.filename,
-              downloadUrl: file.downloadUrl,
-              contextLabel: file.eventTitle ?? undefined,
-            })
-          }
-        />
-      )}
-
-      {files.length === 0 && (
-        <p className="py-5 text-center text-[13px] text-muted-foreground">
-          {t`No files linked yet.`}
-        </p>
-      )}
+      <AttachmentList
+        actions={
+          <FileUpload
+            onFilesSelected={handleFilesSelected}
+            disabled={uploadMutation.isPending}
+            variant="icon"
+            loading={pendingFiles.length > 0}
+          />
+        }
+        files={files}
+        pendingFiles={pendingFiles}
+        onDelete={(file) => setDeletingFileId(file.id)}
+        onRename={(file) => setRenamingFile(file)}
+        onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
+        onPlayAudio={(file) =>
+          requestPlay({
+            id: file.id,
+            filename: file.filename,
+            downloadUrl: file.downloadUrl,
+            contextLabel: file.eventTitle ?? undefined,
+          })
+        }
+      />
 
       <AlertDialog
         open={deletingFileId !== null}
