@@ -53,6 +53,7 @@ if (posthogProjectToken && posthogHost) {
     defaults: "2026-01-30",
     capture_exceptions: true,
     debug: import.meta.env.DEV,
+    cookieless_mode: "always",
   });
 }
 
