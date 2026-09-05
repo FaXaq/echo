@@ -14,10 +14,9 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:163
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:163
-msgid "{0, plural, one {# file} other {# files}}"
-msgstr "{0, plural, one {# fichier} other {# fichiers}}"
+#~ msgid "{0, plural, one {# file} other {# files}}"
+#~ msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 
 #. placeholder {0}: selectedKeys.size
 #: apps/web/src/components/features/drive/drive-explorer.tsx:369
@@ -74,7 +73,8 @@ msgstr "Actions"
 #. placeholder {0}: folder.name
 #: apps/web/src/components/features/drive/drive-file-row.tsx:143
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:169
-#: apps/web/src/components/ui/attachment-list.tsx:81
+#: apps/web/src/components/ui/attachment-list.tsx:156
+#: apps/web/src/components/ui/attachment-list.tsx:299
 msgid "Actions for {0}"
 msgstr "Actions pour {0}"
 
@@ -86,7 +86,8 @@ msgstr "Actions pour {0}"
 msgid "Add a new member to your project"
 msgstr "Ajouter un nouveau membre à votre projet"
 
-#: apps/web/src/components/ui/file-upload.tsx:61
+#: apps/web/src/components/ui/file-upload.tsx:39
+#: apps/web/src/components/ui/file-upload.tsx:95
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
@@ -157,6 +158,11 @@ msgstr "Au moins un caractère spécial"
 msgid "At least one uppercase letter"
 msgstr "Au moins une lettre majuscule"
 
+#. placeholder {0}: audioFiles.length + audioPending.length
+#: apps/web/src/components/ui/attachment-list.tsx:386
+msgid "Audio ({0})"
+msgstr "Audio ({0})"
+
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:112
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
@@ -208,11 +214,11 @@ msgid "Can't play {filename}"
 msgstr "Impossible de lire {filename}"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:54
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:74
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:207
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:73
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:200
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:192
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:74
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:207
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:73
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:200
 #: apps/web/src/components/ui/confirm-dialog.tsx:45
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:201
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
@@ -304,8 +310,8 @@ msgstr "Impossible de télécharger le fichier"
 msgid "Couldn't download the selected files"
 msgstr "Impossible de télécharger les fichiers sélectionnés"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:234
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:234
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:227
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:227
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
@@ -321,8 +327,9 @@ msgstr "Impossible de charger le Drive"
 msgid "Couldn't load songs"
 msgstr "Impossible de charger les chansons"
 
-#: apps/web/src/components/ui/attachment-list.tsx:70
-#: apps/web/src/components/ui/attachment-list.tsx:130
+#: apps/web/src/components/ui/attachment-list.tsx:142
+#: apps/web/src/components/ui/attachment-list.tsx:285
+#: apps/web/src/components/ui/attachment-list.tsx:425
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
@@ -391,10 +398,11 @@ msgstr "Jour"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:213
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:194
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:226
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:214
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:207
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:199
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:214
-#: apps/web/src/components/ui/attachment-list.tsx:111
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:207
+#: apps/web/src/components/ui/attachment-list.tsx:186
+#: apps/web/src/components/ui/attachment-list.tsx:329
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:177
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:208
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:385
@@ -426,8 +434,8 @@ msgid "Delete song?"
 msgstr "Supprimer la chanson ?"
 
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:80
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:201
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:201
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:194
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:194
 msgid "Delete this file?"
 msgstr "Supprimer ce fichier ?"
 
@@ -459,11 +467,12 @@ msgstr "Pas encore de compte ? <0>S’inscrire</0>"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:215
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:47
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:54
-#: apps/web/src/components/ui/attachment-list.tsx:105
+#: apps/web/src/components/ui/attachment-list.tsx:180
+#: apps/web/src/components/ui/attachment-list.tsx:323
 msgid "Download"
 msgstr "Télécharger"
 
-#: apps/web/src/components/ui/file-upload.tsx:56
+#: apps/web/src/components/ui/file-upload.tsx:90
 msgid "Drag and drop files here, or click to select"
 msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 
@@ -473,6 +482,11 @@ msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 #: apps/web/src/routes/projects/$projectSlug/drive/$folderId.tsx:28
 msgid "Drive"
 msgstr "Drive"
+
+#: apps/web/src/routes/projects/$projectSlug/calendar/$eventId.tsx:77
+#: apps/web/src/routes/projects/$projectSlug/songs/$songId.tsx:74
+msgid "Drop files to upload"
+msgstr "Déposez des fichiers pour les envoyer"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:208
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:210
@@ -656,6 +670,11 @@ msgstr "Nom complet"
 msgid "Full name is required"
 msgstr "Le nom complet est requis"
 
+#. placeholder {0}: galleryFiles.length + galleryPending.length
+#: apps/web/src/components/ui/attachment-list.tsx:389
+msgid "Gallery ({0})"
+msgstr "Galerie ({0})"
+
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:110
 #~ msgid "General"
 #~ msgstr "Général"
@@ -748,9 +767,8 @@ msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:161
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:161
-msgid "Linked files"
-msgstr "Fichiers liés"
+#~ msgid "Linked files"
+#~ msgstr "Fichiers liés"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:100
 msgid "Location"
@@ -822,6 +840,11 @@ msgstr "Membre supprimé"
 msgid "Members"
 msgstr "Membres"
 
+#. placeholder {0}: miscFiles.length + miscPending.length
+#: apps/web/src/components/ui/attachment-list.tsx:392
+msgid "Misc ({0})"
+msgstr "Divers ({0})"
+
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:32
 msgid "Month"
 msgstr "Mois"
@@ -875,10 +898,15 @@ msgstr "Suivant"
 msgid "No events scheduled"
 msgstr "Aucun événement prévu"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:191
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:191
-msgid "No files linked yet."
-msgstr "Aucun fichier lié pour le moment."
+#: apps/web/src/components/ui/attachment-list.tsx:91
+#: apps/web/src/components/ui/attachment-list.tsx:223
+msgid "No files here yet."
+msgstr "Aucun fichier ici pour le moment."
+
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:194
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:194
+#~ msgid "No files linked yet."
+#~ msgstr "Aucun fichier lié pour le moment."
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:351
 msgid "No files yet"
@@ -927,7 +955,8 @@ msgid "Only a selection of files can be downloaded together"
 msgstr "Seule une sélection de fichiers peut être téléchargée en groupe"
 
 #. placeholder {0}: file.filename
-#: apps/web/src/components/ui/attachment-list.tsx:61
+#: apps/web/src/components/ui/attachment-list.tsx:126
+#: apps/web/src/components/ui/attachment-list.tsx:258
 msgid "Open {0}"
 msgstr "Ouvrir {0}"
 
@@ -1104,13 +1133,14 @@ msgstr "Répétition"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:209
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:184
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
-#: apps/web/src/components/ui/attachment-list.tsx:95
+#: apps/web/src/components/ui/attachment-list.tsx:170
+#: apps/web/src/components/ui/attachment-list.tsx:313
 msgid "Rename"
 msgstr "Renommer"
 
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:71
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:70
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:70
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:69
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:69
 msgid "Rename file"
 msgstr "Renommer le fichier"
 
@@ -1153,8 +1183,8 @@ msgid "Rows per page"
 msgstr "Lignes par page"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:55
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:75
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:75
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:74
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:74
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:412
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:67
 msgid "Save"
@@ -1292,8 +1322,8 @@ msgstr "Thème"
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:113
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:113
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:112
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:112
 msgid "This file is too large for your plan."
 msgstr "Ce fichier est trop volumineux pour votre forfait."
 
@@ -1329,8 +1359,8 @@ msgstr "Cette action supprime définitivement le fichier, y compris de tout év�
 msgid "This permanently deletes the folder and any files inside it that aren't attached to an event or song. Files still attached elsewhere are kept and simply removed from this folder. This action cannot be undone."
 msgstr "Cette action supprime définitivement le dossier ainsi que les fichiers qu'il contient et qui ne sont rattachés à aucun événement ou morceau. Les fichiers encore rattachés ailleurs sont conservés et simplement retirés de ce dossier. Cette action est irréversible."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:121
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:121
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:120
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:120
 msgid "This project has reached its plan limit. <0>View plan</0>"
 msgstr "Ce projet a atteint la limite de son forfait. <0>Voir le forfait</0>"
 
@@ -1347,8 +1377,8 @@ msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses donnée
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "Cette action supprimera définitivement <0>{selectedVersion}</0> et toutes ses données. Cette action est irréversible."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:203
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:203
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:196
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:196
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
@@ -1412,6 +1442,11 @@ msgstr "Importer des fichiers"
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:45
 msgid "Uploaded by"
 msgstr "Ajouté par"
+
+#: apps/web/src/components/ui/attachment-list.tsx:106
+#: apps/web/src/components/ui/attachment-list.tsx:238
+msgid "Uploading…"
+msgstr "Importation…"
 
 #: apps/web/src/components/signup-form.tsx:104
 msgid "Username"
