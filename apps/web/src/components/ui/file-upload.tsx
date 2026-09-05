@@ -47,8 +47,8 @@ export function FileUpload({
           }}
         />
         <Button
-          variant="secondary"
-          size="icon-xs"
+          size="icon-sm"
+          variant="outline"
           aria-label="Submit"
           className="rounded-full"
           onClick={() => inputRef.current?.click()}
