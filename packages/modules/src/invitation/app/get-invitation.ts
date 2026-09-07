@@ -1,6 +1,9 @@
 import type { KyselyDB } from "@echo/db";
-import { getInvitationById } from "../infrastructure/index.js";
+import type { GetInvitationByIdQueryPort } from "../infrastructure/index.js";
 
-export function getInvitation(deps: { db: KyselyDB }, input: { id: string }) {
-  return getInvitationById(deps.db, input.id);
+export function getInvitation(
+  deps: { db: KyselyDB; getInvitationByIdQuery: GetInvitationByIdQueryPort },
+  input: { id: string },
+) {
+  return deps.getInvitationByIdQuery(deps.db, input);
 }
