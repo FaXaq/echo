@@ -19,12 +19,12 @@ msgstr ""
 #~ msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 
 #. placeholder {0}: selectedKeys.size
-#: apps/web/src/components/features/drive/drive-explorer.tsx:419
+#: apps/web/src/components/features/drive/drive-explorer.tsx:435
 msgid "{0, plural, one {# item selected} other {# items selected}}"
 msgstr "{0, plural, one {# élément sélectionné} other {# éléments sélectionnés}}"
 
 #. placeholder {0}: visibleFolders.length + visibleFiles.length
-#: apps/web/src/components/features/drive/drive-explorer.tsx:411
+#: apps/web/src/components/features/drive/drive-explorer.tsx:427
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# élément} other {# éléments}}"
 
@@ -35,7 +35,7 @@ msgstr "{0, plural, one {Supprimer # fichier ?} other {Supprimer # fichiers ?}}"
 
 #. placeholder {0}: filesToDelete.length
 #. placeholder {0}: selectedFiles.length
-#: apps/web/src/components/features/drive/drive-explorer.tsx:207
+#: apps/web/src/components/features/drive/drive-explorer.tsx:219
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:156
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:156
 msgid "{0} files deleted"
@@ -54,7 +54,7 @@ msgstr "{0} éléments déplacés"
 #. placeholder {0}: selectedFiles.length - failedNames.length
 #. placeholder {1}: selectedFiles.length
 #. placeholder {2}: failedNames.join(", ")
-#: apps/web/src/components/features/drive/drive-explorer.tsx:210
+#: apps/web/src/components/features/drive/drive-explorer.tsx:222
 msgid "{0} of {1} deleted — failed: {2}"
 msgstr "{0} sur {1} supprimés — échec : {2}"
 
@@ -192,7 +192,7 @@ msgid "At least one uppercase letter"
 msgstr "Au moins une lettre majuscule"
 
 #. placeholder {0}: audioFiles.length + audioPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:500
+#: apps/web/src/components/ui/attachment-list.tsx:499
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
@@ -325,11 +325,11 @@ msgstr "Impossible de charger l'utilisation du forfait"
 msgid "Couldn't build the download"
 msgstr "Impossible de préparer le téléchargement"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:475
+#: apps/web/src/components/features/drive/drive-explorer.tsx:491
 msgid "Couldn't delete file"
 msgstr "Impossible de supprimer le fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:452
+#: apps/web/src/components/features/drive/drive-explorer.tsx:468
 msgid "Couldn't delete folder"
 msgstr "Impossible de supprimer le dossier"
 
@@ -346,7 +346,7 @@ msgstr "Impossible de télécharger les fichiers sélectionnés"
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:494
+#: apps/web/src/components/features/drive/drive-explorer.tsx:524
 msgid "Couldn't load Drive"
 msgstr "Impossible de charger le Drive"
 
@@ -360,15 +360,15 @@ msgstr "Impossible de charger les chansons"
 
 #: apps/web/src/components/ui/attachment-list.tsx:172
 #: apps/web/src/components/ui/attachment-list.tsx:332
-#: apps/web/src/components/ui/attachment-list.tsx:546
+#: apps/web/src/components/ui/file-preview-dialog.tsx:44
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:464
+#: apps/web/src/components/features/drive/drive-explorer.tsx:480
 msgid "Couldn't rename file"
 msgstr "Impossible de renommer le fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:438
+#: apps/web/src/components/features/drive/drive-explorer.tsx:454
 msgid "Couldn't rename folder"
 msgstr "Impossible de renommer le dossier"
 
@@ -510,6 +510,7 @@ msgstr "Pas encore de compte ? <0>S’inscrire</0>"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:59
 #: apps/web/src/components/ui/attachment-list.tsx:215
 #: apps/web/src/components/ui/attachment-list.tsx:375
+#: apps/web/src/components/ui/file-preview-dialog.tsx:58
 msgid "Download"
 msgstr "Télécharger"
 
@@ -670,7 +671,7 @@ msgstr "Échec de la mise à jour du rôle"
 msgid "Failed to update project name"
 msgstr "Échec de la mise à jour du nom du projet"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:473
+#: apps/web/src/components/features/drive/drive-explorer.tsx:489
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:209
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:209
 msgid "File deleted"
@@ -684,7 +685,7 @@ msgstr "Fichiers"
 msgid "Fill in the details below to get started"
 msgstr "Remplissez les informations ci-dessous pour commencer"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:446
+#: apps/web/src/components/features/drive/drive-explorer.tsx:462
 msgid "Folder deleted"
 msgstr "Dossier supprimé"
 
@@ -711,7 +712,7 @@ msgid "Full name is required"
 msgstr "Le nom complet est requis"
 
 #. placeholder {0}: galleryFiles.length + galleryPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:503
+#: apps/web/src/components/ui/attachment-list.tsx:502
 msgid "Gallery ({0})"
 msgstr "Galerie ({0})"
 
@@ -881,7 +882,7 @@ msgid "Members"
 msgstr "Membres"
 
 #. placeholder {0}: miscFiles.length + miscPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:506
+#: apps/web/src/components/ui/attachment-list.tsx:505
 msgid "Misc ({0})"
 msgstr "Divers ({0})"
 
@@ -910,7 +911,7 @@ msgstr "Nouvel événement"
 msgid "New folder"
 msgstr "Nouveau dossier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:246
+#: apps/web/src/components/features/drive/drive-explorer.tsx:258
 msgid "New Folder"
 msgstr "Nouveau dossier"
 
@@ -948,7 +949,7 @@ msgstr "Aucun fichier ici pour le moment."
 #~ msgid "No files linked yet."
 #~ msgstr "Aucun fichier lié pour le moment."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:401
+#: apps/web/src/components/features/drive/drive-explorer.tsx:417
 msgid "No files yet"
 msgstr "Aucun fichier pour l'instant"
 
@@ -968,6 +969,10 @@ msgstr "Pas de membres pour le moment"
 #: apps/web/src/components/ui/event-calendar/place-field.tsx:154
 msgid "No places found"
 msgstr "Aucun lieu trouvé"
+
+#: apps/web/src/components/ui/file-preview-dialog.tsx:52
+msgid "No preview available"
+msgstr "Aucun aperçu disponible"
 
 #: apps/web/src/components/ui/data-table.tsx:54
 msgid "No results."
@@ -990,7 +995,7 @@ msgstr "Non, le garder"
 msgid "None"
 msgstr "Aucun"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:195
+#: apps/web/src/components/features/drive/drive-explorer.tsx:207
 msgid "Only a selection of files can be deleted together"
 msgstr "Seule une sélection de fichiers peut être supprimée en groupe"
 
@@ -1272,7 +1277,7 @@ msgstr "Sélectionner"
 msgid "Select {0}"
 msgstr "Sélectionner {0}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:323
+#: apps/web/src/components/features/drive/drive-explorer.tsx:335
 msgid "Select all"
 msgstr "Tout sélectionner"
 
@@ -1376,7 +1381,11 @@ msgstr "Cet événement n'existe pas ou a été supprimé."
 msgid "This file is too large for your plan."
 msgstr "Ce fichier est trop volumineux pour votre forfait."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:401
+#: apps/web/src/components/ui/file-preview-dialog.tsx:53
+msgid "This file type can't be previewed here."
+msgstr "Ce type de fichier ne peut pas être prévisualisé ici."
+
+#: apps/web/src/components/features/drive/drive-explorer.tsx:417
 msgid "This folder is empty"
 msgstr "Ce dossier est vide"
 
@@ -1484,7 +1493,7 @@ msgstr "Annuler"
 msgid "Update"
 msgstr "Modifier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:250
+#: apps/web/src/components/features/drive/drive-explorer.tsx:262
 msgid "Upload"
 msgstr "Importer"
 
@@ -1492,7 +1501,7 @@ msgstr "Importer"
 msgid "Upload failed"
 msgstr "Échec de l'envoi"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:257
+#: apps/web/src/components/features/drive/drive-explorer.tsx:269
 msgid "Upload files"
 msgstr "Importer des fichiers"
 

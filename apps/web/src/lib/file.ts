@@ -8,13 +8,29 @@ export function downloadBlob(blob: Blob, filename: string) {
   link.click();
   link.remove();
 
-  URL.revokeObjectURL(objectUrl);
+  // Revoking immediately can race the browser's download start (esp.
+  // Firefox), which then falls back to the blob URL's uuid as the
+  // filename. A short delay lets the download begin before we free it.
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
 
 export async function downloadFile(url: string, filename: string) {
   const response = await fetch(url);
   const blob = await response.blob();
   downloadBlob(blob, filename);
+}
+
+const NON_PREVIEWABLE_MIME_TYPES = new Set([
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+]);
+
+export function canPreviewInline(mimeType: string): boolean {
+  return !NON_PREVIEWABLE_MIME_TYPES.has(mimeType);
 }
 
 export function formatSize(bytes: number): string {

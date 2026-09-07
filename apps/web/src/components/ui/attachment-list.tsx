@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { FilePreviewDialog } from "@/components/ui/file-preview-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -451,7 +451,6 @@ export function AttachmentList({
   onDownload,
   onPlayAudio,
 }: AttachmentListProps) {
-  const { t } = useLingui();
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
@@ -536,30 +535,13 @@ export function AttachmentList({
         </ScrollArea>
       </Tabs>
 
-      <Dialog open={previewFile !== undefined} onOpenChange={(open) => !open && setPreviewId(null)}>
-        <DialogContent>
-          <DialogTitle>{previewFile?.filename}</DialogTitle>
-          {previewFile &&
-            (failedIds.has(previewFile.id) ? (
-              <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-2 rounded-md border border-border bg-muted text-sm text-destructive">
-                <FileWarning className="size-6" />
-                <span>{t`Couldn't load this file`}</span>
-              </div>
-            ) : (
-              <iframe
-                ref={(node) => {
-                  if (!node) return;
-                  const handleError = () => markFailed(previewFile.id);
-                  node.addEventListener("error", handleError);
-                  return () => node.removeEventListener("error", handleError);
-                }}
-                src={previewFile.downloadUrl}
-                title={previewFile.filename}
-                className="h-[60vh] w-full rounded-md border border-border"
-              />
-            ))}
-        </DialogContent>
-      </Dialog>
+      <FilePreviewDialog
+        file={previewFile ?? null}
+        failed={previewFile !== undefined && failedIds.has(previewFile.id)}
+        onOpenChange={(open) => !open && setPreviewId(null)}
+        onError={() => previewFile && markFailed(previewFile.id)}
+        onDownload={() => previewFile && onDownload?.(previewFile)}
+      />
 
       <AttachmentCarouselDialog
         files={galleryFiles}

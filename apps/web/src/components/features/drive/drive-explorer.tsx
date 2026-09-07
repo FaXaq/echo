@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/attachment-carousel-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FilePreviewDialog } from "@/components/ui/file-preview-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { dataTableFeatures } from "@/components/ui/data-table-features";
 import {
@@ -93,6 +94,11 @@ function DriveExplorerContent({
   const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
   const [carouselFiles, setCarouselFiles] = useState<CarouselAttachment[]>([]);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
+  const [documentPreview, setDocumentPreview] = useState<{
+    file: OrganizationFile;
+    downloadUrl: string;
+  } | null>(null);
+  const [documentPreviewFailed, setDocumentPreviewFailed] = useState(false);
   const [isTableDragActive, setIsTableDragActive] = useState(false);
   const tableDragDepthRef = useRef(0);
 
@@ -121,6 +127,12 @@ function DriveExplorerContent({
     );
     setCarouselFiles(resolved);
     setCarouselIndex(resolved.findIndex((file) => file.id === fileId));
+  };
+
+  const openDocumentPreview = async (file: OrganizationFile) => {
+    const { downloadUrl } = await getFileDownloadUrl({ id: file.id, organizationId });
+    setDocumentPreviewFailed(false);
+    setDocumentPreview({ file, downloadUrl });
   };
 
   const rows: { kind: DriveItemKind; id: string }[] = [
@@ -388,7 +400,11 @@ function DriveExplorerContent({
                       contextLabel: original.data.eventTitle ?? undefined,
                     });
                   }}
-                  onOpen={() => openGalleryPreview(original.data.id)}
+                  onOpen={() =>
+                    original.data.kind === "document"
+                      ? openDocumentPreview(original.data)
+                      : openGalleryPreview(original.data.id)
+                  }
                   bulkDownloadDisabledReason={downloadDisabledReason}
                   onBulkDownload={handleBulkDownload}
                   isBulkDownloading={isDownloading}
@@ -484,6 +500,20 @@ function DriveExplorerContent({
         files={carouselFiles}
         openIndex={carouselIndex}
         onOpenChange={(open) => !open && setCarouselIndex(null)}
+      />
+
+      <FilePreviewDialog
+        file={
+          documentPreview && {
+            filename: documentPreview.file.filename,
+            mimeType: documentPreview.file.mimeType,
+            downloadUrl: documentPreview.downloadUrl,
+          }
+        }
+        failed={documentPreviewFailed}
+        onOpenChange={(open) => !open && setDocumentPreview(null)}
+        onError={() => setDocumentPreviewFailed(true)}
+        onDownload={() => documentPreview && handleDownloadFile(documentPreview.file)}
       />
     </div>
   );
