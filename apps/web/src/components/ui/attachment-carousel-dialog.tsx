@@ -1,13 +1,16 @@
 import type { FileKind } from "@echo/modules/drive/domain";
 import {
+  type CarouselApi,
   Carousel,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { match } from "ts-pattern";
+import { useEffect, useState } from "react";
 
 export interface CarouselAttachment {
   id: string;
@@ -27,14 +30,31 @@ export function AttachmentCarouselDialog({
   openIndex,
   onOpenChange,
 }: AttachmentCarouselDialogProps) {
-  const activeFile = openIndex !== null ? files[openIndex] : undefined;
+  const [api, setApi] = useState<CarouselApi>();
+  const [activeIndex, setActiveIndex] = useState(openIndex ?? 0);
+
+  useEffect(() => {
+    if (openIndex !== null) setActiveIndex(openIndex);
+  }, [openIndex]);
+
+  useEffect(() => {
+    if (!api) return;
+    const onSelect = () => setActiveIndex(api.selectedScrollSnap());
+    onSelect();
+    api.on("select", onSelect);
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api]);
+
+  const activeFile = files[activeIndex];
 
   return (
     <Dialog open={openIndex !== null} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl">
         <DialogTitle>{activeFile?.filename}</DialogTitle>
         {openIndex !== null && (
-          <Carousel opts={{ startIndex: openIndex }} className="w-full">
+          <Carousel opts={{ startIndex: openIndex }} setApi={setApi} className="w-full">
             <CarouselContent>
               {files.map((file) => (
                 <CarouselItem key={file.id} className="flex items-center justify-center">
@@ -60,6 +80,7 @@ export function AttachmentCarouselDialog({
               <>
                 <CarouselPrevious />
                 <CarouselNext />
+                <CarouselDots className="pt-4" />
               </>
             )}
           </Carousel>
