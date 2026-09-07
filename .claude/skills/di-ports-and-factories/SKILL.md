@@ -7,7 +7,7 @@ description: Use when adding or modifying anything under packages/modules/src/<m
 
 ## Overview
 
-Every module under `packages/modules/src` has `domain/`, `app/`, and `infrastructure/` layers. `infrastructure/` talks to the outside world (Postgres via Kysely, better-auth, S3, ...); `app/` holds business logic and is unit-tested with fakes. The pattern below (first established in `calendar/` and `organization/infrastructure`) is how those two layers connect. See ADR-0004 for the full rationale, including the concrete test-quality regression this fixes.
+Every module under `packages/modules/src` has `domain/`, `app/`, and `infrastructure/` layers. `infrastructure/` talks to the outside world (Postgres via Kysely, better-auth, S3, ...); `app/` holds business logic and is unit-tested with fakes. The pattern below is how every module connects those two layers. See ADR-0004 for the full rationale, including the concrete test-quality regression this fixes.
 
 ## Core Rules
 
@@ -49,7 +49,3 @@ Every module under `packages/modules/src` has `domain/`, `app/`, and `infrastruc
    const insertThingCommand: InsertThingCommandPort = async (_db, _scope, input) => makeFakeThing(input);
    ```
    `db` itself can't be `{} as any`/`as never` — the repo bans `as`. Build a real (never-connected) handle with `makeDbAdapter({ host: "localhost", port: 5432, user: "test", password: "test", name: "test" }).db` and pass that.
-
-## Migration status
-
-`calendar` and `file` are fully on this pattern. `organization` is on it for its own ports but predates the `db`/`scope` convention (its ports don't touch organization-scoped tables). `user`, `plan`, `place`, `invitation`, `notification` are not yet migrated — see the tracking ticket (ECH) for scope. Follow this pattern for anything new or touched in those modules; don't block unrelated work on a full retrofit.
