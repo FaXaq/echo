@@ -6,6 +6,10 @@ import { useTable } from "@tanstack/react-table";
 import { Plural, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
 import { FolderPlus, Upload } from "lucide-react";
+import {
+  AttachmentCarouselDialog,
+  type CarouselAttachment,
+} from "@/components/ui/attachment-carousel-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -87,6 +91,8 @@ function DriveExplorerContent({
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
   const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
   const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
+  const [carouselFiles, setCarouselFiles] = useState<CarouselAttachment[]>([]);
+  const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [isTableDragActive, setIsTableDragActive] = useState(false);
   const tableDragDepthRef = useRef(0);
 
@@ -102,6 +108,20 @@ function DriveExplorerContent({
   const visibleFolders = data.folders.filter((folder) => !pendingDeleteIds.has(folder.id));
   const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
   const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
+
+  const openGalleryPreview = async (fileId: string) => {
+    const galleryFiles = visibleFiles.filter(
+      (file) => file.kind === "image" || file.kind === "video",
+    );
+    const resolved = await Promise.all(
+      galleryFiles.map(async (file) => {
+        const { downloadUrl } = await getFileDownloadUrl({ id: file.id, organizationId });
+        return { id: file.id, filename: file.filename, kind: file.kind, downloadUrl };
+      }),
+    );
+    setCarouselFiles(resolved);
+    setCarouselIndex(resolved.findIndex((file) => file.id === fileId));
+  };
 
   const rows: { kind: DriveItemKind; id: string }[] = [
     ...visibleFolders.map((folder) => ({ kind: "folder" as const, id: folder.id })),
@@ -368,6 +388,7 @@ function DriveExplorerContent({
                       contextLabel: original.data.eventTitle ?? undefined,
                     });
                   }}
+                  onOpen={() => openGalleryPreview(original.data.id)}
                   bulkDownloadDisabledReason={downloadDisabledReason}
                   onBulkDownload={handleBulkDownload}
                   isBulkDownloading={isDownloading}
@@ -457,6 +478,12 @@ function DriveExplorerContent({
         bulkDeleteCount={confirmingBulkDelete ? selectedFiles.length : 0}
         onBulkDeleteCountChange={(open) => !open && setConfirmingBulkDelete(false)}
         onConfirmBulkDeleteFiles={handleBulkDeleteFiles}
+      />
+
+      <AttachmentCarouselDialog
+        files={carouselFiles}
+        openIndex={carouselIndex}
+        onOpenChange={(open) => !open && setCarouselIndex(null)}
       />
     </div>
   );
