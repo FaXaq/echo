@@ -115,7 +115,7 @@ function Carousel({
     >
       <div
         onKeyDownCapture={handleKeyDown}
-        className={cn("relative", className)}
+        className={cn("relative min-w-0", className)}
         role="region"
         aria-roledescription="carousel"
         data-slot="carousel"
@@ -240,7 +240,7 @@ function CarouselDots({ className, ...props }: React.ComponentProps<"div">) {
 
   return (
     <div
-      className={cn("flex justify-center gap-2", className)}
+      className={cn("flex flex-wrap justify-center gap-2", className)}
       data-slot="carousel-dots"
       {...props}
     >
