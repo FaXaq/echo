@@ -78,7 +78,7 @@ export function FileRow({
                 onToggleSelect(event);
               } else if (file.kind === "audio" && onPlay) {
                 onPlay();
-              } else if ((file.kind === "image" || file.kind === "video") && onOpen) {
+              } else if (onOpen) {
                 onOpen();
               }
             }}
