@@ -52,4 +52,4 @@ Every module under `packages/modules/src` has `domain/`, `app/`, and `infrastruc
 
 ## Migration status
 
-`calendar` and `file` are fully on this pattern. `organization` is on it for its own ports but predates the `db`/`scope` convention (its ports don't touch organization-scoped tables). `user`, `plan`, `place`, `invitation`, `notification` are not yet migrated — see the tracking ticket (ECH) for scope. Follow this pattern for anything new or touched in those modules; don't block unrelated work on a full retrofit.
+All modules are on this pattern as of ECH-62 (`calendar`, `file`, `user`, `plan`, `invitation` with real ports; `organization` for its own ports but predating the `db`/`scope` convention since its ports don't touch organization-scoped tables; `place` and `notification` needed no ports at all — `place` only delegates to an adapter port, and `notification`'s render functions are only ever called from the composition root, never from an `app/` layer). Keep new infrastructure on this pattern from the start.
