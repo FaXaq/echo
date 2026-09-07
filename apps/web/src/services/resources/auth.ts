@@ -106,11 +106,16 @@ export function useAcceptInvitationMutation() {
 
 export type UpdateUserInput = Parameters<typeof authClient.updateUser>[0];
 export function useUpdateUserMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (input: UpdateUserInput) => {
       const { data, error } = await authClient.updateUser(input);
       if (error) throw new Error(error.message ?? "Failed to update user");
       return data;
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: getSessionQueryOptions().queryKey });
     },
   });
 }
