@@ -5,10 +5,8 @@ import type {
 } from "@echo/modules/user/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import { planCatalog } from "@echo/modules/plan/domain";
-import type {
-  GetOrganizationStorageUsagePort,
-  ResolveEntitlementsPort,
-} from "@echo/modules/plan/app";
+import type { ResolveEntitlementsPort } from "@echo/modules/plan/app";
+import type { GetOrganizationStorageUsageQueryPort } from "@echo/modules/plan/infrastructure";
 import type {
   FindFileByIdQueryPort,
   FindFolderByIdQueryPort,
@@ -72,7 +70,7 @@ export function makeFakePersonalOrganizationId(
 export function makeFakeQuotaPorts(
   overrides: Partial<{
     resolveOrganizationEntitlements: ResolveEntitlementsPort;
-    getOrganizationStorageUsage: GetOrganizationStorageUsagePort;
+    getOrganizationStorageUsage: GetOrganizationStorageUsageQueryPort;
   }> = {},
 ) {
   return {

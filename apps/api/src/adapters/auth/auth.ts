@@ -16,6 +16,10 @@ import {
 } from "@echo/modules/organization/infrastructure";
 import { createOrganization } from "@echo/modules/organization/app";
 import { hasSeatAvailable } from "@echo/modules/plan/app";
+import {
+  getOrganizationSeatUsageQueryFactory,
+  resolvePlanQueryFactory,
+} from "@echo/modules/plan/infrastructure";
 import { createSystemOrganizationScope } from "@echo/modules/shared/domain";
 import { makeMailer } from "@echo/adapters/mailer";
 import { makeS3Storage } from "@echo/adapters/s3-storage";
@@ -26,6 +30,8 @@ const mailer = makeMailer(appConfig.mailer);
 const s3Storage = makeS3Storage(appConfig.s3);
 const logger = makeLogger();
 const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
+const resolvePlanQuery = resolvePlanQueryFactory();
+const getOrganizationSeatUsageQuery = getOrganizationSeatUsageQueryFactory();
 
 const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   secret: appConfig.auth.secret,
@@ -91,7 +97,7 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   },
   hasSeatAvailable: async (organizationId, excludeInvitationId) =>
     hasSeatAvailable(
-      { db },
+      { db, resolvePlanQuery, getOrganizationSeatUsageQuery },
       { scope: createSystemOrganizationScope(organizationId), excludeInvitationId },
     ),
   sendOrganizationInvitation: async ({ invitation, organization, inviter }) => {

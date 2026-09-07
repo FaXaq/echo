@@ -40,8 +40,8 @@ import {
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
 import {
-  getOrganizationStorageUsageQuery,
-  resolvePlanQuery,
+  getOrganizationStorageUsageQueryFactory,
+  resolvePlanQueryFactory,
 } from "@echo/modules/plan/infrastructure";
 import { organizationProcedure, router } from "../trpc";
 
@@ -66,6 +66,8 @@ const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
 const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
 const searchDriveQuery = searchDriveQueryFactory();
+const resolvePlanQuery = resolvePlanQueryFactory();
+const getOrganizationStorageUsageQuery = getOrganizationStorageUsageQueryFactory();
 
 export const makeDriveRouter = () =>
   router({
@@ -91,12 +93,9 @@ export const makeDriveRouter = () =>
             insertPendingFileCommand,
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
-            resolveOrganizationEntitlements: (scope) =>
-              resolveEntitlements(
-                { resolvePlan: (planScope) => resolvePlanQuery(ctx.db, planScope) },
-                scope,
-              ),
-            getOrganizationStorageUsage: (scope) => getOrganizationStorageUsageQuery(ctx.db, scope),
+            resolveOrganizationEntitlements: (db, scope) =>
+              resolveEntitlements({ resolvePlanQuery }, { db, scope }),
+            getOrganizationStorageUsage: getOrganizationStorageUsageQuery,
           },
           { userId: ctx.session.user.id, scope: ctx.organizationScope, ...input },
         ),

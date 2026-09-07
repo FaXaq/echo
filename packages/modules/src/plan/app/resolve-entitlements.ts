@@ -1,14 +1,17 @@
+import type { KyselyDB } from "@echo/db";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import { planCatalog } from "../domain/index.js";
-import type { PlanEntitlements, PlanName } from "../domain/index.js";
+import type { PlanEntitlements } from "../domain/index.js";
+import type { ResolvePlanQueryPort } from "../infrastructure/index.js";
 
-export type ResolvePlanPort = (scope: OrganizationScope) => Promise<PlanName>;
-export type ResolveEntitlementsPort = (scope: OrganizationScope) => Promise<PlanEntitlements>;
-export type GetOrganizationStorageUsagePort = (scope: OrganizationScope) => Promise<number>;
+export type ResolveEntitlementsPort = (
+  db: KyselyDB,
+  scope: OrganizationScope,
+) => Promise<PlanEntitlements>;
 
 export async function resolveEntitlements(
-  deps: { resolvePlan: ResolvePlanPort },
-  scope: OrganizationScope,
-) {
-  return planCatalog[await deps.resolvePlan(scope)];
+  deps: { resolvePlanQuery: ResolvePlanQueryPort },
+  input: { db: KyselyDB; scope: OrganizationScope },
+): Promise<PlanEntitlements> {
+  return planCatalog[await deps.resolvePlanQuery(input.db, input.scope)];
 }

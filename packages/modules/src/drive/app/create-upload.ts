@@ -5,10 +5,8 @@ import type {
   CheckUserPermission,
 } from "@echo/modules/user/infrastructure";
 import { exceedsLimit } from "@echo/modules/plan/domain";
-import type {
-  GetOrganizationStorageUsagePort,
-  ResolveEntitlementsPort,
-} from "@echo/modules/plan/app";
+import type { ResolveEntitlementsPort } from "@echo/modules/plan/app";
+import type { GetOrganizationStorageUsageQueryPort } from "@echo/modules/plan/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import { kindForMimeType } from "../domain/index.js";
 import type {
@@ -29,7 +27,7 @@ export async function createUpload(
     insertPendingFileCommand: InsertPendingFileCommandPort;
     getPersonalOrganizationId: GetPersonalOrganizationIdPort;
     resolveOrganizationEntitlements: ResolveEntitlementsPort;
-    getOrganizationStorageUsage: GetOrganizationStorageUsagePort;
+    getOrganizationStorageUsage: GetOrganizationStorageUsageQueryPort;
   },
   input: {
     userId: string;
@@ -56,7 +54,7 @@ export async function createUpload(
     if (!folder) throw notFound("Folder");
   }
 
-  const { limits } = await deps.resolveOrganizationEntitlements(input.scope);
+  const { limits } = await deps.resolveOrganizationEntitlements(deps.db, input.scope);
 
   if (input.sizeBytes > limits.maxFileSizeBytes) {
     throw quotaExceeded({
@@ -66,7 +64,7 @@ export async function createUpload(
     });
   }
 
-  const usedBytes = await deps.getOrganizationStorageUsage(input.scope);
+  const usedBytes = await deps.getOrganizationStorageUsage(deps.db, input.scope);
   if (exceedsLimit({ current: usedBytes, delta: input.sizeBytes, limit: limits.storageBytes })) {
     throw quotaExceeded({
       limitName: "storageBytes",
