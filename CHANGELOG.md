@@ -1,3 +1,9 @@
+## [0.7.0](https://github.com/FaXaq/echo/compare/v0.6.2...v0.7.0) (2026-09-07)
+
+### ✨ Features
+
+* **files:** carousel for media ([#27](https://github.com/FaXaq/echo/issues/27)) ([374237b](https://github.com/FaXaq/echo/commit/374237b5b94b8e3c2a55e682ac9b0ae079544a43))
+
 ## [0.6.2](https://github.com/FaXaq/echo/compare/v0.6.1...v0.6.2) (2026-09-05)
 
 ### 🐛 Bug Fixes
