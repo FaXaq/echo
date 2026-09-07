@@ -5,8 +5,8 @@ import { appConfig } from "./adapters/config/index";
 import { makeLogger } from "@echo/logger";
 import type { Context } from "./trpc";
 import {
-  userHasPermission,
-  userHasPermissionInOrganization,
+  userHasPermissionCheckFactory,
+  userHasPermissionInOrganizationCheckFactory,
 } from "@echo/modules/user/infrastructure";
 import { makeMailer } from "@echo/adapters/mailer";
 import { makeS3Storage } from "@echo/adapters/s3-storage";
@@ -36,9 +36,12 @@ export const makeCreateContext =
       headers,
       logger,
       mailer,
-      userHasPermission: (input) => userHasPermission({ auth, userId: session?.user.id }, input),
-      userHasPermissionInOrganization: (input) =>
-        userHasPermissionInOrganization({ auth, userId: session?.user.id, headers }, input),
+      userHasPermission: userHasPermissionCheckFactory({ auth, userId: session?.user.id }),
+      userHasPermissionInOrganization: userHasPermissionInOrganizationCheckFactory({
+        auth,
+        userId: session?.user.id,
+        headers,
+      }),
       s3Storage,
       geocoding,
       auth,
