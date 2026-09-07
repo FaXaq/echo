@@ -1,3 +1,9 @@
+## [0.8.0](https://github.com/FaXaq/echo/compare/v0.7.0...v0.8.0) (2026-09-07)
+
+### ✨ Features
+
+* **files:** preview other file types ([#28](https://github.com/FaXaq/echo/issues/28)) ([167ac3c](https://github.com/FaXaq/echo/commit/167ac3c0c29c8d82f096b7fa37c861d7820bc4e4))
+
 ## [0.7.0](https://github.com/FaXaq/echo/compare/v0.6.2...v0.7.0) (2026-09-07)
 
 ### ✨ Features
