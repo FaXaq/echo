@@ -22,3 +22,30 @@ if (typeof ResizeObserver === "undefined") {
   }
   global.ResizeObserver = ResizeObserverStub;
 }
+if (typeof IntersectionObserver === "undefined") {
+  class IntersectionObserverStub implements IntersectionObserver {
+    root = null;
+    rootMargin = "";
+    scrollMargin = "";
+    thresholds = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  }
+  global.IntersectionObserver = IntersectionObserverStub;
+}
+if (!window.matchMedia) {
+  window.matchMedia = (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  });
+}

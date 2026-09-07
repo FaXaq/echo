@@ -13,6 +13,7 @@ import {
   Trash,
 } from "lucide-react";
 import type { FileKind } from "@echo/modules/drive/domain";
+import { AttachmentCarouselDialog } from "@/components/ui/attachment-carousel-dialog";
 import {
   Attachment,
   AttachmentActions,
@@ -452,6 +453,7 @@ export function AttachmentList({
 }: AttachmentListProps) {
   const { t } = useLingui();
   const [previewId, setPreviewId] = useState<string | null>(null);
+  const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<AttachmentTab>(() =>
     firstNonEmptyTab(files, pendingFiles),
@@ -472,6 +474,11 @@ export function AttachmentList({
   const audioPending = pendingFiles.filter((file) => tabForKind(file.kind) === "audio");
   const galleryPending = pendingFiles.filter((file) => tabForKind(file.kind) === "gallery");
   const miscPending = pendingFiles.filter((file) => tabForKind(file.kind) === "misc");
+
+  const openGalleryPreview = (id: string) => {
+    const index = galleryFiles.findIndex((file) => file.id === id);
+    if (index !== -1) setCarouselIndex(index);
+  };
 
   const sharedProps = {
     failedIds,
@@ -517,7 +524,7 @@ export function AttachmentList({
               failedIds={failedIds}
               selectedIds={selectedIds}
               onToggleSelect={onToggleSelect}
-              onOpen={setPreviewId}
+              onOpen={openGalleryPreview}
               onRename={onRename}
               onDownload={onDownload}
               onDelete={onDelete}
@@ -553,6 +560,12 @@ export function AttachmentList({
             ))}
         </DialogContent>
       </Dialog>
+
+      <AttachmentCarouselDialog
+        files={galleryFiles}
+        openIndex={carouselIndex}
+        onOpenChange={(open) => !open && setCarouselIndex(null)}
+      />
     </>
   );
 }

@@ -36,6 +36,7 @@ export function FileRow({
   onDelete,
   onDownload,
   onPlay,
+  onOpen,
   bulkDownloadDisabledReason,
   onBulkDownload,
   isBulkDownloading,
@@ -50,6 +51,7 @@ export function FileRow({
   onDelete: () => void;
   onDownload: () => void;
   onPlay?: () => void;
+  onOpen?: () => void;
   bulkDownloadDisabledReason: string | null;
   onBulkDownload: () => void;
   isBulkDownloading: boolean;
@@ -76,6 +78,8 @@ export function FileRow({
                 onToggleSelect(event);
               } else if (file.kind === "audio" && onPlay) {
                 onPlay();
+              } else if ((file.kind === "image" || file.kind === "video") && onOpen) {
+                onOpen();
               }
             }}
             onContextMenu={onContextMenuTrigger}
