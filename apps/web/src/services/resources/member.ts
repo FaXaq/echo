@@ -2,6 +2,7 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 import { authClient } from "@/lib/auth";
 import type { OrganizationRole } from "@echo/auth";
 import { initResourceKey } from "./init-resource-key";
+import { key as planKey } from "./plan";
 
 const { key, getResourceKey } = initResourceKey("member");
 
@@ -63,7 +64,10 @@ export function useInviteMemberMutation() {
       return data;
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        queryClient.invalidateQueries({ queryKey: planKey }),
+      ]);
     },
   });
 }
@@ -77,7 +81,10 @@ export function useCancelInvitationMutation() {
       if (error) throw new Error(error.message ?? "Failed to cancel invitation");
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        queryClient.invalidateQueries({ queryKey: planKey }),
+      ]);
     },
   });
 }
@@ -91,7 +98,10 @@ export function useRemoveMemberMutation() {
       if (error) throw new Error(error.message ?? "Failed to remove member");
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        queryClient.invalidateQueries({ queryKey: planKey }),
+      ]);
     },
   });
 }
