@@ -200,7 +200,7 @@ msgstr "At least one uppercase letter"
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:158
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:161
 msgid "Back to calendar"
 msgstr "Back to calendar"
 
@@ -606,7 +606,7 @@ msgstr "Event deleted"
 msgid "Event details"
 msgstr "Event details"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:152
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:155
 msgid "Event not found"
 msgstr "Event not found"
 
@@ -810,7 +810,7 @@ msgstr "Last modified"
 msgid "Letters, numbers, _ and - only"
 msgstr "Letters, numbers, _ and - only"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:76
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:79
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:77
 msgid "Link copied to clipboard"
 msgstr "Link copied to clipboard"
@@ -1349,7 +1349,7 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 #~ msgid "Slug is required"
 #~ msgstr "Slug is required"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:152
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:155
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:146
 msgid "Something went wrong"
@@ -1388,7 +1388,7 @@ msgstr "Storage"
 msgid "Theme"
 msgstr "Theme"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:155
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:158
 msgid "This event doesn't exist or has been deleted."
 msgstr "This event doesn't exist or has been deleted."
 
