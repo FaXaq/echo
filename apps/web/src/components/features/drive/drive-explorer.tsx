@@ -39,7 +39,7 @@ import {
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 import { useFolderPath } from "@/hooks/use-folder-path";
-import { getFileDownloadUrl } from "@/services/resources/drive";
+import { getFileDownloadUrl, getFilesDownloadUrls } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { DriveSearchCombobox } from "./drive-search-combobox";
 import { SuspendedDriveQuotaBar } from "./suspended-drive-quota-bar";
@@ -115,18 +115,27 @@ function DriveExplorerContent({
   const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
   const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
 
-  const openGalleryPreview = async (fileId: string) => {
+  const openGalleryPreview = (fileId: string) => {
     const galleryFiles = visibleFiles.filter(
       (file) => file.kind === "image" || file.kind === "video",
     );
-    const resolved = await Promise.all(
-      galleryFiles.map(async (file) => {
-        const { downloadUrl } = await getFileDownloadUrl({ id: file.id, organizationId });
-        return { id: file.id, filename: file.filename, kind: file.kind, downloadUrl };
-      }),
+    const index = galleryFiles.findIndex((file) => file.id === fileId);
+    if (index === -1) return;
+
+    setCarouselFiles(
+      galleryFiles.map((file) => ({ id: file.id, filename: file.filename, kind: file.kind })),
     );
-    setCarouselFiles(resolved);
-    setCarouselIndex(resolved.findIndex((file) => file.id === fileId));
+    setCarouselIndex(index);
+
+    void getFilesDownloadUrls({
+      ids: galleryFiles.map((file) => file.id),
+      organizationId,
+    }).then((urls) => {
+      const downloadUrlById = new Map(urls.map((entry) => [entry.id, entry.downloadUrl]));
+      setCarouselFiles((current) =>
+        current.map((file) => ({ ...file, downloadUrl: downloadUrlById.get(file.id) })),
+      );
+    });
   };
 
   const openDocumentPreview = async (file: OrganizationFile) => {

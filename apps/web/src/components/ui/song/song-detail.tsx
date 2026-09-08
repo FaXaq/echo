@@ -21,12 +21,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
 import { LyricsEditor } from "@/components/ui/lyrics-editor";
+import type { MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import type { Song } from "@/services/resources/song";
 
 export interface SongDetailProps {
   song: Song;
   lyrics: string;
   onLyricsChange: (markdown: string) => void;
+  lyricsSaveStatus?: MarkdownSaveStatus;
   onShare: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -38,6 +40,7 @@ export function SongDetail({
   song,
   lyrics,
   onLyricsChange,
+  lyricsSaveStatus,
   onShare,
   onEdit,
   onDelete,
@@ -103,7 +106,7 @@ export function SongDetail({
         attachments={attachments}
         className={className}
       >
-        <LyricsEditor markdown={lyrics} onChange={onLyricsChange} />
+        <LyricsEditor markdown={lyrics} onChange={onLyricsChange} saveStatus={lyricsSaveStatus} />
       </EntityDetailLayout>
 
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>

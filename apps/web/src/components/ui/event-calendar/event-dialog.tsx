@@ -38,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 
 import { COLOR_LABELS, EVENT_COLORS, eventDotClasses } from "./colors";
 import { getEventLabel, EventTypeIcon } from "./event-types";
@@ -219,11 +218,6 @@ export function EventDialog({
                 <FieldError>
                   {errors.title && translateDynamic(t, errors.title.message!)}
                 </FieldError>
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="event-description">{t`Description`}</FieldLabel>
-                <Textarea id="event-description" {...register("description")} />
               </Field>
 
               <Field>

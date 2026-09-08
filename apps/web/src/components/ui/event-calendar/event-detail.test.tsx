@@ -31,11 +31,13 @@ function makeEvent(overrides: Partial<CalendarEvent> = {}): CalendarEvent {
 const noop = <div />;
 
 describe("EventDetail", () => {
-  it("renders the event title and description", () => {
+  it("renders the event title and description", async () => {
     const event = makeEvent({ description: "Daily sync" });
     render(
       <EventDetail
         event={event}
+        description={event.description ?? ""}
+        onDescriptionChange={vi.fn()}
         onShare={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
@@ -44,7 +46,7 @@ describe("EventDetail", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Standup" })).toBeInTheDocument();
-    expect(screen.getByText("Daily sync")).toBeInTheDocument();
+    expect(await screen.findByText("Daily sync")).toBeInTheDocument();
   });
 
   it("renders the place with an Open in Maps link when set", () => {
@@ -59,6 +61,8 @@ describe("EventDetail", () => {
     render(
       <EventDetail
         event={event}
+        description=""
+        onDescriptionChange={vi.fn()}
         onShare={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
@@ -80,6 +84,8 @@ describe("EventDetail", () => {
     render(
       <EventDetail
         event={makeEvent()}
+        description=""
+        onDescriptionChange={vi.fn()}
         onShare={onShare}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
@@ -97,6 +103,8 @@ describe("EventDetail", () => {
     render(
       <EventDetail
         event={makeEvent()}
+        description=""
+        onDescriptionChange={vi.fn()}
         onShare={vi.fn()}
         onEdit={onEdit}
         onDelete={vi.fn()}
@@ -115,6 +123,8 @@ describe("EventDetail", () => {
     render(
       <EventDetail
         event={makeEvent()}
+        description=""
+        onDescriptionChange={vi.fn()}
         onShare={vi.fn()}
         onEdit={vi.fn()}
         onDelete={onDelete}
@@ -134,6 +144,8 @@ describe("EventDetail", () => {
     render(
       <EventDetail
         event={makeEvent({ type: "concert" })}
+        description=""
+        onDescriptionChange={vi.fn()}
         onShare={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
@@ -148,6 +160,8 @@ describe("EventDetail", () => {
     render(
       <EventDetail
         event={makeEvent()}
+        description=""
+        onDescriptionChange={vi.fn()}
         onShare={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}

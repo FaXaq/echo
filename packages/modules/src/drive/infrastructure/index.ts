@@ -17,6 +17,12 @@ export type {
 export { findFileByIdQueryFactory } from "./find-file-by-id.query.kysely.js";
 
 export type {
+  FindFilesByIdsQueryInput,
+  FindFilesByIdsQueryPort,
+} from "./find-files-by-ids.query.port.js";
+export { findFilesByIdsQueryFactory } from "./find-files-by-ids.query.kysely.js";
+
+export type {
   ListFilesByEventQueryInput,
   ListFilesByEventQueryPort,
 } from "./list-files-by-event.query.port.js";
