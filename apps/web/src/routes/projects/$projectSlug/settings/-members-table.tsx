@@ -237,7 +237,11 @@ export function MembersTable({
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>{t`No, keep them`}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleRevoke(member.id)}>
+                            <AlertDialogAction
+                              onClick={() => handleRevoke(member.id)}
+                              isLoading={removeMemberMutation.isPending}
+                              variant="destructive"
+                            >
                               {t`Yes, remove`}
                             </AlertDialogAction>
                           </AlertDialogFooter>
