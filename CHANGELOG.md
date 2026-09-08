@@ -1,3 +1,10 @@
+## [0.8.2](https://github.com/FaXaq/echo/compare/v0.8.1...v0.8.2) (2026-09-08)
+
+### 🐛 Bug Fixes
+
+* **carousel:** switch to numbered images instead of dots & loop it ([#31](https://github.com/FaXaq/echo/issues/31)) ([46336a9](https://github.com/FaXaq/echo/commit/46336a9eaa95fb40634693bebef3c52fb9bbb521))
+* **lyrics:** cap lyrics height, autosave indicator, event description markdown (ECH-98) ([#32](https://github.com/FaXaq/echo/issues/32)) ([5ee0631](https://github.com/FaXaq/echo/commit/5ee0631320d568afe80c922682da99c9571c448e))
+
 ## [0.8.1](https://github.com/FaXaq/echo/compare/v0.8.0...v0.8.1) (2026-09-07)
 
 ### 🐛 Bug Fixes
