@@ -3,7 +3,6 @@ import {
   type CarouselApi,
   Carousel,
   CarouselContent,
-  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
@@ -73,7 +72,7 @@ export function AttachmentCarouselDialog({
       <DialogContent className="sm:max-w-3xl">
         <DialogTitle>{activeFile?.filename}</DialogTitle>
         {openIndex !== null && (
-          <Carousel opts={{ startIndex: openIndex }} setApi={setApi} className="w-full">
+          <Carousel opts={{ startIndex: openIndex, loop: true }} setApi={setApi} className="w-full">
             <CarouselContent>
               {files.map((file, index) => {
                 const isNearActive = Math.abs(index - activeIndex) <= PRELOAD_RADIUS;
@@ -121,7 +120,9 @@ export function AttachmentCarouselDialog({
               <>
                 <CarouselPrevious />
                 <CarouselNext />
-                <CarouselDots className="pt-4" />
+                <div className="pt-4 text-center text-sm text-muted-foreground">
+                  {activeIndex + 1} / {files.length}
+                </div>
               </>
             )}
           </Carousel>
