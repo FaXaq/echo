@@ -1,3 +1,9 @@
+## [0.8.3](https://github.com/FaXaq/echo/compare/v0.8.2...v0.8.3) (2026-09-08)
+
+### 🐛 Bug Fixes
+
+* **invite-flow:** make it OTP & step by step ([#33](https://github.com/FaXaq/echo/issues/33)) ([e8ba0f3](https://github.com/FaXaq/echo/commit/e8ba0f3478c06faf6ca7ab7056d0d1805e725e78))
+
 ## [0.8.2](https://github.com/FaXaq/echo/compare/v0.8.1...v0.8.2) (2026-09-08)
 
 ### 🐛 Bug Fixes
