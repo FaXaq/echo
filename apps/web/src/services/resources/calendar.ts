@@ -49,8 +49,10 @@ export function useCreateEventMutation({
 export type UpdateEventInput = RouterInputs["calendar"]["updateEvent"];
 export function useUpdateEventMutation({
   onSuccess,
+  onError,
 }: {
   onSuccess?: (event: CalendarEvent) => void;
+  onError?: (error: unknown) => void;
 } = {}) {
   const queryClient = useQueryClient();
 
@@ -60,6 +62,7 @@ export function useUpdateEventMutation({
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.(result);
     },
+    onError,
   });
 }
 

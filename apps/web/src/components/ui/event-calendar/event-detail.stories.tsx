@@ -38,11 +38,12 @@ const sharedArgs = {
   onShare: () => {},
   onEdit: () => {},
   onDelete: () => {},
+  onDescriptionChange: () => {},
   attachments: <div className="text-xs text-muted-foreground">Attachments render here</div>,
 };
 
 export const Default: Story = {
-  args: { event: baseEvent, ...sharedArgs },
+  args: { event: baseEvent, description: baseEvent.description, ...sharedArgs },
 };
 
 export const AllDay: Story = {
@@ -54,12 +55,17 @@ export const AllDay: Story = {
       allDay: true,
       color: "purple",
     },
+    description: "Full-day offsite, no meetings.",
     ...sharedArgs,
   },
 };
 
 export const NoDescription: Story = {
-  args: { event: { ...baseEvent, description: undefined, color: "green" }, ...sharedArgs },
+  args: {
+    event: { ...baseEvent, description: undefined, color: "green" },
+    description: "",
+    ...sharedArgs,
+  },
 };
 
 export const WithPlace: Story = {
@@ -73,6 +79,7 @@ export const WithPlace: Story = {
         lng: 4.8357,
       },
     },
+    description: baseEvent.description,
     ...sharedArgs,
   },
 };

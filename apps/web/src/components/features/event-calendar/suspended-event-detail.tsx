@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
@@ -7,6 +7,7 @@ import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventDetail, EventDialog, type EventDialogState } from "@/ui/event-calendar";
+import type { MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import {
   getEventQueryOptions,
   useDeleteEventMutation,
@@ -15,6 +16,8 @@ import {
 import { fromViewEvent, toViewEvent } from "@/lib/calendar-events";
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
+
+const DESCRIPTION_AUTOSAVE_DEBOUNCE_MS = 300;
 
 export interface SuspendedEventDetailProps {
   eventId: string;
@@ -33,11 +36,20 @@ function EventDetailContent({
   const { data: event } = useSuspenseQuery(getEventQueryOptions({ eventId, organizationId }));
   const viewEvent = toViewEvent(event);
   const [dialogState, setDialogState] = useState<EventDialogState>(null);
+  const [description, setDescription] = useState(() => viewEvent.description ?? "");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const descriptionRef = useRef(description);
+  descriptionRef.current = description;
+  const viewEventRef = useRef(viewEvent);
+  viewEventRef.current = viewEvent;
 
   useSyncPageMeta(pathname, viewEvent.title, viewEvent.title);
 
   const updateEventMutation = useUpdateEventMutation({
     onSuccess: () => setDialogState(null),
+  });
+  const updateDescriptionMutation = useUpdateEventMutation({
+    onError: () => toast.add({ type: "error", title: t`Failed to save description` }),
   });
   const deleteEventMutation = useDeleteEventMutation({
     organizationId,
@@ -46,6 +58,21 @@ function EventDetailContent({
       onBack();
     },
   });
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        updateDescriptionMutation.mutate({
+          id: viewEventRef.current.id,
+          ...fromViewEvent({
+            ...viewEventRef.current,
+            description: descriptionRef.current || undefined,
+          }),
+        });
+      }
+    };
+  }, [eventId, updateDescriptionMutation.mutate]);
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -56,6 +83,25 @@ function EventDetailContent({
     await updateEventMutation.mutateAsync({ id: updated.id, ...fromViewEvent(updated) });
   };
 
+  const handleDescriptionChange = (markdown: string) => {
+    setDescription(markdown);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      debounceRef.current = null;
+      updateDescriptionMutation.mutate({
+        id: viewEventRef.current.id,
+        ...fromViewEvent({ ...viewEventRef.current, description: markdown || undefined }),
+      });
+    }, DESCRIPTION_AUTOSAVE_DEBOUNCE_MS);
+  };
+
+  const descriptionSaveStatus: MarkdownSaveStatus =
+    updateDescriptionMutation.isPending || debounceRef.current !== null
+      ? "saving"
+      : updateDescriptionMutation.isSuccess
+        ? "saved"
+        : "idle";
+
   const handleDelete = async () => {
     await deleteEventMutation.mutateAsync({ id: viewEvent.id });
   };
@@ -64,6 +110,9 @@ function EventDetailContent({
     <>
       <EventDetail
         event={viewEvent}
+        description={description}
+        onDescriptionChange={handleDescriptionChange}
+        descriptionSaveStatus={descriptionSaveStatus}
         onShare={handleShare}
         onEdit={() => setDialogState({ mode: "edit", event: viewEvent })}
         onDelete={handleDelete}

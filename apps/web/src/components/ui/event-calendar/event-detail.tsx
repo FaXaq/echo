@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
+import { MarkdownEditor, type MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import { getInitials } from "@/lib/remeda";
 import { eventDotClasses } from "./colors";
 import { getEventLabel, EventTypeIcon } from "./event-types";
@@ -33,6 +34,9 @@ import type { CalendarEvent } from "./types";
 
 export interface EventDetailProps {
   event: CalendarEvent;
+  description: string;
+  onDescriptionChange: (markdown: string) => void;
+  descriptionSaveStatus?: MarkdownSaveStatus;
   onShare: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -42,6 +46,9 @@ export interface EventDetailProps {
 
 export function EventDetail({
   event,
+  description,
+  onDescriptionChange,
+  descriptionSaveStatus,
   onShare,
   onEdit,
   onDelete,
@@ -184,9 +191,16 @@ export function EventDetail({
         attachments={attachments}
         className={className}
       >
-        {event.description && (
-          <p className="m-0 whitespace-pre-wrap text-sm leading-relaxed">{event.description}</p>
-        )}
+        <div className="flex flex-col gap-2">
+          <span className="text-[13px] font-semibold">{t`Description`}</span>
+          <MarkdownEditor
+            markdown={description}
+            onChange={onDescriptionChange}
+            placeholder={t`Add a description…`}
+            saveStatus={descriptionSaveStatus}
+            className="min-h-24 max-h-[32rem] overflow-y-auto rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"
+          />
+        </div>
       </EntityDetailLayout>
 
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
