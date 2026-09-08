@@ -115,23 +115,27 @@ function DriveExplorerContent({
   const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
   const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
 
-  const openGalleryPreview = async (fileId: string) => {
+  const openGalleryPreview = (fileId: string) => {
     const galleryFiles = visibleFiles.filter(
       (file) => file.kind === "image" || file.kind === "video",
     );
-    const urls = await getFilesDownloadUrls({
+    const index = galleryFiles.findIndex((file) => file.id === fileId);
+    if (index === -1) return;
+
+    setCarouselFiles(
+      galleryFiles.map((file) => ({ id: file.id, filename: file.filename, kind: file.kind })),
+    );
+    setCarouselIndex(index);
+
+    void getFilesDownloadUrls({
       ids: galleryFiles.map((file) => file.id),
       organizationId,
+    }).then((urls) => {
+      const downloadUrlById = new Map(urls.map((entry) => [entry.id, entry.downloadUrl]));
+      setCarouselFiles((current) =>
+        current.map((file) => ({ ...file, downloadUrl: downloadUrlById.get(file.id) })),
+      );
     });
-    const downloadUrlById = new Map(urls.map((entry) => [entry.id, entry.downloadUrl]));
-    const resolved = galleryFiles.flatMap((file) => {
-      const downloadUrl = downloadUrlById.get(file.id);
-      return downloadUrl
-        ? [{ id: file.id, filename: file.filename, kind: file.kind, downloadUrl }]
-        : [];
-    });
-    setCarouselFiles(resolved);
-    setCarouselIndex(resolved.findIndex((file) => file.id === fileId));
   };
 
   const openDocumentPreview = async (file: OrganizationFile) => {

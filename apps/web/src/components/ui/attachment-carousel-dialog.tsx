@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { match } from "ts-pattern";
 import { useEffect, useRef, useState } from "react";
 
@@ -19,7 +20,7 @@ export interface CarouselAttachment {
   id: string;
   filename: string;
   kind: FileKind;
-  downloadUrl: string;
+  downloadUrl?: string;
 }
 
 export interface AttachmentCarouselDialogProps {
@@ -35,7 +36,11 @@ export function AttachmentCarouselDialog({
 }: AttachmentCarouselDialogProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [activeIndex, setActiveIndex] = useState(openIndex ?? 0);
+  const [loadedIds, setLoadedIds] = useState<Set<string>>(new Set());
   const videoRefs = useRef(new Map<string, HTMLVideoElement>());
+
+  const markLoaded = (id: string) =>
+    setLoadedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
 
   // Reset to the newly opened file each time the dialog is reopened on a different item.
   useEffect(() => {
@@ -72,11 +77,15 @@ export function AttachmentCarouselDialog({
             <CarouselContent>
               {files.map((file, index) => {
                 const isNearActive = Math.abs(index - activeIndex) <= PRELOAD_RADIUS;
+                const isLoaded = loadedIds.has(file.id);
                 return (
-                  <CarouselItem key={file.id} className="flex items-center justify-center">
-                    {!isNearActive ? (
-                      <Skeleton className="h-[70vh] w-full" />
-                    ) : (
+                  <CarouselItem
+                    key={file.id}
+                    className="relative flex h-[70vh] items-center justify-center"
+                  >
+                    {(!isNearActive || !isLoaded) && <Skeleton className="absolute inset-0" />}
+                    {isNearActive &&
+                      file.downloadUrl &&
                       match(file.kind)
                         .with("video", () => (
                           <video
@@ -86,18 +95,24 @@ export function AttachmentCarouselDialog({
                             }}
                             src={file.downloadUrl}
                             controls
-                            className="max-h-[70vh] w-full rounded-md"
+                            onLoadedData={() => markLoaded(file.id)}
+                            className={cn(
+                              "max-h-[70vh] w-full rounded-md",
+                              !isLoaded && "invisible",
+                            )}
                           />
                         ))
                         .otherwise(() => (
                           <img
                             src={file.downloadUrl}
                             alt={file.filename}
-                            loading="lazy"
-                            className="max-h-[70vh] w-full rounded-md object-contain"
+                            onLoad={() => markLoaded(file.id)}
+                            className={cn(
+                              "max-h-[70vh] w-full rounded-md object-contain",
+                              !isLoaded && "invisible",
+                            )}
                           />
-                        ))
-                    )}
+                        ))}
                   </CarouselItem>
                 );
               })}
