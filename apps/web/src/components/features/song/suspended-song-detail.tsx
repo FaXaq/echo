@@ -8,6 +8,7 @@ import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SongDetail } from "@/components/ui/song/song-detail";
+import type { MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import {
   SongDialog,
   type SongDialogState,
@@ -85,6 +86,13 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
     }, LYRICS_AUTOSAVE_DEBOUNCE_MS);
   };
 
+  const lyricsSaveStatus: MarkdownSaveStatus =
+    updateLyricsMutation.isPending || debounceRef.current !== null
+      ? "saving"
+      : updateLyricsMutation.isSuccess
+        ? "saved"
+        : "idle";
+
   const handleDialogSubmit = async (values: SongDialogSubmitValues) => {
     await updateSongMutation.mutateAsync({ id: song.id, organizationId, ...values });
   };
@@ -99,6 +107,7 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
         song={song}
         lyrics={lyrics}
         onLyricsChange={handleLyricsChange}
+        lyricsSaveStatus={lyricsSaveStatus}
         onShare={handleShare}
         onEdit={() => setDialogState({ mode: "edit", song })}
         onDelete={handleDelete}
