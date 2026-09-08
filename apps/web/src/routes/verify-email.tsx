@@ -1,21 +1,25 @@
-import { useEffect } from "react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
-import { Trans, useLingui } from "@lingui/react/macro";
-import { FieldError } from "@/components/ui/field";
-import { translateDynamic } from "@/lib/dynamic-messages";
-import { useVerifyEmailMutation } from "@/services/resources/auth";
+import { useLingui } from "@lingui/react/macro";
+import { VerifyEmailForm, type VerifyEmailFormValues } from "@/components/verify-email-form";
+import {
+  useSendVerificationOtpMutation,
+  useVerifyEmailOtpMutation,
+} from "@/services/resources/auth";
+import { toast } from "@/components/ui/toast";
 
 const searchSchema = z.object({
-  token: z.string().optional(),
+  email: z.string().optional(),
+  redirect: z.string().optional(),
 });
 
 export const Route = createFileRoute("/verify-email")({
   staticData: { title: "Verify email" },
   validateSearch: searchSchema,
   beforeLoad: ({ search }) => {
-    if (!search.token) {
+    if (!search.email) {
       throw redirect({ to: "/" });
     }
   },
@@ -23,14 +27,49 @@ export const Route = createFileRoute("/verify-email")({
 });
 
 function VerifyEmailPage() {
-  const { token } = Route.useSearch();
+  const { email, redirect: redirectTo } = Route.useSearch();
   const { t } = useLingui();
-  const verifyEmailMutation = useVerifyEmailMutation();
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | undefined>();
+  const [serverSuccess, setServerSuccess] = useState<string | undefined>();
+  const verifyEmailOtpMutation = useVerifyEmailOtpMutation();
+  const sendVerificationOtpMutation = useSendVerificationOtpMutation();
 
-  useEffect(() => {
-    if (token) verifyEmailMutation.mutate({ token });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  const handleVerify = (values: VerifyEmailFormValues) => {
+    if (!email) return;
+    setServerError(undefined);
+    setServerSuccess(undefined);
+
+    verifyEmailOtpMutation.mutate(
+      { email, otp: values.otp },
+      {
+        onSuccess: () => {
+          toast.add({ type: "success", title: t`Email verified` });
+          // this is needed to avoid a race-condition when creating a personnal org
+          // & setting it before redirecting the user
+          setTimeout(async () => {
+            await router.invalidate();
+            router.navigate({ to: redirectTo ?? "/" });
+          }, 600);
+        },
+        onError: (error) => setServerError(error.message),
+      },
+    );
+  };
+
+  const handleResend = () => {
+    if (!email) return;
+    setServerError(undefined);
+    setServerSuccess(undefined);
+
+    sendVerificationOtpMutation.mutate(
+      { email },
+      {
+        onSuccess: () => setServerSuccess("A new code has been sent"),
+        onError: (error) => setServerError(error.message),
+      },
+    );
+  };
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -44,21 +83,16 @@ function VerifyEmailPage() {
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
-          <div className="flex flex-col items-center gap-4 text-center">
-            {verifyEmailMutation.isSuccess ? (
-              <p>
-                <Trans>Your email has been verified. You can now sign in.</Trans>
-              </p>
-            ) : verifyEmailMutation.isError ? (
-              <FieldError>{translateDynamic(t, verifyEmailMutation.error.message)}</FieldError>
-            ) : (
-              <p>
-                <Trans>Verifying your email...</Trans>
-              </p>
-            )}
-            <a href="/" className="text-foreground underline underline-offset-4 hover:opacity-80">
-              <Trans>Back to login</Trans>
-            </a>
+          <div className="w-full max-w-xs">
+            <VerifyEmailForm
+              email={email ?? ""}
+              onSubmit={handleVerify}
+              onResend={handleResend}
+              isLoading={verifyEmailOtpMutation.isPending}
+              isResending={sendVerificationOtpMutation.isPending}
+              serverError={serverError}
+              serverSuccess={serverSuccess}
+            />
           </div>
         </div>
       </div>

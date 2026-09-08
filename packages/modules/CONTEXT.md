@@ -8,6 +8,10 @@ Domain modules for Echo: calendar, drive, invitation, notification, organization
 The tenant boundary. Every user has a personal Organization (`isPersonal: true`) created for them; bands/groups are non-personal Organizations. All organization-owned data (files, calendar events, invitations, plan usage) is scoped to exactly one Organization.
 _Avoid_: Tenant, account, workspace
 
+**Invitation**:
+A pending request for a specific email address to join an Organization at a given role, identified by an unguessable id. The id alone is the access capability for looking it up and accepting it — the invitee isn't an Organization member yet, so there's no membership scope to check (see Exceptions).
+_Avoid_: Invite (fine as a verb, avoid as a noun for the record itself)
+
 **Organization Scope**:
 Proof that a caller is authorized to act within a specific Organization. Constructed only two ways: by the organization-scoped tRPC procedure (verifies the requester's membership) or by a system-trusted constructor for non-request code (better-auth lifecycle hooks, cron/migrations) where authority is established some other way. Infrastructure functions that read or write organization-owned data require it instead of a raw organization id — see ADR-0002 and ADR-0003.
 _Avoid_: organizationId (as a bare string once scope exists — the raw id doesn't carry the verification guarantee)

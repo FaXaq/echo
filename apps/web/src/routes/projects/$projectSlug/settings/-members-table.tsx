@@ -1,6 +1,7 @@
 import { useLingui } from "@lingui/react/macro";
 import {
   useCancelInvitationMutation,
+  useInviteMemberMutation,
   useRemoveMemberMutation,
   useUpdateMemberRoleMutation,
 } from "@/services/resources/member";
@@ -46,10 +47,12 @@ export function MembersTable({
 }: MembersTableProps) {
   const { t } = useLingui();
   const cancelInvitationMutation = useCancelInvitationMutation();
+  const inviteMemberMutation = useInviteMemberMutation();
   const removeMemberMutation = useRemoveMemberMutation();
   const updateMemberRoleMutation = useUpdateMemberRoleMutation();
   const isLoading =
     cancelInvitationMutation.isPending ||
+    inviteMemberMutation.isPending ||
     removeMemberMutation.isPending ||
     updateMemberRoleMutation.isPending;
 
@@ -61,6 +64,26 @@ export function MembersTable({
         onError: (error) => {
           toast.add({ title: t`Failed to cancel invitation`, type: "error" });
           logger.error(error, "Failed to cancel invitation:");
+        },
+      },
+    );
+  };
+
+  const handleCopyInvitationLink = (invitationId: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/accept-invitation?id=${invitationId}`);
+    toast.add({ type: "success", title: t`Link copied to clipboard` });
+  };
+
+  const handleResendInvitation = (invitation: ClientInvitation) => {
+    if (invitation.role !== "member" && invitation.role !== "admin") return;
+
+    inviteMemberMutation.mutate(
+      { organizationId, email: invitation.email, role: invitation.role },
+      {
+        onSuccess: () => toast.add({ title: t`Invitation sent`, type: "success" }),
+        onError: (error) => {
+          toast.add({ title: t`Failed to resend invitation`, type: "error" });
+          logger.error(error, "Failed to resend invitation:");
         },
       },
     );
@@ -102,7 +125,7 @@ export function MembersTable({
             <TableHead>{t`Name`}</TableHead>
             <TableHead>{t`Email`}</TableHead>
             <TableHead>{t`Role`}</TableHead>
-            <TableHead className="w-24">{t`Actions`}</TableHead>
+            <TableHead>{t`Actions`}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -119,27 +142,47 @@ export function MembersTable({
                 </TableCell>
                 <TableCell>
                   {canCancelInvitation(currentMemberRole) ? (
-                    <AlertDialog>
-                      <AlertDialogTrigger
-                        render={<Button variant="destructive" size="sm" disabled={isLoading} />}
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={isLoading}
+                        onClick={() => handleCopyInvitationLink(invitation.id)}
                       >
-                        {t`Cancel`}
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>{t`Cancel invitation`}</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            {t`Are you sure you want to cancel this invitation?`}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>{t`No, keep it`}</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleCancelInvitation(invitation.id)}>
-                            {t`Yes, cancel`}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                        {t`Copy link`}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={isLoading}
+                        onClick={() => handleResendInvitation(invitation)}
+                      >
+                        {t`Resend`}
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger
+                          render={<Button variant="destructive" size="sm" disabled={isLoading} />}
+                        >
+                          {t`Cancel`}
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t`Cancel invitation`}</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {t`Are you sure you want to cancel this invitation?`}
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t`No, keep it`}</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleCancelInvitation(invitation.id)}
+                            >
+                              {t`Yes, cancel`}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   ) : null}
                 </TableCell>
               </TableRow>

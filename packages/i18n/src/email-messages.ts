@@ -19,9 +19,8 @@ export const emailMessages = {
   verifyEmailSubject: { id: "email.verifyEmail.subject", message: "Verify your Echo email" },
   verifyEmailBody: {
     id: "email.verifyEmail.body",
-    message: "Confirm your email address to finish creating your Echo account.",
+    message: "Enter this code to confirm your email address and finish creating your Echo account.",
   },
-  verifyEmailButton: { id: "email.verifyEmail.button", message: "Verify my email" },
 } satisfies Record<string, MessageDescriptor>;
 
 // These ids live outside apps/web/src, so `lingui extract` never finds them and
@@ -36,6 +35,5 @@ export const emailTranslationsFr: Record<string, string> = {
   "email.invitation.button": "Accepter l'invitation",
   "email.verifyEmail.subject": "Vérifiez votre adresse e-mail Echo",
   "email.verifyEmail.body":
-    "Confirmez votre adresse e-mail pour terminer la création de votre compte Echo.",
-  "email.verifyEmail.button": "Vérifier mon e-mail",
+    "Saisissez ce code pour confirmer votre adresse e-mail et terminer la création de votre compte Echo.",
 };

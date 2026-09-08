@@ -21,9 +21,6 @@ export interface LoginFormProps {
   onForgotPasswordClick?: () => void;
   isLoading?: boolean;
   serverError?: string;
-  showResendVerification?: boolean;
-  onResendVerification?: () => void;
-  isResendingVerification?: boolean;
   className?: string;
 }
 
@@ -33,9 +30,6 @@ export function LoginForm({
   onForgotPasswordClick,
   isLoading = false,
   serverError,
-  showResendVerification = false,
-  onResendVerification,
-  isResendingVerification = false,
   className,
 }: LoginFormProps) {
   const { t } = useLingui();
@@ -61,17 +55,6 @@ export function LoginForm({
         </div>
 
         {serverError && <FieldError>{translateDynamic(t, serverError)}</FieldError>}
-
-        {showResendVerification && (
-          <button
-            type="button"
-            className="text-center text-sm text-foreground underline underline-offset-4 hover:opacity-80"
-            onClick={onResendVerification}
-            disabled={isResendingVerification}
-          >
-            <Trans>Resend verification email</Trans>
-          </button>
-        )}
 
         <Field>
           <FieldLabel htmlFor="email">
