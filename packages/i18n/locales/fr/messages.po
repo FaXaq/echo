@@ -573,7 +573,7 @@ msgstr "E-mail non vérifié"
 msgid "Email verification failed"
 msgstr "Échec de la vérification de l'e-mail"
 
-#: apps/web/src/routes/verify-email.tsx:47
+#: apps/web/src/routes/verify-email.tsx:46
 msgid "Email verified"
 msgstr "E-mail vérifié"
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
@@ -29,7 +29,6 @@ export const Route = createFileRoute("/verify-email")({
 function VerifyEmailPage() {
   const { email, redirect: redirectTo } = Route.useSearch();
   const { t } = useLingui();
-  const router = useRouter();
   const [serverError, setServerError] = useState<string | undefined>();
   const [serverSuccess, setServerSuccess] = useState<string | undefined>();
   const verifyEmailOtpMutation = useVerifyEmailOtpMutation();
@@ -45,11 +44,10 @@ function VerifyEmailPage() {
       {
         onSuccess: () => {
           toast.add({ type: "success", title: t`Email verified` });
-          // this is needed to avoid a race-condition when creating a personnal org
-          // & setting it before redirecting the user
-          setTimeout(async () => {
-            await router.invalidate();
-            router.navigate({ to: redirectTo ?? "/" });
+          // Delay: gives the backend's async personal-org creation time to finish.
+          // Hard navigation avoids racing the SPA router against the new session cookie.
+          setTimeout(() => {
+            window.location.href = redirectTo ?? "/";
           }, 600);
         },
         onError: (error) => setServerError(error.message),

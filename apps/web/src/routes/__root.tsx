@@ -8,7 +8,6 @@ import {
   createRootRouteWithContext,
   Navigate,
   Outlet,
-  useRouter,
   useRouterState,
 } from "@tanstack/react-router";
 import type { MyRouterContext } from "../router";
@@ -116,7 +115,6 @@ function PostHogRoot({ children }: { children: ReactNode }) {
 }
 
 function RootContent({ session }: { session: ClientSession | null }) {
-  const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const signOutMutation = useSignOutMutation();
   const identifiedUserId = useRef<string | undefined>(undefined);
@@ -162,10 +160,7 @@ function RootContent({ session }: { session: ClientSession | null }) {
           posthog.reset();
           identifiedUserId.current = undefined;
         }
-        setTimeout(async () => {
-          await router.invalidate();
-          router.navigate({ to: "/" });
-        }, 600);
+        window.location.href = "/";
       },
     });
   };
