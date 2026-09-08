@@ -158,7 +158,7 @@ msgstr "All day"
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:172
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:178
 msgid "Are you sure you want to cancel this invitation?"
 msgstr "Are you sure you want to cancel this invitation?"
 
@@ -166,7 +166,7 @@ msgstr "Are you sure you want to cancel this invitation?"
 #~ msgid "Are you sure you want to remove this member from the organization?"
 #~ msgstr "Are you sure you want to remove this member from the organization?"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:235
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:242
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Are you sure you want to remove this member from the project?"
 
@@ -264,11 +264,11 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
 #: apps/web/src/components/ui/song/song-detail.tsx:121
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:172
 msgid "Cancel"
 msgstr "Cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:170
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:176
 msgid "Cancel invitation"
 msgstr "Cancel invitation"
 
@@ -321,7 +321,7 @@ msgstr "Concert"
 msgid "Confirm password"
 msgstr "Confirm password"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:152
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:158
 msgid "Copy link"
 msgstr "Copy link"
 
@@ -634,6 +634,10 @@ msgstr "Events on {0}"
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:183
 msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Every action here is destructive. Please proceed with caution."
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:144
+msgid "Expired"
+msgstr "Expired"
 
 #: apps/web/src/lib/dynamic-messages.ts:44
 #: apps/web/src/routes/accept-invitation.tsx:92
@@ -1001,7 +1005,7 @@ msgstr "No files yet"
 msgid "No matches"
 msgstr "No matches"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:258
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:265
 msgid "No members yet"
 msgstr "No members yet"
 
@@ -1026,11 +1030,11 @@ msgstr "No results."
 msgid "No songs yet."
 msgstr "No songs yet."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:176
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:182
 msgid "No, keep it"
 msgstr "No, keep it"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:239
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:246
 msgid "No, keep them"
 msgstr "No, keep them"
 
@@ -1127,7 +1131,7 @@ msgstr "Passwords do not match"
 msgid "Pause"
 msgstr "Pause"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:141
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:146
 msgid "Pending"
 msgstr "Pending"
 
@@ -1241,7 +1245,7 @@ msgstr "Rename file"
 msgid "Rename folder"
 msgstr "Rename folder"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:160
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Resend"
 msgstr "Resend"
 
@@ -1262,11 +1266,11 @@ msgstr "Reset password"
 msgid "Retry"
 msgstr "Retry"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:229
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:236
 msgid "Revoke"
 msgstr "Revoke"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:233
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:240
 msgid "Revoke membership"
 msgstr "Revoke membership"
 
@@ -1638,11 +1642,11 @@ msgstr "Write the lyrics…"
 msgid "Yellow"
 msgstr "Yellow"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:180
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:186
 msgid "Yes, cancel"
 msgstr "Yes, cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:245
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:252
 msgid "Yes, remove"
 msgstr "Yes, remove"
 

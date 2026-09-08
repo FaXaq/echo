@@ -130,63 +130,70 @@ export function MembersTable({
         </TableHeader>
         <TableBody>
           {invitations.length > 0 &&
-            invitations.map((invitation) => (
-              <TableRow key={invitation.id}>
-                <TableCell>{"-"}</TableCell>
-                <TableCell>{invitation.email || "-"}</TableCell>
-                <TableCell>
-                  <Badge variant="outline" className="mr-2">
-                    {translateDynamic(t, invitation.role)}
-                  </Badge>
-                  <Badge variant="secondary">{t`Pending`}</Badge>
-                </TableCell>
-                <TableCell>
-                  {canCancelInvitation(currentMemberRole) ? (
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={isLoading}
-                        onClick={() => handleCopyInvitationLink(invitation.id)}
-                      >
-                        {t`Copy link`}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={isLoading}
-                        onClick={() => handleResendInvitation(invitation)}
-                      >
-                        {t`Resend`}
-                      </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger
-                          render={<Button variant="destructive" size="sm" disabled={isLoading} />}
+            invitations.map((invitation) => {
+              const isExpired = new Date(invitation.expiresAt).getTime() <= Date.now();
+              return (
+                <TableRow key={invitation.id}>
+                  <TableCell>{"-"}</TableCell>
+                  <TableCell>{invitation.email || "-"}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="mr-2">
+                      {translateDynamic(t, invitation.role)}
+                    </Badge>
+                    {isExpired ? (
+                      <Badge variant="destructive">{t`Expired`}</Badge>
+                    ) : (
+                      <Badge variant="secondary">{t`Pending`}</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {canCancelInvitation(currentMemberRole) ? (
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={isLoading}
+                          onClick={() => handleCopyInvitationLink(invitation.id)}
                         >
-                          {t`Cancel`}
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{t`Cancel invitation`}</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              {t`Are you sure you want to cancel this invitation?`}
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>{t`No, keep it`}</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleCancelInvitation(invitation.id)}
-                            >
-                              {t`Yes, cancel`}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  ) : null}
-                </TableCell>
-              </TableRow>
-            ))}
+                          {t`Copy link`}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={isLoading}
+                          onClick={() => handleResendInvitation(invitation)}
+                        >
+                          {t`Resend`}
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger
+                            render={<Button variant="destructive" size="sm" disabled={isLoading} />}
+                          >
+                            {t`Cancel`}
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>{t`Cancel invitation`}</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                {t`Are you sure you want to cancel this invitation?`}
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>{t`No, keep it`}</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleCancelInvitation(invitation.id)}
+                              >
+                                {t`Yes, cancel`}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    ) : null}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           {members.length > 0
             ? members.map((member) => (
                 <TableRow key={member.id}>
