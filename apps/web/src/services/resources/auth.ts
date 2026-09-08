@@ -12,7 +12,7 @@ export function useSignInEmailMutation() {
       return data;
     },
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: getSessionQueryOptions().queryKey });
+      queryClient.clear();
     },
   });
 }
@@ -34,7 +34,7 @@ export function useSignUpEmailMutation() {
       return data;
     },
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: getSessionQueryOptions().queryKey });
+      queryClient.clear();
     },
   });
 }
@@ -49,7 +49,7 @@ export function useSignOutMutation() {
       return data;
     },
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: getSessionQueryOptions().queryKey });
+      queryClient.clear();
     },
   });
 }
@@ -64,22 +64,30 @@ export function useRequestPasswordResetMutation() {
   });
 }
 
-export function useResendVerificationEmailMutation() {
+export function useSendVerificationOtpMutation() {
   return useMutation({
     mutationFn: async (input: { email: string }) => {
-      const { data, error } = await authClient.sendVerificationEmail(input);
-      if (error) throw new Error(error.message ?? "Failed to resend verification email");
+      const { data, error } = await authClient.emailOtp.sendVerificationOtp({
+        email: input.email,
+        type: "email-verification",
+      });
+      if (error) throw new Error(error.message ?? "Failed to send verification code");
       return data;
     },
   });
 }
 
-export function useVerifyEmailMutation() {
+export function useVerifyEmailOtpMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: async (input: { token: string }) => {
-      const { data, error } = await authClient.verifyEmail({ query: input });
+    mutationFn: async (input: { email: string; otp: string }) => {
+      const { data, error } = await authClient.emailOtp.verifyEmail(input);
       if (error) throw new Error(error.message ?? "Email verification failed");
       return data;
+    },
+    onSuccess: () => {
+      queryClient.clear();
     },
   });
 }

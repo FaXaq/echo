@@ -3,14 +3,13 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { trpcLoader } from "@/lib/trpc";
 import dayjs from "dayjs";
-import { Landing } from "./-landing";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { useAcceptInvitationMutation } from "@/services/resources/auth";
 import { getSessionQueryOptions } from "@/services/resources/session";
+import { apiClient } from "@/services/api-client";
 
 const searchSchema = z.object({
   id: z.string().optional(),
@@ -30,11 +29,20 @@ export const Route = createFileRoute("/accept-invitation")({
       return { invitation: null };
     }
 
-    const invitation = await trpcLoader.invitation.get.query({
+    const invitation = await apiClient.invitation.get.query({
       id: deps.id,
     });
+    const isPending =
+      invitation && invitation.status === "pending" && dayjs(invitation.expiresAt).isAfter(dayjs());
 
     const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
+
+    if (isPending && !session) {
+      throw redirect({
+        to: "/login",
+        search: { redirect: `/accept-invitation?id=${deps.id}` },
+      });
+    }
 
     return { invitation, session };
   },
@@ -64,8 +72,12 @@ function AcceptInvitationPage() {
     );
   }
 
-  if (!session) {
-    return <Landing />;
+  if (session && session.user.email.toLowerCase() !== invitation.email.toLowerCase()) {
+    return (
+      <p>
+        <Trans>Invitation not found.</Trans>
+      </p>
+    );
   }
 
   const handleAccept = () => {

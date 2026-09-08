@@ -81,18 +81,17 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
       ),
     });
   },
-  sendVerificationEmail: async ({ email, locale }, token) => {
-    const i18n = makeServerI18n(toLocale(locale));
+  sendVerificationOTP: async (email, otp) => {
+    const user = await db
+      .selectFrom("user")
+      .select("locale")
+      .where("email", "=", email)
+      .executeTakeFirst();
+    const i18n = makeServerI18n(toLocale(user?.locale));
     await mailer.send({
       to: email,
       subject: i18n._(emailMessages.verifyEmailSubject),
-      html: await renderVerifyEmail(
-        {
-          token,
-          appBaseUrl: appConfig.appBaseUrl,
-        },
-        i18n,
-      ),
+      html: await renderVerifyEmail({ otp }, i18n),
     });
   },
   hasSeatAvailable: async (organizationId, excludeInvitationId) =>

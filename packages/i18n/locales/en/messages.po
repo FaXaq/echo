@@ -88,13 +88,17 @@ msgstr "/"
 msgid "<0>Back to login</0>"
 msgstr "<0>Back to login</0>"
 
-#: apps/web/src/lib/dynamic-messages.ts:48
-#: apps/web/src/routes/accept-invitation.tsx:105
+#: apps/web/src/lib/dynamic-messages.ts:39
+msgid "A new code has been sent"
+msgstr "A new code has been sent"
+
+#: apps/web/src/lib/dynamic-messages.ts:55
+#: apps/web/src/routes/accept-invitation.tsx:117
 msgid "Accept invitation"
 msgstr "Accept invitation"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:74
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:105
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:128
 msgid "Actions"
 msgstr "Actions"
 
@@ -132,7 +136,7 @@ msgstr "Add files"
 msgid "Added by"
 msgstr "Added by"
 
-#: apps/web/src/lib/dynamic-messages.ts:52
+#: apps/web/src/lib/dynamic-messages.ts:59
 msgid "Admin"
 msgstr "Admin"
 
@@ -154,7 +158,7 @@ msgstr "All day"
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:132
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:172
 msgid "Are you sure you want to cancel this invitation?"
 msgstr "Are you sure you want to cancel this invitation?"
 
@@ -162,7 +166,7 @@ msgstr "Are you sure you want to cancel this invitation?"
 #~ msgid "Are you sure you want to remove this member from the organization?"
 #~ msgstr "Are you sure you want to remove this member from the organization?"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:192
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:235
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Are you sure you want to remove this member from the project?"
 
@@ -204,13 +208,13 @@ msgstr "Audio ({0})"
 msgid "Back to calendar"
 msgstr "Back to calendar"
 
-#: apps/web/src/routes/accept-invitation.tsx:107
+#: apps/web/src/routes/accept-invitation.tsx:119
 msgid "Back to home"
 msgstr "Back to home"
 
 #: apps/web/src/routes/verify-email.tsx:60
-msgid "Back to login"
-msgstr "Back to login"
+#~ msgid "Back to login"
+#~ msgstr "Back to login"
 
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Back to songs"
@@ -242,7 +246,7 @@ msgstr "BPM must be a whole number"
 #~ msgstr "Bullet list"
 
 #: apps/web/src/hooks/use-navigation.ts:58
-#: apps/web/src/lib/dynamic-messages.ts:42
+#: apps/web/src/lib/dynamic-messages.ts:49
 msgid "Calendar"
 msgstr "Calendar"
 
@@ -260,15 +264,15 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
 #: apps/web/src/components/ui/song/song-detail.tsx:121
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:126
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Cancel"
 msgstr "Cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:130
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:170
 msgid "Cancel invitation"
 msgstr "Cancel invitation"
 
-#: apps/web/src/routes/accept-invitation.tsx:54
+#: apps/web/src/routes/accept-invitation.tsx:62
 msgid "Cannot find the invitation you're looking for"
 msgstr "Cannot find the invitation you're looking for"
 
@@ -317,7 +321,11 @@ msgstr "Concert"
 msgid "Confirm password"
 msgstr "Confirm password"
 
-#: apps/web/src/lib/dynamic-messages.ts:39
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:152
+msgid "Copy link"
+msgstr "Copy link"
+
+#: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Could not generate a unique organization slug"
 msgstr "Could not generate a unique organization slug"
 
@@ -500,7 +508,7 @@ msgstr "Deselect"
 msgid "Dismiss"
 msgstr "Dismiss"
 
-#: apps/web/src/components/login-form.tsx:130
+#: apps/web/src/components/login-form.tsx:113
 msgid "Don't have an account? <0>Sign up</0>"
 msgstr "Don't have an account? <0>Sign up</0>"
 
@@ -542,10 +550,10 @@ msgid "Edit song"
 msgstr "Edit song"
 
 #: apps/web/src/components/forgot-password-form.tsx:65
-#: apps/web/src/components/login-form.tsx:78
+#: apps/web/src/components/login-form.tsx:61
 #: apps/web/src/components/signup-form.tsx:121
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:70
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:103
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:126
 msgid "Email"
 msgstr "Email"
 
@@ -565,6 +573,10 @@ msgstr "Email not verified"
 msgid "Email verification failed"
 msgstr "Email verification failed"
 
+#: apps/web/src/routes/verify-email.tsx:47
+msgid "Email verified"
+msgstr "Email verified"
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:261
 msgid "End"
 msgstr "End"
@@ -577,11 +589,15 @@ msgstr "End date must be after start date"
 msgid "Enter email address"
 msgstr "Enter email address"
 
+#: apps/web/src/lib/dynamic-messages.ts:38
+msgid "Enter the 6-digit code"
+msgstr "Enter the 6-digit code"
+
 #: apps/web/src/components/login-form.tsx:61
 #~ msgid "Enter your email or username to login"
 #~ msgstr "Enter your email or username to login"
 
-#: apps/web/src/components/login-form.tsx:59
+#: apps/web/src/components/login-form.tsx:53
 msgid "Enter your email to login"
 msgstr "Enter your email to login"
 
@@ -602,7 +618,7 @@ msgstr "Event actions"
 msgid "Event deleted"
 msgstr "Event deleted"
 
-#: apps/web/src/lib/dynamic-messages.ts:44
+#: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Event details"
 msgstr "Event details"
 
@@ -619,11 +635,12 @@ msgstr "Events on {0}"
 msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Every action here is destructive. Please proceed with caution."
 
-#: apps/web/src/routes/accept-invitation.tsx:80
+#: apps/web/src/lib/dynamic-messages.ts:44
+#: apps/web/src/routes/accept-invitation.tsx:92
 msgid "Failed to accept invitation"
 msgstr "Failed to accept invitation"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:62
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:65
 msgid "Failed to cancel invitation"
 msgstr "Failed to cancel invitation"
 
@@ -631,7 +648,7 @@ msgstr "Failed to cancel invitation"
 #~ msgid "Failed to create organization"
 #~ msgstr "Failed to create organization"
 
-#: apps/web/src/lib/dynamic-messages.ts:38
+#: apps/web/src/lib/dynamic-messages.ts:45
 msgid "Failed to create project"
 msgstr "Failed to create project"
 
@@ -647,11 +664,15 @@ msgstr "Failed to delete project"
 msgid "Failed to invite member"
 msgstr "Failed to invite member"
 
-#: apps/web/src/lib/dynamic-messages.ts:37
-msgid "Failed to resend verification email"
-msgstr "Failed to resend verification email"
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:85
+msgid "Failed to resend invitation"
+msgstr "Failed to resend invitation"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:75
+#: apps/web/src/lib/dynamic-messages.ts:37
+#~ msgid "Failed to resend verification email"
+#~ msgstr "Failed to resend verification email"
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:98
 msgid "Failed to revoke membership"
 msgstr "Failed to revoke membership"
 
@@ -667,7 +688,11 @@ msgstr "Failed to save lyrics"
 msgid "Failed to send reset email"
 msgstr "Failed to send reset email"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:88
+#: apps/web/src/lib/dynamic-messages.ts:37
+msgid "Failed to send verification code"
+msgstr "Failed to send verification code"
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:111
 msgid "Failed to update member role"
 msgstr "Failed to update member role"
 
@@ -706,8 +731,8 @@ msgid "Folders aren't supported yet — drop files only"
 msgstr "Folders aren't supported yet — drop files only"
 
 #: apps/web/src/components/forgot-password-form.tsx:49
-#: apps/web/src/components/login-form.tsx:102
-#: apps/web/src/components/login-form.tsx:106
+#: apps/web/src/components/login-form.tsx:85
+#: apps/web/src/components/login-form.tsx:89
 msgid "Forgot your password?"
 msgstr "Forgot your password?"
 
@@ -760,15 +785,24 @@ msgstr "Green"
 msgid "Hide"
 msgstr "Hide"
 
+#: apps/web/src/lib/dynamic-messages.ts:41
+msgid "Invalid code"
+msgstr "Invalid code"
+
 #: apps/web/src/lib/dynamic-messages.ts:14
 msgid "Invalid email address"
 msgstr "Invalid email address"
 
-#: apps/web/src/routes/accept-invitation.tsx:62
+#: apps/web/src/routes/accept-invitation.tsx:70
 msgid "Invitation has expired or already been processed. Please, request a new one."
 msgstr "Invitation has expired or already been processed. Please, request a new one."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:60
+#: apps/web/src/routes/accept-invitation.tsx:78
+msgid "Invitation not found."
+msgstr "Invitation not found."
+
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:63
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:83
 msgid "Invitation sent"
 msgstr "Invitation sent"
 
@@ -812,6 +846,7 @@ msgstr "Letters, numbers, _ and - only"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:79
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:77
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
 msgid "Link copied to clipboard"
 msgstr "Link copied to clipboard"
 
@@ -827,7 +862,7 @@ msgstr "Location"
 msgid "Log out"
 msgstr "Log out"
 
-#: apps/web/src/components/login-form.tsx:124
+#: apps/web/src/components/login-form.tsx:107
 msgid "Login"
 msgstr "Login"
 
@@ -835,7 +870,7 @@ msgstr "Login"
 msgid "Login failed"
 msgstr "Login failed"
 
-#: apps/web/src/components/login-form.tsx:56
+#: apps/web/src/components/login-form.tsx:50
 msgid "Login to your account"
 msgstr "Login to your account"
 
@@ -875,17 +910,17 @@ msgstr "Maximum file size"
 msgid "Meeting"
 msgstr "Meeting"
 
-#: apps/web/src/lib/dynamic-messages.ts:51
+#: apps/web/src/lib/dynamic-messages.ts:58
 msgid "Member"
 msgstr "Member"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:73
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:96
 msgid "Member removed"
 msgstr "Member removed"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:123
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
-#: apps/web/src/lib/dynamic-messages.ts:46
+#: apps/web/src/lib/dynamic-messages.ts:53
 msgid "Members"
 msgstr "Members"
 
@@ -903,7 +938,7 @@ msgid "My Project"
 msgstr "My Project"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:102
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:125
 #: apps/web/src/routes/projects/new.tsx:80
 msgid "Name"
 msgstr "Name"
@@ -928,7 +963,7 @@ msgid "New password"
 msgstr "New password"
 
 #: apps/web/src/components/version-switcher.tsx:77
-#: apps/web/src/lib/dynamic-messages.ts:47
+#: apps/web/src/lib/dynamic-messages.ts:54
 #: apps/web/src/routes/projects/new.tsx:69
 msgid "New project"
 msgstr "New project"
@@ -965,7 +1000,7 @@ msgstr "No files yet"
 msgid "No matches"
 msgstr "No matches"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:211
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:258
 msgid "No members yet"
 msgstr "No members yet"
 
@@ -990,11 +1025,11 @@ msgstr "No results."
 msgid "No songs yet."
 msgstr "No songs yet."
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:136
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:176
 msgid "No, keep it"
 msgstr "No, keep it"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:196
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:239
 msgid "No, keep them"
 msgstr "No, keep them"
 
@@ -1060,7 +1095,7 @@ msgstr "Organizer"
 msgid "Original"
 msgstr "Original"
 
-#: apps/web/src/lib/dynamic-messages.ts:53
+#: apps/web/src/lib/dynamic-messages.ts:60
 msgid "Owner"
 msgstr "Owner"
 
@@ -1070,7 +1105,7 @@ msgstr "Owner"
 msgid "Page {0} of {1}"
 msgstr "Page {0} of {1}"
 
-#: apps/web/src/components/login-form.tsx:94
+#: apps/web/src/components/login-form.tsx:77
 #: apps/web/src/components/signup-form.tsx:138
 msgid "Password"
 msgstr "Password"
@@ -1091,7 +1126,7 @@ msgstr "Passwords do not match"
 msgid "Pause"
 msgstr "Pause"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:118
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:141
 msgid "Pending"
 msgstr "Pending"
 
@@ -1205,12 +1240,20 @@ msgstr "Rename file"
 msgid "Rename folder"
 msgstr "Rename folder"
 
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:160
+msgid "Resend"
+msgstr "Resend"
+
+#: apps/web/src/components/verify-email-form.tsx:105
+msgid "Resend code"
+msgstr "Resend code"
+
 #: apps/web/src/components/login-form.tsx:72
-msgid "Resend verification email"
-msgstr "Resend verification email"
+#~ msgid "Resend verification email"
+#~ msgstr "Resend verification email"
 
 #: apps/web/src/components/reset-password-form.tsx:103
-#: apps/web/src/lib/dynamic-messages.ts:49
+#: apps/web/src/lib/dynamic-messages.ts:56
 msgid "Reset password"
 msgstr "Reset password"
 
@@ -1218,20 +1261,20 @@ msgstr "Reset password"
 msgid "Retry"
 msgstr "Retry"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:186
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:229
 msgid "Revoke"
 msgstr "Revoke"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:190
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:233
 msgid "Revoke membership"
 msgstr "Revoke membership"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:86
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:104
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:127
 msgid "Role"
 msgstr "Role"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:86
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:109
 msgid "Role updated"
 msgstr "Role updated"
 
@@ -1363,7 +1406,7 @@ msgstr "Song actions"
 msgid "Song deleted"
 msgstr "Song deleted"
 
-#: apps/web/src/lib/dynamic-messages.ts:45
+#: apps/web/src/lib/dynamic-messages.ts:52
 msgid "Song details"
 msgstr "Song details"
 
@@ -1372,7 +1415,7 @@ msgid "Song not found"
 msgstr "Song not found"
 
 #: apps/web/src/hooks/use-navigation.ts:63
-#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Songs"
 msgstr "Songs"
 
@@ -1387,6 +1430,10 @@ msgstr "Storage"
 #: apps/web/src/components/user-menu.tsx:82
 msgid "Theme"
 msgstr "Theme"
+
+#: apps/web/src/lib/dynamic-messages.ts:40
+msgid "This code has expired, request a new one"
+msgstr "This code has expired, request a new one"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:158
 msgid "This event doesn't exist or has been deleted."
@@ -1404,6 +1451,14 @@ msgstr "This file type can't be previewed here."
 #: apps/web/src/components/features/drive/drive-explorer.tsx:426
 msgid "This folder is empty"
 msgstr "This folder is empty"
+
+#: apps/web/src/lib/dynamic-messages.ts:43
+msgid "This invitation is not yours"
+msgstr "This invitation is not yours"
+
+#: apps/web/src/routes/accept-invitation.tsx:78
+#~ msgid "This invitation is not yours."
+#~ msgstr "This invitation is not yours."
 
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:157
 #~ msgid "This is the name displayed across your organization."
@@ -1490,6 +1545,10 @@ msgstr "Today"
 msgid "Toggle columns"
 msgstr "Toggle columns"
 
+#: apps/web/src/lib/dynamic-messages.ts:42
+msgid "Too many attempts, request a new code"
+msgstr "Too many attempts, request a new code"
+
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:326
 #: apps/web/src/components/ui/song/song-detail.tsx:59
 #: apps/web/src/components/ui/song/song-dialog.tsx:134
@@ -1513,7 +1572,7 @@ msgstr "Update"
 msgid "Upload"
 msgstr "Upload"
 
-#: apps/web/src/lib/dynamic-messages.ts:40
+#: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Upload failed"
 msgstr "Upload failed"
 
@@ -1539,12 +1598,20 @@ msgid "Username must be at least 3 characters"
 msgstr "Username must be at least 3 characters"
 
 #: apps/web/src/routes/-landing.tsx:70
-msgid "Verification email sent"
-msgstr "Verification email sent"
+#~ msgid "Verification email sent"
+#~ msgstr "Verification email sent"
+
+#: apps/web/src/components/verify-email-form.tsx:110
+msgid "Verify"
+msgstr "Verify"
+
+#: apps/web/src/components/verify-email-form.tsx:55
+msgid "Verify your email"
+msgstr "Verify your email"
 
 #: apps/web/src/routes/verify-email.tsx:56
-msgid "Verifying your email..."
-msgstr "Verifying your email..."
+#~ msgid "Verifying your email..."
+#~ msgstr "Verifying your email..."
 
 #: apps/web/src/components/ui/data-table-view-options.tsx:29
 msgid "View"
@@ -1553,6 +1620,10 @@ msgstr "View"
 #: apps/web/src/components/ui/audio-player-dock.tsx:160
 msgid "Volume"
 msgstr "Volume"
+
+#: apps/web/src/components/verify-email-form.tsx:58
+msgid "We've sent a one-time code to {email}"
+msgstr "We've sent a one-time code to {email}"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:33
 msgid "Week"
@@ -1566,15 +1637,15 @@ msgstr "Write the lyrics…"
 msgid "Yellow"
 msgstr "Yellow"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:138
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:180
 msgid "Yes, cancel"
 msgstr "Yes, cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:198
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:245
 msgid "Yes, remove"
 msgstr "Yes, remove"
 
-#: apps/web/src/routes/accept-invitation.tsx:100
+#: apps/web/src/routes/accept-invitation.tsx:112
 msgid "You have been invited to join"
 msgstr "You have been invited to join"
 
@@ -1583,8 +1654,8 @@ msgid "Your current plan and what you have used of it."
 msgstr "Your current plan and what you have used of it."
 
 #: apps/web/src/routes/verify-email.tsx:50
-msgid "Your email has been verified. You can now sign in."
-msgstr "Your email has been verified. You can now sign in."
+#~ msgid "Your email has been verified. You can now sign in."
+#~ msgstr "Your email has been verified. You can now sign in."
 
 #: apps/web/src/components/features/song/suspended-song-list.tsx:36
 #~ msgid "Your project's songs and lyrics"

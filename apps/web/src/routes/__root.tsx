@@ -6,6 +6,7 @@ import { toLocale } from "@echo/i18n";
 import { detectBrowserLocale } from "../i18n";
 import {
   createRootRouteWithContext,
+  Navigate,
   Outlet,
   useRouter,
   useRouterState,
@@ -24,7 +25,6 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/ui/tooltip";
 import type { ClientSession } from "@echo/auth";
-import { Landing } from "./-landing";
 import { UserMenu } from "@/components/user-menu";
 import { isTheme, ThemeProvider } from "@/contexts/theme";
 import { SessionProvider } from "@/hooks/use-session";
@@ -139,26 +139,33 @@ function RootContent({ session }: { session: ClientSession | null }) {
     identifiedUserId.current = session.user.id;
   }, [session?.user.id]);
 
+  const standalonePaths = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+    "/accept-invitation",
+    "/verify-email",
+  ];
+  if (standalonePaths.includes(pathname)) {
+    return <Outlet />;
+  }
+
   if (!session) {
-    if (
-      pathname === "/reset-password" ||
-      pathname === "/accept-invitation" ||
-      pathname === "/verify-email"
-    ) {
-      return <Outlet />;
-    }
-    return <Landing />;
+    return <Navigate to="/login" search={{ redirect: pathname }} replace />;
   }
 
   const handleLogout = () => {
     signOutMutation.mutate(undefined, {
-      onSuccess: async () => {
+      onSuccess: () => {
         if (!missingPostHogVariable) {
           posthog.reset();
           identifiedUserId.current = undefined;
         }
-        await router.invalidate();
-        router.navigate({ to: "/" });
+        setTimeout(async () => {
+          await router.invalidate();
+          router.navigate({ to: "/" });
+        }, 600);
       },
     });
   };

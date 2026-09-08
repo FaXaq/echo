@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import type { OrganizationOptions } from "better-auth/plugins";
-import { admin as adminPlugin, organization, username } from "better-auth/plugins";
+import { admin as adminPlugin, emailOTP, organization, username } from "better-auth/plugins";
 import type { Pool } from "pg";
 import { ac as adminAc, roles as adminRoles } from "./plugins/admin/permissions";
 import {
@@ -23,7 +23,7 @@ export type ServerAuthConfig = {
     user: { email: string; locale: string },
     token: string,
   ) => Promise<void>;
-  sendVerificationEmail?: (user: { email: string; locale: string }, token: string) => Promise<void>;
+  sendVerificationOTP?: (email: string, otp: string) => Promise<void>;
   onOrganizationDeleted?: (organization: { id: string }) => Promise<void>;
   hasSeatAvailable?: (organizationId: string, excludeInvitationId?: string) => Promise<boolean>;
 };
@@ -77,15 +77,7 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
       },
     },
     emailVerification: {
-      sendVerificationEmail: async ({ user, token }) => {
-        return await config.sendVerificationEmail?.(
-          {
-            email: user.email,
-            locale: (user as { locale?: string }).locale ?? "en",
-          },
-          token,
-        );
-      },
+      autoSignInAfterVerification: true,
     },
     advanced: {
       ipAddress: {
@@ -123,6 +115,7 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
           },
         },
         sendInvitationEmail: config.sendOrganizationInvitation,
+        cancelPendingInvitationsOnReInvite: true,
         organizationHooks: {
           beforeDeleteOrganization: async ({ organization }) => {
             if (organization.isPersonal) {
@@ -136,6 +129,16 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
         },
       }),
       username(),
+      emailOTP({
+        overrideDefaultEmailVerification: true,
+        sendVerificationOnSignUp: true,
+        resendStrategy: "rotate",
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          if (type === "email-verification") {
+            await config.sendVerificationOTP?.(email, otp);
+          }
+        },
+      }),
     ],
   });
 };

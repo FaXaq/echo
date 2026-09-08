@@ -65,13 +65,11 @@ export async function renderResetPasswordEmail(
 
 export async function renderVerifyEmail(
   data: {
-    appBaseUrl: string;
-    token: string;
+    otp: string;
   },
   i18n: I18n,
 ): Promise<string> {
   const bodyText = i18n._(emailMessages.verifyEmailBody);
-  const buttonText = i18n._(emailMessages.verifyEmailButton);
 
   const { html, errors } = await mjml2html(`
     <mjml>
@@ -79,9 +77,9 @@ export async function renderVerifyEmail(
         <mj-section>
           <mj-column>
             <mj-text>${bodyText}</mj-text>
-            <mj-button href="${data.appBaseUrl}/verify-email?token=${data.token}">
-              ${buttonText}
-            </mj-button>
+            <mj-text font-size="32px" font-weight="bold" letter-spacing="4px" align="center">
+              ${data.otp}
+            </mj-text>
           </mj-column>
         </mj-section>
       </mj-body>
