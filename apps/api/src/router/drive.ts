@@ -6,6 +6,7 @@ import {
   deleteFile,
   deleteFolder,
   getFileDownloadUrl,
+  getFilesDownloadUrls,
   getFolder,
   listEventFiles,
   listFolderContents,
@@ -21,6 +22,7 @@ import {
   deleteFileByIdCommandFactory,
   deleteFolderCascadeCommandFactory,
   findFileByIdQueryFactory,
+  findFilesByIdsQueryFactory,
   findFolderByIdQueryFactory,
   findFolderByParentAndNameQueryFactory,
   findFolderDescendantIdsQueryFactory,
@@ -50,6 +52,7 @@ const driveSortOrderSchema = z.enum(["asc", "desc"]);
 
 const insertPendingFileCommand = insertPendingFileCommandFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
+const findFilesByIdsQuery = findFilesByIdsQueryFactory();
 const markFileUploadedCommand = markFileUploadedCommandFactory();
 const listFilesByEventQuery = listFilesByEventQueryFactory();
 const listFilesBySongQuery = listFilesBySongQueryFactory();
@@ -206,6 +209,20 @@ export const makeDriveRouter = () =>
             findFileByIdQuery,
           },
           { id: input.id, scope: ctx.organizationScope },
+        ),
+      ),
+
+    getFilesDownloadUrls: organizationProcedure
+      .input(z.object({ ids: z.array(z.string()) }))
+      .mutation(({ ctx, input }) =>
+        getFilesDownloadUrls(
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFilesByIdsQuery,
+          },
+          { ids: input.ids, scope: ctx.organizationScope },
         ),
       ),
 

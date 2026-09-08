@@ -56,6 +56,13 @@ function Carousel({
   );
   const [canScrollPrev, setCanScrollPrev] = React.useState(false);
   const [canScrollNext, setCanScrollNext] = React.useState(false);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+
+  // Dialog auto-focus lands on the dialog surface, an ancestor of this div, so arrow
+  // keys wouldn't reach handleKeyDown until something inside the carousel got focus.
+  React.useEffect(() => {
+    rootRef.current?.focus();
+  }, []);
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return;
@@ -114,8 +121,10 @@ function Carousel({
       }}
     >
       <div
+        ref={rootRef}
+        tabIndex={-1}
         onKeyDownCapture={handleKeyDown}
-        className={cn("relative min-w-0", className)}
+        className={cn("relative min-w-0 outline-none", className)}
         role="region"
         aria-roledescription="carousel"
         data-slot="carousel"

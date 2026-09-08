@@ -39,7 +39,7 @@ import {
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 import { useFolderPath } from "@/hooks/use-folder-path";
-import { getFileDownloadUrl } from "@/services/resources/drive";
+import { getFileDownloadUrl, getFilesDownloadUrls } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { DriveSearchCombobox } from "./drive-search-combobox";
 import { SuspendedDriveQuotaBar } from "./suspended-drive-quota-bar";
@@ -119,12 +119,17 @@ function DriveExplorerContent({
     const galleryFiles = visibleFiles.filter(
       (file) => file.kind === "image" || file.kind === "video",
     );
-    const resolved = await Promise.all(
-      galleryFiles.map(async (file) => {
-        const { downloadUrl } = await getFileDownloadUrl({ id: file.id, organizationId });
-        return { id: file.id, filename: file.filename, kind: file.kind, downloadUrl };
-      }),
-    );
+    const urls = await getFilesDownloadUrls({
+      ids: galleryFiles.map((file) => file.id),
+      organizationId,
+    });
+    const downloadUrlById = new Map(urls.map((entry) => [entry.id, entry.downloadUrl]));
+    const resolved = galleryFiles.flatMap((file) => {
+      const downloadUrl = downloadUrlById.get(file.id);
+      return downloadUrl
+        ? [{ id: file.id, filename: file.filename, kind: file.kind, downloadUrl }]
+        : [];
+    });
     setCarouselFiles(resolved);
     setCarouselIndex(resolved.findIndex((file) => file.id === fileId));
   };

@@ -9,8 +9,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { match } from "ts-pattern";
 import { useEffect, useRef, useState } from "react";
+
+const PRELOAD_RADIUS = 1;
 
 export interface CarouselAttachment {
   id: string;
@@ -67,29 +70,37 @@ export function AttachmentCarouselDialog({
         {openIndex !== null && (
           <Carousel opts={{ startIndex: openIndex }} setApi={setApi} className="w-full">
             <CarouselContent>
-              {files.map((file) => (
-                <CarouselItem key={file.id} className="flex items-center justify-center">
-                  {match(file.kind)
-                    .with("video", () => (
-                      <video
-                        ref={(el) => {
-                          if (el) videoRefs.current.set(file.id, el);
-                          else videoRefs.current.delete(file.id);
-                        }}
-                        src={file.downloadUrl}
-                        controls
-                        className="max-h-[70vh] w-full rounded-md"
-                      />
-                    ))
-                    .otherwise(() => (
-                      <img
-                        src={file.downloadUrl}
-                        alt={file.filename}
-                        className="max-h-[70vh] w-full rounded-md object-contain"
-                      />
-                    ))}
-                </CarouselItem>
-              ))}
+              {files.map((file, index) => {
+                const isNearActive = Math.abs(index - activeIndex) <= PRELOAD_RADIUS;
+                return (
+                  <CarouselItem key={file.id} className="flex items-center justify-center">
+                    {!isNearActive ? (
+                      <Skeleton className="h-[70vh] w-full" />
+                    ) : (
+                      match(file.kind)
+                        .with("video", () => (
+                          <video
+                            ref={(el) => {
+                              if (el) videoRefs.current.set(file.id, el);
+                              else videoRefs.current.delete(file.id);
+                            }}
+                            src={file.downloadUrl}
+                            controls
+                            className="max-h-[70vh] w-full rounded-md"
+                          />
+                        ))
+                        .otherwise(() => (
+                          <img
+                            src={file.downloadUrl}
+                            alt={file.filename}
+                            loading="lazy"
+                            className="max-h-[70vh] w-full rounded-md object-contain"
+                          />
+                        ))
+                    )}
+                  </CarouselItem>
+                );
+              })}
             </CarouselContent>
             {files.length > 1 && (
               <>

@@ -5,13 +5,25 @@ import type { OrganizationScope } from "@echo/modules/shared/domain";
 export const makeSelectFileByIdQuery = (db: KyselyDB) => (scope: OrganizationScope, id: string) => {
   return db
     .selectFrom("file")
-    .selectAll()
+    .selectAll("file")
     .leftJoin("user", "user.id", "file.uploaded_by")
     .select("user.name as uploaded_by_name")
     .where("file.id", "=", id)
     .where("file.organization_id", "=", scope.organizationId)
     .executeTakeFirst();
 };
+
+export const makeSelectFilesByIdsQuery =
+  (db: KyselyDB) => (scope: OrganizationScope, ids: string[]) => {
+    return db
+      .selectFrom("file")
+      .selectAll("file")
+      .leftJoin("user", "user.id", "file.uploaded_by")
+      .select("user.name as uploaded_by_name")
+      .where("file.id", "in", ids)
+      .where("file.organization_id", "=", scope.organizationId)
+      .execute();
+  };
 
 export const makeSelectFolderByIdQuery =
   (db: KyselyDB) => (scope: OrganizationScope, id: string) => {
