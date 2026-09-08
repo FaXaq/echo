@@ -19,6 +19,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/ui/sheet";
+import { Popover, PopoverContent, PopoverDescription, PopoverTrigger } from "@/ui/popover";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -35,6 +36,7 @@ import {
   useDeleteOrganizationMutation,
 } from "@/services/resources/organization";
 import { listMembersQueryOptions, listInvitationsQueryOptions } from "@/services/resources/member";
+import { getPlanOverviewQueryOptions } from "@/services/resources/plan";
 import { useSession } from "@/hooks/use-session";
 import { InviteForm } from "@/routes/projects/$projectSlug/settings/-invite-form";
 import { MembersTable } from "@/routes/projects/$projectSlug/settings/-members-table";
@@ -72,10 +74,13 @@ function OrganizationSettingsContent({
     }),
   );
   const { data: invitations } = useSuspenseQuery(listInvitationsQueryOptions({ organizationId }));
+  const { data: plan } = useSuspenseQuery(getPlanOverviewQueryOptions({ organizationId }));
 
   const deleteOrganizationMutation = useDeleteOrganizationMutation();
 
   if (!organization || !isOrganizationAdmin(currentMemberRole)) return null;
+
+  const seatsFull = plan.usage.memberSeats >= plan.limits.memberSeats;
 
   const canDeleteOrganization = authClient.organization.checkRolePermission({
     role: currentMemberRole,
@@ -121,21 +126,42 @@ function OrganizationSettingsContent({
         <section className="mb-8">
           <div className="mb-4 flex items-start justify-between">
             <h2 className="text-xl font-semibold">{t`Members`}</h2>
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger render={<Button />}>{t`Invite a member`}</SheetTrigger>
-              <SheetContent className="flex flex-col">
-                <SheetHeader>
-                  <SheetTitle>{t`Invite a member`}</SheetTitle>
-                  <SheetDescription>{t`Add a new member to your project`}</SheetDescription>
-                </SheetHeader>
-                <div className="flex-1 overflow-auto px-6">
-                  <InviteForm
-                    organizationId={organization.id}
-                    onSuccess={() => setIsSheetOpen(false)}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
+            {seatsFull ? (
+              <Popover>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      aria-disabled
+                      className="cursor-not-allowed opacity-50 hover:bg-transparent"
+                    />
+                  }
+                >
+                  {t`Invite a member`}
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PopoverDescription>
+                    {t`You've reached the maximum number of members allowed on your plan. Remove a member or upgrade your plan to invite more.`}
+                  </PopoverDescription>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <SheetTrigger render={<Button />}>{t`Invite a member`}</SheetTrigger>
+                <SheetContent className="flex flex-col">
+                  <SheetHeader>
+                    <SheetTitle>{t`Invite a member`}</SheetTitle>
+                    <SheetDescription>{t`Add a new member to your project`}</SheetDescription>
+                  </SheetHeader>
+                  <div className="flex-1 overflow-auto px-6">
+                    <InviteForm
+                      organizationId={organization.id}
+                      onSuccess={() => setIsSheetOpen(false)}
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
           </div>
 
           <MembersTable

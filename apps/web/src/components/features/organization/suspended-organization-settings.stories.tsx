@@ -11,6 +11,7 @@ import type { authClient } from "@/lib/auth";
 import { SessionProvider } from "@/hooks/use-session";
 import { getFullOrganizationQueryOptions } from "@/services/resources/organization";
 import { listMembersQueryOptions, listInvitationsQueryOptions } from "@/services/resources/member";
+import { getPlanOverviewQueryOptions, type PlanOverview } from "@/services/resources/plan";
 
 type Session = typeof authClient.$Infer.Session;
 
@@ -54,7 +55,7 @@ function withRouter(children: React.ReactNode) {
   return <RouterProvider router={router} />;
 }
 
-function withSeededQueryClient(isPersonal: boolean) {
+function withSeededQueryClient(isPersonal: boolean, memberSeats = 1) {
   const queryClient = new QueryClient();
   queryClient.setQueryData(getFullOrganizationQueryOptions({ organizationId: "org-1" }).queryKey, {
     id: "org-1",
@@ -72,6 +73,16 @@ function withSeededQueryClient(isPersonal: boolean) {
     { members: [], total: 0 },
   );
   queryClient.setQueryData(listInvitationsQueryOptions({ organizationId: "org-1" }).queryKey, []);
+  const overview: PlanOverview = {
+    plan: "free",
+    limits: { memberSeats: 4, maxFileSizeBytes: 50_000_000 },
+    features: { customSlug: false, pdfExport: false, publicPages: false },
+    usage: { memberSeats },
+  };
+  queryClient.setQueryData(
+    getPlanOverviewQueryOptions({ organizationId: "org-1" }).queryKey,
+    overview,
+  );
   return queryClient;
 }
 
@@ -111,6 +122,16 @@ export const Personal: Story = {
   decorators: [
     (Story) => (
       <QueryClientProvider client={withSeededQueryClient(true)}>
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
+};
+
+export const SeatsFull: Story = {
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={withSeededQueryClient(false, 4)}>
         <Story />
       </QueryClientProvider>
     ),
