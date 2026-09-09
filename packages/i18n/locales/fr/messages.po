@@ -93,7 +93,7 @@ msgid "A new code has been sent"
 msgstr "Un nouveau code a été envoyé"
 
 #: apps/web/src/lib/dynamic-messages.ts:55
-#: apps/web/src/routes/accept-invitation.tsx:118
+#: apps/web/src/routes/accept-invitation.tsx:117
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
 
@@ -208,7 +208,7 @@ msgstr "Audio ({0})"
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
-#: apps/web/src/routes/accept-invitation.tsx:120
+#: apps/web/src/routes/accept-invitation.tsx:119
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
@@ -636,7 +636,7 @@ msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Chaque action ici est destructive. Veuillez procéder avec prudence."
 
 #: apps/web/src/lib/dynamic-messages.ts:44
-#: apps/web/src/routes/accept-invitation.tsx:93
+#: apps/web/src/routes/accept-invitation.tsx:92
 msgid "Failed to accept invitation"
 msgstr "Échec de l'acceptation de l'invitation"
 
@@ -1645,7 +1645,7 @@ msgstr "Oui, annuler"
 msgid "Yes, remove"
 msgstr "Oui, retirer"
 
-#: apps/web/src/routes/accept-invitation.tsx:113
+#: apps/web/src/routes/accept-invitation.tsx:112
 msgid "You have been invited to join"
 msgstr "Vous avez été invité(e) à rejoindre"
 
