@@ -34,10 +34,9 @@ function LoginPage() {
       { email: values.email, password: values.password },
       {
         onSuccess: () => {
-          setTimeout(async () => {
-            await router.invalidate();
-            router.navigate({ to: redirect ?? "/" });
-          }, 600);
+          // Hard navigation: guarantees a fresh session fetch instead of racing
+          // the SPA router's invalidate/navigate against the new session cookie.
+          window.location.href = redirect ?? "/";
         },
         onError: (error) => {
           if (error.message === "Email not verified") {

@@ -8,7 +8,6 @@ import {
   createRootRouteWithContext,
   Navigate,
   Outlet,
-  useRouter,
   useRouterState,
 } from "@tanstack/react-router";
 import type { MyRouterContext } from "../router";
@@ -18,7 +17,6 @@ import { trpc } from "../lib/trpc";
 import { apiUrl } from "../lib/api-url";
 import { queryClient } from "../lib/query-client";
 import { getSessionQueryOptions } from "@/services/resources/session";
-import { useSignOutMutation } from "@/services/resources/auth";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AudioPlayerDockContainer } from "@/components/features/audio-player/audio-player-dock-container";
 import { Separator } from "@/components/ui/separator";
@@ -116,9 +114,7 @@ function PostHogRoot({ children }: { children: ReactNode }) {
 }
 
 function RootContent({ session }: { session: ClientSession | null }) {
-  const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const signOutMutation = useSignOutMutation();
   const identifiedUserId = useRef<string | undefined>(undefined);
 
   useEffect(() => {
@@ -146,6 +142,7 @@ function RootContent({ session }: { session: ClientSession | null }) {
     "/reset-password",
     "/accept-invitation",
     "/verify-email",
+    "/logout",
   ];
   if (standalonePaths.includes(pathname)) {
     return <Outlet />;
@@ -154,21 +151,6 @@ function RootContent({ session }: { session: ClientSession | null }) {
   if (!session) {
     return <Navigate to="/login" search={{ redirect: pathname }} replace />;
   }
-
-  const handleLogout = () => {
-    signOutMutation.mutate(undefined, {
-      onSuccess: () => {
-        if (!missingPostHogVariable) {
-          posthog.reset();
-          identifiedUserId.current = undefined;
-        }
-        setTimeout(async () => {
-          await router.invalidate();
-          router.navigate({ to: "/" });
-        }, 600);
-      },
-    });
-  };
 
   return (
     <SessionProvider session={session}>
@@ -185,7 +167,6 @@ function RootContent({ session }: { session: ClientSession | null }) {
                 username={session.user.username ?? ""}
                 email={session.user.email}
                 image={session.user.image}
-                onLogout={handleLogout}
               />
             </div>
           </header>

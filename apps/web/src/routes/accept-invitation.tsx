@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -52,7 +52,6 @@ export const Route = createFileRoute("/accept-invitation")({
 function AcceptInvitationPage() {
   const { invitation, session } = Route.useLoaderData();
   const { t } = useLingui();
-  const router = useRouter();
   const [serverError, setServerError] = useState<string | undefined>();
   const acceptInvitationMutation = useAcceptInvitationMutation();
 
@@ -86,7 +85,8 @@ function AcceptInvitationPage() {
       { invitationId: invitation.id },
       {
         onSuccess: () => {
-          router.navigate({ to: "/" });
+          // Hard navigation to avoid race condition
+          window.location.href = "/";
         },
         onError: (error) => {
           setServerError(error.message || t`Failed to accept invitation`);

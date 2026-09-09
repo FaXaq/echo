@@ -272,7 +272,7 @@ msgstr "Cancel"
 msgid "Cancel invitation"
 msgstr "Cancel invitation"
 
-#: apps/web/src/routes/accept-invitation.tsx:62
+#: apps/web/src/routes/accept-invitation.tsx:61
 msgid "Cannot find the invitation you're looking for"
 msgstr "Cannot find the invitation you're looking for"
 
@@ -573,7 +573,7 @@ msgstr "Email not verified"
 msgid "Email verification failed"
 msgstr "Email verification failed"
 
-#: apps/web/src/routes/verify-email.tsx:47
+#: apps/web/src/routes/verify-email.tsx:46
 msgid "Email verified"
 msgstr "Email verified"
 
@@ -793,11 +793,11 @@ msgstr "Invalid code"
 msgid "Invalid email address"
 msgstr "Invalid email address"
 
-#: apps/web/src/routes/accept-invitation.tsx:70
+#: apps/web/src/routes/accept-invitation.tsx:69
 msgid "Invitation has expired or already been processed. Please, request a new one."
 msgstr "Invitation has expired or already been processed. Please, request a new one."
 
-#: apps/web/src/routes/accept-invitation.tsx:78
+#: apps/web/src/routes/accept-invitation.tsx:77
 msgid "Invitation not found."
 msgstr "Invitation not found."
 
@@ -832,7 +832,7 @@ msgstr "It's your personal space."
 msgid "Key"
 msgstr "Key"
 
-#: apps/web/src/components/user-menu.tsx:98
+#: apps/web/src/components/user-menu.tsx:97
 msgid "Language"
 msgstr "Language"
 
@@ -858,7 +858,7 @@ msgstr "Link copied to clipboard"
 msgid "Location"
 msgstr "Location"
 
-#: apps/web/src/components/user-menu.tsx:115
+#: apps/web/src/components/user-menu.tsx:114
 msgid "Log out"
 msgstr "Log out"
 
@@ -1427,7 +1427,7 @@ msgstr "Start"
 msgid "Storage"
 msgstr "Storage"
 
-#: apps/web/src/components/user-menu.tsx:82
+#: apps/web/src/components/user-menu.tsx:81
 msgid "Theme"
 msgstr "Theme"
 

@@ -1,6 +1,6 @@
 import { Trans, useLingui } from "@lingui/react/macro";
 import { LogOut, Monitor, Moon, Sun } from "lucide-react";
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { locales, type Locale } from "@echo/i18n";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -37,10 +37,9 @@ export interface UserMenuProps {
   name: string;
   email: string;
   image?: string | null;
-  onLogout: () => void;
 }
 
-export function UserMenu({ username, name, email, image, onLogout }: UserMenuProps) {
+export function UserMenu({ username, name, email, image }: UserMenuProps) {
   const { i18n } = useLingui();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
@@ -110,7 +109,7 @@ export function UserMenu({ username, name, email, image, onLogout }: UserMenuPro
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onLogout} className="text-red-400">
+        <DropdownMenuItem render={<Link to="/logout" />} className="text-red-400">
           <LogOut />
           <Trans>Log out</Trans>
         </DropdownMenuItem>
