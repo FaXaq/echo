@@ -3,9 +3,11 @@ import { getSessionQueryOptions } from "@/services/resources/session";
 import { selfListOrganizations } from "@/services/resources/organization";
 
 export const Route = createFileRoute("/")({
-  beforeLoad: async ({ context }) => {
+  beforeLoad: async ({ context, location }) => {
     const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
-    if (!session) return;
+    if (!session) {
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
 
     const organizations = await context.queryClient.ensureQueryData(selfListOrganizations());
     const personalOrganization = organizations.find((o) => o.isPersonal);

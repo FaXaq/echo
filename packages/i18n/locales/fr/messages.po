@@ -395,7 +395,7 @@ msgstr "Impossible d'importer {0}"
 msgid "Cover"
 msgstr "Reprise"
 
-#: apps/web/src/routes/projects/new.tsx:72
+#: apps/web/src/routes/projects/new.tsx:73
 msgid "Create a space for your project"
 msgstr "Créez un espace pour votre projet"
 
@@ -411,7 +411,7 @@ msgstr "Créer un compte"
 #~ msgid "Create organization"
 #~ msgstr "Créer le groupe"
 
-#: apps/web/src/routes/projects/new.tsx:94
+#: apps/web/src/routes/projects/new.tsx:95
 msgid "Create project"
 msgstr "Créer le projet"
 
@@ -933,13 +933,13 @@ msgstr "Divers ({0})"
 msgid "Month"
 msgstr "Mois"
 
-#: apps/web/src/routes/projects/new.tsx:85
+#: apps/web/src/routes/projects/new.tsx:86
 msgid "My Project"
 msgstr "Mon projet"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:125
-#: apps/web/src/routes/projects/new.tsx:80
+#: apps/web/src/routes/projects/new.tsx:81
 msgid "Name"
 msgstr "Nom"
 
@@ -964,7 +964,7 @@ msgstr "Nouveau mot de passe"
 
 #: apps/web/src/components/version-switcher.tsx:77
 #: apps/web/src/lib/dynamic-messages.ts:54
-#: apps/web/src/routes/projects/new.tsx:69
+#: apps/web/src/routes/projects/new.tsx:70
 msgid "New project"
 msgstr "Nouveau projet"
 

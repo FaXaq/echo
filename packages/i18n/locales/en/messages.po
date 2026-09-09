@@ -395,7 +395,7 @@ msgstr "Couldn't upload {0}"
 msgid "Cover"
 msgstr "Cover"
 
-#: apps/web/src/routes/projects/new.tsx:72
+#: apps/web/src/routes/projects/new.tsx:73
 msgid "Create a space for your project"
 msgstr "Create a space for your project"
 
@@ -411,7 +411,7 @@ msgstr "Create an account"
 #~ msgid "Create organization"
 #~ msgstr "Create organization"
 
-#: apps/web/src/routes/projects/new.tsx:94
+#: apps/web/src/routes/projects/new.tsx:95
 msgid "Create project"
 msgstr "Create project"
 
@@ -933,13 +933,13 @@ msgstr "Misc ({0})"
 msgid "Month"
 msgstr "Month"
 
-#: apps/web/src/routes/projects/new.tsx:85
+#: apps/web/src/routes/projects/new.tsx:86
 msgid "My Project"
 msgstr "My Project"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:125
-#: apps/web/src/routes/projects/new.tsx:80
+#: apps/web/src/routes/projects/new.tsx:81
 msgid "Name"
 msgstr "Name"
 
@@ -964,7 +964,7 @@ msgstr "New password"
 
 #: apps/web/src/components/version-switcher.tsx:77
 #: apps/web/src/lib/dynamic-messages.ts:54
-#: apps/web/src/routes/projects/new.tsx:69
+#: apps/web/src/routes/projects/new.tsx:70
 msgid "New project"
 msgstr "New project"
 
