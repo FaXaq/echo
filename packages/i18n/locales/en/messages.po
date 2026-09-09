@@ -93,7 +93,7 @@ msgid "A new code has been sent"
 msgstr "A new code has been sent"
 
 #: apps/web/src/lib/dynamic-messages.ts:55
-#: apps/web/src/routes/accept-invitation.tsx:117
+#: apps/web/src/routes/accept-invitation.tsx:118
 msgid "Accept invitation"
 msgstr "Accept invitation"
 
@@ -208,7 +208,7 @@ msgstr "Audio ({0})"
 msgid "Back to calendar"
 msgstr "Back to calendar"
 
-#: apps/web/src/routes/accept-invitation.tsx:119
+#: apps/web/src/routes/accept-invitation.tsx:120
 msgid "Back to home"
 msgstr "Back to home"
 
@@ -272,7 +272,7 @@ msgstr "Cancel"
 msgid "Cancel invitation"
 msgstr "Cancel invitation"
 
-#: apps/web/src/routes/accept-invitation.tsx:62
+#: apps/web/src/routes/accept-invitation.tsx:61
 msgid "Cannot find the invitation you're looking for"
 msgstr "Cannot find the invitation you're looking for"
 
@@ -636,7 +636,7 @@ msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Every action here is destructive. Please proceed with caution."
 
 #: apps/web/src/lib/dynamic-messages.ts:44
-#: apps/web/src/routes/accept-invitation.tsx:92
+#: apps/web/src/routes/accept-invitation.tsx:93
 msgid "Failed to accept invitation"
 msgstr "Failed to accept invitation"
 
@@ -793,11 +793,11 @@ msgstr "Invalid code"
 msgid "Invalid email address"
 msgstr "Invalid email address"
 
-#: apps/web/src/routes/accept-invitation.tsx:70
+#: apps/web/src/routes/accept-invitation.tsx:69
 msgid "Invitation has expired or already been processed. Please, request a new one."
 msgstr "Invitation has expired or already been processed. Please, request a new one."
 
-#: apps/web/src/routes/accept-invitation.tsx:78
+#: apps/web/src/routes/accept-invitation.tsx:77
 msgid "Invitation not found."
 msgstr "Invitation not found."
 
@@ -832,7 +832,7 @@ msgstr "It's your personal space."
 msgid "Key"
 msgstr "Key"
 
-#: apps/web/src/components/user-menu.tsx:98
+#: apps/web/src/components/user-menu.tsx:97
 msgid "Language"
 msgstr "Language"
 
@@ -858,7 +858,7 @@ msgstr "Link copied to clipboard"
 msgid "Location"
 msgstr "Location"
 
-#: apps/web/src/components/user-menu.tsx:115
+#: apps/web/src/components/user-menu.tsx:114
 msgid "Log out"
 msgstr "Log out"
 
@@ -1427,7 +1427,7 @@ msgstr "Start"
 msgid "Storage"
 msgstr "Storage"
 
-#: apps/web/src/components/user-menu.tsx:82
+#: apps/web/src/components/user-menu.tsx:81
 msgid "Theme"
 msgstr "Theme"
 
@@ -1645,7 +1645,7 @@ msgstr "Yes, cancel"
 msgid "Yes, remove"
 msgstr "Yes, remove"
 
-#: apps/web/src/routes/accept-invitation.tsx:112
+#: apps/web/src/routes/accept-invitation.tsx:113
 msgid "You have been invited to join"
 msgstr "You have been invited to join"
 

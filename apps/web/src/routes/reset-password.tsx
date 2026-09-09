@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 import { z } from "zod";
 import { GalleryVerticalEnd } from "lucide-react";
@@ -23,7 +23,6 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPasswordPage() {
   const { token } = Route.useSearch();
-  const router = useRouter();
   const posthog = usePostHog();
   const [serverError, setServerError] = useState<string | undefined>();
   const resetPasswordMutation = useResetPasswordMutation();
@@ -37,7 +36,8 @@ function ResetPasswordPage() {
       {
         onSuccess: () => {
           posthog.capture("password_reset_completed");
-          router.navigate({ to: "/" });
+          // Hard navigation to avoid race condition
+          window.location.href = "/";
         },
         onError: (error) => {
           setServerError(error.message);

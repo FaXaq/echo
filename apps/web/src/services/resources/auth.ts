@@ -39,19 +39,9 @@ export function useSignUpEmailMutation() {
   });
 }
 
-export function useSignOutMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      const { data, error } = await authClient.signOut();
-      if (error) throw new Error(error.message ?? "Logout failed");
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.clear();
-    },
-  });
+export async function signOut() {
+  const { error } = await authClient.signOut();
+  if (error) throw new Error(error.message ?? "Logout failed");
 }
 
 export function useRequestPasswordResetMutation() {

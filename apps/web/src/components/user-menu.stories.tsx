@@ -22,7 +22,6 @@ const meta = {
   component: UserMenu,
   parameters: { layout: "centered" },
   tags: ["autodocs"],
-  args: { onLogout: () => {} },
   decorators: [
     (Story) => (
       <ThemeProvider>
