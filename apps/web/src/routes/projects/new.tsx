@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { TRPCClientError } from "@trpc/client";
-import { useSession } from "@/hooks/use-session";
 import { useCreateOrganizationMutation } from "@/services/resources/organization";
+import { getSessionQueryOptions } from "@/services/resources/session";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,12 @@ import { translateDynamic } from "@/lib/dynamic-messages";
 
 export const Route = createFileRoute("/projects/new")({
   staticData: { title: "New project", breadcrumb: "New project" },
+  beforeLoad: async ({ context, location }) => {
+    const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
+    if (!session) {
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: NewOrganizationPage,
 });
 
@@ -26,15 +32,10 @@ type FormValues = z.infer<typeof schema>;
 
 function NewOrganizationPage() {
   const { t } = useLingui();
-  const { session } = useSession();
   const router = useRouter();
   const posthog = usePostHog();
   const [serverError, setServerError] = useState<string | undefined>();
   const createOrganizationMutation = useCreateOrganizationMutation();
-
-  if (!session) {
-    throw redirect({ to: "/" });
-  }
 
   const {
     register,
@@ -60,7 +61,7 @@ function NewOrganizationPage() {
   };
 
   return (
-    <div className="flex flex-1 items-center justify-center p-6">
+    <div className="flex min-h-svh flex-1 items-center justify-center p-6 typeset typeset-notes">
       <div className="w-full max-w-sm">
         <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>

@@ -9,7 +9,7 @@ import { FieldError } from "@/components/ui/field";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { useAcceptInvitationMutation } from "@/services/resources/auth";
 import { getSessionQueryOptions } from "@/services/resources/session";
-import { apiClient } from "@/services/api-client";
+import { getInvitationQueryOptions } from "@/services/resources/invitation";
 
 const searchSchema = z.object({
   id: z.string().optional(),
@@ -29,9 +29,9 @@ export const Route = createFileRoute("/accept-invitation")({
       return { invitation: null };
     }
 
-    const invitation = await apiClient.invitation.get.query({
-      id: deps.id,
-    });
+    const invitation = await context.queryClient.ensureQueryData(
+      getInvitationQueryOptions({ id: deps.id }),
+    );
     const isPending =
       invitation && invitation.status === "pending" && dayjs(invitation.expiresAt).isAfter(dayjs());
 
@@ -103,7 +103,7 @@ function AcceptInvitationPage() {
             <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <GalleryVerticalEnd className="size-4" />
             </div>
-            Acme Inc.
+            Echo
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">

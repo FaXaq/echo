@@ -26,7 +26,9 @@ export function getActiveMemberRoleQueryOptions(opts: { organizationId: string }
   return queryOptions({
     queryKey: getResourceKey("getActiveMemberRole", opts),
     queryFn: async () => {
-      const { data, error } = await authClient.organization.getActiveMemberRole();
+      const { data, error } = await authClient.organization.getActiveMemberRole({
+        query: { organizationId: opts.organizationId },
+      });
       if (error) throw notFound();
       const role = organizationRoleSchema.parse(data.role);
       return { ...data, role };
