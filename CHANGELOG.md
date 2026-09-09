@@ -1,3 +1,9 @@
+## [0.8.5](https://github.com/FaXaq/echo/compare/v0.8.4...v0.8.5) (2026-09-09)
+
+### 🐛 Bug Fixes
+
+* **ui:** route structure & interaction with app shell ([#35](https://github.com/FaXaq/echo/issues/35)) ([363c0a5](https://github.com/FaXaq/echo/commit/363c0a52579ab83badf2ddd94d59711384eb7c12))
+
 ## [0.8.4](https://github.com/FaXaq/echo/compare/v0.8.3...v0.8.4) (2026-09-09)
 
 ### 🐛 Bug Fixes
