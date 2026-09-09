@@ -1,3 +1,9 @@
+## [0.8.4](https://github.com/FaXaq/echo/compare/v0.8.3...v0.8.4) (2026-09-09)
+
+### 🐛 Bug Fixes
+
+* **auth:** login redirect loop ([#34](https://github.com/FaXaq/echo/issues/34)) ([09d11e6](https://github.com/FaXaq/echo/commit/09d11e672a7715ce49b291ddd38486f78df1482d))
+
 ## [0.8.3](https://github.com/FaXaq/echo/compare/v0.8.2...v0.8.3) (2026-09-08)
 
 ### 🐛 Bug Fixes
