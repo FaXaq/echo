@@ -35,6 +35,10 @@ _Avoid_: Directory
 An Organization-scoped creative work: title (required), and optional artist, BPM, musical key, markdown lyrics, and `'original' | 'cover'` type. Like an Event, a Song has its own file list (`file.songId`); a file can be attached to an Event and a Song at the same time (see Drive), and deleting a Song only clears that reference — the file itself is deleted only once it is attached to nothing at all.
 _Avoid_: Track
 
+**Playlist**:
+An Organization-scoped ordered list of Songs: title (required) and optional description. A Song can appear at most once in a Playlist (`playlist_song` is a unique `(playlist_id, song_id)` pair) — duplicate entries and manual reordering are deferred to ECH-106, which needs a per-row identity on `playlist_song` and a non-chip UI to support both. Order follows insertion order — there's no manual reordering; to change the order, remove and re-add Songs in the desired sequence. A Playlist may be linked to zero or more Events (e.g. a rehearsal or concert), and an Event may have several Playlists at once — both the Song and Event links are many-to-many, not single attachments. Colloquially, a Playlist linked to an Event is called a "Setlist," but there is no separate Setlist entity or table: it's the same Playlist, just in that role. Playlist CRUD is gated on the `playlist` permission, granted to every role (`member`/`owner`/`admin`) — the same tier as `calendarEvent`/`drive`/`quota`, not the `owner`/`admin`-only tier `plan` uses.
+_Avoid_: Setlist (as a distinct entity — it's a usage of Playlist, not its own type)
+
 **Selection**:
 A set of Drive rows (files and/or folders, any mix) marked for a Bulk Action within the current folder view — via row checkbox or shift/cmd-click. Scoped to one folder view: navigating to a different folder clears it.
 _Avoid_: Multi-select (reserve for the UI mechanism, not the resulting set)

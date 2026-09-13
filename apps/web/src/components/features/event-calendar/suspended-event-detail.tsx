@@ -13,9 +13,15 @@ import {
   useDeleteEventMutation,
   useUpdateEventMutation,
 } from "@/services/resources/calendar";
+import {
+  getEventPlaylistsQueryOptions,
+  useAttachPlaylistToEventMutation,
+  useDetachPlaylistFromEventMutation,
+} from "@/services/resources/playlist";
 import { fromViewEvent, toViewEvent } from "@/lib/calendar-events";
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
+import { PlaylistPickerCombobox } from "@/components/features/playlist/playlist-picker-combobox";
 
 const DESCRIPTION_AUTOSAVE_DEBOUNCE_MS = 300;
 
@@ -34,6 +40,9 @@ function EventDetailContent({
 }: SuspendedEventDetailProps) {
   const { t } = useLingui();
   const { data: event } = useSuspenseQuery(getEventQueryOptions({ eventId, organizationId }));
+  const { data: eventPlaylists } = useSuspenseQuery(
+    getEventPlaylistsQueryOptions({ eventId, organizationId }),
+  );
   const viewEvent = toViewEvent(event);
   const [dialogState, setDialogState] = useState<EventDialogState>(null);
   const [description, setDescription] = useState(() => viewEvent.description ?? "");
@@ -58,6 +67,8 @@ function EventDetailContent({
       onBack();
     },
   });
+  const attachPlaylistMutation = useAttachPlaylistToEventMutation({ organizationId });
+  const detachPlaylistMutation = useDetachPlaylistFromEventMutation({ organizationId });
 
   useEffect(() => {
     return () => {
@@ -118,6 +129,18 @@ function EventDetailContent({
         onDelete={handleDelete}
         attachments={
           <SuspendedEventAttachments eventId={viewEvent.id} organizationId={organizationId} />
+        }
+        playlistsPicker={
+          <PlaylistPickerCombobox
+            organizationId={organizationId}
+            selectedPlaylists={eventPlaylists}
+            onAdd={(playlistId) =>
+              attachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
+            }
+            onRemove={(playlistId) =>
+              detachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
+            }
+          />
         }
       />
       <EventDialog

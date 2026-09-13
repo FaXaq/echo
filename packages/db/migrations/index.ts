@@ -17,6 +17,7 @@ import * as migration_20260823180258 from "./20260823180258_song";
 import * as migration_20260823180517 from "./20260823180517_add-song-id-to-file";
 import * as migration_20260823180703 from "./20260823180703_file-event-id-set-null";
 import * as migration_20260823192913 from "./20260823192913_song-updated-by-set-null";
+import * as migration_20260913192854 from "./20260913192854_playlist";
 
 type Migration = {
   up: (db: Kysely<any>) => Promise<void>;
@@ -43,4 +44,5 @@ export const migrations: Migrations = {
   "20260823180517_add-song-id-to-file": migration_20260823180517,
   "20260823180703_file-event-id-set-null": migration_20260823180703,
   "20260823192913_song-updated-by-set-null": migration_20260823192913,
+  "20260913192854_playlist": migration_20260913192854,
 };

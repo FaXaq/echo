@@ -7,6 +7,7 @@ const calendarEventActions = ["create", "read", "update", "delete"] as const;
 const driveActions = ["create", "read", "delete", "update"] as const;
 const planActions = ["create", "read", "delete", "update"] as const;
 const quotaActions = ["create", "read", "delete", "update"] as const;
+const playlistActions = ["create", "read", "delete", "update"] as const;
 
 export const statement = {
   ...defaultStatements,
@@ -14,6 +15,7 @@ export const statement = {
   drive: [...driveActions],
   plan: [...planActions],
   quota: [...quotaActions],
+  playlist: [...playlistActions],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -22,6 +24,7 @@ const member = ac.newRole({
   calendarEvent: [...calendarEventActions],
   drive: [...driveActions],
   quota: [...quotaActions],
+  playlist: [...playlistActions],
 });
 
 // Default Better-Auth role
@@ -31,6 +34,7 @@ const owner = ac.newRole({
   drive: [...driveActions],
   plan: [...planActions],
   quota: [...quotaActions],
+  playlist: [...playlistActions],
 });
 
 // Default Better-Auth role
@@ -40,6 +44,7 @@ const admin = ac.newRole({
   drive: [...driveActions],
   plan: [...planActions],
   quota: [...quotaActions],
+  playlist: [...playlistActions],
 });
 
 // Define roles

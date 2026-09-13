@@ -41,6 +41,7 @@ export interface EventDetailProps {
   onEdit: () => void;
   onDelete: () => void;
   attachments: React.ReactNode;
+  playlistsPicker?: React.ReactNode;
   className?: string;
 }
 
@@ -53,6 +54,7 @@ export function EventDetail({
   onEdit,
   onDelete,
   attachments,
+  playlistsPicker,
   className,
 }: EventDetailProps) {
   const { t } = useLingui();
@@ -201,6 +203,13 @@ export function EventDetail({
             className="min-h-24 max-h-[32rem] overflow-y-auto rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"
           />
         </div>
+
+        {playlistsPicker && (
+          <div className="flex flex-col gap-2">
+            <span className="text-[13px] font-semibold">{t`Playlists`}</span>
+            {playlistsPicker}
+          </div>
+        )}
       </EntityDetailLayout>
 
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>

@@ -7,6 +7,7 @@ import { makeCalendarRouter } from "./calendar";
 import { makeDriveRouter } from "./drive";
 import { makePlaceRouter } from "./place";
 import { makeSongRouter } from "./song";
+import { makePlaylistRouter } from "./playlist";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export const makeAppRouter = () =>
@@ -20,6 +21,7 @@ export const makeAppRouter = () =>
       drive: makeDriveRouter(),
       place: makePlaceRouter(),
       song: makeSongRouter(),
+      playlist: makePlaylistRouter(),
     }),
   );
 

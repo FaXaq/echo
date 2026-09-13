@@ -7,6 +7,7 @@ import {
   updateSongLyrics,
   deleteSong,
   getSongById,
+  searchSongs,
 } from "@echo/modules/song/app";
 import { songTypeSchema } from "@echo/modules/song/domain";
 import {
@@ -16,6 +17,7 @@ import {
   deleteSongCommandFactory,
   listSongsQueryFactory,
   getSongByIdQueryFactory,
+  searchSongsQueryFactory,
 } from "@echo/modules/song/infrastructure";
 import {
   listAllFilesBySongQueryFactory,
@@ -38,6 +40,7 @@ const listSongsQuery = listSongsQueryFactory();
 const getSongByIdQuery = getSongByIdQueryFactory();
 const listAllFilesBySongQuery = listAllFilesBySongQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
+const searchSongsQuery = searchSongsQueryFactory();
 
 export const makeSongRouter = () =>
   router({
@@ -53,6 +56,15 @@ export const makeSongRouter = () =>
     listSongs: organizationProcedure.query(({ ctx }) =>
       listSongs({ db: ctx.db, listSongsQuery }, { scope: ctx.organizationScope }),
     ),
+
+    searchSongs: organizationProcedure
+      .input(z.object({ query: z.string().trim().min(1) }))
+      .query(({ ctx, input }) =>
+        searchSongs(
+          { db: ctx.db, searchSongsQuery },
+          { scope: ctx.organizationScope, query: input.query },
+        ),
+      ),
 
     createSong: organizationProcedure
       .input(z.object(songInput))

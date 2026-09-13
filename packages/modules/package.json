@@ -123,6 +123,18 @@
     "./song/app": {
       "types": "./src/song/app/index.ts",
       "default": "./src/song/app/index.ts"
+    },
+    "./playlist/domain": {
+      "types": "./src/playlist/domain/index.ts",
+      "default": "./src/playlist/domain/index.ts"
+    },
+    "./playlist/infrastructure": {
+      "types": "./src/playlist/infrastructure/index.ts",
+      "default": "./src/playlist/infrastructure/index.ts"
+    },
+    "./playlist/app": {
+      "types": "./src/playlist/app/index.ts",
+      "default": "./src/playlist/app/index.ts"
     }
   },
   "scripts": {
