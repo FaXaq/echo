@@ -17,12 +17,10 @@ export function SongPickerCombobox({
   organizationId,
   selectedSongs,
   onAdd,
-  onRemove,
 }: {
   organizationId: string;
   selectedSongs: SongOption[];
   onAdd: (songId: string) => void;
-  onRemove: (songId: string) => void;
 }) {
   const { t } = useLingui();
   const [query, setQuery] = useState("");
@@ -44,13 +42,11 @@ export function SongPickerCombobox({
 
   return (
     <EntityPickerCombobox
-      selected={selectedSongs}
       options={options}
       getId={(song) => song.id}
       getLabel={songLabel}
       onQueryChange={setQuery}
-      onAdd={(song) => onAdd(song.id)}
-      onRemove={(song) => onRemove(song.id)}
+      onSelect={(song) => onAdd(song.id)}
       placeholder={t`Search songs to add…`}
       emptyLabel={t`No matching songs`}
       promptLabel={t`Type to search songs`}

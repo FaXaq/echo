@@ -204,7 +204,7 @@ msgstr "Au moins une lettre majuscule"
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:184
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
@@ -216,7 +216,7 @@ msgstr "Retour à l'accueil"
 #~ msgid "Back to login"
 #~ msgstr "Retour à la connexion"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:107
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:129
 msgid "Back to playlists"
 msgstr "Retour aux playlists"
 
@@ -376,6 +376,7 @@ msgstr "Impossible de charger le Drive"
 msgid "Couldn't load playlists"
 msgstr "Impossible de charger les playlists"
 
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:36
 #: apps/web/src/components/features/song/suspended-song-list.tsx:96
 msgid "Couldn't load songs"
 msgstr "Impossible de charger les chansons"
@@ -402,6 +403,7 @@ msgstr "Impossible d'importer {0}"
 #: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
+#: apps/web/src/components/ui/song/song-list-item.tsx:26
 msgid "Cover"
 msgstr "Reprise"
 
@@ -640,7 +642,7 @@ msgstr "Événement"
 msgid "Event actions"
 msgstr "Actions de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:66
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:68
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
@@ -648,7 +650,7 @@ msgstr "Événement supprimé"
 msgid "Event details"
 msgstr "Détails de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:178
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:201
 msgid "Event not found"
 msgstr "Événement introuvable"
 
@@ -702,7 +704,7 @@ msgstr "Échec du renvoi de l'invitation"
 msgid "Failed to revoke membership"
 msgstr "Échec de la suppression du membre"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:61
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:63
 msgid "Failed to save description"
 msgstr "Échec de l'enregistrement de la description"
 
@@ -870,7 +872,7 @@ msgstr "Dernière modification"
 msgid "Letters, numbers, _ and - only"
 msgstr "Lettres, chiffres, _ et - uniquement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:90
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:92
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:77
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
 msgid "Link copied to clipboard"
@@ -1032,11 +1034,11 @@ msgstr "Aucun fichier pour l'instant"
 msgid "No matches"
 msgstr "Aucun résultat"
 
-#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:53
+#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:49
 msgid "No matching playlists"
 msgstr "Aucune playlist correspondante"
 
-#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:55
+#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:51
 msgid "No matching songs"
 msgstr "Aucune chanson correspondante"
 
@@ -1064,6 +1066,10 @@ msgstr "Aucun aperçu disponible"
 #: apps/web/src/components/ui/data-table.tsx:54
 msgid "No results."
 msgstr "Aucun résultat."
+
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:22
+msgid "No songs in this playlist."
+msgstr "Aucune chanson dans cette playlist."
 
 #: apps/web/src/components/features/song/suspended-song-list.tsx:57
 msgid "No songs yet."
@@ -1136,6 +1142,7 @@ msgstr "Organisateur"
 #: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
+#: apps/web/src/components/ui/song/song-list-item.tsx:26
 msgid "Original"
 msgstr "Original"
 
@@ -1213,11 +1220,11 @@ msgstr "Lire {0} à la place ?"
 msgid "Playlist actions"
 msgstr "Actions de la playlist"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:49
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:51
 msgid "Playlist deleted"
 msgstr "Playlist supprimée"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:101
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:123
 msgid "Playlist not found"
 msgstr "Playlist introuvable"
 
@@ -1281,6 +1288,14 @@ msgstr "Rouge"
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:11
 msgid "Rehearsal"
 msgstr "Répétition"
+
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:145
+msgid "Remove playlist"
+msgstr "Retirer la playlist"
+
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:77
+msgid "Remove song"
+msgstr "Retirer la chanson"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:171
 #: apps/web/src/components/features/drive/drive-file-row.tsx:213
@@ -1380,11 +1395,11 @@ msgstr "Rechercher dans le Drive"
 msgid "Search for a place"
 msgstr "Rechercher un lieu"
 
-#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:52
+#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:48
 msgid "Search playlists to attach…"
 msgstr "Rechercher des playlists à associer…"
 
-#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:54
+#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:50
 msgid "Search songs to add…"
 msgstr "Rechercher des chansons à ajouter…"
 
@@ -1461,9 +1476,9 @@ msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 #~ msgid "Slug is required"
 #~ msgstr "Le slug est requis"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:178
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:201
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:101
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:123
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:146
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
@@ -1506,7 +1521,7 @@ msgstr "Thème"
 msgid "This code has expired, request a new one"
 msgstr "Ce code a expiré, demandez-en un nouveau"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:181
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:204
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
@@ -1563,7 +1578,7 @@ msgstr "Cette action supprime définitivement le dossier ainsi que les fichiers 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "Cette action supprime définitivement les fichiers sélectionnés, y compris de tout événement ou morceau auquel ils sont rattachés. Cette action est irréversible."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:104
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:126
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "Cette playlist n'existe pas ou a été supprimée."
 
@@ -1639,11 +1654,11 @@ msgstr "Trop de tentatives, demandez un nouveau code"
 msgid "Type"
 msgstr "Type"
 
-#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:54
+#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:50
 msgid "Type to search playlists"
 msgstr "Tapez pour rechercher des playlists"
 
-#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:56
+#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:52
 msgid "Type to search songs"
 msgstr "Tapez pour rechercher des chansons"
 

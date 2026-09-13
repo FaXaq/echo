@@ -13,12 +13,10 @@ export function PlaylistPickerCombobox({
   organizationId,
   selectedPlaylists,
   onAdd,
-  onRemove,
 }: {
   organizationId: string;
   selectedPlaylists: PlaylistOption[];
   onAdd: (playlistId: string) => void;
-  onRemove: (playlistId: string) => void;
 }) {
   const { t } = useLingui();
   const [query, setQuery] = useState("");
@@ -42,13 +40,11 @@ export function PlaylistPickerCombobox({
 
   return (
     <EntityPickerCombobox
-      selected={selectedPlaylists}
       options={options}
       getId={(playlist) => playlist.id}
       getLabel={(playlist) => playlist.title}
       onQueryChange={setQuery}
-      onAdd={(playlist) => onAdd(playlist.id)}
-      onRemove={(playlist) => onRemove(playlist.id)}
+      onSelect={(playlist) => onAdd(playlist.id)}
       placeholder={t`Search playlists to attach…`}
       emptyLabel={t`No matching playlists`}
       promptLabel={t`Type to search playlists`}

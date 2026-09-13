@@ -3,6 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
+import { X } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,6 +23,7 @@ import { fromViewEvent, toViewEvent } from "@/lib/calendar-events";
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
 import { PlaylistPickerCombobox } from "@/components/features/playlist/playlist-picker-combobox";
+import { SuspendedPlaylistSongs } from "@/components/features/playlist/suspended-playlist-songs";
 
 const DESCRIPTION_AUTOSAVE_DEBOUNCE_MS = 300;
 
@@ -131,16 +133,37 @@ function EventDetailContent({
           <SuspendedEventAttachments eventId={viewEvent.id} organizationId={organizationId} />
         }
         playlistsPicker={
-          <PlaylistPickerCombobox
-            organizationId={organizationId}
-            selectedPlaylists={eventPlaylists}
-            onAdd={(playlistId) =>
-              attachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
-            }
-            onRemove={(playlistId) =>
-              detachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
-            }
-          />
+          <>
+            {eventPlaylists.map((playlist) => (
+              <div key={playlist.id} className="flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-medium">{playlist.title}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t`Remove playlist`}
+                    onClick={() =>
+                      detachPlaylistMutation.mutate({
+                        playlistId: playlist.id,
+                        eventId: viewEvent.id,
+                      })
+                    }
+                  >
+                    <X />
+                  </Button>
+                </div>
+                <SuspendedPlaylistSongs playlistId={playlist.id} organizationId={organizationId} />
+              </div>
+            ))}
+            <PlaylistPickerCombobox
+              organizationId={organizationId}
+              selectedPlaylists={eventPlaylists}
+              onAdd={(playlistId) =>
+                attachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
+              }
+            />
+          </>
         }
       />
       <EventDialog

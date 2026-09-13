@@ -1,66 +1,56 @@
+import { useState } from "react";
 import {
   Combobox,
-  ComboboxChip,
-  ComboboxChips,
-  ComboboxChipsInput,
   ComboboxContent,
   ComboboxEmpty,
+  ComboboxInput,
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
 
 export function EntityPickerCombobox<T>({
-  selected,
   options,
   getId,
   getLabel,
   onQueryChange,
-  onAdd,
-  onRemove,
+  onSelect,
   placeholder,
   emptyLabel,
   promptLabel,
   isSearchReady,
 }: {
-  selected: T[];
   options: T[];
   getId: (item: T) => string;
   getLabel: (item: T) => string;
   onQueryChange: (query: string) => void;
-  onAdd: (item: T) => void;
-  onRemove: (item: T) => void;
+  onSelect: (item: T) => void;
   placeholder: string;
   emptyLabel: string;
   promptLabel: string;
   isSearchReady: boolean;
 }) {
+  const [inputValue, setInputValue] = useState("");
+
   return (
     <Combobox
-      multiple
       items={options}
       filter={null}
-      value={selected}
-      isItemEqualToValue={(a: T, b: T) => getId(a) === getId(b)}
+      value={null}
+      inputValue={inputValue}
       itemToStringLabel={getLabel}
-      onInputValueChange={onQueryChange}
-      onValueChange={(next: T[], details) => {
-        if (details.reason === "chip-remove-press") {
-          const nextIds = new Set(next.map(getId));
-          const removed = selected.find((item) => !nextIds.has(getId(item)));
-          if (removed) onRemove(removed);
-          return;
-        }
-        const selectedIds = new Set(selected.map(getId));
-        const added = next.find((item) => !selectedIds.has(getId(item)));
-        if (added) onAdd(added);
+      onInputValueChange={(value, details) => {
+        if (details.reason === "item-press") return;
+        setInputValue(value);
+        onQueryChange(value);
+      }}
+      onValueChange={(item: T | null) => {
+        if (!item) return;
+        onSelect(item);
+        setInputValue("");
+        onQueryChange("");
       }}
     >
-      <ComboboxChips>
-        {selected.map((item) => (
-          <ComboboxChip key={getId(item)}>{getLabel(item)}</ComboboxChip>
-        ))}
-        <ComboboxChipsInput placeholder={placeholder} />
-      </ComboboxChips>
+      <ComboboxInput placeholder={placeholder} />
       <ComboboxContent>
         <ComboboxList>
           <ComboboxEmpty>{isSearchReady ? emptyLabel : promptLabel}</ComboboxEmpty>

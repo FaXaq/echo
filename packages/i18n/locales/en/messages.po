@@ -204,7 +204,7 @@ msgstr "At least one uppercase letter"
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:184
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 msgid "Back to calendar"
 msgstr "Back to calendar"
 
@@ -216,7 +216,7 @@ msgstr "Back to home"
 #~ msgid "Back to login"
 #~ msgstr "Back to login"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:107
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:129
 msgid "Back to playlists"
 msgstr "Back to playlists"
 
@@ -376,6 +376,7 @@ msgstr "Couldn't load Drive"
 msgid "Couldn't load playlists"
 msgstr "Couldn't load playlists"
 
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:36
 #: apps/web/src/components/features/song/suspended-song-list.tsx:96
 msgid "Couldn't load songs"
 msgstr "Couldn't load songs"
@@ -402,6 +403,7 @@ msgstr "Couldn't upload {0}"
 #: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
+#: apps/web/src/components/ui/song/song-list-item.tsx:26
 msgid "Cover"
 msgstr "Cover"
 
@@ -640,7 +642,7 @@ msgstr "Event"
 msgid "Event actions"
 msgstr "Event actions"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:66
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:68
 msgid "Event deleted"
 msgstr "Event deleted"
 
@@ -648,7 +650,7 @@ msgstr "Event deleted"
 msgid "Event details"
 msgstr "Event details"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:178
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:201
 msgid "Event not found"
 msgstr "Event not found"
 
@@ -702,7 +704,7 @@ msgstr "Failed to resend invitation"
 msgid "Failed to revoke membership"
 msgstr "Failed to revoke membership"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:61
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:63
 msgid "Failed to save description"
 msgstr "Failed to save description"
 
@@ -870,7 +872,7 @@ msgstr "Last modified"
 msgid "Letters, numbers, _ and - only"
 msgstr "Letters, numbers, _ and - only"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:90
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:92
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:77
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
 msgid "Link copied to clipboard"
@@ -1032,11 +1034,11 @@ msgstr "No files yet"
 msgid "No matches"
 msgstr "No matches"
 
-#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:53
+#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:49
 msgid "No matching playlists"
 msgstr "No matching playlists"
 
-#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:55
+#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:51
 msgid "No matching songs"
 msgstr "No matching songs"
 
@@ -1064,6 +1066,10 @@ msgstr "No preview available"
 #: apps/web/src/components/ui/data-table.tsx:54
 msgid "No results."
 msgstr "No results."
+
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:22
+msgid "No songs in this playlist."
+msgstr "No songs in this playlist."
 
 #: apps/web/src/components/features/song/suspended-song-list.tsx:57
 msgid "No songs yet."
@@ -1136,6 +1142,7 @@ msgstr "Organizer"
 #: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
+#: apps/web/src/components/ui/song/song-list-item.tsx:26
 msgid "Original"
 msgstr "Original"
 
@@ -1213,11 +1220,11 @@ msgstr "Play {0} instead?"
 msgid "Playlist actions"
 msgstr "Playlist actions"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:49
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:51
 msgid "Playlist deleted"
 msgstr "Playlist deleted"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:101
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:123
 msgid "Playlist not found"
 msgstr "Playlist not found"
 
@@ -1281,6 +1288,14 @@ msgstr "Red"
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:11
 msgid "Rehearsal"
 msgstr "Rehearsal"
+
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:145
+msgid "Remove playlist"
+msgstr "Remove playlist"
+
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:77
+msgid "Remove song"
+msgstr "Remove song"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:171
 #: apps/web/src/components/features/drive/drive-file-row.tsx:213
@@ -1380,11 +1395,11 @@ msgstr "Search Drive"
 msgid "Search for a place"
 msgstr "Search for a place"
 
-#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:52
+#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:48
 msgid "Search playlists to attach…"
 msgstr "Search playlists to attach…"
 
-#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:54
+#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:50
 msgid "Search songs to add…"
 msgstr "Search songs to add…"
 
@@ -1461,9 +1476,9 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 #~ msgid "Slug is required"
 #~ msgstr "Slug is required"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:178
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:201
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:101
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:123
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:146
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -1506,7 +1521,7 @@ msgstr "Theme"
 msgid "This code has expired, request a new one"
 msgstr "This code has expired, request a new one"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:181
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:204
 msgid "This event doesn't exist or has been deleted."
 msgstr "This event doesn't exist or has been deleted."
 
@@ -1563,7 +1578,7 @@ msgstr "This permanently deletes the folder and any files inside it that aren't 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:104
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:126
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "This playlist doesn't exist or has been deleted."
 
@@ -1639,11 +1654,11 @@ msgstr "Too many attempts, request a new code"
 msgid "Type"
 msgstr "Type"
 
-#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:54
+#: apps/web/src/components/features/playlist/playlist-picker-combobox.tsx:50
 msgid "Type to search playlists"
 msgstr "Type to search playlists"
 
-#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:56
+#: apps/web/src/components/features/playlist/song-picker-combobox.tsx:52
 msgid "Type to search songs"
 msgstr "Type to search songs"
 

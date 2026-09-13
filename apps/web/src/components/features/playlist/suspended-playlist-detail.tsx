@@ -4,10 +4,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
 import { usePostHog } from "posthog-js/react";
+import { X } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlaylistDetail } from "@/components/ui/playlist/playlist-detail";
+import { SongListItem } from "@/components/ui/song/song-list-item";
 import {
   getPlaylistQueryOptions,
   getPlaylistSongsQueryOptions,
@@ -62,16 +64,36 @@ function PlaylistDetailContent({
       playlist={playlist}
       onDelete={handleDelete}
       songsPicker={
-        <SongPickerCombobox
-          organizationId={organizationId}
-          selectedSongs={songs.map((song) => ({
-            id: song.songId,
-            title: song.title,
-            artist: song.artist,
-          }))}
-          onAdd={(songId) => addSongMutation.mutate({ playlistId: playlist.id, songId })}
-          onRemove={(songId) => removeSongMutation.mutate({ playlistId: playlist.id, songId })}
-        />
+        <>
+          {songs.map((song) => (
+            <SongListItem
+              key={song.songId}
+              song={song}
+              trailing={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  aria-label={t`Remove song`}
+                  onClick={() =>
+                    removeSongMutation.mutate({ playlistId: playlist.id, songId: song.songId })
+                  }
+                >
+                  <X />
+                </Button>
+              }
+            />
+          ))}
+          <SongPickerCombobox
+            organizationId={organizationId}
+            selectedSongs={songs.map((song) => ({
+              id: song.songId,
+              title: song.title,
+              artist: song.artist,
+            }))}
+            onAdd={(songId) => addSongMutation.mutate({ playlistId: playlist.id, songId })}
+          />
+        </>
       }
     />
   );
