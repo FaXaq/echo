@@ -266,7 +266,7 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:224
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:85
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:95
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:88
 #: apps/web/src/components/ui/song/song-detail.tsx:121
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
@@ -433,7 +433,7 @@ msgstr "Create project"
 msgid "Create song"
 msgstr "Create song"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:38
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:43
 msgid "Created by"
 msgstr "Created by"
 
@@ -473,8 +473,8 @@ msgstr "Day"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:231
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:61
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:92
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:71
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:102
 #: apps/web/src/components/ui/song/song-detail.tsx:99
 #: apps/web/src/components/ui/song/song-detail.tsx:128
 msgid "Delete"
@@ -491,7 +491,7 @@ msgstr "Delete event?"
 #~ msgid "Delete organization"
 #~ msgstr "Delete organization"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:79
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:89
 msgid "Delete playlist?"
 msgstr "Delete playlist?"
 
@@ -520,7 +520,7 @@ msgid "Desc"
 msgstr "Desc"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:197
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:37
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:42
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:79
 msgid "Description"
 msgstr "Description"
@@ -1209,7 +1209,7 @@ msgstr "Play"
 msgid "Play {0} instead?"
 msgstr "Play {0} instead?"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:54
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:63
 msgid "Playlist actions"
 msgstr "Playlist actions"
 
@@ -1484,7 +1484,7 @@ msgstr "Song details"
 msgid "Song not found"
 msgstr "Song not found"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:71
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:81
 #: apps/web/src/hooks/use-navigation.ts:63
 #: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Songs"
@@ -1599,7 +1599,7 @@ msgstr "This will permanently delete the selected files. This action cannot be u
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "This will permanently delete this event. This action cannot be undone."
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:81
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:91
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "This will permanently delete this playlist. This action cannot be undone."
 
