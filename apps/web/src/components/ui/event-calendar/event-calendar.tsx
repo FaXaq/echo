@@ -158,7 +158,7 @@ export function EventCalendar({
             <h2 className="text-sm font-medium m-0">{titleForView(view, date)}</h2>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-between w-full flex-wrap">
             <Tabs value={view} onValueChange={(next) => setView(next as CalendarView)}>
               <TabsList>
                 {VIEWS.map((v) => (
@@ -170,7 +170,21 @@ export function EventCalendar({
             </Tabs>
             <Button
               type="button"
+              size="icon"
+              className="md:hidden"
+              onClick={() =>
+                setDialogState({
+                  mode: "create",
+                  range: currentHourRange(date),
+                })
+              }
+            >
+              <Plus className="size-3.5" data-icon="inline-start" />
+            </Button>
+            <Button
+              type="button"
               size="sm"
+              className="hidden md:inline-flex"
               onClick={() =>
                 setDialogState({
                   mode: "create",
