@@ -1,18 +1,9 @@
-import { sql } from "kysely";
 import type { SetSongFileRoleCommandPortFactory } from "./set-song-file-role.command.port.js";
 import { songAndFileBelongToOrganization } from "./common.js";
 
 export const setSongFileRoleCommandFactory: SetSongFileRoleCommandPortFactory =
   () => async (db, scope, input) => {
     return db.transaction().execute(async (trx) => {
-      // ponytail: pg_advisory_xact_lock serializes concurrent version bumps for
-      // the same (song, role) so two files can't be assigned the same version
-      // number; scope to per-song-role rather than per-song if this ever
-      // becomes a real contention point.
-      await sql`select pg_advisory_xact_lock(hashtext(${input.songId} || ':' || ${input.role}))`.execute(
-        trx,
-      );
-
       const result = await trx
         .updateTable("song_file")
         .set((eb) => ({
