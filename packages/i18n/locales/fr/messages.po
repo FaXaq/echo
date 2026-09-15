@@ -79,8 +79,8 @@ msgstr "{bulkDeleteCount, plural, one {Supprimer # fichier ?} other {Supprimer #
 #~ msgid "{count, plural, one {# item selected} other {# items selected}}"
 #~ msgstr "{count, plural, one {# élément sélectionné} other {# éléments sélectionnés}}"
 
-#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:46
-#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:54
+#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:43
+#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:51
 msgid "{label} history"
 msgstr "Historique {label}"
 
@@ -365,7 +365,7 @@ msgid "Couldn't download the selected files"
 msgstr "Impossible de télécharger les fichiers sélectionnés"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:227
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:260
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:259
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
@@ -475,7 +475,7 @@ msgstr "Définir comme"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:75
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:202
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:238
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:237
 #: apps/web/src/components/ui/attachment-list.tsx:277
 #: apps/web/src/components/ui/attachment-list.tsx:437
 #: apps/web/src/components/ui/attachment-list.tsx:479
@@ -518,7 +518,7 @@ msgstr "Supprimer la chanson ?"
 
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:86
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:203
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:236
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:235
 msgid "Delete this file?"
 msgstr "Supprimer ce fichier ?"
 
@@ -526,7 +526,7 @@ msgstr "Supprimer ce fichier ?"
 msgid "Delete this folder?"
 msgstr "Supprimer ce dossier ?"
 
-#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:81
+#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:78
 #: apps/web/src/components/ui/attachment-list.tsx:198
 msgid "Demo"
 msgstr "Démo"
@@ -756,7 +756,7 @@ msgstr "Échec de la mise à jour du nom du projet"
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:498
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:209
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:242
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:241
 msgid "File deleted"
 msgstr "Fichier supprimé"
 
@@ -768,7 +768,7 @@ msgstr "Fichiers"
 msgid "Fill in the details below to get started"
 msgstr "Remplissez les informations ci-dessous pour commencer"
 
-#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:82
+#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:79
 #: apps/web/src/components/ui/attachment-list.tsx:198
 msgid "Final"
 msgstr "Final"
@@ -1123,7 +1123,7 @@ msgstr "Non, le garder"
 msgid "None"
 msgstr "Aucun"
 
-#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:35
+#: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:32
 msgid "None yet"
 msgstr "Aucun pour le moment"
 
@@ -1393,7 +1393,7 @@ msgstr "Révoquer l’adhésion"
 msgid "Role"
 msgstr "Rôle"
 
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:227
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:226
 msgid "Role removed"
 msgstr "Rôle supprimé"
 
@@ -1488,11 +1488,11 @@ msgstr "Envoyer le lien"
 msgid "Set a new password"
 msgstr "Définir un nouveau mot de passe"
 
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:218
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:217
 msgid "Set as latest demo"
 msgstr "Défini comme dernière démo"
 
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:218
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:217
 msgid "Set as latest final"
 msgstr "Défini comme dernière version finale"
 
@@ -1656,7 +1656,7 @@ msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses donnée
 #~ msgstr "Cette action supprimera définitivement <0>{selectedVersion}</0> et toutes ses données. Cette action est irréversible."
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:204
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:237
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:236
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
