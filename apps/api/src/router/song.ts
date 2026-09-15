@@ -8,6 +8,9 @@ import {
   deleteSong,
   getSongById,
   searchSongs,
+  setSongAudioVersion,
+  clearSongAudioVersion,
+  listSongAudioVersions,
 } from "@echo/modules/song/app";
 import { songTypeSchema } from "@echo/modules/song/domain";
 import {
@@ -20,8 +23,12 @@ import {
   searchSongsQueryFactory,
 } from "@echo/modules/song/infrastructure";
 import {
-  listAllFilesBySongQueryFactory,
+  findOrphanedFilesForSongQueryFactory,
   deleteFileByIdCommandFactory,
+  findFileByIdQueryFactory,
+  setSongFileRoleCommandFactory,
+  clearSongFileRoleCommandFactory,
+  listSongAudioVersionsQueryFactory,
 } from "@echo/modules/drive/infrastructure";
 
 const songInput = {
@@ -38,9 +45,13 @@ const updateSongLyricsCommand = updateSongLyricsCommandFactory();
 const deleteSongCommand = deleteSongCommandFactory();
 const listSongsQuery = listSongsQueryFactory();
 const getSongByIdQuery = getSongByIdQueryFactory();
-const listAllFilesBySongQuery = listAllFilesBySongQueryFactory();
+const findOrphanedFilesForSongQuery = findOrphanedFilesForSongQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 const searchSongsQuery = searchSongsQueryFactory();
+const findFileByIdQuery = findFileByIdQueryFactory();
+const setSongFileRoleCommand = setSongFileRoleCommandFactory();
+const clearSongFileRoleCommand = clearSongFileRoleCommandFactory();
+const listSongAudioVersionsQuery = listSongAudioVersionsQueryFactory();
 
 export const makeSongRouter = () =>
   router({
@@ -105,7 +116,7 @@ export const makeSongRouter = () =>
           {
             db: ctx.db,
             deleteSongCommand,
-            listFilesBySongQuery: listAllFilesBySongQuery,
+            findOrphanedFilesForSongQuery,
             deleteFileByIdCommand,
             s3Storage: ctx.s3Storage,
           },
@@ -118,4 +129,45 @@ export const makeSongRouter = () =>
           );
         }
       }),
+
+    getAudioVersions: organizationProcedure
+      .input(z.object({ songId: z.string() }))
+      .query(({ ctx, input }) =>
+        listSongAudioVersions(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            s3Storage: ctx.s3Storage,
+            listSongAudioVersionsQuery,
+          },
+          { songId: input.songId, scope: ctx.organizationScope },
+        ),
+      ),
+
+    setAudioVersion: organizationProcedure
+      .input(z.object({ songId: z.string(), fileId: z.string(), role: z.enum(["demo", "final"]) }))
+      .mutation(({ ctx, input }) =>
+        setSongAudioVersion(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFileByIdQuery,
+            setSongFileRoleCommand,
+          },
+          { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
+        ),
+      ),
+
+    clearAudioVersion: organizationProcedure
+      .input(z.object({ songId: z.string(), fileId: z.string() }))
+      .mutation(({ ctx, input }) =>
+        clearSongAudioVersion(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            clearSongFileRoleCommand,
+          },
+          { ...input, scope: ctx.organizationScope },
+        ),
+      ),
   });

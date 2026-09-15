@@ -1,10 +1,17 @@
 import type { Selectable } from "kysely";
-import type { FileKind, FileRecord, FileStatus } from "../domain/index.js";
+import type { FileKind, FileRecord, FileStatus, Role, SongFileRecord } from "../domain/index.js";
 import type { DB } from "@echo/db";
 
 export type FileRow = Selectable<DB["file"]> & {
   uploaded_by_name: string | null;
   event_title?: string | null;
+};
+
+export type SongFileRow = FileRow & {
+  role: string | null;
+  version: number | null;
+  linked_at: Date;
+  linked_by: string;
 };
 
 function toFileKind(value: string): FileKind {
@@ -19,12 +26,16 @@ function toFileStatus(value: string): FileStatus {
   throw new Error(`Unknown file status: ${value}`);
 }
 
+function toRole(value: string | null): Role | null {
+  if (value === null || value === "demo" || value === "final") return value;
+  throw new Error(`Unknown role: ${value}`);
+}
+
 export function toFileRecord(row: FileRow): FileRecord {
   return {
     id: row.id,
     eventId: row.event_id,
     eventTitle: row.event_title ?? null,
-    songId: row.song_id,
     folderId: row.folder_id,
     organizationId: row.organization_id,
     uploadedBy: row.uploaded_by,
@@ -38,5 +49,15 @@ export function toFileRecord(row: FileRow): FileRecord {
     status: toFileStatus(row.status),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  };
+}
+
+export function toSongFileRecord(row: SongFileRow): SongFileRecord {
+  return {
+    ...toFileRecord(row),
+    role: toRole(row.role),
+    version: row.version,
+    linkedAt: row.linked_at,
+    linkedBy: row.linked_by,
   };
 }

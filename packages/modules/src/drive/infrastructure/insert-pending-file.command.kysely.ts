@@ -8,7 +8,6 @@ export const insertPendingFileCommandFactory: InsertPendingFileCommandPortFactor
       .values({
         id: input.id,
         event_id: input.eventId,
-        song_id: input.songId,
         folder_id: input.folderId,
         organization_id: scope.organizationId,
         uploaded_by: input.uploadedBy,

@@ -2,12 +2,15 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 import type { RouterInputs, RouterOutputs } from "@echo/api/router";
 import { apiClient } from "@/services/api-client";
 import { initResourceKey } from "./init-resource-key";
+import { getSongFilesQueryOptions } from "./drive";
 
 const { key, getResourceKey } = initResourceKey("song");
 
 export { key };
 
 export type Song = RouterOutputs["song"]["listSongs"][number];
+export type SongAudioVersions = RouterOutputs["song"]["getAudioVersions"];
+export type SongAudioVersion = SongAudioVersions["demo"][number];
 
 export function getSongsQueryOptions(opts: { organizationId: string }) {
   return queryOptions({
@@ -36,6 +39,79 @@ export function getSongQueryOptions(opts: { songId: string; organizationId: stri
       const [{ params }] = queryKey;
       return apiClient.song.getSongById.query(params, { signal });
     },
+  });
+}
+
+export function getSongAudioVersionsQueryOptions(opts: { songId: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getAudioVersions", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.song.getAudioVersions.query(params, { signal });
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useSetSongAudioVersionMutation({
+  songId,
+  organizationId,
+  onSuccess,
+  onError,
+}: {
+  songId: string;
+  organizationId: string;
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { fileId: string; role: "demo" | "final" }) =>
+      apiClient.song.setAudioVersion.mutate({ songId, organizationId, ...input }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: getSongAudioVersionsQueryOptions({ songId, organizationId }).queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getSongFilesQueryOptions({ songId, organizationId }).queryKey,
+        }),
+      ]);
+      onSuccess?.();
+    },
+    onError,
+  });
+}
+
+export function useClearSongAudioVersionMutation({
+  songId,
+  organizationId,
+  onSuccess,
+  onError,
+}: {
+  songId: string;
+  organizationId: string;
+  onSuccess?: () => void;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { fileId: string }) =>
+      apiClient.song.clearAudioVersion.mutate({ songId, organizationId, ...input }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: getSongAudioVersionsQueryOptions({ songId, organizationId }).queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getSongFilesQueryOptions({ songId, organizationId }).queryKey,
+        }),
+      ]);
+      onSuccess?.();
+    },
+    onError,
   });
 }
 

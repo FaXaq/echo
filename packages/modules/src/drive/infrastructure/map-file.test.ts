@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
-import type { FileRow } from "./map-file.js";
-import { toFileRecord } from "./map-file.js";
+import type { FileRow, SongFileRow } from "./map-file.js";
+import { toFileRecord, toSongFileRecord } from "./map-file.js";
 
 function makeRow(overrides: Partial<FileRow> = {}): FileRow {
   return {
     id: "file-1",
     event_id: null,
-    song_id: null,
     folder_id: null,
     organization_id: "org-1",
     uploaded_by: "user-1",
@@ -24,20 +23,39 @@ function makeRow(overrides: Partial<FileRow> = {}): FileRow {
   };
 }
 
+function makeSongFileRow(overrides: Partial<SongFileRow> = {}): SongFileRow {
+  return {
+    ...makeRow(),
+    role: null,
+    version: null,
+    linked_at: new Date("2026-01-02"),
+    linked_by: "user-1",
+    ...overrides,
+  };
+}
+
 describe("toFileRecord", () => {
-  it("maps a null song_id to a null songId", () => {
-    expect(toFileRecord(makeRow({ song_id: null })).songId).toBeNull();
-  });
-
-  it("maps a set song_id through", () => {
-    expect(toFileRecord(makeRow({ song_id: "song-1" })).songId).toBe("song-1");
-  });
-
   it("throws when the stored kind is unknown", () => {
     expect(() => toFileRecord(makeRow({ kind: "not-a-kind" }))).toThrow();
   });
 
   it("throws when the stored status is unknown", () => {
     expect(() => toFileRecord(makeRow({ status: "not-a-status" }))).toThrow();
+  });
+});
+
+describe("toSongFileRecord", () => {
+  it("maps a null role through", () => {
+    expect(toSongFileRecord(makeSongFileRow({ role: null })).role).toBeNull();
+  });
+
+  it("maps a set role and version through", () => {
+    const record = toSongFileRecord(makeSongFileRow({ role: "demo", version: 2 }));
+    expect(record.role).toBe("demo");
+    expect(record.version).toBe(2);
+  });
+
+  it("throws when the stored role is unknown", () => {
+    expect(() => toSongFileRecord(makeSongFileRow({ role: "not-a-role" }))).toThrow();
   });
 });

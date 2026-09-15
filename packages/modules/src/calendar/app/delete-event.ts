@@ -3,7 +3,7 @@ import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type {
   DeleteFileByIdCommandPort,
-  ListAllFilesByEventQueryPort,
+  FindOrphanedFilesForEventQueryPort,
 } from "@echo/modules/drive/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
@@ -16,7 +16,7 @@ export async function deleteEvent(
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
     deleteCalendarEventCommand: DeleteCalendarEventCommandPort;
-    listFilesByEventQuery: ListAllFilesByEventQueryPort;
+    findOrphanedFilesForEventQuery: FindOrphanedFilesForEventQueryPort;
     deleteFileByIdCommand: DeleteFileByIdCommandPort;
     s3Storage: S3StoragePort;
   },
@@ -28,8 +28,9 @@ export async function deleteEvent(
   });
   if (!success) throw forbidden({ entity: "CalendarEvent", action: "delete" });
 
-  const files = await deps.listFilesByEventQuery(deps.db, input.scope, { eventId: input.id });
-  const orphanedFiles = files.filter((file) => file.songId === null);
+  const orphanedFiles = await deps.findOrphanedFilesForEventQuery(deps.db, input.scope, {
+    eventId: input.id,
+  });
 
   const results = await Promise.allSettled(
     orphanedFiles.map((file) => deps.s3Storage.deleteObject(file.s3Key)),
