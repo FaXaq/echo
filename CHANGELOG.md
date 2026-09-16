@@ -1,3 +1,9 @@
+## [0.10.2](https://github.com/FaXaq/echo/compare/v0.10.1...v0.10.2) (2026-09-16)
+
+### 🐛 Bug Fixes
+
+* **ui:** add loading state when audio file for a song list item ([#39](https://github.com/FaXaq/echo/issues/39)) ([894237f](https://github.com/FaXaq/echo/commit/894237ff9df6b98c16f1c639fdbbf5e05db104e2))
+
 ## [0.10.1](https://github.com/FaXaq/echo/compare/v0.10.0...v0.10.1) (2026-09-16)
 
 ### 🐛 Bug Fixes
