@@ -221,7 +221,7 @@ msgstr "Back to home"
 #~ msgid "Back to login"
 #~ msgstr "Back to login"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:141
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:143
 msgid "Back to playlists"
 msgstr "Back to playlists"
 
@@ -1218,7 +1218,7 @@ msgstr "Password reset failed"
 msgid "Passwords do not match"
 msgstr "Passwords do not match"
 
-#: apps/web/src/components/features/song/suspended-song-play-button.tsx:57
+#: apps/web/src/components/features/song/suspended-song-play-button.tsx:62
 #: apps/web/src/components/ui/audio-player-dock.tsx:93
 msgid "Pause"
 msgstr "Pause"
@@ -1253,7 +1253,7 @@ msgid "Plan & usage"
 msgstr "Plan & usage"
 
 #: apps/web/src/components/features/audio-player/audio-player-dock-container.tsx:51
-#: apps/web/src/components/features/song/suspended-song-play-button.tsx:57
+#: apps/web/src/components/features/song/suspended-song-play-button.tsx:62
 #: apps/web/src/components/ui/audio-player-dock.tsx:93
 msgid "Play"
 msgstr "Play"
@@ -1271,7 +1271,7 @@ msgstr "Playlist actions"
 msgid "Playlist deleted"
 msgstr "Playlist deleted"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:135
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
 msgid "Playlist not found"
 msgstr "Playlist not found"
 
@@ -1344,7 +1344,7 @@ msgstr "Remove playlist"
 msgid "Remove role"
 msgstr "Remove role"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:88
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:89
 msgid "Remove song"
 msgstr "Remove song"
 
@@ -1521,7 +1521,7 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:135
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -1621,7 +1621,7 @@ msgstr "This permanently deletes the folder and any files inside it that aren't 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:138
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:140
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "This playlist doesn't exist or has been deleted."
 
