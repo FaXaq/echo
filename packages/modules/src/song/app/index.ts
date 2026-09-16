@@ -6,3 +6,7 @@ export type { DeleteSongFileFailure } from "./delete-song.js";
 export { getSongById } from "./get-song-by-id.js";
 export { listSongs } from "./list-songs.js";
 export { searchSongs } from "./search-songs.js";
+export { setSongAudioVersion } from "./set-song-audio-version.js";
+export { clearSongAudioVersion } from "./clear-song-audio-version.js";
+export { listSongAudioVersions } from "./list-song-audio-versions.js";
+export type { SongAudioVersion, SongAudioVersions } from "./list-song-audio-versions.js";

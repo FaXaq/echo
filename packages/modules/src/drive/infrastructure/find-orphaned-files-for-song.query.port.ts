@@ -2,14 +2,14 @@ import type { KyselyDB } from "@echo/db";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileRecord } from "../domain/index.js";
 
-export type ListAllFilesBySongQueryInput = {
+export type FindOrphanedFilesForSongQueryInput = {
   songId: string;
 };
 
-export type ListAllFilesBySongQueryPort = (
+export type FindOrphanedFilesForSongQueryPort = (
   db: KyselyDB,
   scope: OrganizationScope,
-  input: ListAllFilesBySongQueryInput,
+  input: FindOrphanedFilesForSongQueryInput,
 ) => Promise<FileRecord[]>;
 
-export type ListAllFilesBySongQueryPortFactory = () => ListAllFilesBySongQueryPort;
+export type FindOrphanedFilesForSongQueryPortFactory = () => FindOrphanedFilesForSongQueryPort;

@@ -4,7 +4,7 @@ import { NotFoundError } from "@echo/errors";
 import type { FileRecord } from "@echo/modules/drive/domain";
 import type {
   DeleteFileByIdCommandPort,
-  ListAllFilesBySongQueryPort,
+  FindOrphanedFilesForSongQueryPort,
 } from "@echo/modules/drive/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
@@ -26,7 +26,6 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
     id: "file-1",
     eventId: null,
     eventTitle: null,
-    songId: "song-1",
     folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
@@ -44,7 +43,9 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
   };
 }
 
-function makeFakeListFilesBySongQuery(files: FileRecord[]): ListAllFilesBySongQueryPort {
+function makeFakeFindOrphanedFilesForSongQuery(
+  files: FileRecord[],
+): FindOrphanedFilesForSongQueryPort {
   return async () => files;
 }
 
@@ -66,7 +67,7 @@ function makeFakeS3Storage(overrides: Partial<S3StoragePort> = {}): S3StoragePor
 }
 
 describe("deleteSong", () => {
-  it("deletes the S3 object and file row for a file attached only to this song", async () => {
+  it("deletes the S3 object and file row for each orphaned file", async () => {
     const deletedKeys: string[] = [];
     const deletedFileIds: string[] = [];
     const deleteSongCommand: DeleteSongCommandPort = async () => true;
@@ -75,7 +76,7 @@ describe("deleteSong", () => {
       {
         db,
         deleteSongCommand,
-        listFilesBySongQuery: makeFakeListFilesBySongQuery([makeFakeFile()]),
+        findOrphanedFilesForSongQuery: makeFakeFindOrphanedFilesForSongQuery([makeFakeFile()]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async (key) => {
@@ -91,7 +92,7 @@ describe("deleteSong", () => {
     expect(failures).toEqual([]);
   });
 
-  it("leaves the S3 object and file row alone when the file is still attached to an event", async () => {
+  it("touches no files when none are orphaned", async () => {
     const deleteObject = vi.fn(async () => {});
     const deleteFileByIdCommand = vi.fn(async () => true);
     const deleteSongCommand: DeleteSongCommandPort = async () => true;
@@ -100,7 +101,7 @@ describe("deleteSong", () => {
       {
         db,
         deleteSongCommand,
-        listFilesBySongQuery: makeFakeListFilesBySongQuery([makeFakeFile({ eventId: "event-1" })]),
+        findOrphanedFilesForSongQuery: makeFakeFindOrphanedFilesForSongQuery([]),
         deleteFileByIdCommand,
         s3Storage: makeFakeS3Storage({ deleteObject }),
       },
@@ -120,7 +121,7 @@ describe("deleteSong", () => {
         {
           db,
           deleteSongCommand,
-          listFilesBySongQuery: makeFakeListFilesBySongQuery([]),
+          findOrphanedFilesForSongQuery: makeFakeFindOrphanedFilesForSongQuery([]),
           deleteFileByIdCommand: makeFakeDeleteFileByIdCommand(),
           s3Storage: makeFakeS3Storage(),
         },
@@ -142,7 +143,7 @@ describe("deleteSong", () => {
       {
         db,
         deleteSongCommand,
-        listFilesBySongQuery: makeFakeListFilesBySongQuery([makeFakeFile()]),
+        findOrphanedFilesForSongQuery: makeFakeFindOrphanedFilesForSongQuery([makeFakeFile()]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async () => {
@@ -167,7 +168,9 @@ describe("deleteSong", () => {
       {
         db,
         deleteSongCommand,
-        listFilesBySongQuery: makeFakeListFilesBySongQuery([makeFakeFile({ status: "pending" })]),
+        findOrphanedFilesForSongQuery: makeFakeFindOrphanedFilesForSongQuery([
+          makeFakeFile({ status: "pending" }),
+        ]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async (key) => {
@@ -183,28 +186,24 @@ describe("deleteSong", () => {
     expect(failures).toEqual([]);
   });
 
-  it("attributes S3 delete failures to the correct file id in a mixed orphaned/attached list", async () => {
+  it("attributes S3 delete failures to the correct file id among several orphaned files", async () => {
     const deletedKeys: string[] = [];
     const deletedFileIds: string[] = [];
     const deleteSongCommand: DeleteSongCommandPort = async () => true;
     const error = new Error("s3 down");
 
-    const orphanedFile = makeFakeFile({ id: "file-orphan", s3Key: "org/org-1/file-orphan/a.mp3" });
-    const attachedFile = makeFakeFile({
-      id: "file-attached",
-      s3Key: "org/org-1/file-attached/b.mp3",
-      eventId: "event-1",
-    });
+    const okFile = makeFakeFile({ id: "file-ok", s3Key: "org/org-1/file-ok/a.mp3" });
+    const failingFile = makeFakeFile({ id: "file-failing", s3Key: "org/org-1/file-failing/b.mp3" });
 
     const failures = await deleteSong(
       {
         db,
         deleteSongCommand,
-        listFilesBySongQuery: makeFakeListFilesBySongQuery([attachedFile, orphanedFile]),
+        findOrphanedFilesForSongQuery: makeFakeFindOrphanedFilesForSongQuery([okFile, failingFile]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async (key) => {
-            if (key === orphanedFile.s3Key) throw error;
+            if (key === failingFile.s3Key) throw error;
             deletedKeys.push(key);
           },
         }),
@@ -212,8 +211,8 @@ describe("deleteSong", () => {
       { id: "song-1", scope },
     );
 
-    expect(deletedKeys).toEqual([]);
-    expect(deletedFileIds).toEqual(["file-orphan"]);
-    expect(failures).toEqual([{ fileId: "file-orphan", error }]);
+    expect(deletedKeys).toEqual([okFile.s3Key]);
+    expect(deletedFileIds.sort()).toEqual(["file-failing", "file-ok"]);
+    expect(failures).toEqual([{ fileId: "file-failing", error }]);
   });
 });

@@ -18,6 +18,10 @@ import * as migration_20260823180517 from "./20260823180517_add-song-id-to-file"
 import * as migration_20260823180703 from "./20260823180703_file-event-id-set-null";
 import * as migration_20260823192913 from "./20260823192913_song-updated-by-set-null";
 import * as migration_20260913192854 from "./20260913192854_playlist";
+import * as migration_20260915205934 from "./20260915205934_song-file";
+import * as migration_20260915205935 from "./20260915205935_backfill-song-file-from-file-song-id";
+import * as migration_20260915205936 from "./20260915205936_drop-song-id-from-file";
+import * as migration_20260915210322 from "./20260915210322_add-version-to-song-file";
 
 type Migration = {
   up: (db: Kysely<any>) => Promise<void>;
@@ -45,4 +49,8 @@ export const migrations: Migrations = {
   "20260823180703_file-event-id-set-null": migration_20260823180703,
   "20260823192913_song-updated-by-set-null": migration_20260823192913,
   "20260913192854_playlist": migration_20260913192854,
+  "20260915205934_song-file": migration_20260915205934,
+  "20260915205935_backfill-song-file-from-file-song-id": migration_20260915205935,
+  "20260915205936_drop-song-id-from-file": migration_20260915205936,
+  "20260915210322_add-version-to-song-file": migration_20260915210322,
 };

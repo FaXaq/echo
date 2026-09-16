@@ -10,9 +10,11 @@ import {
   Pen,
   Square,
   SquareCheck,
+  Tag,
   Trash,
 } from "lucide-react";
-import type { FileKind } from "@echo/modules/drive/domain";
+import type { FileKind, Role } from "@echo/modules/drive/domain";
+import { Badge } from "@/components/ui/badge";
 import { AttachmentCarouselDialog } from "@/components/ui/attachment-carousel-dialog";
 import {
   Attachment,
@@ -31,12 +33,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { EventFile } from "@/services/resources/drive";
 import { formatSize } from "@/lib/file";
 import { match } from "ts-pattern";
 
@@ -47,18 +51,31 @@ export interface PendingAttachment {
   kind?: FileKind | null;
 }
 
-export interface AttachmentListProps {
-  files: EventFile[];
+export interface AttachmentFile {
+  id: string;
+  filename: string;
+  kind: FileKind;
+  mimeType: string;
+  sizeBytes: number;
+  downloadUrl: string;
+  role?: Role | null;
+  version?: number | null;
+}
+
+export interface AttachmentListProps<F extends AttachmentFile> {
+  files: F[];
   pendingFiles?: PendingAttachment[];
   actions?: ReactNode;
   selectedIds?: Set<string>;
-  onSelect?: (file: EventFile) => void;
-  onUnselect?: (file: EventFile) => void;
-  onDeleteSelected?: (files: EventFile[]) => Promise<void>;
-  onDelete?: (file: EventFile) => void;
-  onRename?: (file: EventFile) => void;
-  onDownload?: (file: EventFile) => void;
-  onPlayAudio?: (file: EventFile) => void;
+  onSelect?: (file: F) => void;
+  onUnselect?: (file: F) => void;
+  onDeleteSelected?: (files: F[]) => Promise<void>;
+  onDelete?: (file: F) => void;
+  onRename?: (file: F) => void;
+  onDownload?: (file: F) => void;
+  onPlayAudio?: (file: F) => void;
+  onSetAudioRole?: (file: F, role: Role) => void;
+  onClearAudioRole?: (file: F) => void;
 }
 
 type AttachmentTab = "audio" | "gallery" | "misc";
@@ -72,7 +89,10 @@ function tabForKind(kind: FileKind | null | undefined): AttachmentTab {
   return "misc";
 }
 
-function firstNonEmptyTab(files: EventFile[], pendingFiles: PendingAttachment[]): AttachmentTab {
+function firstNonEmptyTab<F extends AttachmentFile>(
+  files: F[],
+  pendingFiles: PendingAttachment[],
+): AttachmentTab {
   return (
     TAB_ORDER.find(
       (tab) =>
@@ -82,7 +102,7 @@ function firstNonEmptyTab(files: EventFile[], pendingFiles: PendingAttachment[])
   );
 }
 
-function AttachmentListItems({
+function AttachmentListItems<F extends AttachmentFile>({
   files,
   pendingFiles,
   failedIds,
@@ -93,17 +113,21 @@ function AttachmentListItems({
   onRename,
   onDownload,
   onDelete,
+  onSetAudioRole,
+  onClearAudioRole,
 }: {
-  files: EventFile[];
+  files: F[];
   pendingFiles: PendingAttachment[];
   failedIds: Set<string>;
   selectedIds: Set<string>;
-  onToggleSelect: (file: EventFile) => void;
+  onToggleSelect: (file: F) => void;
   onOpen: (id: string) => void;
-  onPlayAudio?: (file: EventFile) => void;
-  onRename?: (file: EventFile) => void;
-  onDownload?: (file: EventFile) => void;
-  onDelete?: (file: EventFile) => void;
+  onPlayAudio?: (file: F) => void;
+  onRename?: (file: F) => void;
+  onDownload?: (file: F) => void;
+  onDelete?: (file: F) => void;
+  onSetAudioRole?: (file: F, role: Role) => void;
+  onClearAudioRole?: (file: F) => void;
 }) {
   const { t } = useLingui();
   const [contextMenuId, setContextMenuId] = useState<string | null>(null);
@@ -167,7 +191,15 @@ function AttachmentListItems({
                   ))}
               </AttachmentMedia>
               <AttachmentContent>
-                <AttachmentTitle>{file.filename}</AttachmentTitle>
+                <AttachmentTitle className="flex items-center gap-1.5">
+                  {file.filename}
+                  {file.role && (
+                    <Badge variant="secondary">
+                      {file.role === "demo" ? t`Demo` : t`Final`}
+                      {file.version != null && ` v${file.version}`}
+                    </Badge>
+                  )}
+                </AttachmentTitle>
                 <AttachmentDescription>
                   {failed ? t`Couldn't load this file` : formatSize(file.sizeBytes)}
                 </AttachmentDescription>
@@ -194,7 +226,9 @@ function AttachmentListItems({
                       {selected ? <SquareCheck /> : <Square />}
                       {selected ? t`Deselect` : t`Select`}
                     </DropdownMenuItem>
-                    {(onRename || onDownload || onDelete) && <DropdownMenuSeparator />}
+                    {(onRename || onDownload || onDelete || onSetAudioRole || onClearAudioRole) && (
+                      <DropdownMenuSeparator />
+                    )}
                     {onRename && (
                       <DropdownMenuItem
                         onClick={() => {
@@ -215,6 +249,28 @@ function AttachmentListItems({
                         {t`Download`}
                       </DropdownMenuItem>
                     )}
+                    {file.kind === "audio" && file.role && onClearAudioRole && (
+                      <DropdownMenuItem onClick={() => onClearAudioRole(file)}>
+                        <Tag />
+                        {t`Remove role`}
+                      </DropdownMenuItem>
+                    )}
+                    {file.kind === "audio" && !file.role && onSetAudioRole && (
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                          <Tag />
+                          {t`Define as`}
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuItem onClick={() => onSetAudioRole(file, "demo")}>
+                            {t`Latest demo`}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => onSetAudioRole(file, "final")}>
+                            {t`Latest final`}
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
+                    )}
                     {onDelete && (
                       <DropdownMenuItem variant="destructive" onClick={() => onDelete(file)}>
                         <Trash />
@@ -232,7 +288,7 @@ function AttachmentListItems({
   );
 }
 
-function AttachmentGalleryGrid({
+function AttachmentGalleryGrid<F extends AttachmentFile>({
   files,
   pendingFiles,
   failedIds,
@@ -243,15 +299,15 @@ function AttachmentGalleryGrid({
   onDownload,
   onDelete,
 }: {
-  files: EventFile[];
+  files: F[];
   pendingFiles: PendingAttachment[];
   failedIds: Set<string>;
   selectedIds: Set<string>;
-  onToggleSelect: (file: EventFile) => void;
+  onToggleSelect: (file: F) => void;
   onOpen: (id: string) => void;
-  onRename?: (file: EventFile) => void;
-  onDownload?: (file: EventFile) => void;
-  onDelete?: (file: EventFile) => void;
+  onRename?: (file: F) => void;
+  onDownload?: (file: F) => void;
+  onDelete?: (file: F) => void;
 }) {
   const { t } = useLingui();
   const [contextMenuId, setContextMenuId] = useState<string | null>(null);
@@ -392,12 +448,12 @@ function AttachmentGalleryGrid({
   );
 }
 
-function AttachmentSelectionMenu({
+function AttachmentSelectionMenu<F extends AttachmentFile>({
   files,
   onDeleteSelected,
 }: {
-  files: EventFile[];
-  onDeleteSelected: (files: EventFile[]) => Promise<void>;
+  files: F[];
+  onDeleteSelected: (files: F[]) => Promise<void>;
 }) {
   const { t } = useLingui();
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -438,7 +494,7 @@ function AttachmentSelectionMenu({
   );
 }
 
-export function AttachmentList({
+export function AttachmentList<F extends AttachmentFile>({
   files,
   pendingFiles = [],
   actions,
@@ -450,7 +506,9 @@ export function AttachmentList({
   onRename,
   onDownload,
   onPlayAudio,
-}: AttachmentListProps) {
+  onSetAudioRole,
+  onClearAudioRole,
+}: AttachmentListProps<F>) {
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
@@ -461,7 +519,7 @@ export function AttachmentList({
   const markFailed = (id: string) =>
     setFailedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
 
-  const onToggleSelect = (file: EventFile) =>
+  const onToggleSelect = (file: F) =>
     selectedIds.has(file.id) ? onUnselect?.(file) : onSelect?.(file);
 
   const previewFile = files.find((file) => file.id === previewId);
@@ -488,6 +546,8 @@ export function AttachmentList({
     onRename,
     onDownload,
     onDelete,
+    onSetAudioRole,
+    onClearAudioRole,
   };
 
   return (

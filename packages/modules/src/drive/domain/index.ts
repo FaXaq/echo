@@ -31,7 +31,6 @@ export type FileRecord = {
   id: string;
   eventId: string | null;
   eventTitle: string | null;
-  songId: string | null;
   folderId: string | null;
   organizationId: string;
   uploadedBy: string;
@@ -45,6 +44,15 @@ export type FileRecord = {
   status: FileStatus;
   createdAt: Date | null;
   updatedAt: Date | null;
+};
+
+export type Role = "demo" | "final";
+
+export type SongFileRecord = FileRecord & {
+  role: Role | null;
+  version: number | null;
+  linkedAt: Date;
+  linkedBy: string;
 };
 
 export type FolderRecord = {

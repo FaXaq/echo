@@ -1,7 +1,7 @@
-import type { ListFilesBySongQueryPortFactory } from "./list-files-by-song.query.port.js";
+import type { ListSongAudioVersionsQueryPortFactory } from "./list-song-audio-versions.query.port.js";
 import { toSongFileRecord } from "./map-file.js";
 
-export const listFilesBySongQueryFactory: ListFilesBySongQueryPortFactory =
+export const listSongAudioVersionsQueryFactory: ListSongAudioVersionsQueryPortFactory =
   () => async (db, scope, input) => {
     const rows = await db
       .selectFrom("song_file")
@@ -18,6 +18,9 @@ export const listFilesBySongQueryFactory: ListFilesBySongQueryPortFactory =
       .where("song_file.song_id", "=", input.songId)
       .where("file.organization_id", "=", scope.organizationId)
       .where("file.status", "=", "uploaded")
+      .where("song_file.role", "is not", null)
+      .orderBy("song_file.role")
+      .orderBy("song_file.version", "desc")
       .execute();
 
     return rows.map((row) => toSongFileRecord({ ...row, uploaded_by_name: row.uploaded_by_name }));

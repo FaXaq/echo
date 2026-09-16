@@ -29,7 +29,6 @@ function makeSongFile(overrides: Partial<driveResource.SongFile> = {}): driveRes
     id: "f1",
     eventId: null,
     eventTitle: null,
-    songId: "song-1",
     folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
@@ -43,6 +42,10 @@ function makeSongFile(overrides: Partial<driveResource.SongFile> = {}): driveRes
     status: "uploaded",
     createdAt: null,
     updatedAt: null,
+    role: null,
+    version: null,
+    linkedAt: "2026-08-02T09:30:00.000Z",
+    linkedBy: "user-1",
     downloadUrl: "https://example.com/demo.mp3",
     ...overrides,
   };

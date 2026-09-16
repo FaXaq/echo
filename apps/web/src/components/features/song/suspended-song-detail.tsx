@@ -22,6 +22,7 @@ import {
 } from "@/services/resources/song";
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedSongAttachments } from "./suspended-song-attachments";
+import { SuspendedSongAudioVersions } from "./suspended-song-audio-versions";
 
 const LYRICS_AUTOSAVE_DEBOUNCE_MS = 300;
 
@@ -111,7 +112,12 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
         onShare={handleShare}
         onEdit={() => setDialogState({ mode: "edit", song })}
         onDelete={handleDelete}
-        attachments={<SuspendedSongAttachments songId={song.id} organizationId={organizationId} />}
+        attachments={
+          <div className="flex flex-col gap-3.5">
+            <SuspendedSongAudioVersions songId={song.id} organizationId={organizationId} />
+            <SuspendedSongAttachments songId={song.id} organizationId={organizationId} />
+          </div>
+        }
       />
       <SongDialog
         state={dialogState}

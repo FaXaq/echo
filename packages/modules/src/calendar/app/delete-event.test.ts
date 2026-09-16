@@ -4,7 +4,7 @@ import { ForbiddenError, NotFoundError } from "@echo/errors";
 import type { FileRecord } from "@echo/modules/drive/domain";
 import type {
   DeleteFileByIdCommandPort,
-  ListAllFilesByEventQueryPort,
+  FindOrphanedFilesForEventQueryPort,
 } from "@echo/modules/drive/infrastructure";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
@@ -26,7 +26,6 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
     id: "file-1",
     eventId: "event-1",
     eventTitle: null,
-    songId: null,
     folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
@@ -44,7 +43,9 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
   };
 }
 
-function makeFakeListFilesByEventQuery(files: FileRecord[]): ListAllFilesByEventQueryPort {
+function makeFakeFindOrphanedFilesForEventQuery(
+  files: FileRecord[],
+): FindOrphanedFilesForEventQueryPort {
   return async () => files;
 }
 
@@ -80,7 +81,7 @@ describe("deleteEvent", () => {
             role: null,
           }),
           deleteCalendarEventCommand,
-          listFilesByEventQuery: makeFakeListFilesByEventQuery([]),
+          findOrphanedFilesForEventQuery: makeFakeFindOrphanedFilesForEventQuery([]),
           deleteFileByIdCommand: makeFakeDeleteFileByIdCommand(),
           s3Storage: makeFakeS3Storage({ deleteObject }),
         },
@@ -91,7 +92,7 @@ describe("deleteEvent", () => {
     expect(deleteObject).not.toHaveBeenCalled();
   });
 
-  it("deletes the S3 object and file row for a file attached only to this event", async () => {
+  it("deletes the S3 object and file row for each orphaned file", async () => {
     const deletedKeys: string[] = [];
     const deletedFileIds: string[] = [];
     const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => true;
@@ -105,7 +106,7 @@ describe("deleteEvent", () => {
           role: null,
         }),
         deleteCalendarEventCommand,
-        listFilesByEventQuery: makeFakeListFilesByEventQuery([makeFakeFile()]),
+        findOrphanedFilesForEventQuery: makeFakeFindOrphanedFilesForEventQuery([makeFakeFile()]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async (key) => {
@@ -118,32 +119,6 @@ describe("deleteEvent", () => {
 
     expect(deletedKeys).toEqual(["org/org-1/file-1/demo.mp3"]);
     expect(deletedFileIds).toEqual(["file-1"]);
-    expect(failures).toEqual([]);
-  });
-
-  it("leaves the S3 object and file row alone when the file is still attached to a song", async () => {
-    const deleteObject = vi.fn(async () => {});
-    const deleteFileByIdCommand = vi.fn(async () => true);
-    const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => true;
-
-    const failures = await deleteEvent(
-      {
-        db,
-        userHasPermissionInOrganization: async () => ({
-          success: true,
-          error: null,
-          role: null,
-        }),
-        deleteCalendarEventCommand,
-        listFilesByEventQuery: makeFakeListFilesByEventQuery([makeFakeFile({ songId: "song-1" })]),
-        deleteFileByIdCommand,
-        s3Storage: makeFakeS3Storage({ deleteObject }),
-      },
-      { id: "event-1", scope },
-    );
-
-    expect(deleteObject).not.toHaveBeenCalled();
-    expect(deleteFileByIdCommand).not.toHaveBeenCalled();
     expect(failures).toEqual([]);
   });
 
@@ -160,7 +135,7 @@ describe("deleteEvent", () => {
             role: null,
           }),
           deleteCalendarEventCommand,
-          listFilesByEventQuery: makeFakeListFilesByEventQuery([]),
+          findOrphanedFilesForEventQuery: makeFakeFindOrphanedFilesForEventQuery([]),
           deleteFileByIdCommand: makeFakeDeleteFileByIdCommand(),
           s3Storage: makeFakeS3Storage(),
         },
@@ -187,7 +162,7 @@ describe("deleteEvent", () => {
           role: null,
         }),
         deleteCalendarEventCommand,
-        listFilesByEventQuery: makeFakeListFilesByEventQuery([makeFakeFile()]),
+        findOrphanedFilesForEventQuery: makeFakeFindOrphanedFilesForEventQuery([makeFakeFile()]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async () => {
@@ -217,7 +192,9 @@ describe("deleteEvent", () => {
           role: null,
         }),
         deleteCalendarEventCommand,
-        listFilesByEventQuery: makeFakeListFilesByEventQuery([makeFakeFile({ status: "pending" })]),
+        findOrphanedFilesForEventQuery: makeFakeFindOrphanedFilesForEventQuery([
+          makeFakeFile({ status: "pending" }),
+        ]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async (key) => {
@@ -233,18 +210,14 @@ describe("deleteEvent", () => {
     expect(failures).toEqual([]);
   });
 
-  it("attributes S3 delete failures to the correct file id in a mixed orphaned/attached list", async () => {
+  it("attributes S3 delete failures to the correct file id among several orphaned files", async () => {
     const deletedKeys: string[] = [];
     const deletedFileIds: string[] = [];
     const deleteCalendarEventCommand: DeleteCalendarEventCommandPort = async () => true;
     const error = new Error("s3 down");
 
-    const orphanedFile = makeFakeFile({ id: "file-orphan", s3Key: "org/org-1/file-orphan/a.mp3" });
-    const attachedFile = makeFakeFile({
-      id: "file-attached",
-      s3Key: "org/org-1/file-attached/b.mp3",
-      songId: "song-1",
-    });
+    const okFile = makeFakeFile({ id: "file-ok", s3Key: "org/org-1/file-ok/a.mp3" });
+    const failingFile = makeFakeFile({ id: "file-failing", s3Key: "org/org-1/file-failing/b.mp3" });
 
     const failures = await deleteEvent(
       {
@@ -255,11 +228,14 @@ describe("deleteEvent", () => {
           role: null,
         }),
         deleteCalendarEventCommand,
-        listFilesByEventQuery: makeFakeListFilesByEventQuery([attachedFile, orphanedFile]),
+        findOrphanedFilesForEventQuery: makeFakeFindOrphanedFilesForEventQuery([
+          okFile,
+          failingFile,
+        ]),
         deleteFileByIdCommand: makeFakeDeleteFileByIdCommand((id) => deletedFileIds.push(id)),
         s3Storage: makeFakeS3Storage({
           deleteObject: async (key) => {
-            if (key === orphanedFile.s3Key) throw error;
+            if (key === failingFile.s3Key) throw error;
             deletedKeys.push(key);
           },
         }),
@@ -267,8 +243,8 @@ describe("deleteEvent", () => {
       { id: "event-1", scope },
     );
 
-    expect(deletedKeys).toEqual([]);
-    expect(deletedFileIds).toEqual(["file-orphan"]);
-    expect(failures).toEqual([{ fileId: "file-orphan", error }]);
+    expect(deletedKeys).toEqual([okFile.s3Key]);
+    expect(deletedFileIds.sort()).toEqual(["file-failing", "file-ok"]);
+    expect(failures).toEqual([{ fileId: "file-failing", error }]);
   });
 });

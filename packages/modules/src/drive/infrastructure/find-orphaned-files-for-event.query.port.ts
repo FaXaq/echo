@@ -2,14 +2,14 @@ import type { KyselyDB } from "@echo/db";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FileRecord } from "../domain/index.js";
 
-export type ListAllFilesByEventQueryInput = {
+export type FindOrphanedFilesForEventQueryInput = {
   eventId: string;
 };
 
-export type ListAllFilesByEventQueryPort = (
+export type FindOrphanedFilesForEventQueryPort = (
   db: KyselyDB,
   scope: OrganizationScope,
-  input: ListAllFilesByEventQueryInput,
+  input: FindOrphanedFilesForEventQueryInput,
 ) => Promise<FileRecord[]>;
 
-export type ListAllFilesByEventQueryPortFactory = () => ListAllFilesByEventQueryPort;
+export type FindOrphanedFilesForEventQueryPortFactory = () => FindOrphanedFilesForEventQueryPort;

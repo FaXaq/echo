@@ -5,3 +5,7 @@ ECH-24 adds a nullable `file.songId` FK alongside the existing `file.eventId`, a
 ## Considered Options
 
 Keeping `cascade` and forbidding dual attachment (a file could only ever belong to one of Event/Song) was rejected — flagged during ECH-24 grilling as an artificial restriction with no product motivation, and one the file/attachment UI would have to actively enforce for no benefit.
+
+## Update
+
+`file.songId` itself is superseded by ADR-0012: a File can now attach to any number of Songs via a `song_file` relation table, not just zero-or-one via FK. The `set null`/orphan-protection reasoning here still holds for `file.eventId`, and generalizes (rather than changes) for the Song side.

@@ -28,6 +28,10 @@ import {
   useRenameFileMutation,
   type SongFile,
 } from "@/services/resources/drive";
+import {
+  useClearSongAudioVersionMutation,
+  useSetSongAudioVersionMutation,
+} from "@/services/resources/song";
 import { useSongUploadingFiles, useSongUploadMutation } from "./song-upload-context";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 
@@ -137,6 +141,16 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const pendingFiles = useSongUploadingFiles(songId);
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
+  const setAudioVersionMutation = useSetSongAudioVersionMutation({
+    songId,
+    organizationId,
+    onError: () => toast.add({ type: "error", title: t`Failed to set audio version` }),
+  });
+  const clearAudioVersionMutation = useClearSongAudioVersionMutation({
+    songId,
+    organizationId,
+    onError: () => toast.add({ type: "error", title: t`Failed to remove role` }),
+  });
   const [renamingFile, setRenamingFile] = useState<SongFile | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -194,6 +208,24 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
             contextLabel: file.eventTitle ?? undefined,
           })
         }
+        onSetAudioRole={(file, role) => {
+          setAudioVersionMutation.mutate(
+            { fileId: file.id, role },
+            {
+              onSuccess: () =>
+                toast.add({
+                  title: role === "demo" ? t`Set as latest demo` : t`Set as latest final`,
+                  type: "success",
+                }),
+            },
+          );
+        }}
+        onClearAudioRole={(file) => {
+          clearAudioVersionMutation.mutate(
+            { fileId: file.id },
+            { onSuccess: () => toast.add({ title: t`Role removed`, type: "success" }) },
+          );
+        }}
       />
 
       <ConfirmDialog

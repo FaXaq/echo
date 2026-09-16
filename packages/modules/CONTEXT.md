@@ -24,7 +24,7 @@ An Organization's storage usage against the limit its Plan allows: usage summed 
 _Avoid_: reading storage usage off `plan.overview` (removed; would drift from the quota endpoint, which is the one invalidated on file upload/delete)
 
 **Drive**:
-The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's or a Song's file list, each of which shows only files attached to that Event/Song regardless of which Folder (if any) they sit in — a file can be attached to an Event, a Song, and organized into a Folder all at the same time. Only the Event and Song attachments protect a file from deletion: a file is deleted only once neither remains, independent of whether it also sits in a Folder. Folder membership is a location, not a protecting attachment — it follows Folder's own (pre-existing, unrelated) deletion behavior.
+The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's or a Song's file list, each of which shows only files attached to that Event/Song regardless of which Folder (if any) they sit in — a file can be attached to an Event, any number of Songs (see Song File Link), and organized into a Folder all at the same time. Only the Event attachment and Song File Links protect a file from deletion: a file is deleted only once none remain, independent of whether it also sits in a Folder. Folder membership is a location, not a protecting attachment — it follows Folder's own (pre-existing, unrelated) deletion behavior.
 _Avoid_: File browser
 
 **Folder**:
@@ -32,8 +32,24 @@ A named container for organizing an Organization's Drive files, nestable arbitra
 _Avoid_: Directory
 
 **Song**:
-An Organization-scoped creative work: title (required), and optional artist, BPM, musical key, markdown lyrics, and `'original' | 'cover'` type. Like an Event, a Song has its own file list (`file.songId`); a file can be attached to an Event and a Song at the same time (see Drive), and deleting a Song only clears that reference — the file itself is deleted only once it is attached to nothing at all.
+An Organization-scoped creative work: title (required), and optional artist, BPM, musical key, markdown lyrics, and `'original' | 'cover'` type. Like an Event, a Song has its own file list, built from its Song File Links; a file can be attached to an Event and any number of Songs at the same time (see Drive), and deleting a Song only removes that Song's link — the file itself is deleted only once every link (Event or Song) is gone.
 _Avoid_: Track
+
+**Song File Link**:
+The relation between a Song and a File (`song`/`file` join row), replacing a single `file.songId` FK now that a File can attach to more than one Song. Carries an optional Role and Version, plus who last changed either and when. Every file on a Song's file list has one, whether it's a plain attachment or also tagged with a Role. A file is attached first (plain, `role: null`) and tagged with a Role afterwards, from its own row's "Define as" menu — there is no upload-time role assignment.
+_Avoid_: uploading directly as demo/final (removed — tagging is a separate action from attaching)
+
+**Role**:
+An optional tag on a Song File Link marking it `"demo"` or `"final"` — one Role per link, not a set. Distinct from `FileKind` (a file's media type — audio/video/image/document): Role is about which take of a Song's audio this is, not what kind of media it is. `null` means a plain attachment, same as any other file. Restricted to `FileKind: "audio"` links. Removable independently of the file itself via "Remove role," which reverts the link to a plain attachment (`role`/`version` both cleared) without deleting the file.
+
+**Version**:
+A per-`(song, role)` incrementing counter stored on the Song File Link, assigned when a Role is set. Re-tagging a link with the Role it already holds is a no-op — the existing version is kept, not bumped — so repeatedly confirming "Latest final" on the same file doesn't burn version numbers.
+
+**Current Demo / Current Final**:
+For a Song, the Song File Link with Role `"demo"` (or `"final"`) holding the highest Version. Marking a different file as, say, the latest demo doesn't remove the Role from earlier demo-tagged links; they stay as that Role's version history, ordered by Version.
+
+**Primary Audio**:
+A Song's single best-guess playable audio for a context with room for only one: its Current Final if one exists, otherwise its Current Demo, otherwise none. Computed, not stored. The Song's own detail page never needs it — every attached file is individually playable there — it exists for surfaces that show a Song as a single row (e.g. a Playlist's song list).
 
 **Playlist**:
 An Organization-scoped ordered list of Songs: title (required) and optional description. A Song can appear at most once in a Playlist (`playlist_song` is a unique `(playlist_id, song_id)` pair) — duplicate entries and manual reordering are deferred to ECH-106, which needs a per-row identity on `playlist_song` and a non-chip UI to support both. Order follows insertion order — there's no manual reordering; to change the order, remove and re-add Songs in the desired sequence. A Playlist may be linked to zero or more Events (e.g. a rehearsal or concert), and an Event may have several Playlists at once — both the Song and Event links are many-to-many, not single attachments. Colloquially, a Playlist linked to an Event is called a "Setlist," but there is no separate Setlist entity or table: it's the same Playlist, just in that role. Playlist CRUD is gated on the `playlist` permission, granted to every role (`member`/`owner`/`admin`) — the same tier as `calendarEvent`/`drive`/`quota`, not the `owner`/`admin`-only tier `plan` uses.

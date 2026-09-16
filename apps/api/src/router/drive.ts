@@ -28,6 +28,7 @@ import {
   findFolderDescendantIdsQueryFactory,
   insertFolderCommandFactory,
   insertPendingFileCommandFactory,
+  linkFileToSongCommandFactory,
   listFilesByEventQueryFactory,
   listFilesByOrganizationQueryFactory,
   listFilesBySongQueryFactory,
@@ -38,6 +39,7 @@ import {
   renameFileByIdCommandFactory,
   renameFolderByIdCommandFactory,
   searchDriveQueryFactory,
+  songExistsInOrganizationQueryFactory,
 } from "@echo/modules/drive/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
@@ -51,6 +53,8 @@ const driveSortFieldSchema = z.enum(["name", "event", "updatedAt", "sizeBytes"])
 const driveSortOrderSchema = z.enum(["asc", "desc"]);
 
 const insertPendingFileCommand = insertPendingFileCommandFactory();
+const linkFileToSongCommand = linkFileToSongCommandFactory();
+const songExistsInOrganizationQuery = songExistsInOrganizationQueryFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
 const findFilesByIdsQuery = findFilesByIdsQueryFactory();
 const markFileUploadedCommand = markFileUploadedCommandFactory();
@@ -94,6 +98,8 @@ export const makeDriveRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             findFolderByIdQuery,
             insertPendingFileCommand,
+            linkFileToSongCommand,
+            songExistsInOrganizationQuery,
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
             resolveOrganizationEntitlements: (db, scope) =>

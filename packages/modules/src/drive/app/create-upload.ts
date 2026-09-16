@@ -12,6 +12,8 @@ import { kindForMimeType } from "../domain/index.js";
 import type {
   FindFolderByIdQueryPort,
   InsertPendingFileCommandPort,
+  LinkFileToSongCommandPort,
+  SongExistsInOrganizationQueryPort,
 } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
@@ -25,6 +27,8 @@ export async function createUpload(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     findFolderByIdQuery: FindFolderByIdQueryPort;
     insertPendingFileCommand: InsertPendingFileCommandPort;
+    linkFileToSongCommand: LinkFileToSongCommandPort;
+    songExistsInOrganizationQuery: SongExistsInOrganizationQueryPort;
     getPersonalOrganizationId: GetPersonalOrganizationIdPort;
     resolveOrganizationEntitlements: ResolveEntitlementsPort;
     getOrganizationStorageUsage: GetOrganizationStorageUsageQueryPort;
@@ -54,6 +58,13 @@ export async function createUpload(
     if (!folder) throw notFound("Folder");
   }
 
+  if (input.songId) {
+    const songExists = await deps.songExistsInOrganizationQuery(deps.db, input.scope, {
+      songId: input.songId,
+    });
+    if (!songExists) throw notFound("Song");
+  }
+
   const { limits } = await deps.resolveOrganizationEntitlements(deps.db, input.scope);
 
   if (input.sizeBytes > limits.maxFileSizeBytes) {
@@ -79,7 +90,6 @@ export async function createUpload(
   await deps.insertPendingFileCommand(deps.db, input.scope, {
     id,
     eventId: input.eventId ?? null,
-    songId: input.songId ?? null,
     folderId: input.folderId ?? null,
     uploadedBy: input.userId,
     kind,
@@ -88,6 +98,14 @@ export async function createUpload(
     originalFilename: input.filename,
     s3Key,
   });
+
+  if (input.songId) {
+    await deps.linkFileToSongCommand(deps.db, input.scope, {
+      songId: input.songId,
+      fileId: id,
+      linkedBy: input.userId,
+    });
+  }
 
   const { url } = await deps.s3Storage.createUploadUrl({
     key: s3Key,

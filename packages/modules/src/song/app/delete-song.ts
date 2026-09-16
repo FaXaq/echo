@@ -2,7 +2,7 @@ import type { KyselyDB } from "@echo/db";
 import { notFound } from "@echo/errors";
 import type {
   DeleteFileByIdCommandPort,
-  ListAllFilesBySongQueryPort,
+  FindOrphanedFilesForSongQueryPort,
 } from "@echo/modules/drive/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
@@ -14,14 +14,15 @@ export async function deleteSong(
   deps: {
     db: KyselyDB;
     deleteSongCommand: DeleteSongCommandPort;
-    listFilesBySongQuery: ListAllFilesBySongQueryPort;
+    findOrphanedFilesForSongQuery: FindOrphanedFilesForSongQueryPort;
     deleteFileByIdCommand: DeleteFileByIdCommandPort;
     s3Storage: S3StoragePort;
   },
   input: { id: string; scope: OrganizationScope },
 ): Promise<DeleteSongFileFailure[]> {
-  const files = await deps.listFilesBySongQuery(deps.db, input.scope, { songId: input.id });
-  const orphanedFiles = files.filter((file) => file.eventId === null);
+  const orphanedFiles = await deps.findOrphanedFilesForSongQuery(deps.db, input.scope, {
+    songId: input.id,
+  });
 
   const results = await Promise.allSettled(
     orphanedFiles.map((file) => deps.s3Storage.deleteObject(file.s3Key)),

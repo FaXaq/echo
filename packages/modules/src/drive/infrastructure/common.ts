@@ -1,6 +1,31 @@
-import type { KyselyDB } from "@echo/db";
-import { sql } from "kysely";
+import type { DB, KyselyDB } from "@echo/db";
+import { sql, type ExpressionBuilder } from "kysely";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
+
+export function songAndFileBelongToOrganization<TB extends keyof DB>(
+  eb: ExpressionBuilder<DB, TB>,
+  db: KyselyDB,
+  scope: OrganizationScope,
+  songId: string,
+  fileId: string,
+) {
+  return eb.and([
+    eb.exists(
+      db
+        .selectFrom("song")
+        .select("song.id")
+        .where("song.id", "=", songId)
+        .where("song.organization_id", "=", scope.organizationId),
+    ),
+    eb.exists(
+      db
+        .selectFrom("file")
+        .select("file.id")
+        .where("file.id", "=", fileId)
+        .where("file.organization_id", "=", scope.organizationId),
+    ),
+  ]);
+}
 
 export const makeSelectFileByIdQuery = (db: KyselyDB) => (scope: OrganizationScope, id: string) => {
   return db

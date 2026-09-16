@@ -35,16 +35,46 @@ export type {
 export { listFilesBySongQueryFactory } from "./list-files-by-song.query.kysely.js";
 
 export type {
-  ListAllFilesByEventQueryInput,
-  ListAllFilesByEventQueryPort,
-} from "./list-all-files-by-event.query.port.js";
-export { listAllFilesByEventQueryFactory } from "./list-all-files-by-event.query.kysely.js";
+  FindOrphanedFilesForEventQueryInput,
+  FindOrphanedFilesForEventQueryPort,
+} from "./find-orphaned-files-for-event.query.port.js";
+export { findOrphanedFilesForEventQueryFactory } from "./find-orphaned-files-for-event.query.kysely.js";
 
 export type {
-  ListAllFilesBySongQueryInput,
-  ListAllFilesBySongQueryPort,
-} from "./list-all-files-by-song.query.port.js";
-export { listAllFilesBySongQueryFactory } from "./list-all-files-by-song.query.kysely.js";
+  FindOrphanedFilesForSongQueryInput,
+  FindOrphanedFilesForSongQueryPort,
+} from "./find-orphaned-files-for-song.query.port.js";
+export { findOrphanedFilesForSongQueryFactory } from "./find-orphaned-files-for-song.query.kysely.js";
+
+export type {
+  ListSongAudioVersionsQueryInput,
+  ListSongAudioVersionsQueryPort,
+} from "./list-song-audio-versions.query.port.js";
+export { listSongAudioVersionsQueryFactory } from "./list-song-audio-versions.query.kysely.js";
+
+export type {
+  LinkFileToSongInput,
+  LinkFileToSongCommandPort,
+} from "./link-file-to-song.command.port.js";
+export { linkFileToSongCommandFactory } from "./link-file-to-song.command.kysely.js";
+
+export type {
+  SongExistsInOrganizationInput,
+  SongExistsInOrganizationQueryPort,
+} from "./song-exists-in-organization.query.port.js";
+export { songExistsInOrganizationQueryFactory } from "./song-exists-in-organization.query.kysely.js";
+
+export type {
+  SetSongFileRoleInput,
+  SetSongFileRoleCommandPort,
+} from "./set-song-file-role.command.port.js";
+export { setSongFileRoleCommandFactory } from "./set-song-file-role.command.kysely.js";
+
+export type {
+  ClearSongFileRoleInput,
+  ClearSongFileRoleCommandPort,
+} from "./clear-song-file-role.command.port.js";
+export { clearSongFileRoleCommandFactory } from "./clear-song-file-role.command.kysely.js";
 
 export type { ListFilesByOrganizationQueryPort } from "./list-files-by-organization.query.port.js";
 export { listFilesByOrganizationQueryFactory } from "./list-files-by-organization.query.kysely.js";
