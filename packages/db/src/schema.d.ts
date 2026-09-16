@@ -9,6 +9,8 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Int8 = ColumnType<string, bigint | number | string>;
+
 export type Timestamp = ColumnType<Date, Date | string>;
 
 export interface Account {
@@ -104,6 +106,36 @@ export interface Organization {
   slug: string;
 }
 
+export interface Playlist {
+  created_at: Generated<Timestamp>;
+  created_by: string;
+  description: string | null;
+  id: string;
+  organization_id: string;
+  title: string;
+  updated_at: Generated<Timestamp | null>;
+  updated_by: string | null;
+}
+
+export interface PlaylistEvent {
+  created_at: Generated<Timestamp>;
+  event_id: string;
+  playlist_id: string;
+}
+
+export interface PlaylistSong {
+  created_at: Generated<Timestamp>;
+  playlist_id: string;
+  song_id: string;
+}
+
+export interface RateLimit {
+  count: number;
+  id: string;
+  key: string;
+  lastRequest: Int8;
+}
+
 export interface Session {
   activeOrganizationId: string | null;
   createdAt: Generated<Timestamp>;
@@ -167,6 +199,10 @@ export interface DB {
   invitation: Invitation;
   member: Member;
   organization: Organization;
+  playlist: Playlist;
+  playlist_event: PlaylistEvent;
+  playlist_song: PlaylistSong;
+  rateLimit: RateLimit;
   session: Session;
   song: Song;
   user: User;

@@ -114,7 +114,7 @@ export function SongDetail({
           <AlertDialogHeader>
             <AlertDialogTitle>{t`Delete song?`}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t`This will permanently delete this song. This action cannot be undone.`}
+              {t`This will permanently delete this song and remove it from any playlists. This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

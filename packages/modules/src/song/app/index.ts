@@ -5,3 +5,4 @@ export { deleteSong } from "./delete-song.js";
 export type { DeleteSongFileFailure } from "./delete-song.js";
 export { getSongById } from "./get-song-by-id.js";
 export { listSongs } from "./list-songs.js";
+export { searchSongs } from "./search-songs.js";

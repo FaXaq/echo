@@ -44,7 +44,7 @@ function BreadcrumbCrumb({
   );
 }
 
-export function DynamicBreadcrumb() {
+export function DynamicBreadcrumb({ projectSlug }: { projectSlug: string }) {
   const matches = useMatches();
 
   const crumbMatches = matches.filter((m) => {
@@ -59,7 +59,7 @@ export function DynamicBreadcrumb() {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink render={<Link to="/" />}>
+          <BreadcrumbLink render={<Link to="/projects/$projectSlug" params={{ projectSlug }} />}>
             <Home className="size-4" />
           </BreadcrumbLink>
         </BreadcrumbItem>

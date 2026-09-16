@@ -18,3 +18,6 @@ export { getSongByIdQueryFactory } from "./get-song-by-id.query.kysely.js";
 
 export type { ListSongsQueryPort } from "./list-songs.query.port.js";
 export { listSongsQueryFactory } from "./list-songs.query.kysely.js";
+
+export type { SearchSongsQueryInput, SearchSongsQueryPort } from "./search-songs.query.port.js";
+export { searchSongsQueryFactory } from "./search-songs.query.kysely.js";

@@ -19,6 +19,16 @@ export function getSongsQueryOptions(opts: { organizationId: string }) {
   });
 }
 
+export function getSongSearchQueryOptions(opts: { organizationId: string; query: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("searchSongs", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.song.searchSongs.query(params, { signal });
+    },
+  });
+}
+
 export function getSongQueryOptions(opts: { songId: string; organizationId: string }) {
   return queryOptions({
     queryKey: getResourceKey("getSongById", opts),
