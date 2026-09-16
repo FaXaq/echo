@@ -1,3 +1,9 @@
+## [0.10.1](https://github.com/FaXaq/echo/compare/v0.10.0...v0.10.1) (2026-09-16)
+
+### 🐛 Bug Fixes
+
+* **ui:** add ways to play songs from their list + quick ui rework ([#38](https://github.com/FaXaq/echo/issues/38)) ([85ded87](https://github.com/FaXaq/echo/commit/85ded872dd78a570b36b01cc1e1b601c798b7c8b))
+
 ## [0.10.0](https://github.com/FaXaq/echo/compare/v0.9.0...v0.10.0) (2026-09-16)
 
 ### ✨ Features
