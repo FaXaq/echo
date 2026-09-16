@@ -33,13 +33,15 @@ function SongPlayButtonContent({
       </div>
     );
 
-  const isPlaying = activeFile?.songId === songId && status === "playing";
+  const isActive = activeFile?.songId === songId;
+  const isPlaying = isActive && status === "playing";
+  const isLoading = isActive && status === "loading";
 
   const handleClick = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
-    if (activeFile?.songId === songId) {
+    if (isActive) {
       toggle();
       return;
     }
@@ -59,9 +61,10 @@ function SongPlayButtonContent({
       variant="ghost"
       size="icon-sm"
       onClick={handleClick}
+      disabled={isLoading}
       aria-label={isPlaying ? t`Pause` : t`Play`}
     >
-      {isPlaying ? <Pause /> : <Play />}
+      {isLoading ? <Loader2 className="animate-spin" /> : isPlaying ? <Pause /> : <Play />}
     </Button>
   );
 }
