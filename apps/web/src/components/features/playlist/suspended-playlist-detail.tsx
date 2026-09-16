@@ -72,6 +72,7 @@ function PlaylistDetailContent({
               key={song.songId}
               song={{ ...song, id: song.songId }}
               projectSlug={projectSlug}
+              organizationId={organizationId}
               trailing={
                 <Button
                   type="button"

@@ -29,7 +29,7 @@ msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# élément} other {# éléments}}"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/ui/attachment-list.tsx:488
+#: apps/web/src/components/ui/attachment-list.tsx:487
 msgid "{0, plural, one {Delete # file?} other {Delete # files?}}"
 msgstr "{0, plural, one {Supprimer # fichier ?} other {Supprimer # fichiers ?}}"
 
@@ -111,12 +111,12 @@ msgstr "Actions"
 #. placeholder {0}: folder.name
 #: apps/web/src/components/features/drive/drive-file-row.tsx:147
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:169
-#: apps/web/src/components/ui/attachment-list.tsx:218
-#: apps/web/src/components/ui/attachment-list.tsx:402
+#: apps/web/src/components/ui/attachment-list.tsx:217
+#: apps/web/src/components/ui/attachment-list.tsx:401
 msgid "Actions for {0}"
 msgstr "Actions pour {0}"
 
-#: apps/web/src/components/ui/attachment-list.tsx:470
+#: apps/web/src/components/ui/attachment-list.tsx:469
 msgid "Actions for selected files"
 msgstr "Actions pour les fichiers sélectionnés"
 
@@ -205,11 +205,11 @@ msgid "At least one uppercase letter"
 msgstr "Au moins une lettre majuscule"
 
 #. placeholder {0}: audioFiles.length + audioPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:559
+#: apps/web/src/components/ui/attachment-list.tsx:558
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:209
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
@@ -221,7 +221,7 @@ msgstr "Retour à l'accueil"
 #~ msgid "Back to login"
 #~ msgstr "Retour à la connexion"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:129
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:134
 msgid "Back to playlists"
 msgstr "Retour aux playlists"
 
@@ -381,13 +381,13 @@ msgstr "Impossible de charger le Drive"
 msgid "Couldn't load playlists"
 msgstr "Impossible de charger les playlists"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:36
-#: apps/web/src/components/features/song/suspended-song-list.tsx:96
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:43
+#: apps/web/src/components/features/song/suspended-song-list.tsx:80
 msgid "Couldn't load songs"
 msgstr "Impossible de charger les chansons"
 
-#: apps/web/src/components/ui/attachment-list.tsx:204
-#: apps/web/src/components/ui/attachment-list.tsx:388
+#: apps/web/src/components/ui/attachment-list.tsx:203
+#: apps/web/src/components/ui/attachment-list.tsx:387
 #: apps/web/src/components/ui/file-preview-dialog.tsx:44
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
@@ -405,10 +405,9 @@ msgstr "Impossible de renommer le dossier"
 msgid "Couldn't upload {0}"
 msgstr "Impossible d'importer {0}"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
-#: apps/web/src/components/ui/song/song-list-item.tsx:26
+#: apps/web/src/components/ui/song/song-list-item.tsx:98
 msgid "Cover"
 msgstr "Reprise"
 
@@ -460,7 +459,7 @@ msgstr "Date"
 msgid "Day"
 msgstr "Jour"
 
-#: apps/web/src/components/ui/attachment-list.tsx:262
+#: apps/web/src/components/ui/attachment-list.tsx:261
 msgid "Define as"
 msgstr "Définir comme"
 
@@ -476,10 +475,10 @@ msgstr "Définir comme"
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:202
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:237
-#: apps/web/src/components/ui/attachment-list.tsx:277
-#: apps/web/src/components/ui/attachment-list.tsx:437
-#: apps/web/src/components/ui/attachment-list.tsx:479
-#: apps/web/src/components/ui/attachment-list.tsx:490
+#: apps/web/src/components/ui/attachment-list.tsx:276
+#: apps/web/src/components/ui/attachment-list.tsx:436
+#: apps/web/src/components/ui/attachment-list.tsx:478
+#: apps/web/src/components/ui/attachment-list.tsx:489
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:186
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:231
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
@@ -527,7 +526,7 @@ msgid "Delete this folder?"
 msgstr "Supprimer ce dossier ?"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:78
-#: apps/web/src/components/ui/attachment-list.tsx:198
+#: apps/web/src/components/ui/attachment-list.tsx:197
 msgid "Demo"
 msgstr "Démo"
 
@@ -541,8 +540,8 @@ msgstr "Décroissant"
 msgid "Description"
 msgstr "Description"
 
-#: apps/web/src/components/ui/attachment-list.tsx:227
-#: apps/web/src/components/ui/attachment-list.tsx:411
+#: apps/web/src/components/ui/attachment-list.tsx:226
+#: apps/web/src/components/ui/attachment-list.tsx:410
 msgid "Deselect"
 msgstr "Désélectionner"
 
@@ -562,8 +561,8 @@ msgstr "Pas encore de compte ? <0>S’inscrire</0>"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:215
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:52
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:59
-#: apps/web/src/components/ui/attachment-list.tsx:249
-#: apps/web/src/components/ui/attachment-list.tsx:431
+#: apps/web/src/components/ui/attachment-list.tsx:248
+#: apps/web/src/components/ui/attachment-list.tsx:430
 #: apps/web/src/components/ui/file-preview-dialog.tsx:58
 msgid "Download"
 msgstr "Télécharger"
@@ -576,7 +575,7 @@ msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 msgid "Drive"
 msgstr "Drive"
 
-#: apps/web/src/routes/projects/$projectSlug/calendar/$eventId.tsx:77
+#: apps/web/src/routes/projects/$projectSlug/calendar/$eventId.tsx:78
 #: apps/web/src/routes/projects/$projectSlug/songs/$songId.tsx:74
 msgid "Drop files to upload"
 msgstr "Déposez des fichiers pour les envoyer"
@@ -656,7 +655,7 @@ msgstr "Événement"
 msgid "Event actions"
 msgstr "Actions de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:68
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:70
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
@@ -664,7 +663,7 @@ msgstr "Événement supprimé"
 msgid "Event details"
 msgstr "Détails de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:201
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:203
 msgid "Event not found"
 msgstr "Événement introuvable"
 
@@ -706,6 +705,10 @@ msgstr "Échec de la suppression du projet"
 msgid "Failed to invite member"
 msgstr "Échec de l'invitation"
 
+#: apps/web/src/components/ui/song/song-list-item.tsx:66
+msgid "Failed to load audio"
+msgstr "Échec du chargement de l'audio"
+
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:152
 msgid "Failed to remove role"
 msgstr "Échec de la suppression du rôle"
@@ -722,7 +725,7 @@ msgstr "Échec du renvoi de l'invitation"
 msgid "Failed to revoke membership"
 msgstr "Échec de la suppression du membre"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:63
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:65
 msgid "Failed to save description"
 msgstr "Échec de l'enregistrement de la description"
 
@@ -769,7 +772,7 @@ msgid "Fill in the details below to get started"
 msgstr "Remplissez les informations ci-dessous pour commencer"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:79
-#: apps/web/src/components/ui/attachment-list.tsx:198
+#: apps/web/src/components/ui/attachment-list.tsx:197
 msgid "Final"
 msgstr "Final"
 
@@ -800,7 +803,7 @@ msgid "Full name is required"
 msgstr "Le nom complet est requis"
 
 #. placeholder {0}: galleryFiles.length + galleryPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:562
+#: apps/web/src/components/ui/attachment-list.tsx:561
 msgid "Gallery ({0})"
 msgstr "Galerie ({0})"
 
@@ -895,11 +898,11 @@ msgstr "Langue"
 msgid "Last modified"
 msgstr "Dernière modification"
 
-#: apps/web/src/components/ui/attachment-list.tsx:266
+#: apps/web/src/components/ui/attachment-list.tsx:265
 msgid "Latest demo"
 msgstr "Dernière démo"
 
-#: apps/web/src/components/ui/attachment-list.tsx:269
+#: apps/web/src/components/ui/attachment-list.tsx:268
 msgid "Latest final"
 msgstr "Dernière version finale"
 
@@ -907,7 +910,7 @@ msgstr "Dernière version finale"
 msgid "Letters, numbers, _ and - only"
 msgstr "Lettres, chiffres, _ et - uniquement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:92
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:94
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:78
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
 msgid "Link copied to clipboard"
@@ -988,7 +991,7 @@ msgid "Members"
 msgstr "Membres"
 
 #. placeholder {0}: miscFiles.length + miscPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:565
+#: apps/web/src/components/ui/attachment-list.tsx:564
 msgid "Misc ({0})"
 msgstr "Divers ({0})"
 
@@ -1037,7 +1040,7 @@ msgstr "Nouvelle playlist"
 msgid "New project"
 msgstr "Nouveau projet"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:52
+#: apps/web/src/components/features/song/suspended-song-list.tsx:51
 #: apps/web/src/components/ui/song/song-dialog.tsx:103
 #: apps/web/src/components/ui/song/song-dialog.tsx:105
 msgid "New song"
@@ -1047,12 +1050,16 @@ msgstr "Nouvelle chanson"
 msgid "Next"
 msgstr "Suivant"
 
+#: apps/web/src/components/ui/song/song-list-item.tsx:55
+msgid "No audio for this song"
+msgstr "Aucun audio pour ce morceau"
+
 #: apps/web/src/components/ui/event-calendar/agenda-view.tsx:30
 msgid "No events scheduled"
 msgstr "Aucun événement prévu"
 
-#: apps/web/src/components/ui/attachment-list.tsx:138
-#: apps/web/src/components/ui/attachment-list.tsx:318
+#: apps/web/src/components/ui/attachment-list.tsx:137
+#: apps/web/src/components/ui/attachment-list.tsx:317
 msgid "No files here yet."
 msgstr "Aucun fichier ici pour le moment."
 
@@ -1102,11 +1109,11 @@ msgstr "Aucun aperçu disponible"
 msgid "No results."
 msgstr "Aucun résultat."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:22
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:24
 msgid "No songs in this playlist."
 msgstr "Aucune chanson dans cette playlist."
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:57
+#: apps/web/src/components/features/song/suspended-song-list.tsx:56
 msgid "No songs yet."
 msgstr "Aucune chanson pour le moment."
 
@@ -1136,8 +1143,8 @@ msgid "Only a selection of files can be downloaded together"
 msgstr "Seule une sélection de fichiers peut être téléchargée en groupe"
 
 #. placeholder {0}: file.filename
-#: apps/web/src/components/ui/attachment-list.tsx:174
-#: apps/web/src/components/ui/attachment-list.tsx:354
+#: apps/web/src/components/ui/attachment-list.tsx:173
+#: apps/web/src/components/ui/attachment-list.tsx:353
 msgid "Open {0}"
 msgstr "Ouvrir {0}"
 
@@ -1178,10 +1185,9 @@ msgstr "Orange"
 msgid "Organizer"
 msgstr "Organisateur"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:74
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
-#: apps/web/src/components/ui/song/song-list-item.tsx:26
+#: apps/web/src/components/ui/song/song-list-item.tsx:98
 msgid "Original"
 msgstr "Original"
 
@@ -1213,6 +1219,7 @@ msgid "Passwords do not match"
 msgstr "Les mots de passe ne correspondent pas"
 
 #: apps/web/src/components/ui/audio-player-dock.tsx:93
+#: apps/web/src/components/ui/song/song-list-item.tsx:81
 msgid "Pause"
 msgstr "Pause"
 
@@ -1247,6 +1254,7 @@ msgstr "Forfait et utilisation"
 
 #: apps/web/src/components/features/audio-player/audio-player-dock-container.tsx:51
 #: apps/web/src/components/ui/audio-player-dock.tsx:93
+#: apps/web/src/components/ui/song/song-list-item.tsx:81
 msgid "Play"
 msgstr "Lire"
 
@@ -1259,11 +1267,11 @@ msgstr "Lire {0} à la place ?"
 msgid "Playlist actions"
 msgstr "Actions de la playlist"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:51
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:53
 msgid "Playlist deleted"
 msgstr "Playlist supprimée"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:123
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:128
 msgid "Playlist not found"
 msgstr "Playlist introuvable"
 
@@ -1328,15 +1336,15 @@ msgstr "Rouge"
 msgid "Rehearsal"
 msgstr "Répétition"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:145
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:147
 msgid "Remove playlist"
 msgstr "Retirer la playlist"
 
-#: apps/web/src/components/ui/attachment-list.tsx:255
+#: apps/web/src/components/ui/attachment-list.tsx:254
 msgid "Remove role"
 msgstr "Supprimer le rôle"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:77
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:81
 msgid "Remove song"
 msgstr "Retirer la chanson"
 
@@ -1344,8 +1352,8 @@ msgstr "Retirer la chanson"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:213
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:184
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
-#: apps/web/src/components/ui/attachment-list.tsx:239
-#: apps/web/src/components/ui/attachment-list.tsx:421
+#: apps/web/src/components/ui/attachment-list.tsx:238
+#: apps/web/src/components/ui/attachment-list.tsx:420
 msgid "Rename"
 msgstr "Renommer"
 
@@ -1414,7 +1422,7 @@ msgstr "Enregistrer"
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: apps/web/src/components/ui/markdown-editor.tsx:53
+#: apps/web/src/components/ui/markdown-editor.tsx:56
 msgid "Saved"
 msgstr "Enregistré"
 
@@ -1422,7 +1430,7 @@ msgstr "Enregistré"
 msgid "Saving..."
 msgstr "Enregistrement..."
 
-#: apps/web/src/components/ui/markdown-editor.tsx:53
+#: apps/web/src/components/ui/markdown-editor.tsx:56
 msgid "Saving…"
 msgstr "Enregistrement…"
 
@@ -1447,8 +1455,8 @@ msgstr "Rechercher des chansons à ajouter…"
 msgid "Searching…"
 msgstr "Recherche…"
 
-#: apps/web/src/components/ui/attachment-list.tsx:227
-#: apps/web/src/components/ui/attachment-list.tsx:411
+#: apps/web/src/components/ui/attachment-list.tsx:226
+#: apps/web/src/components/ui/attachment-list.tsx:410
 msgid "Select"
 msgstr "Sélectionner"
 
@@ -1511,9 +1519,9 @@ msgstr "Taille"
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:201
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:203
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:123
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:128
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
@@ -1556,7 +1564,7 @@ msgstr "Thème"
 msgid "This code has expired, request a new one"
 msgstr "Ce code a expiré, demandez-en un nouveau"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:204
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:206
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
@@ -1613,7 +1621,7 @@ msgstr "Cette action supprime définitivement le dossier ainsi que les fichiers 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "Cette action supprime définitivement les fichiers sélectionnés, y compris de tout événement ou morceau auquel ils sont rattachés. Cette action est irréversible."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:126
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:131
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "Cette playlist n'existe pas ou a été supprimée."
 
@@ -1640,7 +1648,7 @@ msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses donnée
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
-#: apps/web/src/components/ui/attachment-list.tsx:489
+#: apps/web/src/components/ui/attachment-list.tsx:488
 msgid "This will permanently delete the selected files. This action cannot be undone."
 msgstr "Cette action supprimera définitivement les fichiers sélectionnés. Cette action est irréversible."
 
@@ -1726,8 +1734,8 @@ msgstr "Importer des fichiers"
 msgid "Uploaded by"
 msgstr "Ajouté par"
 
-#: apps/web/src/components/ui/attachment-list.tsx:153
-#: apps/web/src/components/ui/attachment-list.tsx:333
+#: apps/web/src/components/ui/attachment-list.tsx:152
+#: apps/web/src/components/ui/attachment-list.tsx:332
 msgid "Uploading…"
 msgstr "Importation…"
 

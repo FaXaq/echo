@@ -31,6 +31,7 @@ function PlaylistSongsContent({
           key={song.songId}
           song={{ ...song, id: song.songId }}
           projectSlug={projectSlug}
+          organizationId={organizationId}
         />
       ))}
     </div>

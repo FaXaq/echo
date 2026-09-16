@@ -1,6 +1,5 @@
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Link } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 import { useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -59,7 +58,7 @@ function SongListContent({ organizationId, projectSlug, onSongCreated }: Suspend
         <ul className="flex flex-col m-0 p-0">
           {songs.map((song) => (
             <li key={song.id} className="m-0 p-0 list-none">
-              <SongListItem song={song} projectSlug={projectSlug} />
+              <SongListItem song={song} projectSlug={projectSlug} organizationId={organizationId} />
             </li>
           ))}
         </ul>
