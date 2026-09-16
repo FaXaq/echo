@@ -30,8 +30,8 @@ export function EntityDetailLayout({
 }: EntityDetailLayoutProps) {
   return (
     <div data-slot="entity-detail" className={cn("flex flex-wrap-reverse gap-9 h-full", className)}>
-      <ScrollArea className="h-full min-w-70 flex-[999_1_400px] pr-4">
-        <div className="flex flex-col gap-5">
+      <ScrollArea className="h-full min-w-70 flex-[999_1_400px]">
+        <div className="flex flex-col gap-5 pr-4">
           <div className="flex flex-row gap-2.5 w-full">
             <div className="self-center">{icon}</div>
             <h1 className="m-0 text-[clamp(22px,4vw,26px)] leading-tight font-semibold tracking-tight">
