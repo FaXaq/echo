@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Loader2, Pause, Play } from "lucide-react";
+import { Loader2, Pause, Play, SquircleDashed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { getSongAudioVersionsQueryOptions } from "@/services/resources/song";
@@ -26,7 +26,12 @@ function SongPlayButtonContent({
   const toggle = useAudioPlayerStore((s) => s.toggle);
 
   const file = versions.final[0] ?? versions.demo[0];
-  if (!file) return <div className="size-7" />;
+  if (!file)
+    return (
+      <div className="size-7 flex justify-center items-center opacity-40">
+        <SquircleDashed size={16} />
+      </div>
+    );
 
   const isPlaying = activeFile?.songId === songId && status === "playing";
 

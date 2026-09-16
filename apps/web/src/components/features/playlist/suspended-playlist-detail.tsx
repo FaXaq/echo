@@ -68,34 +68,36 @@ function PlaylistDetailContent({
       onDelete={handleDelete}
       songsPicker={
         <>
-          {songs.map((song) => (
-            <SongListItem
-              key={song.songId}
-              song={{ ...song, id: song.songId }}
-              projectSlug={projectSlug}
-              leading={
-                <SuspendedSongPlayButton
-                  songId={song.songId}
-                  organizationId={organizationId}
-                  title={song.title}
-                />
-              }
-              trailing={
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  aria-label={t`Remove song`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    removeSongMutation.mutate({ playlistId: playlist.id, songId: song.songId });
-                  }}
-                >
-                  <X />
-                </Button>
-              }
-            />
-          ))}
+          <div className="flex flex-col gap-0">
+            {songs.map((song) => (
+              <SongListItem
+                key={song.songId}
+                song={{ ...song, id: song.songId }}
+                projectSlug={projectSlug}
+                leading={
+                  <SuspendedSongPlayButton
+                    songId={song.songId}
+                    organizationId={organizationId}
+                    title={song.title}
+                  />
+                }
+                trailing={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    aria-label={t`Remove song`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      removeSongMutation.mutate({ playlistId: playlist.id, songId: song.songId });
+                    }}
+                  >
+                    <X />
+                  </Button>
+                }
+              />
+            ))}
+          </div>
           <SongPickerCombobox
             organizationId={organizationId}
             selectedSongs={songs.map((song) => ({
