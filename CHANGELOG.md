@@ -1,3 +1,9 @@
+## [0.9.0](https://github.com/FaXaq/echo/compare/v0.8.5...v0.9.0) (2026-09-16)
+
+### ✨ Features
+
+* **setlist:** add basic setlist behavior ([#36](https://github.com/FaXaq/echo/issues/36)) ([e901c81](https://github.com/FaXaq/echo/commit/e901c816a3f8480b133eaab4025c6d095b0a63f1))
+
 ## [0.8.5](https://github.com/FaXaq/echo/compare/v0.8.4...v0.8.5) (2026-09-09)
 
 ### 🐛 Bug Fixes

@@ -1367,10 +1367,6 @@ msgstr "Renvoyer"
 msgid "Resend code"
 msgstr "Renvoyer le code"
 
-#: apps/web/src/components/login-form.tsx:72
-#~ msgid "Resend verification email"
-#~ msgstr "Renvoyer l'e-mail de vérification"
-
 #: apps/web/src/components/reset-password-form.tsx:103
 #: apps/web/src/lib/dynamic-messages.ts:56
 msgid "Reset password"
@@ -1429,10 +1425,6 @@ msgstr "Enregistrement..."
 #: apps/web/src/components/ui/markdown-editor.tsx:53
 msgid "Saving…"
 msgstr "Enregistrement…"
-
-#: apps/web/src/routes/projects/$projectSlug/calendar/index.tsx:78
-#~ msgid "Schedule"
-#~ msgstr "Planning"
 
 #: apps/web/src/components/features/drive/drive-search-combobox.tsx:84
 msgid "Search Drive"
@@ -1496,10 +1488,6 @@ msgstr "Défini comme dernière démo"
 msgid "Set as latest final"
 msgstr "Défini comme dernière version finale"
 
-#: apps/web/src/hooks/use-navigation.ts:63
-#~ msgid "Setlist"
-#~ msgstr "Setlist"
-
 #: apps/web/src/hooks/use-navigation.ts:80
 msgid "Settings"
 msgstr "Paramètres"
@@ -1522,14 +1510,6 @@ msgstr "Taille"
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:127
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
-
-#: apps/web/src/routes/organizations/new.tsx:96
-#~ msgid "Slug"
-#~ msgstr "Slug"
-
-#: apps/web/src/lib/dynamic-messages.ts:26
-#~ msgid "Slug is required"
-#~ msgstr "Le slug est requis"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:201
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227

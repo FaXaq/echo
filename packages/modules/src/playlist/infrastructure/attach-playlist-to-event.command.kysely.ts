@@ -1,17 +1,35 @@
-import { sql } from "kysely";
 import type { AttachPlaylistToEventCommandPortFactory } from "./attach-playlist-to-event.command.port.js";
 
 export const attachPlaylistToEventCommandFactory: AttachPlaylistToEventCommandPortFactory =
   () => async (db, scope, input) => {
-    await sql`
-      INSERT INTO playlist_event (playlist_id, event_id)
-      SELECT ${input.playlistId}, ${input.eventId}
-      WHERE EXISTS (
-        SELECT 1 FROM playlist WHERE id = ${input.playlistId} AND organization_id = ${scope.organizationId}
+    await db
+      .insertInto("playlist_event")
+      .columns(["playlist_id", "event_id"])
+      .expression(
+        db
+          .selectNoFrom((eb) => [
+            eb.val(input.playlistId).as("playlist_id"),
+            eb.val(input.eventId).as("event_id"),
+          ])
+          .where((eb) =>
+            eb.exists(
+              db
+                .selectFrom("playlist")
+                .select("id")
+                .where("id", "=", input.playlistId)
+                .where("organization_id", "=", scope.organizationId),
+            ),
+          )
+          .where((eb) =>
+            eb.exists(
+              db
+                .selectFrom("calendar_event")
+                .select("id")
+                .where("id", "=", input.eventId)
+                .where("organization_id", "=", scope.organizationId),
+            ),
+          ),
       )
-      AND EXISTS (
-        SELECT 1 FROM calendar_event WHERE id = ${input.eventId} AND organization_id = ${scope.organizationId}
-      )
-      ON CONFLICT (playlist_id, event_id) DO NOTHING
-    `.execute(db);
+      .onConflict((oc) => oc.columns(["playlist_id", "event_id"]).doNothing())
+      .execute();
   };

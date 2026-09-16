@@ -1,17 +1,35 @@
-import { sql } from "kysely";
 import type { AddSongToPlaylistCommandPortFactory } from "./add-song-to-playlist.command.port.js";
 
 export const addSongToPlaylistCommandFactory: AddSongToPlaylistCommandPortFactory =
   () => async (db, scope, input) => {
-    await sql`
-      INSERT INTO playlist_song (playlist_id, song_id)
-      SELECT ${input.playlistId}, ${input.songId}
-      WHERE EXISTS (
-        SELECT 1 FROM playlist WHERE id = ${input.playlistId} AND organization_id = ${scope.organizationId}
+    await db
+      .insertInto("playlist_song")
+      .columns(["playlist_id", "song_id"])
+      .expression(
+        db
+          .selectNoFrom((eb) => [
+            eb.val(input.playlistId).as("playlist_id"),
+            eb.val(input.songId).as("song_id"),
+          ])
+          .where((eb) =>
+            eb.exists(
+              db
+                .selectFrom("playlist")
+                .select("id")
+                .where("id", "=", input.playlistId)
+                .where("organization_id", "=", scope.organizationId),
+            ),
+          )
+          .where((eb) =>
+            eb.exists(
+              db
+                .selectFrom("song")
+                .select("id")
+                .where("id", "=", input.songId)
+                .where("organization_id", "=", scope.organizationId),
+            ),
+          ),
       )
-      AND EXISTS (
-        SELECT 1 FROM song WHERE id = ${input.songId} AND organization_id = ${scope.organizationId}
-      )
-      ON CONFLICT (playlist_id, song_id) DO NOTHING
-    `.execute(db);
+      .onConflict((oc) => oc.columns(["playlist_id", "song_id"]).doNothing())
+      .execute();
   };
