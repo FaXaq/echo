@@ -5,6 +5,7 @@ import { useLingui } from "@lingui/react/macro";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getPlaylistSongsQueryOptions } from "@/services/resources/playlist";
+import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
 
 function PlaylistSongsContent({
   playlistId,
@@ -31,7 +32,13 @@ function PlaylistSongsContent({
           key={song.songId}
           song={{ ...song, id: song.songId }}
           projectSlug={projectSlug}
-          organizationId={organizationId}
+          leading={
+            <SuspendedSongPlayButton
+              songId={song.songId}
+              organizationId={organizationId}
+              title={song.title}
+            />
+          }
         />
       ))}
     </div>

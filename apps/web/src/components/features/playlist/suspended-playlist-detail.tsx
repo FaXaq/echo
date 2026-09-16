@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlaylistDetail } from "@/components/ui/playlist/playlist-detail";
 import { SongListItem } from "@/components/ui/song/song-list-item";
+import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
 import {
   getPlaylistQueryOptions,
   getPlaylistSongsQueryOptions,
@@ -72,7 +73,13 @@ function PlaylistDetailContent({
               key={song.songId}
               song={{ ...song, id: song.songId }}
               projectSlug={projectSlug}
-              organizationId={organizationId}
+              leading={
+                <SuspendedSongPlayButton
+                  songId={song.songId}
+                  organizationId={organizationId}
+                  title={song.title}
+                />
+              }
               trailing={
                 <Button
                   type="button"

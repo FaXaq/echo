@@ -155,7 +155,11 @@ function EventDetailContent({
                     <X />
                   </Button>
                 </div>
-                <SuspendedPlaylistSongs playlistId={playlist.id} organizationId={organizationId} />
+                <SuspendedPlaylistSongs
+                  playlistId={playlist.id}
+                  organizationId={organizationId}
+                  projectSlug={projectSlug}
+                />
               </div>
             ))}
             <PlaylistPickerCombobox

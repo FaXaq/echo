@@ -47,6 +47,7 @@ const meta = {
     organizationId: "org-1",
     pathname: "/projects/acme-inc/calendar/event-1",
     onBack: () => {},
+    projectSlug: "acme-inc",
   },
   decorators: [
     (Story) => (
