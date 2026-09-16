@@ -5,13 +5,16 @@ import { useLingui } from "@lingui/react/macro";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getPlaylistSongsQueryOptions } from "@/services/resources/playlist";
+import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
 
 function PlaylistSongsContent({
   playlistId,
   organizationId,
+  projectSlug,
 }: {
   playlistId: string;
   organizationId: string;
+  projectSlug: string;
 }) {
   const { t } = useLingui();
   const { data: songs } = useSuspenseQuery(
@@ -25,7 +28,18 @@ function PlaylistSongsContent({
   return (
     <div className="flex flex-col gap-1.5">
       {songs.map((song) => (
-        <SongListItem key={song.songId} song={song} />
+        <SongListItem
+          key={song.songId}
+          song={{ ...song, id: song.songId }}
+          projectSlug={projectSlug}
+          leading={
+            <SuspendedSongPlayButton
+              songId={song.songId}
+              organizationId={organizationId}
+              title={song.title}
+            />
+          }
+        />
       ))}
     </div>
   );
@@ -39,14 +53,20 @@ function PlaylistSongsError() {
 export function SuspendedPlaylistSongs({
   playlistId,
   organizationId,
+  projectSlug,
 }: {
   playlistId: string;
   organizationId: string;
+  projectSlug: string;
 }) {
   return (
     <ErrorBoundary FallbackComponent={PlaylistSongsError}>
       <Suspense fallback={<Skeleton className="h-9 w-full" />}>
-        <PlaylistSongsContent playlistId={playlistId} organizationId={organizationId} />
+        <PlaylistSongsContent
+          playlistId={playlistId}
+          organizationId={organizationId}
+          projectSlug={projectSlug}
+        />
       </Suspense>
     </ErrorBoundary>
   );

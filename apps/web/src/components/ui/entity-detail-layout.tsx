@@ -59,7 +59,7 @@ export function EntityDetailLayout({
         </div>
       </ScrollArea>
 
-      <div className="flex w-280px flex-[1_1_220px] flex-col hidden lg:block">
+      <div className="flex w-280px flex-[1_1_220px] flex-col hidden lg:block overflow-y-auto">
         {sidebarItems.map((item) => (
           <div key={item.label}>
             <div className="flex items-start justify-between gap-2 px-1 py-2.5">

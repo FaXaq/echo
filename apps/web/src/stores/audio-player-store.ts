@@ -5,6 +5,7 @@ export type PlayableAudioFile = {
   filename: string;
   downloadUrl: string;
   contextLabel?: string;
+  songId?: string;
 };
 
 export type AudioPlayerStatus = "loading" | "playing" | "paused" | "error";

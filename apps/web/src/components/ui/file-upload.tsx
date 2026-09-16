@@ -32,7 +32,7 @@ export function FileUpload({
 
   if (variant === "icon") {
     return (
-      <>
+      <div className="relative inline-flex">
         <input
           ref={inputRef}
           type="file"
@@ -55,7 +55,7 @@ export function FileUpload({
         >
           {loading ? <Loader /> : <FileUp />}
         </Button>
-      </>
+      </div>
     );
   }
 
@@ -80,7 +80,7 @@ export function FileUpload({
         handleFiles(e.dataTransfer.files);
       }}
       className={cn(
-        "flex cursor-pointer flex-col items-center gap-2 rounded-md border border-dashed border-border p-6 text-center transition-colors",
+        "relative flex cursor-pointer flex-col items-center gap-2 rounded-md border border-dashed border-border p-6 text-center transition-colors",
         isDragging && "border-primary bg-muted",
         disabled && "cursor-not-allowed opacity-50",
       )}

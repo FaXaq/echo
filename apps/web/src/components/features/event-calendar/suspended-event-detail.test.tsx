@@ -41,6 +41,7 @@ function renderWithClient(client: QueryClient) {
         organizationId="org-1"
         pathname="/calendar/event-1"
         onBack={vi.fn()}
+        projectSlug="acme-inc"
       />
     </QueryClientProvider>,
   );

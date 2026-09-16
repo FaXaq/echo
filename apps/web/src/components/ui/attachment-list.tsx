@@ -38,7 +38,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatSize } from "@/lib/file";
@@ -572,27 +571,25 @@ export function AttachmentList<F extends AttachmentFile>({
             )}
           </div>
         </div>
-        <ScrollArea className="max-h-[420px]">
-          <TabsContent value="audio">
-            <AttachmentListItems files={audioFiles} pendingFiles={audioPending} {...sharedProps} />
-          </TabsContent>
-          <TabsContent value="gallery">
-            <AttachmentGalleryGrid
-              files={galleryFiles}
-              pendingFiles={galleryPending}
-              failedIds={failedIds}
-              selectedIds={selectedIds}
-              onToggleSelect={onToggleSelect}
-              onOpen={openGalleryPreview}
-              onRename={onRename}
-              onDownload={onDownload}
-              onDelete={onDelete}
-            />
-          </TabsContent>
-          <TabsContent value="misc">
-            <AttachmentListItems files={miscFiles} pendingFiles={miscPending} {...sharedProps} />
-          </TabsContent>
-        </ScrollArea>
+        <TabsContent value="audio">
+          <AttachmentListItems files={audioFiles} pendingFiles={audioPending} {...sharedProps} />
+        </TabsContent>
+        <TabsContent value="gallery">
+          <AttachmentGalleryGrid
+            files={galleryFiles}
+            pendingFiles={galleryPending}
+            failedIds={failedIds}
+            selectedIds={selectedIds}
+            onToggleSelect={onToggleSelect}
+            onOpen={openGalleryPreview}
+            onRename={onRename}
+            onDownload={onDownload}
+            onDelete={onDelete}
+          />
+        </TabsContent>
+        <TabsContent value="misc">
+          <AttachmentListItems files={miscFiles} pendingFiles={miscPending} {...sharedProps} />
+        </TabsContent>
       </Tabs>
 
       <FilePreviewDialog

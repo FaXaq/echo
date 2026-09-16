@@ -1,15 +1,15 @@
 import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Link } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 import { useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Music, Plus } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SongDialog, type SongDialogState } from "@/components/ui/song/song-dialog";
+import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getSongsQueryOptions, useCreateSongMutation, type Song } from "@/services/resources/song";
+import { SuspendedSongPlayButton } from "./suspended-song-play-button";
 
 export interface SuspendedSongListProps {
   organizationId: string;
@@ -56,25 +56,20 @@ function SongListContent({ organizationId, projectSlug, onSongCreated }: Suspend
       {songs.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t`No songs yet.`}</p>
       ) : (
-        <ul className="flex flex-col gap-2 m-0 p-0">
+        <ul className="flex flex-col m-0 p-0">
           {songs.map((song) => (
             <li key={song.id} className="m-0 p-0 list-none">
-              <Link
-                to="/projects/$projectSlug/songs/$songId"
-                params={{ projectSlug, songId: song.id }}
-                className="flex items-center gap-2.5 rounded-lg border px-3 py-2.5 hover:bg-muted/50"
-              >
-                <Music className="size-4 text-muted-foreground" />
-                <span className="flex-1 text-sm font-medium">{song.title}</span>
-                {song.artist && (
-                  <span className="text-xs text-muted-foreground">{song.artist}</span>
-                )}
-                {song.type && (
-                  <Badge variant="secondary">
-                    {song.type === "original" ? t`Original` : t`Cover`}
-                  </Badge>
-                )}
-              </Link>
+              <SongListItem
+                song={song}
+                projectSlug={projectSlug}
+                leading={
+                  <SuspendedSongPlayButton
+                    songId={song.id}
+                    organizationId={organizationId}
+                    title={song.title}
+                  />
+                }
+              />
             </li>
           ))}
         </ul>

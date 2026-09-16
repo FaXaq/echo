@@ -32,9 +32,11 @@ export interface SuspendedEventDetailProps {
   organizationId: string;
   pathname: string;
   onBack: () => void;
+  projectSlug: string;
 }
 
 function EventDetailContent({
+  projectSlug,
   eventId,
   organizationId,
   pathname,
@@ -153,7 +155,11 @@ function EventDetailContent({
                     <X />
                   </Button>
                 </div>
-                <SuspendedPlaylistSongs playlistId={playlist.id} organizationId={organizationId} />
+                <SuspendedPlaylistSongs
+                  playlistId={playlist.id}
+                  organizationId={organizationId}
+                  projectSlug={projectSlug}
+                />
               </div>
             ))}
             <PlaylistPickerCombobox
@@ -215,6 +221,7 @@ export function SuspendedEventDetail({
   organizationId,
   pathname,
   onBack,
+  projectSlug,
 }: SuspendedEventDetailProps) {
   return (
     <ErrorBoundary
@@ -222,6 +229,7 @@ export function SuspendedEventDetail({
     >
       <Suspense fallback={<EventDetailSkeleton />}>
         <EventDetailContent
+          projectSlug={projectSlug}
           eventId={eventId}
           organizationId={organizationId}
           pathname={pathname}
