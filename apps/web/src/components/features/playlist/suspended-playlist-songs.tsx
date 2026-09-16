@@ -9,9 +9,11 @@ import { getPlaylistSongsQueryOptions } from "@/services/resources/playlist";
 function PlaylistSongsContent({
   playlistId,
   organizationId,
+  projectSlug,
 }: {
   playlistId: string;
   organizationId: string;
+  projectSlug: string;
 }) {
   const { t } = useLingui();
   const { data: songs } = useSuspenseQuery(
@@ -25,7 +27,11 @@ function PlaylistSongsContent({
   return (
     <div className="flex flex-col gap-1.5">
       {songs.map((song) => (
-        <SongListItem key={song.songId} song={song} />
+        <SongListItem
+          key={song.songId}
+          song={{ ...song, id: song.songId }}
+          projectSlug={projectSlug}
+        />
       ))}
     </div>
   );
@@ -39,14 +45,20 @@ function PlaylistSongsError() {
 export function SuspendedPlaylistSongs({
   playlistId,
   organizationId,
+  projectSlug,
 }: {
   playlistId: string;
   organizationId: string;
+  projectSlug: string;
 }) {
   return (
     <ErrorBoundary FallbackComponent={PlaylistSongsError}>
       <Suspense fallback={<Skeleton className="h-9 w-full" />}>
-        <PlaylistSongsContent playlistId={playlistId} organizationId={organizationId} />
+        <PlaylistSongsContent
+          playlistId={playlistId}
+          organizationId={organizationId}
+          projectSlug={projectSlug}
+        />
       </Suspense>
     </ErrorBoundary>
   );

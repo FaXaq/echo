@@ -30,6 +30,7 @@ function OrganizationEventDetailPage() {
       <EventDropZone eventId={eventId} organizationId={organizationId}>
         <SuspendedEventDetail
           eventId={eventId}
+          projectSlug={projectSlug}
           organizationId={organizationId}
           pathname={`/${projectSlug}/calendar/${eventId}`}
           onBack={goBack}

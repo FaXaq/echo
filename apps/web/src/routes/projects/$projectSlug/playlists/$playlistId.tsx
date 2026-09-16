@@ -20,6 +20,7 @@ function OrganizationPlaylistDetailPage() {
         key={playlistId}
         playlistId={playlistId}
         organizationId={organizationId}
+        projectSlug={projectSlug}
         pathname={`/${projectSlug}/playlists/${playlistId}`}
         onBack={goBack}
       />

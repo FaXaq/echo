@@ -32,9 +32,11 @@ export interface SuspendedEventDetailProps {
   organizationId: string;
   pathname: string;
   onBack: () => void;
+  projectSlug: string;
 }
 
 function EventDetailContent({
+  projectSlug,
   eventId,
   organizationId,
   pathname,
@@ -215,6 +217,7 @@ export function SuspendedEventDetail({
   organizationId,
   pathname,
   onBack,
+  projectSlug,
 }: SuspendedEventDetailProps) {
   return (
     <ErrorBoundary
@@ -222,6 +225,7 @@ export function SuspendedEventDetail({
     >
       <Suspense fallback={<EventDetailSkeleton />}>
         <EventDetailContent
+          projectSlug={projectSlug}
           eventId={eventId}
           organizationId={organizationId}
           pathname={pathname}

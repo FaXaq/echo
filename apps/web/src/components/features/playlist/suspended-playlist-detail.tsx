@@ -25,9 +25,11 @@ export interface SuspendedPlaylistDetailProps {
   organizationId: string;
   pathname: string;
   onBack: () => void;
+  projectSlug: string;
 }
 
 function PlaylistDetailContent({
+  projectSlug,
   playlistId,
   organizationId,
   pathname,
@@ -68,16 +70,18 @@ function PlaylistDetailContent({
           {songs.map((song) => (
             <SongListItem
               key={song.songId}
-              song={song}
+              song={{ ...song, id: song.songId }}
+              projectSlug={projectSlug}
               trailing={
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon-xs"
                   aria-label={t`Remove song`}
-                  onClick={() =>
-                    removeSongMutation.mutate({ playlistId: playlist.id, songId: song.songId })
-                  }
+                  onClick={(e) => {
+                    e.preventDefault();
+                    removeSongMutation.mutate({ playlistId: playlist.id, songId: song.songId });
+                  }}
                 >
                   <X />
                 </Button>
@@ -137,6 +141,7 @@ export function SuspendedPlaylistDetail({
   organizationId,
   pathname,
   onBack,
+  projectSlug,
 }: SuspendedPlaylistDetailProps) {
   return (
     <ErrorBoundary
@@ -144,6 +149,7 @@ export function SuspendedPlaylistDetail({
     >
       <Suspense fallback={<PlaylistDetailSkeleton />}>
         <PlaylistDetailContent
+          projectSlug={projectSlug}
           playlistId={playlistId}
           organizationId={organizationId}
           pathname={pathname}
