@@ -4,6 +4,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { Markdown } from "tiptap-markdown";
 import { Check } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 
 // tiptap-markdown ships no TypeScript types at all.
@@ -46,7 +47,9 @@ export function MarkdownEditor({
 
   return (
     <div className="relative">
-      <EditorContent id={id} editor={editor} className={className} />
+      <ScrollArea className={className}>
+        <EditorContent id={id} editor={editor} />
+      </ScrollArea>
       {saveStatus !== "idle" && (
         <span
           role="status"

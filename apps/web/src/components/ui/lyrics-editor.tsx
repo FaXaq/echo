@@ -18,7 +18,7 @@ export function LyricsEditor({ markdown, onChange, saveStatus }: LyricsEditorPro
         onChange={onChange}
         placeholder={t`Write the lyrics…`}
         saveStatus={saveStatus}
-        className="min-h-64 max-h-[32rem] overflow-y-auto rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:min-h-56 [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"
+        className="min-h-64 max-h-[32rem] rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:min-h-56 [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"
       />
     </div>
   );
