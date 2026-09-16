@@ -1,3 +1,9 @@
+## [0.10.0](https://github.com/FaXaq/echo/compare/v0.9.0...v0.10.0) (2026-09-16)
+
+### ✨ Features
+
+* **song:** add demo/final audio versioning with history (ECH-108) ([#37](https://github.com/FaXaq/echo/issues/37)) ([ac49eb4](https://github.com/FaXaq/echo/commit/ac49eb421d05915f307f6aa049769e324067873b))
+
 ## [0.9.0](https://github.com/FaXaq/echo/compare/v0.8.5...v0.9.0) (2026-09-16)
 
 ### ✨ Features
