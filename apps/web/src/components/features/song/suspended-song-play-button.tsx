@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Loader2, Pause, Play, SquircleDashed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
-import { getSongAudioVersionsQueryOptions } from "@/services/resources/song";
+import { getSongDefaultAudioQueryOptions } from "@/services/resources/song";
 
 function SongPlayButtonContent({
   songId,
@@ -17,15 +17,14 @@ function SongPlayButtonContent({
   title: string;
 }) {
   const { t } = useLingui();
-  const { data: versions } = useSuspenseQuery(
-    getSongAudioVersionsQueryOptions({ songId, organizationId }),
+  const { data: file } = useSuspenseQuery(
+    getSongDefaultAudioQueryOptions({ songId, organizationId }),
   );
   const activeFile = useAudioPlayerStore((s) => s.file);
   const status = useAudioPlayerStore((s) => s.status);
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
   const toggle = useAudioPlayerStore((s) => s.toggle);
 
-  const file = versions.final[0] ?? versions.demo[0];
   if (!file)
     return (
       <div className="size-7 flex justify-center items-center opacity-40">
