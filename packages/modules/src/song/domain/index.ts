@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { SongFileRecord } from "@echo/modules/drive/domain";
 
 export const songTypeSchema = z.enum(["original", "cover"]);
 export type SongType = z.infer<typeof songTypeSchema>;
@@ -22,3 +23,11 @@ export type Song = {
   updatedBy: string | null;
   updatedAt: Date | null;
 };
+
+export function selectDefaultSongFile(files: SongFileRecord[]): SongFileRecord | null {
+  return (
+    files.find((file) => file.role === "final") ??
+    files.find((file) => file.role === "demo") ??
+    null
+  );
+}
