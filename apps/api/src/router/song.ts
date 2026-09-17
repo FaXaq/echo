@@ -11,6 +11,7 @@ import {
   setSongAudioVersion,
   clearSongAudioVersion,
   listSongAudioVersions,
+  getSongDefaultAudio,
 } from "@echo/modules/song/app";
 import { songTypeSchema } from "@echo/modules/song/domain";
 import {
@@ -134,6 +135,20 @@ export const makeSongRouter = () =>
       .input(z.object({ songId: z.string() }))
       .query(({ ctx, input }) =>
         listSongAudioVersions(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            s3Storage: ctx.s3Storage,
+            listSongAudioVersionsQuery,
+          },
+          { songId: input.songId, scope: ctx.organizationScope },
+        ),
+      ),
+
+    getDefaultAudio: organizationProcedure
+      .input(z.object({ songId: z.string() }))
+      .query(({ ctx, input }) =>
+        getSongDefaultAudio(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,

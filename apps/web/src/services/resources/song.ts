@@ -53,6 +53,17 @@ export function getSongAudioVersionsQueryOptions(opts: { songId: string; organiz
   });
 }
 
+export function getSongDefaultAudioQueryOptions(opts: { songId: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getDefaultAudio", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.song.getDefaultAudio.query(params, { signal });
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useSetSongAudioVersionMutation({
   songId,
   organizationId,
@@ -73,6 +84,9 @@ export function useSetSongAudioVersionMutation({
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: getSongAudioVersionsQueryOptions({ songId, organizationId }).queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getSongDefaultAudioQueryOptions({ songId, organizationId }).queryKey,
         }),
         queryClient.invalidateQueries({
           queryKey: getSongFilesQueryOptions({ songId, organizationId }).queryKey,
@@ -104,6 +118,9 @@ export function useClearSongAudioVersionMutation({
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: getSongAudioVersionsQueryOptions({ songId, organizationId }).queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getSongDefaultAudioQueryOptions({ songId, organizationId }).queryKey,
         }),
         queryClient.invalidateQueries({
           queryKey: getSongFilesQueryOptions({ songId, organizationId }).queryKey,

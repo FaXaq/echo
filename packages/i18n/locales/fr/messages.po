@@ -1218,7 +1218,7 @@ msgstr "Échec de la réinitialisation du mot de passe"
 msgid "Passwords do not match"
 msgstr "Les mots de passe ne correspondent pas"
 
-#: apps/web/src/components/features/song/suspended-song-play-button.tsx:65
+#: apps/web/src/components/features/song/suspended-song-play-button.tsx:64
 #: apps/web/src/components/ui/audio-player-dock.tsx:93
 msgid "Pause"
 msgstr "Pause"
@@ -1253,7 +1253,7 @@ msgid "Plan & usage"
 msgstr "Forfait et utilisation"
 
 #: apps/web/src/components/features/audio-player/audio-player-dock-container.tsx:51
-#: apps/web/src/components/features/song/suspended-song-play-button.tsx:65
+#: apps/web/src/components/features/song/suspended-song-play-button.tsx:64
 #: apps/web/src/components/ui/audio-player-dock.tsx:93
 msgid "Play"
 msgstr "Lire"
