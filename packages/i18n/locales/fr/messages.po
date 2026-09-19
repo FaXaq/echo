@@ -43,8 +43,8 @@ msgstr "{0} fichiers supprimés"
 
 #. placeholder {0}: file?.filename ?? "This file"
 #: apps/web/src/components/features/audio-player/audio-player-dock-container.tsx:50
-msgid "{0} is currently playing."
-msgstr "{0} est en cours de lecture."
+#~ msgid "{0} is currently playing."
+#~ msgstr "{0} est en cours de lecture."
 
 #. placeholder {0}: movingItems.length
 #: apps/web/src/components/features/drive/use-drive-selection.ts:158
@@ -1252,7 +1252,6 @@ msgstr "Forfait"
 msgid "Plan & usage"
 msgstr "Forfait et utilisation"
 
-#: apps/web/src/components/features/audio-player/audio-player-dock-container.tsx:51
 #: apps/web/src/components/features/song/suspended-song-play-button.tsx:65
 #: apps/web/src/components/ui/audio-player-dock.tsx:93
 msgid "Play"
@@ -1260,8 +1259,8 @@ msgstr "Lire"
 
 #. placeholder {0}: pendingFile?.filename ?? ""
 #: apps/web/src/components/features/audio-player/audio-player-dock-container.tsx:49
-msgid "Play {0} instead?"
-msgstr "Lire {0} à la place ?"
+#~ msgid "Play {0} instead?"
+#~ msgstr "Lire {0} à la place ?"
 
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:63
 msgid "Playlist actions"
