@@ -14,7 +14,6 @@ const PLAYBACK_RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] as const;
 
 interface AudioPlayerState {
   file: PlayableAudioFile | null;
-  pendingFile: PlayableAudioFile | null;
   status: AudioPlayerStatus;
   currentTime: number;
   duration: number;
@@ -22,8 +21,6 @@ interface AudioPlayerState {
   playbackRate: (typeof PLAYBACK_RATES)[number];
   errorMessage: string | null;
   requestPlay: (file: PlayableAudioFile) => void;
-  confirmSwitch: () => void;
-  cancelSwitch: () => void;
   toggle: () => void;
   seek: (time: number) => void;
   setVolume: (volume: number) => void;
@@ -55,7 +52,6 @@ export const useAudioPlayerStore = create<AudioPlayerState>((set, get) => {
     if (!audio) return;
     set({
       file,
-      pendingFile: null,
       status: "loading",
       currentTime: 0,
       duration: 0,
@@ -69,7 +65,6 @@ export const useAudioPlayerStore = create<AudioPlayerState>((set, get) => {
 
   return {
     file: null,
-    pendingFile: null,
     status: "paused",
     currentTime: 0,
     duration: 0,
@@ -77,20 +72,7 @@ export const useAudioPlayerStore = create<AudioPlayerState>((set, get) => {
     playbackRate: 1,
     errorMessage: null,
 
-    requestPlay: (file) => {
-      if (get().file === null) {
-        playFile(file);
-      } else {
-        set({ pendingFile: file });
-      }
-    },
-
-    confirmSwitch: () => {
-      const { pendingFile } = get();
-      if (pendingFile) playFile(pendingFile);
-    },
-
-    cancelSwitch: () => set({ pendingFile: null }),
+    requestPlay: playFile,
 
     toggle: () => {
       if (!audio || !get().file) return;
@@ -123,7 +105,7 @@ export const useAudioPlayerStore = create<AudioPlayerState>((set, get) => {
 
     dismiss: () => {
       if (audio) audio.pause();
-      set({ file: null, pendingFile: null, status: "paused", currentTime: 0, duration: 0 });
+      set({ file: null, status: "paused", currentTime: 0, duration: 0 });
     },
   };
 });
