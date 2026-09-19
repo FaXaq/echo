@@ -4,6 +4,9 @@ import { kindForMimeType } from "./index.js";
 describe("kindForMimeType", () => {
   it("maps known audio mime types to the audio kind", () => {
     expect(kindForMimeType("audio/mpeg")).toBe("audio");
+    expect(kindForMimeType("audio/wav")).toBe("audio");
+    expect(kindForMimeType("audio/x-wav")).toBe("audio");
+    expect(kindForMimeType("audio/wave")).toBe("audio");
   });
 
   it("maps known video mime types to the video kind", () => {

@@ -5,6 +5,9 @@ export const MIME_TYPES_BY_KIND: Record<FileKind, readonly string[]> = {
   audio: [
     "audio/mpeg",
     "audio/wav",
+    /* alternate mime types some browsers/OSes report for .wav files */
+    "audio/x-wav",
+    "audio/wave",
     "audio/ogg",
     "audio/flac",
     "audio/mp4",
