@@ -3,9 +3,9 @@ import type { PlanEntitlements, PlanName } from "./plan.js";
 export const planCatalog = {
   free: {
     limits: {
-      storageBytes: 1_000_000_000,
+      storageBytes: 10_000_000_000,
       memberSeats: 4,
-      maxFileSizeBytes: 50_000_000,
+      maxFileSizeBytes: 1_000_000_000,
     },
     features: {
       customSlug: false,
@@ -17,7 +17,7 @@ export const planCatalog = {
     limits: {
       storageBytes: 50_000_000_000,
       memberSeats: 25,
-      maxFileSizeBytes: 500_000_000,
+      maxFileSizeBytes: 2_000_000_000,
     },
     features: {
       customSlug: true,
