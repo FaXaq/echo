@@ -1,3 +1,9 @@
+## [0.10.3](https://github.com/FaXaq/echo/compare/v0.10.2...v0.10.3) (2026-09-19)
+
+### 🐛 Bug Fixes
+
+* **audio:** accept other file mimtypes, remove auto-block on app-wide player ([#41](https://github.com/FaXaq/echo/issues/41)) ([38afcd0](https://github.com/FaXaq/echo/commit/38afcd0a3cf613b910578e0b7302c0af41921171))
+
 ## [0.10.2](https://github.com/FaXaq/echo/compare/v0.10.1...v0.10.2) (2026-09-16)
 
 ### 🐛 Bug Fixes
