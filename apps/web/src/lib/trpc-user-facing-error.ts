@@ -45,3 +45,13 @@ export function isExpectedUserFacingTrpcError(error: unknown): error is TRPCClie
   if (!trpcCode) return false;
   return expectedTRPCCodesSchema.safeParse(trpcCode.toUpperCase()).success;
 }
+
+function isAbortError(cause: unknown): boolean {
+  return cause instanceof Error && cause.name === "AbortError";
+}
+
+export function isTrpcNetworkError(error: unknown): error is TRPCClientError<AppRouter> {
+  if (!isTrpcClientError(error)) return false;
+  if (error.data) return false;
+  return !isAbortError(error.cause);
+}

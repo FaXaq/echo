@@ -175,6 +175,14 @@ msgstr "Toute la journée"
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Déjà un compte ? <0>Se connecter</0>"
 
+#: apps/web/src/components/app-error-page.tsx:47
+msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
+msgstr "Une erreur inattendue s'est produite. Nous avons été notifié avec le code d'erreur <0>{humanReadableErrorId}</0>. Recharger la page résout généralement le problème."
+
+#: apps/web/src/components/app-error-page.tsx:36
+#~ msgid "An unexpected error occurred. Reloading the page usually fixes it."
+#~ msgstr "Une erreur inattendue s'est produite. Recharger la page résout généralement le problème."
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:172
 msgid "Are you sure you want to cancel this invitation?"
 msgstr "Voulez-vous vraiment annuler cette invitation ?"
@@ -1154,6 +1162,10 @@ msgstr "Suivant"
 #~ msgid "No audio for this song"
 #~ msgstr "Aucun audio pour ce morceau"
 
+#: apps/web/src/components/app-error-page.tsx:42
+msgid "No connection"
+msgstr "Pas de connexion"
+
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:112
 msgid "No contacts"
 msgstr "Aucun contact"
@@ -1444,6 +1456,10 @@ msgstr "Rouge"
 msgid "Rehearsal"
 msgstr "Répétition"
 
+#: apps/web/src/components/app-error-page.tsx:57
+msgid "Reload"
+msgstr "Recharger"
+
 #. placeholder {0}: contact.name
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:81
 msgid "Remove {0}"
@@ -1638,6 +1654,7 @@ msgstr "Taille"
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 
+#: apps/web/src/components/app-error-page.tsx:42
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
@@ -1904,6 +1921,10 @@ msgstr "Affichage"
 #: apps/web/src/components/ui/audio-player-dock.tsx:160
 msgid "Volume"
 msgstr "Volume"
+
+#: apps/web/src/components/app-error-page.tsx:45
+msgid "We can't reach the server. Check your connection and try again."
+msgstr "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
 
 #: apps/web/src/components/verify-email-form.tsx:58
 msgid "We've sent a one-time code to {email}"
