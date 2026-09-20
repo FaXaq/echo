@@ -49,6 +49,17 @@ export interface CalendarEvent {
   updated_by: string | null;
 }
 
+export interface Contact {
+  created_at: Generated<Timestamp>;
+  description: string | null;
+  email: string | null;
+  id: string;
+  name: string;
+  organization_id: string;
+  phone: string | null;
+  updated_at: Generated<Timestamp | null>;
+}
+
 export interface File {
   created_at: Generated<Timestamp | null>;
   event_id: string | null;
@@ -135,17 +146,6 @@ export interface OutreachColumn {
   name: string;
   organization_id: string;
   position: number;
-  updated_at: Generated<Timestamp | null>;
-}
-
-export interface OutreachContact {
-  created_at: Generated<Timestamp>;
-  description: string | null;
-  email: string | null;
-  id: string;
-  name: string;
-  organization_id: string;
-  phone: string | null;
   updated_at: Generated<Timestamp | null>;
 }
 
@@ -246,6 +246,7 @@ export interface Verification {
 export interface DB {
   account: Account;
   calendar_event: CalendarEvent;
+  contact: Contact;
   file: File;
   folder: Folder;
   invitation: Invitation;
@@ -254,7 +255,6 @@ export interface DB {
   outreach_card: OutreachCard;
   outreach_card_contact: OutreachCardContact;
   outreach_column: OutreachColumn;
-  outreach_contact: OutreachContact;
   playlist: Playlist;
   playlist_event: PlaylistEvent;
   playlist_song: PlaylistSong;

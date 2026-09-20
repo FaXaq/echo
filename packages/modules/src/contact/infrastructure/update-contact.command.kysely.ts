@@ -1,10 +1,10 @@
-import type { UpdateOutreachContactCommandPortFactory } from "./update-outreach-contact.command.port.js";
-import { toOutreachContact } from "./map-outreach.js";
+import type { UpdateContactCommandPortFactory } from "./update-contact.command.port.js";
+import { toContact } from "./map-contact.js";
 
-export const updateOutreachContactCommandFactory: UpdateOutreachContactCommandPortFactory =
+export const updateContactCommandFactory: UpdateContactCommandPortFactory =
   () => async (db, scope, input) => {
     const row = await db
-      .updateTable("outreach_contact")
+      .updateTable("contact")
       .set({
         name: input.name,
         phone: input.phone,
@@ -17,5 +17,5 @@ export const updateOutreachContactCommandFactory: UpdateOutreachContactCommandPo
       .returningAll()
       .executeTakeFirst();
 
-    return row ? toOutreachContact(row) : undefined;
+    return row ? toContact(row) : undefined;
   };

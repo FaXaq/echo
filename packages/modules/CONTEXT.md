@@ -1,6 +1,6 @@
 # Modules
 
-Domain modules for Echo: calendar, drive, invitation, notification, organization, outreach, place, plan, playlist, song, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
+Domain modules for Echo: calendar, contact, drive, invitation, notification, organization, outreach, place, plan, playlist, song, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
 
 ## Language
 
@@ -83,8 +83,8 @@ One outreach effort: a required Title (free text — despite the name it states 
 _Avoid_: But (the field's name in the original ticket; canonicalized as Title)
 
 **Contact**:
-An Organization-scoped, reusable record of a person to reach out to: name (required), phone, email, description (all optional, filled in progressively). Distinct from an Outreach Card — a Contact can be linked to multiple Outreach Cards, and a Card can hold multiple Contacts. Gated on its own `contact` permission, separate from the `outreach` permission covering Cards/Columns — Contacts are meant to grow into a standalone address book (surfaced independently of any card), so access to them is controlled independently.
-_Avoid_: embedding contact fields directly on Outreach Card (rejected — Contacts are meant to be reused across cards, not copy-pasted per card)
+An Organization-wide, reusable record of a person to reach out to: name (required), phone, email, description (all optional, filled in progressively). Lives in its own `contact` module — it's shared throughout the Organization, not owned by Outreach — and is linked to Outreach Cards many-to-many via the `outreach_card_contact` join (that join, and the link/unlink operations, live in the `outreach` module's infrastructure, the same way `playlist_song` lives in `playlist` even though it references `song`). Gated on its own `contact` permission, separate from the `outreach` permission covering Columns/Cards.
+_Avoid_: OutreachContact (this module's original name before it was split out); embedding contact fields directly on Outreach Card (rejected — Contacts are meant to be reused across cards, not copy-pasted per card)
 
 ## Exceptions
 

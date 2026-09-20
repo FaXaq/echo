@@ -78,24 +78,3 @@ export type {
   ListOutreachCardContactsQueryPort,
 } from "./list-outreach-card-contacts.query.port.js";
 export { listOutreachCardContactsQueryFactory } from "./list-outreach-card-contacts.query.kysely.js";
-
-export type { ListOutreachContactsQueryPort } from "./list-outreach-contacts.query.port.js";
-export { listOutreachContactsQueryFactory } from "./list-outreach-contacts.query.kysely.js";
-
-export type {
-  InsertOutreachContactInput,
-  InsertOutreachContactCommandPort,
-} from "./insert-outreach-contact.command.port.js";
-export { insertOutreachContactCommandFactory } from "./insert-outreach-contact.command.kysely.js";
-
-export type {
-  UpdateOutreachContactInput,
-  UpdateOutreachContactCommandPort,
-} from "./update-outreach-contact.command.port.js";
-export { updateOutreachContactCommandFactory } from "./update-outreach-contact.command.kysely.js";
-
-export type {
-  DeleteOutreachContactInput,
-  DeleteOutreachContactCommandPort,
-} from "./delete-outreach-contact.command.port.js";
-export { deleteOutreachContactCommandFactory } from "./delete-outreach-contact.command.kysely.js";

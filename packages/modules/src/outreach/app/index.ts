@@ -13,8 +13,3 @@ export { deleteOutreachCard } from "./delete-outreach-card.js";
 export { linkOutreachContactToCard } from "./link-outreach-contact-to-card.js";
 export { unlinkOutreachContactFromCard } from "./unlink-outreach-contact-from-card.js";
 export { listOutreachCardContacts } from "./list-outreach-card-contacts.js";
-
-export { listOutreachContacts } from "./list-outreach-contacts.js";
-export { createOutreachContact } from "./create-outreach-contact.js";
-export { updateOutreachContact } from "./update-outreach-contact.js";
-export { deleteOutreachContact } from "./delete-outreach-contact.js";

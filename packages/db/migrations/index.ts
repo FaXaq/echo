@@ -23,6 +23,8 @@ import * as migration_20260915205935 from "./20260915205935_backfill-song-file-f
 import * as migration_20260915205936 from "./20260915205936_drop-song-id-from-file";
 import * as migration_20260915210322 from "./20260915210322_add-version-to-song-file";
 import * as migration_20260920124842 from "./20260920124842_outreach";
+import * as migration_20260920155821 from "./20260920155821_contact";
+import * as migration_20260920155834 from "./20260920155834_outreach-card-contact";
 
 type Migration = {
   up: (db: Kysely<any>) => Promise<void>;
@@ -55,4 +57,6 @@ export const migrations: Migrations = {
   "20260915205936_drop-song-id-from-file": migration_20260915205936,
   "20260915210322_add-version-to-song-file": migration_20260915210322,
   "20260920124842_outreach": migration_20260920124842,
+  "20260920155821_contact": migration_20260920155821,
+  "20260920155834_outreach-card-contact": migration_20260920155834,
 };

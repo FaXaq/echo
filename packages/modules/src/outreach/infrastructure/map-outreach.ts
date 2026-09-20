@@ -1,11 +1,6 @@
 import type { DB } from "@echo/db";
 import type { Selectable } from "kysely";
-import type {
-  OutreachCard,
-  OutreachColumn,
-  OutreachContact,
-  OutreachPlace,
-} from "../domain/index.js";
+import type { OutreachCard, OutreachColumn, OutreachPlace } from "../domain/index.js";
 
 export type OutreachColumnRow = Selectable<DB["outreach_column"]>;
 
@@ -53,18 +48,5 @@ export function toOutreachCard(row: OutreachCardRow): OutreachCard {
     createdBy: row.created_by,
     updatedBy: row.updated_by,
     updatedAt: row.updated_at,
-  };
-}
-
-export type OutreachContactRow = Selectable<DB["outreach_contact"]>;
-
-export function toOutreachContact(row: OutreachContactRow): OutreachContact {
-  return {
-    id: row.id,
-    organizationId: row.organization_id,
-    name: row.name,
-    phone: row.phone,
-    email: row.email,
-    description: row.description,
   };
 }

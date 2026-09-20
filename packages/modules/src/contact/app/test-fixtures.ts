@@ -1,6 +1,6 @@
 import { makeDbAdapter, type KyselyDB } from "@echo/db";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
-import type { OutreachCard, OutreachColumn } from "../domain/index.js";
+import type { Contact } from "../domain/index.js";
 
 export function makeFakeDb(): KyselyDB {
   return makeDbAdapter({
@@ -21,31 +21,14 @@ export function makeFakePermissionChecks(
   };
 }
 
-export function makeFakeOutreachColumn(overrides: Partial<OutreachColumn> = {}): OutreachColumn {
+export function makeFakeContact(overrides: Partial<Contact> = {}): Contact {
   return {
-    id: "column-1",
+    id: "contact-1",
     organizationId: "org-1",
-    name: "À contacter",
-    position: 0,
-    ...overrides,
-  };
-}
-
-export function makeFakeOutreachCard(overrides: Partial<OutreachCard> = {}): OutreachCard {
-  return {
-    id: "card-1",
-    organizationId: "org-1",
-    columnId: "column-1",
-    title: "Book a residency",
-    position: 0,
-    place: null,
+    name: "Jamie Booker",
+    phone: null,
+    email: null,
     description: null,
-    assigneeId: null,
-    assigneeName: null,
-    createdAt: new Date("2026-01-01"),
-    createdBy: "user-1",
-    updatedBy: null,
-    updatedAt: null,
     ...overrides,
   };
 }

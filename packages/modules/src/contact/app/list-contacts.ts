@@ -2,22 +2,22 @@ import type { KyselyDB } from "@echo/db";
 import { forbidden } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { OutreachContact } from "../domain/index.js";
-import type { ListOutreachContactsQueryPort } from "../infrastructure/list-outreach-contacts.query.port.js";
+import type { Contact } from "../domain/index.js";
+import type { ListContactsQueryPort } from "../infrastructure/list-contacts.query.port.js";
 
-export async function listOutreachContacts(
+export async function listContacts(
   deps: {
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
-    listOutreachContactsQuery: ListOutreachContactsQueryPort;
+    listContactsQuery: ListContactsQueryPort;
   },
   input: { scope: OrganizationScope },
-): Promise<OutreachContact[]> {
+): Promise<Contact[]> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { contact: ["read"] },
   });
-  if (!success) throw forbidden({ entity: "OutreachContact", action: "read" });
+  if (!success) throw forbidden({ entity: "Contact", action: "read" });
 
-  return deps.listOutreachContactsQuery(deps.db, input.scope);
+  return deps.listContactsQuery(deps.db, input.scope);
 }

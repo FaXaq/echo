@@ -14,10 +14,6 @@ import {
   linkOutreachContactToCard,
   unlinkOutreachContactFromCard,
   listOutreachCardContacts,
-  listOutreachContacts,
-  createOutreachContact,
-  updateOutreachContact,
-  deleteOutreachContact,
 } from "@echo/modules/outreach/app";
 import {
   listOutreachColumnsQueryFactory,
@@ -35,10 +31,6 @@ import {
   linkOutreachContactToCardCommandFactory,
   unlinkOutreachContactFromCardCommandFactory,
   listOutreachCardContactsQueryFactory,
-  listOutreachContactsQueryFactory,
-  insertOutreachContactCommandFactory,
-  updateOutreachContactCommandFactory,
-  deleteOutreachContactCommandFactory,
 } from "@echo/modules/outreach/infrastructure";
 
 const placeInput = z
@@ -65,10 +57,6 @@ const deleteOutreachCardCommand = deleteOutreachCardCommandFactory();
 const linkOutreachContactToCardCommand = linkOutreachContactToCardCommandFactory();
 const unlinkOutreachContactFromCardCommand = unlinkOutreachContactFromCardCommandFactory();
 const listOutreachCardContactsQuery = listOutreachCardContactsQueryFactory();
-const listOutreachContactsQuery = listOutreachContactsQueryFactory();
-const insertOutreachContactCommand = insertOutreachContactCommandFactory();
-const updateOutreachContactCommand = updateOutreachContactCommandFactory();
-const deleteOutreachContactCommand = deleteOutreachContactCommandFactory();
 
 export const makeOutreachRouter = () =>
   router({
@@ -296,84 +284,6 @@ export const makeOutreachRouter = () =>
             unlinkOutreachContactFromCardCommand,
           },
           { scope: ctx.organizationScope, cardId: input.cardId, contactId: input.contactId },
-        ),
-      ),
-
-    listContacts: organizationProcedure.query(({ ctx }) =>
-      listOutreachContacts(
-        {
-          db: ctx.db,
-          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-          listOutreachContactsQuery,
-        },
-        { scope: ctx.organizationScope },
-      ),
-    ),
-
-    createContact: organizationProcedure
-      .input(
-        z.object({
-          name: z.string().min(1, "Name is required"),
-          phone: z.string().optional(),
-          email: z.string().email().optional(),
-          description: z.string().optional(),
-        }),
-      )
-      .mutation(({ ctx, input }) =>
-        createOutreachContact(
-          {
-            db: ctx.db,
-            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            insertOutreachContactCommand,
-          },
-          {
-            scope: ctx.organizationScope,
-            name: input.name,
-            phone: input.phone ?? null,
-            email: input.email ?? null,
-            description: input.description ?? null,
-          },
-        ),
-      ),
-
-    updateContact: organizationProcedure
-      .input(
-        z.object({
-          id: z.string(),
-          name: z.string().min(1, "Name is required"),
-          phone: z.string().optional(),
-          email: z.string().email().optional(),
-          description: z.string().optional(),
-        }),
-      )
-      .mutation(({ ctx, input }) =>
-        updateOutreachContact(
-          {
-            db: ctx.db,
-            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            updateOutreachContactCommand,
-          },
-          {
-            scope: ctx.organizationScope,
-            id: input.id,
-            name: input.name,
-            phone: input.phone ?? null,
-            email: input.email ?? null,
-            description: input.description ?? null,
-          },
-        ),
-      ),
-
-    deleteContact: organizationProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteOutreachContact(
-          {
-            db: ctx.db,
-            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            deleteOutreachContactCommand,
-          },
-          { scope: ctx.organizationScope, id: input.id },
         ),
       ),
   });

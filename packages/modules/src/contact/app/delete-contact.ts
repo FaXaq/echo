@@ -2,13 +2,13 @@ import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { DeleteOutreachContactCommandPort } from "../infrastructure/delete-outreach-contact.command.port.js";
+import type { DeleteContactCommandPort } from "../infrastructure/delete-contact.command.port.js";
 
-export async function deleteOutreachContact(
+export async function deleteContact(
   deps: {
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
-    deleteOutreachContactCommand: DeleteOutreachContactCommandPort;
+    deleteContactCommand: DeleteContactCommandPort;
   },
   input: { scope: OrganizationScope; id: string },
 ): Promise<void> {
@@ -16,8 +16,8 @@ export async function deleteOutreachContact(
     organizationId: input.scope.organizationId,
     permissions: { contact: ["delete"] },
   });
-  if (!success) throw forbidden({ entity: "OutreachContact", action: "delete" });
+  if (!success) throw forbidden({ entity: "Contact", action: "delete" });
 
-  const deleted = await deps.deleteOutreachContactCommand(deps.db, input.scope, { id: input.id });
-  if (!deleted) throw notFound("OutreachContact");
+  const deleted = await deps.deleteContactCommand(deps.db, input.scope, { id: input.id });
+  if (!deleted) throw notFound("Contact");
 }

@@ -1,10 +1,10 @@
-import type { InsertOutreachContactCommandPortFactory } from "./insert-outreach-contact.command.port.js";
-import { toOutreachContact } from "./map-outreach.js";
+import type { InsertContactCommandPortFactory } from "./insert-contact.command.port.js";
+import { toContact } from "./map-contact.js";
 
-export const insertOutreachContactCommandFactory: InsertOutreachContactCommandPortFactory =
+export const insertContactCommandFactory: InsertContactCommandPortFactory =
   () => async (db, scope, input) => {
     const row = await db
-      .insertInto("outreach_contact")
+      .insertInto("contact")
       .values({
         id: input.id,
         organization_id: scope.organizationId,
@@ -16,5 +16,5 @@ export const insertOutreachContactCommandFactory: InsertOutreachContactCommandPo
       .returningAll()
       .executeTakeFirstOrThrow();
 
-    return toOutreachContact(row);
+    return toContact(row);
   };

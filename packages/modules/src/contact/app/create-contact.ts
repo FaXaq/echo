@@ -1,38 +1,35 @@
 import type { KyselyDB } from "@echo/db";
-import { forbidden, notFound } from "@echo/errors";
+import { forbidden } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { OutreachContact } from "../domain/index.js";
-import type { UpdateOutreachContactCommandPort } from "../infrastructure/update-outreach-contact.command.port.js";
+import type { Contact } from "../domain/index.js";
+import type { InsertContactCommandPort } from "../infrastructure/insert-contact.command.port.js";
 
-export async function updateOutreachContact(
+export async function createContact(
   deps: {
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
-    updateOutreachContactCommand: UpdateOutreachContactCommandPort;
+    insertContactCommand: InsertContactCommandPort;
   },
   input: {
     scope: OrganizationScope;
-    id: string;
     name: string;
     phone: string | null;
     email: string | null;
     description: string | null;
   },
-): Promise<OutreachContact> {
+): Promise<Contact> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
-    permissions: { contact: ["update"] },
+    permissions: { contact: ["create"] },
   });
-  if (!success) throw forbidden({ entity: "OutreachContact", action: "update" });
+  if (!success) throw forbidden({ entity: "Contact", action: "create" });
 
-  const contact = await deps.updateOutreachContactCommand(deps.db, input.scope, {
-    id: input.id,
+  return deps.insertContactCommand(deps.db, input.scope, {
+    id: crypto.randomUUID(),
     name: input.name,
     phone: input.phone,
     email: input.email,
     description: input.description,
   });
-  if (!contact) throw notFound("OutreachContact");
-  return contact;
 }

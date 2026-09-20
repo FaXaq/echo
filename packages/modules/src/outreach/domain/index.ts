@@ -28,9 +28,8 @@ export type OutreachCard = {
   updatedAt: Date | null;
 };
 
-export type OutreachContact = {
+export type OutreachCardContact = {
   id: string;
-  organizationId: string;
   name: string;
   phone: string | null;
   email: string | null;

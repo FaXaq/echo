@@ -23,7 +23,7 @@ export const linkOutreachContactToCardCommandFactory: LinkOutreachContactToCardC
           .where((eb) =>
             eb.exists(
               db
-                .selectFrom("outreach_contact")
+                .selectFrom("contact")
                 .select("id")
                 .where("id", "=", input.contactId)
                 .where("organization_id", "=", scope.organizationId),
