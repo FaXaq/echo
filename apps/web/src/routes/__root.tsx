@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
+import { ErrorBoundary } from "react-error-boundary";
 import { i18n } from "@lingui/core";
 import { toLocale } from "@echo/i18n";
 import { detectBrowserLocale } from "../i18n";
@@ -18,6 +19,7 @@ import { isTheme, ThemeProvider } from "@/contexts/theme";
 import { Toaster } from "@/components/ui/toast";
 import { DynamicTitle } from "./-dynamic-title";
 import { PageMetaProvider } from "@/contexts/page-meta";
+import { AppErrorPage } from "@/components/app-error-page";
 
 const posthogProjectToken = import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN;
 const posthogHost = import.meta.env.VITE_PUBLIC_POSTHOG_HOST;
@@ -56,6 +58,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   },
   staleTime: Infinity,
   component: RootLayout,
+  errorComponent: ({ error }) => <AppErrorPage error={error} />,
 });
 
 function RootLayout() {
@@ -75,21 +78,23 @@ function RootLayout() {
     session?.user?.theme && isTheme(session.user.theme) ? session.user.theme : undefined;
 
   return (
-    <PostHogRoot>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
-              <PageMetaProvider>
-                <DynamicTitle />
-                <RootContent session={session} />
-                <Toaster />
-              </PageMetaProvider>
-            </ThemeProvider>
-          </TooltipProvider>
-        </QueryClientProvider>
-      </trpc.Provider>
-    </PostHogRoot>
+    <ErrorBoundary fallbackRender={({ error }) => <AppErrorPage error={error} />}>
+      <PostHogRoot>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <ThemeProvider storageKey="vite-ui-theme" serverTheme={serverTheme}>
+                <PageMetaProvider>
+                  <DynamicTitle />
+                  <RootContent session={session} />
+                  <Toaster />
+                </PageMetaProvider>
+              </ThemeProvider>
+            </TooltipProvider>
+          </QueryClientProvider>
+        </trpc.Provider>
+      </PostHogRoot>
+    </ErrorBoundary>
   );
 }
 

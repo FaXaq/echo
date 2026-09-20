@@ -175,6 +175,10 @@ msgstr "All day"
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
+#: apps/web/src/components/app-error-page.tsx:33
+msgid "An unexpected error occurred. Reloading the page usually fixes it."
+msgstr "An unexpected error occurred. Reloading the page usually fixes it."
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:172
 msgid "Are you sure you want to cancel this invitation?"
 msgstr "Are you sure you want to cancel this invitation?"
@@ -1154,6 +1158,10 @@ msgstr "Next"
 #~ msgid "No audio for this song"
 #~ msgstr "No audio for this song"
 
+#: apps/web/src/components/app-error-page.tsx:27
+msgid "No connection"
+msgstr "No connection"
+
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:112
 msgid "No contacts"
 msgstr "No contacts"
@@ -1444,6 +1452,10 @@ msgstr "Red"
 msgid "Rehearsal"
 msgstr "Rehearsal"
 
+#: apps/web/src/components/app-error-page.tsx:39
+msgid "Reload"
+msgstr "Reload"
+
 #. placeholder {0}: contact.name
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:81
 msgid "Remove {0}"
@@ -1638,6 +1650,7 @@ msgstr "Size"
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
+#: apps/web/src/components/app-error-page.tsx:27
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
@@ -1904,6 +1917,10 @@ msgstr "View"
 #: apps/web/src/components/ui/audio-player-dock.tsx:160
 msgid "Volume"
 msgstr "Volume"
+
+#: apps/web/src/components/app-error-page.tsx:31
+msgid "We can't reach the server. Check your connection and try again."
+msgstr "We can't reach the server. Check your connection and try again."
 
 #: apps/web/src/components/verify-email-form.tsx:58
 msgid "We've sent a one-time code to {email}"
