@@ -1,3 +1,9 @@
+## [0.10.4](https://github.com/FaXaq/echo/compare/v0.10.3...v0.10.4) (2026-09-20)
+
+### 🐛 Bug Fixes
+
+* **song:** select default audio version on the backend ([#40](https://github.com/FaXaq/echo/issues/40)) ([1484756](https://github.com/FaXaq/echo/commit/1484756806658bd3786b17c99a209ba98eb375ce))
+
 ## [0.10.3](https://github.com/FaXaq/echo/compare/v0.10.2...v0.10.3) (2026-09-19)
 
 ### 🐛 Bug Fixes
