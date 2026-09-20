@@ -140,7 +140,7 @@ msgstr "Add a new member to your project"
 msgid "Add card"
 msgstr "Add card"
 
-#: apps/web/src/components/features/outreach/outreach-board.tsx:194
+#: apps/web/src/components/features/outreach/outreach-board.tsx:198
 msgid "Add column"
 msgstr "Add column"
 
@@ -196,7 +196,7 @@ msgstr "Artist"
 msgid "Asc"
 msgstr "Asc"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:258
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:259
 msgid "Assignee"
 msgstr "Assignee"
 
@@ -282,8 +282,8 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:54
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:65
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:195
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:328
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:342
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:327
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:341
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:69
 #: apps/web/src/components/ui/confirm-dialog.tsx:60
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:224
@@ -341,7 +341,7 @@ msgstr "Close"
 msgid "Color"
 msgstr "Color"
 
-#: apps/web/src/components/features/outreach/outreach-board.tsx:184
+#: apps/web/src/components/features/outreach/outreach-board.tsx:188
 msgid "Column name"
 msgstr "Column name"
 
@@ -354,7 +354,7 @@ msgstr "Concert"
 msgid "Confirm password"
 msgstr "Confirm password"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:293
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:292
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -378,11 +378,11 @@ msgstr "Couldn't build the download"
 msgid "Couldn't create column"
 msgstr "Couldn't create column"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:211
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:212
 msgid "Couldn't delete card"
 msgstr "Couldn't delete card"
 
-#: apps/web/src/components/features/outreach/outreach-board.tsx:161
+#: apps/web/src/components/features/outreach/outreach-board.tsx:164
 msgid "Couldn't delete column"
 msgstr "Couldn't delete column"
 
@@ -438,7 +438,7 @@ msgstr "Couldn't load this file"
 msgid "Couldn't move card"
 msgstr "Couldn't move card"
 
-#: apps/web/src/components/features/outreach/outreach-board.tsx:155
+#: apps/web/src/components/features/outreach/outreach-board.tsx:156
 msgid "Couldn't rename column"
 msgstr "Couldn't rename column"
 
@@ -454,7 +454,7 @@ msgstr "Couldn't rename folder"
 msgid "Couldn't reorder column"
 msgstr "Couldn't reorder column"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:199
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:200
 msgid "Couldn't save card"
 msgstr "Couldn't save card"
 
@@ -469,7 +469,7 @@ msgstr "Couldn't upload {0}"
 msgid "Cover"
 msgstr "Cover"
 
-#: apps/web/src/components/features/outreach/outreach-contact-field.tsx:124
+#: apps/web/src/components/features/outreach/outreach-contact-field.tsx:126
 msgid "Create \"{trimmedQuery}\""
 msgstr "Create \"{trimmedQuery}\""
 
@@ -536,8 +536,8 @@ msgstr "Define as"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:75
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:202
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:318
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:330
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:317
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:329
 #: apps/web/src/components/features/outreach/outreach-column.tsx:141
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:237
 #: apps/web/src/components/ui/attachment-list.tsx:276
@@ -555,7 +555,7 @@ msgstr "Define as"
 msgid "Delete"
 msgstr "Delete"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:322
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:321
 msgid "Delete card?"
 msgstr "Delete card?"
 
@@ -611,7 +611,7 @@ msgstr "Demo"
 msgid "Desc"
 msgstr "Desc"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:253
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:254
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:197
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:42
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:79
@@ -658,12 +658,12 @@ msgstr "Drive"
 msgid "Drop files to upload"
 msgstr "Drop files to upload"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:233
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:234
 msgid "e.g. Book a residency"
 msgstr "e.g. Book a residency"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:221
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:223
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:222
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:224
 msgid "Edit card"
 msgstr "Edit card"
 
@@ -997,7 +997,7 @@ msgstr "Latest final"
 msgid "Letters, numbers, _ and - only"
 msgstr "Letters, numbers, _ and - only"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:242
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:243
 msgid "Lieu"
 msgstr "Lieu"
 
@@ -1104,8 +1104,8 @@ msgstr "My Project"
 msgid "Name"
 msgstr "Name"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:221
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:223
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:222
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:224
 msgid "New card"
 msgstr "New card"
 
@@ -1154,7 +1154,7 @@ msgstr "Next"
 #~ msgid "No audio for this song"
 #~ msgstr "No audio for this song"
 
-#: apps/web/src/components/features/outreach/outreach-contact-field.tsx:111
+#: apps/web/src/components/features/outreach/outreach-contact-field.tsx:112
 msgid "No contacts"
 msgstr "No contacts"
 
@@ -1528,14 +1528,14 @@ msgstr "Rows per page"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:55
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:66
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:345
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:344
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:70
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:67
 msgid "Save"
 msgstr "Save"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:345
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:344
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
 #: apps/web/src/components/ui/song/song-dialog.tsx:167
 msgid "Save changes"
@@ -1776,7 +1776,7 @@ msgstr "This will permanently delete the file. This action cannot be undone."
 msgid "This will permanently delete the selected files. This action cannot be undone."
 msgstr "This will permanently delete the selected files. This action cannot be undone."
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:324
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:323
 msgid "This will permanently delete this card. This action cannot be undone."
 msgstr "This will permanently delete this card. This action cannot be undone."
 
@@ -1797,7 +1797,7 @@ msgstr "This will permanently delete this song and remove it from any playlists.
 #~ msgid "This will permanently delete this song. This action cannot be undone."
 #~ msgstr "This will permanently delete this song. This action cannot be undone."
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:230
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:231
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:216
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:73
 #: apps/web/src/components/ui/song/song-dialog.tsx:111
@@ -1834,8 +1834,8 @@ msgstr "Type to search playlists"
 msgid "Type to search songs"
 msgstr "Type to search songs"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:275
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:280
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:274
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:279
 msgid "Unassigned"
 msgstr "Unassigned"
 
