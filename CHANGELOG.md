@@ -1,3 +1,9 @@
+## [0.11.0](https://github.com/FaXaq/echo/compare/v0.10.4...v0.11.0) (2026-09-20)
+
+### ✨ Features
+
+* **outreach:** add outreach tracker ([#42](https://github.com/FaXaq/echo/issues/42)) ([9e90ae1](https://github.com/FaXaq/echo/commit/9e90ae1e83f528e596041d5309332f3281de3f59))
+
 ## [0.10.4](https://github.com/FaXaq/echo/compare/v0.10.3...v0.10.4) (2026-09-20)
 
 ### 🐛 Bug Fixes
