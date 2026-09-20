@@ -175,7 +175,7 @@ msgstr "All day"
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
-#: apps/web/src/components/app-error-page.tsx:33
+#: apps/web/src/components/app-error-page.tsx:36
 msgid "An unexpected error occurred. Reloading the page usually fixes it."
 msgstr "An unexpected error occurred. Reloading the page usually fixes it."
 
@@ -1158,7 +1158,7 @@ msgstr "Next"
 #~ msgid "No audio for this song"
 #~ msgstr "No audio for this song"
 
-#: apps/web/src/components/app-error-page.tsx:27
+#: apps/web/src/components/app-error-page.tsx:31
 msgid "No connection"
 msgstr "No connection"
 
@@ -1452,7 +1452,7 @@ msgstr "Red"
 msgid "Rehearsal"
 msgstr "Rehearsal"
 
-#: apps/web/src/components/app-error-page.tsx:39
+#: apps/web/src/components/app-error-page.tsx:42
 msgid "Reload"
 msgstr "Reload"
 
@@ -1650,7 +1650,7 @@ msgstr "Size"
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
-#: apps/web/src/components/app-error-page.tsx:27
+#: apps/web/src/components/app-error-page.tsx:31
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
@@ -1918,7 +1918,7 @@ msgstr "View"
 msgid "Volume"
 msgstr "Volume"
 
-#: apps/web/src/components/app-error-page.tsx:31
+#: apps/web/src/components/app-error-page.tsx:34
 msgid "We can't reach the server. Check your connection and try again."
 msgstr "We can't reach the server. Check your connection and try again."
 
