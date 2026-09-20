@@ -7,6 +7,15 @@ export const moveOutreachCardCommandFactory: MoveOutreachCardCommandPortFactory 
       .set({ column_id: input.columnId, position: input.position, updated_at: new Date() })
       .where("id", "=", input.id)
       .where("organization_id", "=", scope.organizationId)
+      .where((eb) =>
+        eb.exists(
+          db
+            .selectFrom("outreach_column")
+            .select("id")
+            .where("id", "=", input.columnId)
+            .where("organization_id", "=", scope.organizationId),
+        ),
+      )
       .executeTakeFirst();
 
     return result.numUpdatedRows > 0n;

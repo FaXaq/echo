@@ -5,7 +5,7 @@ import { toOutreachCard } from "./map-outreach.js";
 export const updateOutreachCardCommandFactory: UpdateOutreachCardCommandPortFactory =
   () => async (db, scope, input) => {
     return db.transaction().execute(async (trx) => {
-      const updated = await trx
+      let query = trx
         .updateTable("outreach_card")
         .set({
           title: input.title,
@@ -19,9 +19,22 @@ export const updateOutreachCardCommandFactory: UpdateOutreachCardCommandPortFact
           updated_at: new Date(),
         })
         .where("id", "=", input.id)
-        .where("organization_id", "=", scope.organizationId)
-        .returning("id")
-        .executeTakeFirst();
+        .where("organization_id", "=", scope.organizationId);
+
+      if (input.assigneeId !== null) {
+        const assigneeId = input.assigneeId;
+        query = query.where((eb) =>
+          eb.exists(
+            trx
+              .selectFrom("member")
+              .select("id")
+              .where("userId", "=", assigneeId)
+              .where("organizationId", "=", scope.organizationId),
+          ),
+        );
+      }
+
+      const updated = await query.returning("id").executeTakeFirst();
 
       if (!updated) return undefined;
 
