@@ -13,13 +13,24 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
+function generateHumanReadableErrorId() {
+  const timePart = Date.now().toString(36).slice(-4);
+
+  const arr = new Uint8Array(4);
+  window.crypto.getRandomValues(arr);
+  const randomPart = Array.from(arr, (b) => (b % 36).toString(36)).join("");
+
+  return `${timePart}-${randomPart}`.toUpperCase();
+}
+
 export function AppErrorPage({ error }: { error: unknown }) {
   const { t } = useLingui();
   const isNetworkError = isTrpcNetworkError(error);
+  const humanReadableErrorId = isNetworkError ? generateHumanReadableErrorId() : null;
 
   useEffect(() => {
     if (!isNetworkError) {
-      posthog.captureException(error);
+      posthog.captureException(error, { humanReadableErrorId });
     }
   }, [error, isNetworkError]);
 
@@ -33,7 +44,11 @@ export function AppErrorPage({ error }: { error: unknown }) {
             {isNetworkError ? (
               <Trans>We can't reach the server. Check your connection and try again.</Trans>
             ) : (
-              <Trans>An unexpected error occurred. Reloading the page usually fixes it.</Trans>
+              <Trans>
+                An unexpected error occurred. An error report has been sent to the technical team
+                with the code <span className="text-lg">{humanReadableErrorId}</span> attached.
+                Reloading the page usually fixes it.
+              </Trans>
             )}
           </EmptyDescription>
         </EmptyHeader>
