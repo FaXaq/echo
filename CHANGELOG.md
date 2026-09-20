@@ -1,3 +1,9 @@
+## [0.11.1](https://github.com/FaXaq/echo/compare/v0.11.0...v0.11.1) (2026-09-20)
+
+### 🐛 Bug Fixes
+
+* **outreach:** default column names in english ([#43](https://github.com/FaXaq/echo/issues/43)) ([a84daee](https://github.com/FaXaq/echo/commit/a84daeea247061d4798421136e527336b3c78f7e))
+
 ## [0.11.0](https://github.com/FaXaq/echo/compare/v0.10.4...v0.11.0) (2026-09-20)
 
 ### ✨ Features
