@@ -105,6 +105,50 @@ export interface Organization {
   slug: string;
 }
 
+export interface OutreachCard {
+  assignee_id: string | null;
+  column_id: string;
+  created_at: Generated<Timestamp>;
+  created_by: string;
+  description: string | null;
+  id: string;
+  organization_id: string;
+  place_address: string | null;
+  place_lat: number | null;
+  place_lng: number | null;
+  place_name: string | null;
+  position: number;
+  title: string;
+  updated_at: Generated<Timestamp | null>;
+  updated_by: string | null;
+}
+
+export interface OutreachCardContact {
+  card_id: string;
+  contact_id: string;
+  created_at: Generated<Timestamp>;
+}
+
+export interface OutreachColumn {
+  created_at: Generated<Timestamp>;
+  id: string;
+  name: string;
+  organization_id: string;
+  position: number;
+  updated_at: Generated<Timestamp | null>;
+}
+
+export interface OutreachContact {
+  created_at: Generated<Timestamp>;
+  description: string | null;
+  email: string | null;
+  id: string;
+  name: string;
+  organization_id: string;
+  phone: string | null;
+  updated_at: Generated<Timestamp | null>;
+}
+
 export interface Playlist {
   created_at: Generated<Timestamp>;
   created_by: string;
@@ -207,6 +251,10 @@ export interface DB {
   invitation: Invitation;
   member: Member;
   organization: Organization;
+  outreach_card: OutreachCard;
+  outreach_card_contact: OutreachCardContact;
+  outreach_column: OutreachColumn;
+  outreach_contact: OutreachContact;
   playlist: Playlist;
   playlist_event: PlaylistEvent;
   playlist_song: PlaylistSong;

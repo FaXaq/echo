@@ -135,6 +135,18 @@
     "./playlist/app": {
       "types": "./src/playlist/app/index.ts",
       "default": "./src/playlist/app/index.ts"
+    },
+    "./outreach/domain": {
+      "types": "./src/outreach/domain/index.ts",
+      "default": "./src/outreach/domain/index.ts"
+    },
+    "./outreach/infrastructure": {
+      "types": "./src/outreach/infrastructure/index.ts",
+      "default": "./src/outreach/infrastructure/index.ts"
+    },
+    "./outreach/app": {
+      "types": "./src/outreach/app/index.ts",
+      "default": "./src/outreach/app/index.ts"
     }
   },
   "scripts": {
