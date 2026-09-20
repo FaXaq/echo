@@ -1,3 +1,9 @@
+## [0.12.0](https://github.com/FaXaq/echo/compare/v0.11.1...v0.12.0) (2026-09-20)
+
+### ✨ Features
+
+* **error-page:** add a default error page ([#44](https://github.com/FaXaq/echo/issues/44)) ([77a4359](https://github.com/FaXaq/echo/commit/77a4359e4ba7eecbcae3d8768d62d7113f85706d))
+
 ## [0.11.1](https://github.com/FaXaq/echo/compare/v0.11.0...v0.11.1) (2026-09-20)
 
 ### 🐛 Bug Fixes
