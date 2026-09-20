@@ -37,19 +37,13 @@ export type OutreachCardContact = {
 };
 
 export const DEFAULT_OUTREACH_COLUMN_NAMES = [
-  "À contacter",
-  "Contacté",
-  "En discussion",
-  "Refus",
-  "Accepté",
+  "To contact",
+  "Contacted",
+  "In discussion",
+  "Rejected",
+  "Accepted",
 ];
 
-/**
- * Computes the `position` value for an item being dropped between two neighbors
- * on a drag-and-drop-ordered list (Outreach Columns, and Outreach Cards within
- * a Column). `before`/`after` are the positions of the items now flanking the
- * drop spot, or null at either end of the list.
- */
 export function computeReorderPosition(neighbors: {
   before: number | null;
   after: number | null;
