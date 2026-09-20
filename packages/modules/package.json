@@ -135,6 +135,30 @@
     "./playlist/app": {
       "types": "./src/playlist/app/index.ts",
       "default": "./src/playlist/app/index.ts"
+    },
+    "./outreach/domain": {
+      "types": "./src/outreach/domain/index.ts",
+      "default": "./src/outreach/domain/index.ts"
+    },
+    "./outreach/infrastructure": {
+      "types": "./src/outreach/infrastructure/index.ts",
+      "default": "./src/outreach/infrastructure/index.ts"
+    },
+    "./outreach/app": {
+      "types": "./src/outreach/app/index.ts",
+      "default": "./src/outreach/app/index.ts"
+    },
+    "./contact/domain": {
+      "types": "./src/contact/domain/index.ts",
+      "default": "./src/contact/domain/index.ts"
+    },
+    "./contact/infrastructure": {
+      "types": "./src/contact/infrastructure/index.ts",
+      "default": "./src/contact/infrastructure/index.ts"
+    },
+    "./contact/app": {
+      "types": "./src/contact/app/index.ts",
+      "default": "./src/contact/app/index.ts"
     }
   },
   "scripts": {

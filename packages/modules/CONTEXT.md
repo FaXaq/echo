@@ -1,6 +1,6 @@
 # Modules
 
-Domain modules for Echo: calendar, drive, invitation, notification, organization, place, plan, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
+Domain modules for Echo: calendar, contact, drive, invitation, notification, organization, outreach, place, plan, playlist, song, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
 
 ## Language
 
@@ -70,6 +70,21 @@ _Avoid_: Drag-and-drop upload (ambiguous with Selection drag-to-move)
 **Drive Search**:
 A whole-Organization, cross-folder lookup by file or folder name (plain substring match), surfaced as type-ahead results separate from the folder-browsing table rather than filtering it in place. Distinct from folder navigation and from Selection — neither is affected by searching. A matched file's result navigates to its containing Folder; a matched folder's result navigates directly into it.
 _Avoid_: Filter (reserve for the future date/size/event facets, not yet built)
+
+**Outreach Board**:
+An Organization's single Kanban-style board for tracking outreach efforts (contacting venues, labels, etc. to book gigs or partnerships). One per Organization — like Drive and Playlist, there's no multi-board/campaign concept. Made up of Outreach Columns holding Outreach Cards.
+_Avoid_: Démarchage (the ticket's French term, canonicalized as "Outreach")
+
+**Outreach Column**:
+A named, freeform, reorderable status lane on an Outreach Board — not a fixed status enum. Seeded lazily: the five defaults (À contacter/Contacté/En discussion/Refus/Accepté) are created the first time an Organization's Outreach Board is viewed with zero existing Columns — covering both a first-ever visit and the case where every Column, defaults included, was since deleted. A Column can't be deleted while it still holds Cards.
+
+**Outreach Card**:
+One outreach effort: a required Title (free text — despite the name it states the *goal* of the effort, e.g. "Book a residency," prompted by a placeholder; this was "But" in the original spec), an optional Lieu (embedded Place, same shape as Calendar's `EventPlace`), an optional Description (free text), an optional Assignee (a single Organization member), sitting in exactly one Outreach Column at a manually-ordered position (drag & drop, both within and across Columns), and linked to zero or more Contacts.
+_Avoid_: But (the field's name in the original ticket; canonicalized as Title)
+
+**Contact**:
+An Organization-wide, reusable record of a person to reach out to: name (required), phone, email, description (all optional, filled in progressively). Lives in its own `contact` module — it's shared throughout the Organization, not owned by Outreach — and is linked to Outreach Cards many-to-many via the `outreach_card_contact` join (that join, and the link/unlink operations, live in the `outreach` module's infrastructure, the same way `playlist_song` lives in `playlist` even though it references `song`). Gated on its own `contact` permission, separate from the `outreach` permission covering Columns/Cards.
+_Avoid_: OutreachContact (this module's original name before it was split out); embedding contact fields directly on Outreach Card (rejected — Contacts are meant to be reused across cards, not copy-pasted per card)
 
 ## Exceptions
 

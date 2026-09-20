@@ -8,6 +8,8 @@ import { makeDriveRouter } from "./drive";
 import { makePlaceRouter } from "./place";
 import { makeSongRouter } from "./song";
 import { makePlaylistRouter } from "./playlist";
+import { makeOutreachRouter } from "./outreach";
+import { makeContactRouter } from "./contact";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export const makeAppRouter = () =>
@@ -22,6 +24,8 @@ export const makeAppRouter = () =>
       place: makePlaceRouter(),
       song: makeSongRouter(),
       playlist: makePlaylistRouter(),
+      outreach: makeOutreachRouter(),
+      contact: makeContactRouter(),
     }),
   );
 
