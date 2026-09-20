@@ -74,6 +74,11 @@ export function useNavigation() {
               to: "/projects/$projectSlug/drive",
               params: { projectSlug: slug },
             },
+            {
+              title: t`Outreach`,
+              to: "/projects/$projectSlug/outreach",
+              params: { projectSlug: slug },
+            },
             ...(isActiveOrganizationAdmin
               ? [
                   {
