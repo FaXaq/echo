@@ -16,7 +16,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +26,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
 import { MarkdownEditor, type MarkdownSaveStatus } from "@/components/ui/markdown-editor";
-import { getInitials } from "@/lib/remeda";
 import { eventDotClasses } from "./colors";
 import { getEventLabel, EventTypeIcon } from "./event-types";
 import type { CalendarEvent } from "./types";

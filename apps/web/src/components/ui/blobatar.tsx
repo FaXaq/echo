@@ -14,7 +14,6 @@ import "blobatar/motion.css";
  */
 import { Blobatar as Generated } from "@blobatar/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 /**
  * Distributive, and that is not pedantry. The generated blobatar's props are a

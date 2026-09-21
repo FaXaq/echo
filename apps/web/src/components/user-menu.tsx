@@ -23,15 +23,6 @@ const THEME_OPTIONS: { value: Theme; icon: React.ReactNode }[] = [
   { value: "dark", icon: <Moon size={14} /> },
 ];
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
-
 export interface UserMenuProps {
   username: string;
   name: string;
