@@ -2,7 +2,6 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { LogOut, Monitor, Moon, Sun } from "lucide-react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { locales, type Locale } from "@echo/i18n";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/contexts/theme";
 import { useUpdateUserMutation } from "@/services/resources/auth";
+import { Blobatar } from "./ui/blobatar";
 
 type Theme = "light" | "dark" | "system";
 
@@ -22,15 +22,6 @@ const THEME_OPTIONS: { value: Theme; icon: React.ReactNode }[] = [
   { value: "system", icon: <Monitor size={14} /> },
   { value: "dark", icon: <Moon size={14} /> },
 ];
-
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
 
 export interface UserMenuProps {
   username: string;
@@ -58,10 +49,15 @@ export function UserMenu({ username, name, email, image }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center gap-2 rounded-md px-2 py-1 text-sm outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring">
-        <Avatar size="sm">
-          {image && <AvatarImage src={image} alt={`${username}-profile-picture`} />}
-          <AvatarFallback>{getInitials(name)}</AvatarFallback>
-        </Avatar>
+        <Blobatar
+          name={name}
+          src={image ?? undefined}
+          alt={`${username}-profile-picture`}
+          blobatar={{
+            traits: { shape: 0.11 },
+            animate: "always",
+          }}
+        ></Blobatar>
         <div className="flex flex-col items-start leading-tight">
           <span className="font-medium">{username}</span>
         </div>

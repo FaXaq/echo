@@ -1,18 +1,10 @@
 import { useSortable } from "@dnd-kit/react/sortable";
 import { MapPin } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { OutreachCard as OutreachCardData } from "@/services/resources/outreach";
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-}
+import { Blobatar } from "@/ui/blobatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/ui/tooltip";
 
 export interface OutreachCardProps {
   card: OutreachCardData;
@@ -46,17 +38,28 @@ export function OutreachCardPreview({ card, columnId, index, onClick }: Outreach
       )}
     >
       <CardContent className="space-y-1.5">
-        <p className="text-sm font-medium">{card.title}</p>
+        <div className="flex flex-row justify-between">
+          <p className="text-sm font-medium m-0">{card.title}</p>
+          {card.assigneeName && (
+            <Tooltip>
+              <TooltipTrigger>
+                <Blobatar
+                  className="self-start"
+                  name={card.assigneeName}
+                  blobatar={{ animate: "always", traits: { shape: 0.11 } }}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>{card.assigneeName}</span>
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </div>
         {card.place && (
           <p className="flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="size-3 shrink-0" />
             <span className="truncate">{card.place.name}</span>
           </p>
-        )}
-        {card.assigneeName && (
-          <Avatar size="xs" title={card.assigneeName}>
-            <AvatarFallback>{initials(card.assigneeName)}</AvatarFallback>
-          </Avatar>
         )}
       </CardContent>
     </Card>

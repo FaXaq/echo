@@ -3,8 +3,30 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { VersionSwitcher } from "@/components/version-switcher";
 
 const versions = [
-  { id: "org-1", name: "Acme Inc", isPersonal: false },
-  { id: "org-2", name: "Jane Doe", isPersonal: true },
+  {
+    id: "org-1",
+    name: "Acme Inc",
+    isPersonal: false,
+    logoPattern: [
+      [0, 1, 1, 1, 0],
+      [1, 0, 0, 0, 1],
+      [1, 0, 1, 0, 1],
+      [1, 0, 0, 0, 1],
+      [0, 1, 1, 1, 0],
+    ],
+  },
+  {
+    id: "org-2",
+    name: "Jane Doe",
+    isPersonal: true,
+    logoPattern: [
+      [1, 0, 0, 0, 1],
+      [0, 1, 0, 1, 0],
+      [0, 0, 1, 0, 0],
+      [0, 1, 0, 1, 0],
+      [1, 0, 0, 0, 1],
+    ],
+  },
 ];
 
 const meta = {

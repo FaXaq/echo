@@ -15,6 +15,7 @@ function makeOrganization(overrides: Partial<Organizations[number]>): Organizati
     name: "Acme Band",
     slug: "acme",
     isPersonal: false,
+    logoPattern: [],
     ...overrides,
   };
 }

@@ -1,3 +1,4 @@
+import { generateLogoPattern, parseLogoPattern } from "../domain";
 import type { CreateOrganizationCommandPortFactory } from "./create-organization.command.port";
 
 function isSlugTakenError(error: unknown): boolean {
@@ -18,6 +19,7 @@ export const createOrganizationCommandFactory: CreateOrganizationCommandPortFact
           name: input.name,
           slug: input.slug,
           userId: input.userId,
+          metadata: { logoPattern: generateLogoPattern() },
         },
       });
 
@@ -28,6 +30,7 @@ export const createOrganizationCommandFactory: CreateOrganizationCommandPortFact
           name: organization.name,
           slug: organization.slug,
           isPersonal: organization.isPersonal ?? false,
+          logoPattern: parseLogoPattern(organization.metadata),
         },
       };
     } catch (error) {

@@ -30,8 +30,8 @@ function withRouter(children: React.ReactNode) {
 function withSeededQueryClient() {
   const queryClient = new QueryClient();
   queryClient.setQueryData(selfListOrganizations().queryKey, [
-    { id: "org-1", name: "Acme Inc", slug: "acme-inc", isPersonal: false },
-    { id: "org-2", name: "Jane Doe", slug: "jane-doe", isPersonal: true },
+    { id: "org-1", name: "Acme Inc", slug: "acme-inc", isPersonal: false, logoPattern: [] },
+    { id: "org-2", name: "Jane Doe", slug: "jane-doe", isPersonal: true, logoPattern: [] },
   ]);
   queryClient.setQueryData(getActiveMemberRoleQueryOptions({ organizationId: "org-1" }).queryKey, {
     role: "owner",

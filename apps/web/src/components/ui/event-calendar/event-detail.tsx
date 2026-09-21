@@ -16,7 +16,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,10 +26,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
 import { MarkdownEditor, type MarkdownSaveStatus } from "@/components/ui/markdown-editor";
-import { getInitials } from "@/lib/remeda";
 import { eventDotClasses } from "./colors";
 import { getEventLabel, EventTypeIcon } from "./event-types";
 import type { CalendarEvent } from "./types";
+import { Blobatar } from "../blobatar";
 
 export interface EventDetailProps {
   event: CalendarEvent;
@@ -75,11 +74,10 @@ export function EventDetail({
       label: t`Organizer`,
       value: (
         <div className="flex min-w-0 items-center gap-1.5">
-          <Avatar size="sm" className="h-5 w-5">
-            <AvatarFallback className="text-[10px]">
-              {getInitials(event.createdByName)}
-            </AvatarFallback>
-          </Avatar>
+          <Blobatar
+            name={event.createdByName}
+            blobatar={{ animate: "always", traits: { shape: 0.11 } }}
+          />
           <span className="truncate text-[13px] font-medium">{event.createdByName}</span>
         </div>
       ),
