@@ -1,3 +1,9 @@
+## [0.13.0](https://github.com/FaXaq/echo/compare/v0.12.0...v0.13.0) (2026-09-21)
+
+### ✨ Features
+
+* **ui:** blobatar & dot matrix for default org logo ([#45](https://github.com/FaXaq/echo/issues/45)) ([a12d387](https://github.com/FaXaq/echo/commit/a12d387658b2be6e170fc8b51af725f1e3aaf617))
+
 ## [0.12.0](https://github.com/FaXaq/echo/compare/v0.11.1...v0.12.0) (2026-09-20)
 
 ### ✨ Features
