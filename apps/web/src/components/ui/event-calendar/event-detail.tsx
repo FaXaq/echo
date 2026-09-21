@@ -31,6 +31,7 @@ import { getInitials } from "@/lib/remeda";
 import { eventDotClasses } from "./colors";
 import { getEventLabel, EventTypeIcon } from "./event-types";
 import type { CalendarEvent } from "./types";
+import { Blobatar } from "../blobatar";
 
 export interface EventDetailProps {
   event: CalendarEvent;
@@ -75,11 +76,10 @@ export function EventDetail({
       label: t`Organizer`,
       value: (
         <div className="flex min-w-0 items-center gap-1.5">
-          <Avatar size="sm" className="h-5 w-5">
-            <AvatarFallback className="text-[10px]">
-              {getInitials(event.createdByName)}
-            </AvatarFallback>
-          </Avatar>
+          <Blobatar
+            name={event.createdByName}
+            blobatar={{ animate: "always", traits: { shape: 0.11 } }}
+          />
           <span className="truncate text-[13px] font-medium">{event.createdByName}</span>
         </div>
       ),

@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@blobatar/react": "^2.7.0",
     "@dnd-kit/helpers": "^0.3.2",
     "@dnd-kit/react": "^0.3.2",
     "@echo/api": "workspace:*",
@@ -43,6 +44,7 @@
     "@trpc/server": "catalog:",
     "audiobuffer-to-wav": "^1.0.0",
     "better-auth": "catalog:",
+    "blobatar": "^2.7.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

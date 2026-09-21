@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, ChevronDown, Check, Plus } from "lucide-react";
+import { Layout, ChevronDown, Check, Plus, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -44,18 +44,25 @@ export function VersionSwitcher({
               />
             }
           >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Layout className="size-4" />
+            <div className="flex justify-between w-full">
+              <div className="flex flex-row items-center gap-1">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <Layout className="size-4" />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-medium">{current?.name}</span>
+                </div>
+              </div>
+              <div className="flex flex-row items-center gap-2">
+                {current?.isPersonal && (
+                  <Badge variant="outline">
+                    <User />
+                    <Trans>Personal</Trans>
+                  </Badge>
+                )}
+                <ChevronDown className="ml-auto size-4" />
+              </div>
             </div>
-            <div className="flex flex-col gap-0.5 leading-none">
-              <span className="font-medium">{current?.name}</span>
-            </div>
-            {current?.isPersonal && (
-              <Badge variant="secondary">
-                <Trans>Personal</Trans>
-              </Badge>
-            )}
-            <ChevronDown className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-(--anchor-width)" align="start">
             {versions.map((version) => (
