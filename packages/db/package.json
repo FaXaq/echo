@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./generate-org-slug": "./src/generate-org-slug.ts"
+    "./generate-org-slug": "./src/generate-org-slug.ts",
+    "./generate-logo-pattern": "./src/generate-logo-pattern.ts"
   },
   "scripts": {
     "build": "tsc --build",

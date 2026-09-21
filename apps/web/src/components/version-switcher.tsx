@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, ChevronDown, Check, Plus, User } from "lucide-react";
+import { ChevronDown, Check, Plus, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -11,12 +11,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
+import { DotMatrix } from "@/components/ui/dot-matrix";
 import { Trans } from "@lingui/react/macro";
 
 export interface VersionOption {
   id: string;
   name: string;
   isPersonal: boolean;
+  logoPattern: number[][];
 }
 
 export function VersionSwitcher({
@@ -45,9 +47,9 @@ export function VersionSwitcher({
             }
           >
             <div className="flex justify-between w-full">
-              <div className="flex flex-row items-center gap-1">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Layout className="size-4" />
+              <div className="flex flex-row items-center gap-2">
+                <div className="flex aspect-square size-5 items-center justify-center rounded-lg">
+                  <DotMatrix matrix={current?.logoPattern ?? []} className="size-full!" gap={0.5} />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-medium">{current?.name}</span>

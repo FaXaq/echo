@@ -23,7 +23,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setOpenMobile } = useSidebar();
 
   const activeOrgId = activeOrganization?.id ?? orgOptions[0]?.id ?? "";
-  const versions = orgOptions.map((o) => ({ id: o.id, name: o.name, isPersonal: o.isPersonal }));
+  const versions = orgOptions.map((o) => ({
+    id: o.id,
+    name: o.name,
+    isPersonal: o.isPersonal,
+    logoPattern: o.logoPattern,
+  }));
 
   const handleOrgSelect = (id: string) => {
     const org = orgOptions.find((o) => o.id === id);

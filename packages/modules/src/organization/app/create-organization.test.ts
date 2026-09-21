@@ -15,7 +15,13 @@ describe("createOrganization", () => {
       if (attempts < 3) return { status: "slug_taken" };
       return {
         status: "created",
-        organization: { id: "org-1", name: input.name, slug: input.slug, isPersonal: false },
+        organization: {
+          id: "org-1",
+          name: input.name,
+          slug: input.slug,
+          isPersonal: false,
+          logoPattern: [],
+        },
       };
     };
 
@@ -28,6 +34,7 @@ describe("createOrganization", () => {
       name: baseInput.name,
       slug: expect.any(String),
       isPersonal: false,
+      logoPattern: [],
     });
   });
 

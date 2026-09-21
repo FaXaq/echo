@@ -1,3 +1,4 @@
+import { parseLogoPattern } from "../domain";
 import type { ListUserOrganizationQueryPortFactory } from "./list-user-organizations.query.port";
 
 export const listUserOrganizationsQueryFactory: ListUserOrganizationQueryPortFactory =
@@ -11,5 +12,6 @@ export const listUserOrganizationsQueryFactory: ListUserOrganizationQueryPortFac
       name: o.name,
       slug: o.slug,
       isPersonal: o.isPersonal ?? false,
+      logoPattern: parseLogoPattern(o.metadata),
     }));
   };

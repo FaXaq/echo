@@ -8,7 +8,7 @@ import type { CalendarEvent } from "./types";
 function withSeededOrganizations() {
   const queryClient = new QueryClient();
   queryClient.setQueryData(selfListOrganizations().queryKey, [
-    { id: "org-1", name: "Acme Inc", slug: "acme-inc", isPersonal: false },
+    { id: "org-1", name: "Acme Inc", slug: "acme-inc", isPersonal: false, logoPattern: [] },
   ]);
   return queryClient;
 }
