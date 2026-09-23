@@ -32,7 +32,13 @@ function buildOrder(columns: OutreachColumn[], cards: OutreachCard[]) {
   return { columnOrder, cardOrder };
 }
 
-export function OutreachBoard({ organizationId }: { organizationId: string }) {
+export function OutreachBoard({
+  organizationId,
+  onCardClick,
+}: {
+  organizationId: string;
+  onCardClick: (card: OutreachCard) => void;
+}) {
   const { t } = useLingui();
   const { data: columns } = useSuspenseQuery(listOutreachColumnsQueryOptions({ organizationId }));
   const { data: cards } = useSuspenseQuery(listOutreachCardsQueryOptions({ organizationId }));
@@ -166,7 +172,8 @@ export function OutreachBoard({ organizationId }: { organizationId: string }) {
                   )
                 }
                 onAddCard={() => setDialogState({ mode: "create", columnId: column.id })}
-                onCardClick={(card) => setDialogState({ mode: "edit", card })}
+                onCardClick={onCardClick}
+                onCardEdit={(card) => setDialogState({ mode: "edit", card })}
               />
             );
           })}

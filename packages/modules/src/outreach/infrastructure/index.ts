@@ -38,6 +38,12 @@ export type { ListOutreachCardsQueryPort } from "./list-outreach-cards.query.por
 export { listOutreachCardsQueryFactory } from "./list-outreach-cards.query.kysely.js";
 
 export type {
+  GetOutreachCardByIdQueryInput,
+  GetOutreachCardByIdQueryPort,
+} from "./get-outreach-card-by-id.query.port.js";
+export { getOutreachCardByIdQueryFactory } from "./get-outreach-card-by-id.query.kysely.js";
+
+export type {
   InsertOutreachCardInput,
   InsertOutreachCardCommandPort,
 } from "./insert-outreach-card.command.port.js";
@@ -48,6 +54,12 @@ export type {
   UpdateOutreachCardCommandPort,
 } from "./update-outreach-card.command.port.js";
 export { updateOutreachCardCommandFactory } from "./update-outreach-card.command.kysely.js";
+
+export type {
+  UpdateOutreachCardDescriptionInput,
+  UpdateOutreachCardDescriptionCommandPort,
+} from "./update-outreach-card-description.command.port.js";
+export { updateOutreachCardDescriptionCommandFactory } from "./update-outreach-card-description.command.kysely.js";
 
 export type {
   MoveOutreachCardInput,
