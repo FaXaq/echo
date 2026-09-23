@@ -125,7 +125,7 @@ msgid "Add a contact"
 msgstr "Add a contact"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:199
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:194
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:197
 msgid "Add a description…"
 msgstr "Add a description…"
 
@@ -247,7 +247,7 @@ msgstr "Back to home"
 #~ msgid "Back to login"
 #~ msgstr "Back to login"
 
-#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:147
+#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:150
 msgid "Back to Outreach"
 msgstr "Back to Outreach"
 
@@ -303,7 +303,7 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:222
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:210
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:95
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:88
 #: apps/web/src/components/ui/song/song-detail.tsx:121
@@ -321,15 +321,15 @@ msgid "Cannot find the invitation you're looking for"
 msgstr "Cannot find the invitation you're looking for"
 
 #: apps/web/src/components/features/outreach/outreach-card.tsx:75
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:170
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:173
 msgid "Card actions"
 msgstr "Card actions"
 
-#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:89
+#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:92
 msgid "Card deleted"
 msgstr "Card deleted"
 
-#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:141
+#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:144
 msgid "Card not found"
 msgstr "Card not found"
 
@@ -369,7 +369,7 @@ msgstr "Close"
 msgid "Color"
 msgstr "Color"
 
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:75
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:78
 msgid "Column"
 msgstr "Column"
 
@@ -387,7 +387,7 @@ msgid "Confirm password"
 msgstr "Confirm password"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:286
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:115
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:118
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -412,7 +412,7 @@ msgid "Couldn't create column"
 msgstr "Couldn't create column"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:211
-#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:92
+#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:95
 msgid "Couldn't delete card"
 msgstr "Couldn't delete card"
 
@@ -582,8 +582,8 @@ msgstr "Define as"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:229
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:179
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:217
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:182
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:220
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:71
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:102
 #: apps/web/src/components/ui/song/song-detail.tsx:99
@@ -592,7 +592,7 @@ msgid "Delete"
 msgstr "Delete"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:315
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:204
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:207
 msgid "Delete card?"
 msgstr "Delete card?"
 
@@ -649,7 +649,7 @@ msgid "Desc"
 msgstr "Desc"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:195
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:190
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:193
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:42
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:79
 msgid "Description"
@@ -1040,12 +1040,12 @@ msgid "Letters, numbers, _ and - only"
 msgstr "Letters, numbers, _ and - only"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:242
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:90
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:93
 msgid "Lieu"
 msgstr "Lieu"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:94
-#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:67
+#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:70
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:78
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
 msgid "Link copied to clipboard"
@@ -1301,7 +1301,7 @@ msgid "Open {0}"
 msgstr "Open {0}"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:101
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:104
 msgid "Open in Maps"
 msgstr "Open in Maps"
 
@@ -1673,7 +1673,7 @@ msgid "Settings"
 msgstr "Settings"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:163
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:158
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:161
 #: apps/web/src/components/ui/song/song-detail.tsx:78
 msgid "Share"
 msgstr "Share"
@@ -1695,7 +1695,7 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 #: apps/web/src/components/app-error-page.tsx:42
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
-#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:141
+#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:144
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
@@ -1735,7 +1735,7 @@ msgstr "Storage"
 msgid "Theme"
 msgstr "Theme"
 
-#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:144
+#: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:147
 msgid "This card doesn't exist or has been deleted."
 msgstr "This card doesn't exist or has been deleted."
 
@@ -1837,7 +1837,7 @@ msgid "This will permanently delete the selected files. This action cannot be un
 msgstr "This will permanently delete the selected files. This action cannot be undone."
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:317
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:206
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:209
 msgid "This will permanently delete this card. This action cannot be undone."
 msgstr "This will permanently delete this card. This action cannot be undone."
 
@@ -1897,7 +1897,7 @@ msgstr "Type to search songs"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:268
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:273
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:65
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:68
 msgid "Unassigned"
 msgstr "Unassigned"
 
@@ -1910,7 +1910,7 @@ msgid "Undo"
 msgstr "Undo"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:182
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:177
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:180
 #: apps/web/src/components/ui/song/song-detail.tsx:97
 msgid "Update"
 msgstr "Update"
