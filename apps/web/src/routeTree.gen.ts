@@ -22,13 +22,15 @@ import { Route as ProjectsNewRouteImport } from './routes/projects/new'
 import { Route as ProjectsProjectSlugIndexRouteImport } from './routes/projects/$projectSlug/index'
 import { Route as ProjectsProjectSlugCalendarRouteRouteImport } from './routes/projects/$projectSlug/calendar/route'
 import { Route as ProjectsProjectSlugDriveRouteRouteImport } from './routes/projects/$projectSlug/drive/route'
-import { Route as ProjectsProjectSlugOutreachRouteImport } from './routes/projects/$projectSlug/outreach'
+import { Route as ProjectsProjectSlugOutreachRouteRouteImport } from './routes/projects/$projectSlug/outreach/route'
 import { Route as ProjectsProjectSlugPlaylistsRouteRouteImport } from './routes/projects/$projectSlug/playlists/route'
 import { Route as ProjectsProjectSlugSongsRouteRouteImport } from './routes/projects/$projectSlug/songs/route'
 import { Route as ProjectsProjectSlugCalendarIndexRouteImport } from './routes/projects/$projectSlug/calendar/index'
 import { Route as ProjectsProjectSlugCalendarEventIdRouteImport } from './routes/projects/$projectSlug/calendar/$eventId'
 import { Route as ProjectsProjectSlugDriveIndexRouteImport } from './routes/projects/$projectSlug/drive/index'
 import { Route as ProjectsProjectSlugDriveFolderIdRouteImport } from './routes/projects/$projectSlug/drive/$folderId'
+import { Route as ProjectsProjectSlugOutreachIndexRouteImport } from './routes/projects/$projectSlug/outreach/index'
+import { Route as ProjectsProjectSlugOutreachCardIdRouteImport } from './routes/projects/$projectSlug/outreach/$cardId'
 import { Route as ProjectsProjectSlugPlaylistsIndexRouteImport } from './routes/projects/$projectSlug/playlists/index'
 import { Route as ProjectsProjectSlugPlaylistsPlaylistIdRouteImport } from './routes/projects/$projectSlug/playlists/$playlistId'
 import { Route as ProjectsProjectSlugSettingsIndexRouteImport } from './routes/projects/$projectSlug/settings/index'
@@ -104,8 +106,8 @@ const ProjectsProjectSlugDriveRouteRoute =
     path: '/drive',
     getParentRoute: () => ProjectsProjectSlugRouteRoute,
   } as any)
-const ProjectsProjectSlugOutreachRoute =
-  ProjectsProjectSlugOutreachRouteImport.update({
+const ProjectsProjectSlugOutreachRouteRoute =
+  ProjectsProjectSlugOutreachRouteRouteImport.update({
     id: '/outreach',
     path: '/outreach',
     getParentRoute: () => ProjectsProjectSlugRouteRoute,
@@ -145,6 +147,18 @@ const ProjectsProjectSlugDriveFolderIdRoute =
     id: '/$folderId',
     path: '/$folderId',
     getParentRoute: () => ProjectsProjectSlugDriveRouteRoute,
+  } as any)
+const ProjectsProjectSlugOutreachIndexRoute =
+  ProjectsProjectSlugOutreachIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ProjectsProjectSlugOutreachRouteRoute,
+  } as any)
+const ProjectsProjectSlugOutreachCardIdRoute =
+  ProjectsProjectSlugOutreachCardIdRouteImport.update({
+    id: '/$cardId',
+    path: '/$cardId',
+    getParentRoute: () => ProjectsProjectSlugOutreachRouteRoute,
   } as any)
 const ProjectsProjectSlugPlaylistsIndexRoute =
   ProjectsProjectSlugPlaylistsIndexRouteImport.update({
@@ -190,16 +204,18 @@ export interface FileRoutesByFullPath {
   '/projects/new': typeof ProjectsNewRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
   '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveRouteRouteWithChildren
+  '/projects/$projectSlug/outreach': typeof ProjectsProjectSlugOutreachRouteRouteWithChildren
   '/projects/$projectSlug/playlists': typeof ProjectsProjectSlugPlaylistsRouteRouteWithChildren
   '/projects/$projectSlug/songs': typeof ProjectsProjectSlugSongsRouteRouteWithChildren
-  '/projects/$projectSlug/outreach': typeof ProjectsProjectSlugOutreachRoute
   '/projects/$projectSlug/': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/drive/$folderId': typeof ProjectsProjectSlugDriveFolderIdRoute
+  '/projects/$projectSlug/outreach/$cardId': typeof ProjectsProjectSlugOutreachCardIdRoute
   '/projects/$projectSlug/playlists/$playlistId': typeof ProjectsProjectSlugPlaylistsPlaylistIdRoute
   '/projects/$projectSlug/songs/$songId': typeof ProjectsProjectSlugSongsSongIdRoute
   '/projects/$projectSlug/calendar/': typeof ProjectsProjectSlugCalendarIndexRoute
   '/projects/$projectSlug/drive/': typeof ProjectsProjectSlugDriveIndexRoute
+  '/projects/$projectSlug/outreach/': typeof ProjectsProjectSlugOutreachIndexRoute
   '/projects/$projectSlug/playlists/': typeof ProjectsProjectSlugPlaylistsIndexRoute
   '/projects/$projectSlug/settings/': typeof ProjectsProjectSlugSettingsIndexRoute
   '/projects/$projectSlug/songs/': typeof ProjectsProjectSlugSongsIndexRoute
@@ -214,14 +230,15 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/verify-email': typeof VerifyEmailRoute
   '/projects/new': typeof ProjectsNewRoute
-  '/projects/$projectSlug/outreach': typeof ProjectsProjectSlugOutreachRoute
   '/projects/$projectSlug': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/drive/$folderId': typeof ProjectsProjectSlugDriveFolderIdRoute
+  '/projects/$projectSlug/outreach/$cardId': typeof ProjectsProjectSlugOutreachCardIdRoute
   '/projects/$projectSlug/playlists/$playlistId': typeof ProjectsProjectSlugPlaylistsPlaylistIdRoute
   '/projects/$projectSlug/songs/$songId': typeof ProjectsProjectSlugSongsSongIdRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarIndexRoute
   '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveIndexRoute
+  '/projects/$projectSlug/outreach': typeof ProjectsProjectSlugOutreachIndexRoute
   '/projects/$projectSlug/playlists': typeof ProjectsProjectSlugPlaylistsIndexRoute
   '/projects/$projectSlug/settings': typeof ProjectsProjectSlugSettingsIndexRoute
   '/projects/$projectSlug/songs': typeof ProjectsProjectSlugSongsIndexRoute
@@ -240,16 +257,18 @@ export interface FileRoutesById {
   '/projects/new': typeof ProjectsNewRoute
   '/projects/$projectSlug/calendar': typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
   '/projects/$projectSlug/drive': typeof ProjectsProjectSlugDriveRouteRouteWithChildren
+  '/projects/$projectSlug/outreach': typeof ProjectsProjectSlugOutreachRouteRouteWithChildren
   '/projects/$projectSlug/playlists': typeof ProjectsProjectSlugPlaylistsRouteRouteWithChildren
   '/projects/$projectSlug/songs': typeof ProjectsProjectSlugSongsRouteRouteWithChildren
-  '/projects/$projectSlug/outreach': typeof ProjectsProjectSlugOutreachRoute
   '/projects/$projectSlug/': typeof ProjectsProjectSlugIndexRoute
   '/projects/$projectSlug/calendar/$eventId': typeof ProjectsProjectSlugCalendarEventIdRoute
   '/projects/$projectSlug/drive/$folderId': typeof ProjectsProjectSlugDriveFolderIdRoute
+  '/projects/$projectSlug/outreach/$cardId': typeof ProjectsProjectSlugOutreachCardIdRoute
   '/projects/$projectSlug/playlists/$playlistId': typeof ProjectsProjectSlugPlaylistsPlaylistIdRoute
   '/projects/$projectSlug/songs/$songId': typeof ProjectsProjectSlugSongsSongIdRoute
   '/projects/$projectSlug/calendar/': typeof ProjectsProjectSlugCalendarIndexRoute
   '/projects/$projectSlug/drive/': typeof ProjectsProjectSlugDriveIndexRoute
+  '/projects/$projectSlug/outreach/': typeof ProjectsProjectSlugOutreachIndexRoute
   '/projects/$projectSlug/playlists/': typeof ProjectsProjectSlugPlaylistsIndexRoute
   '/projects/$projectSlug/settings/': typeof ProjectsProjectSlugSettingsIndexRoute
   '/projects/$projectSlug/songs/': typeof ProjectsProjectSlugSongsIndexRoute
@@ -269,16 +288,18 @@ export interface FileRouteTypes {
     | '/projects/new'
     | '/projects/$projectSlug/calendar'
     | '/projects/$projectSlug/drive'
+    | '/projects/$projectSlug/outreach'
     | '/projects/$projectSlug/playlists'
     | '/projects/$projectSlug/songs'
-    | '/projects/$projectSlug/outreach'
     | '/projects/$projectSlug/'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/drive/$folderId'
+    | '/projects/$projectSlug/outreach/$cardId'
     | '/projects/$projectSlug/playlists/$playlistId'
     | '/projects/$projectSlug/songs/$songId'
     | '/projects/$projectSlug/calendar/'
     | '/projects/$projectSlug/drive/'
+    | '/projects/$projectSlug/outreach/'
     | '/projects/$projectSlug/playlists/'
     | '/projects/$projectSlug/settings/'
     | '/projects/$projectSlug/songs/'
@@ -293,14 +314,15 @@ export interface FileRouteTypes {
     | '/signup'
     | '/verify-email'
     | '/projects/new'
-    | '/projects/$projectSlug/outreach'
     | '/projects/$projectSlug'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/drive/$folderId'
+    | '/projects/$projectSlug/outreach/$cardId'
     | '/projects/$projectSlug/playlists/$playlistId'
     | '/projects/$projectSlug/songs/$songId'
     | '/projects/$projectSlug/calendar'
     | '/projects/$projectSlug/drive'
+    | '/projects/$projectSlug/outreach'
     | '/projects/$projectSlug/playlists'
     | '/projects/$projectSlug/settings'
     | '/projects/$projectSlug/songs'
@@ -318,16 +340,18 @@ export interface FileRouteTypes {
     | '/projects/new'
     | '/projects/$projectSlug/calendar'
     | '/projects/$projectSlug/drive'
+    | '/projects/$projectSlug/outreach'
     | '/projects/$projectSlug/playlists'
     | '/projects/$projectSlug/songs'
-    | '/projects/$projectSlug/outreach'
     | '/projects/$projectSlug/'
     | '/projects/$projectSlug/calendar/$eventId'
     | '/projects/$projectSlug/drive/$folderId'
+    | '/projects/$projectSlug/outreach/$cardId'
     | '/projects/$projectSlug/playlists/$playlistId'
     | '/projects/$projectSlug/songs/$songId'
     | '/projects/$projectSlug/calendar/'
     | '/projects/$projectSlug/drive/'
+    | '/projects/$projectSlug/outreach/'
     | '/projects/$projectSlug/playlists/'
     | '/projects/$projectSlug/settings/'
     | '/projects/$projectSlug/songs/'
@@ -443,7 +467,7 @@ declare module '@tanstack/react-router' {
       id: '/projects/$projectSlug/outreach'
       path: '/outreach'
       fullPath: '/projects/$projectSlug/outreach'
-      preLoaderRoute: typeof ProjectsProjectSlugOutreachRouteImport
+      preLoaderRoute: typeof ProjectsProjectSlugOutreachRouteRouteImport
       parentRoute: typeof ProjectsProjectSlugRouteRoute
     }
     '/projects/$projectSlug/playlists': {
@@ -487,6 +511,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/$projectSlug/drive/$folderId'
       preLoaderRoute: typeof ProjectsProjectSlugDriveFolderIdRouteImport
       parentRoute: typeof ProjectsProjectSlugDriveRouteRoute
+    }
+    '/projects/$projectSlug/outreach/': {
+      id: '/projects/$projectSlug/outreach/'
+      path: '/'
+      fullPath: '/projects/$projectSlug/outreach/'
+      preLoaderRoute: typeof ProjectsProjectSlugOutreachIndexRouteImport
+      parentRoute: typeof ProjectsProjectSlugOutreachRouteRoute
+    }
+    '/projects/$projectSlug/outreach/$cardId': {
+      id: '/projects/$projectSlug/outreach/$cardId'
+      path: '/$cardId'
+      fullPath: '/projects/$projectSlug/outreach/$cardId'
+      preLoaderRoute: typeof ProjectsProjectSlugOutreachCardIdRouteImport
+      parentRoute: typeof ProjectsProjectSlugOutreachRouteRoute
     }
     '/projects/$projectSlug/playlists/': {
       id: '/projects/$projectSlug/playlists/'
@@ -561,6 +599,24 @@ const ProjectsProjectSlugDriveRouteRouteWithChildren =
     ProjectsProjectSlugDriveRouteRouteChildren,
   )
 
+interface ProjectsProjectSlugOutreachRouteRouteChildren {
+  ProjectsProjectSlugOutreachCardIdRoute: typeof ProjectsProjectSlugOutreachCardIdRoute
+  ProjectsProjectSlugOutreachIndexRoute: typeof ProjectsProjectSlugOutreachIndexRoute
+}
+
+const ProjectsProjectSlugOutreachRouteRouteChildren: ProjectsProjectSlugOutreachRouteRouteChildren =
+  {
+    ProjectsProjectSlugOutreachCardIdRoute:
+      ProjectsProjectSlugOutreachCardIdRoute,
+    ProjectsProjectSlugOutreachIndexRoute:
+      ProjectsProjectSlugOutreachIndexRoute,
+  }
+
+const ProjectsProjectSlugOutreachRouteRouteWithChildren =
+  ProjectsProjectSlugOutreachRouteRoute._addFileChildren(
+    ProjectsProjectSlugOutreachRouteRouteChildren,
+  )
+
 interface ProjectsProjectSlugPlaylistsRouteRouteChildren {
   ProjectsProjectSlugPlaylistsPlaylistIdRoute: typeof ProjectsProjectSlugPlaylistsPlaylistIdRoute
   ProjectsProjectSlugPlaylistsIndexRoute: typeof ProjectsProjectSlugPlaylistsIndexRoute
@@ -598,9 +654,9 @@ const ProjectsProjectSlugSongsRouteRouteWithChildren =
 interface ProjectsProjectSlugRouteRouteChildren {
   ProjectsProjectSlugCalendarRouteRoute: typeof ProjectsProjectSlugCalendarRouteRouteWithChildren
   ProjectsProjectSlugDriveRouteRoute: typeof ProjectsProjectSlugDriveRouteRouteWithChildren
+  ProjectsProjectSlugOutreachRouteRoute: typeof ProjectsProjectSlugOutreachRouteRouteWithChildren
   ProjectsProjectSlugPlaylistsRouteRoute: typeof ProjectsProjectSlugPlaylistsRouteRouteWithChildren
   ProjectsProjectSlugSongsRouteRoute: typeof ProjectsProjectSlugSongsRouteRouteWithChildren
-  ProjectsProjectSlugOutreachRoute: typeof ProjectsProjectSlugOutreachRoute
   ProjectsProjectSlugIndexRoute: typeof ProjectsProjectSlugIndexRoute
   ProjectsProjectSlugSettingsIndexRoute: typeof ProjectsProjectSlugSettingsIndexRoute
 }
@@ -611,11 +667,12 @@ const ProjectsProjectSlugRouteRouteChildren: ProjectsProjectSlugRouteRouteChildr
       ProjectsProjectSlugCalendarRouteRouteWithChildren,
     ProjectsProjectSlugDriveRouteRoute:
       ProjectsProjectSlugDriveRouteRouteWithChildren,
+    ProjectsProjectSlugOutreachRouteRoute:
+      ProjectsProjectSlugOutreachRouteRouteWithChildren,
     ProjectsProjectSlugPlaylistsRouteRoute:
       ProjectsProjectSlugPlaylistsRouteRouteWithChildren,
     ProjectsProjectSlugSongsRouteRoute:
       ProjectsProjectSlugSongsRouteRouteWithChildren,
-    ProjectsProjectSlugOutreachRoute: ProjectsProjectSlugOutreachRoute,
     ProjectsProjectSlugIndexRoute: ProjectsProjectSlugIndexRoute,
     ProjectsProjectSlugSettingsIndexRoute:
       ProjectsProjectSlugSettingsIndexRoute,

@@ -7,8 +7,10 @@ import {
   reorderOutreachColumn,
   deleteOutreachColumn,
   listOutreachCards,
+  getOutreachCardById,
   createOutreachCard,
   updateOutreachCard,
+  updateOutreachCardDescription,
   moveOutreachCard,
   deleteOutreachCard,
   linkOutreachContactToCard,
@@ -24,8 +26,10 @@ import {
   countOutreachCardsInColumnQueryFactory,
   deleteOutreachColumnCommandFactory,
   listOutreachCardsQueryFactory,
+  getOutreachCardByIdQueryFactory,
   insertOutreachCardCommandFactory,
   updateOutreachCardCommandFactory,
+  updateOutreachCardDescriptionCommandFactory,
   moveOutreachCardCommandFactory,
   deleteOutreachCardCommandFactory,
   linkOutreachContactToCardCommandFactory,
@@ -50,8 +54,10 @@ const moveOutreachColumnCommand = moveOutreachColumnCommandFactory();
 const countOutreachCardsInColumnQuery = countOutreachCardsInColumnQueryFactory();
 const deleteOutreachColumnCommand = deleteOutreachColumnCommandFactory();
 const listOutreachCardsQuery = listOutreachCardsQueryFactory();
+const getOutreachCardByIdQuery = getOutreachCardByIdQueryFactory();
 const insertOutreachCardCommand = insertOutreachCardCommandFactory();
 const updateOutreachCardCommand = updateOutreachCardCommandFactory();
+const updateOutreachCardDescriptionCommand = updateOutreachCardDescriptionCommandFactory();
 const moveOutreachCardCommand = moveOutreachCardCommandFactory();
 const deleteOutreachCardCommand = deleteOutreachCardCommandFactory();
 const linkOutreachContactToCardCommand = linkOutreachContactToCardCommandFactory();
@@ -149,6 +155,19 @@ export const makeOutreachRouter = () =>
       ),
     ),
 
+    getCardById: organizationProcedure
+      .input(z.object({ cardId: z.string() }))
+      .query(({ ctx, input }) =>
+        getOutreachCardById(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            getOutreachCardByIdQuery,
+          },
+          { scope: ctx.organizationScope, cardId: input.cardId },
+        ),
+      ),
+
     createCard: organizationProcedure
       .input(
         z.object({
@@ -204,6 +223,24 @@ export const makeOutreachRouter = () =>
             place: input.place ?? null,
             description: input.description ?? null,
             assigneeId: input.assigneeId ?? null,
+          },
+        ),
+      ),
+
+    updateCardDescription: organizationProcedure
+      .input(z.object({ id: z.string(), description: z.string().nullable() }))
+      .mutation(({ ctx, input }) =>
+        updateOutreachCardDescription(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            updateOutreachCardDescriptionCommand,
+          },
+          {
+            scope: ctx.organizationScope,
+            userId: ctx.session.user.id,
+            id: input.id,
+            description: input.description,
           },
         ),
       ),

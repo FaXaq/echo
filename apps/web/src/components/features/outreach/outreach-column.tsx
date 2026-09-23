@@ -21,6 +21,7 @@ export interface OutreachColumnProps {
   onDelete: () => void;
   onAddCard: () => void;
   onCardClick: (card: OutreachCardData) => void;
+  onCardEdit: (card: OutreachCardData) => void;
 }
 
 export function OutreachColumnView({
@@ -32,6 +33,7 @@ export function OutreachColumnView({
   onDelete,
   onAddCard,
   onCardClick,
+  onCardEdit,
 }: OutreachColumnProps) {
   const { t } = useLingui();
   const handleRef = useRef<HTMLButtonElement>(null);
@@ -123,6 +125,7 @@ export function OutreachColumnView({
               columnId={column.id}
               index={cardIndex}
               onClick={() => onCardClick(card)}
+              onEdit={() => onCardEdit(card)}
             />
           );
         })}

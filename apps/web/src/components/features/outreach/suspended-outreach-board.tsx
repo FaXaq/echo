@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useLingui } from "@lingui/react/macro";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { OutreachCard } from "@/services/resources/outreach";
 import { OutreachBoard } from "./outreach-board";
 
 function OutreachBoardError() {
@@ -19,11 +20,17 @@ function OutreachBoardSkeleton() {
   );
 }
 
-export function SuspendedOutreachBoard({ organizationId }: { organizationId: string }) {
+export function SuspendedOutreachBoard({
+  organizationId,
+  onCardClick,
+}: {
+  organizationId: string;
+  onCardClick: (card: OutreachCard) => void;
+}) {
   return (
     <ErrorBoundary FallbackComponent={OutreachBoardError}>
       <Suspense fallback={<OutreachBoardSkeleton />}>
-        <OutreachBoard organizationId={organizationId} />
+        <OutreachBoard organizationId={organizationId} onCardClick={onCardClick} />
       </Suspense>
     </ErrorBoundary>
   );

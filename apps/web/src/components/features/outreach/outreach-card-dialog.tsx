@@ -38,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { listMembersQueryOptions } from "@/services/resources/member";
 import {
@@ -248,11 +247,6 @@ export function OutreachCardDialog({
                     <PlaceField id="card-place" value={field.value} onChange={field.onChange} />
                   )}
                 />
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="card-description">{t`Description`}</FieldLabel>
-                <Textarea id="card-description" {...register("description")} />
               </Field>
 
               <Field>

@@ -32,6 +32,16 @@ export function listOutreachCardsQueryOptions(opts: { organizationId: string }) 
   });
 }
 
+export function getOutreachCardQueryOptions(opts: { organizationId: string; cardId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getCardById", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.outreach.getCardById.query(params, { signal });
+    },
+  });
+}
+
 export function listOutreachCardContactsQueryOptions(opts: {
   organizationId: string;
   cardId: string;
@@ -121,6 +131,24 @@ export function useUpdateOutreachCardMutation() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
     },
+  });
+}
+
+export function useUpdateOutreachCardDescriptionMutation({
+  organizationId,
+  onError,
+}: {
+  organizationId: string;
+  onError?: (error: unknown) => void;
+}) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: string; description: string | null }) =>
+      apiClient.outreach.updateCardDescription.mutate({ organizationId, ...input }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+    },
+    onError,
   });
 }
 

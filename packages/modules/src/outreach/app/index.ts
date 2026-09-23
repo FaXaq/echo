@@ -5,8 +5,10 @@ export { reorderOutreachColumn } from "./reorder-outreach-column.js";
 export { deleteOutreachColumn } from "./delete-outreach-column.js";
 
 export { listOutreachCards } from "./list-outreach-cards.js";
+export { getOutreachCardById } from "./get-outreach-card-by-id.js";
 export { createOutreachCard } from "./create-outreach-card.js";
 export { updateOutreachCard } from "./update-outreach-card.js";
+export { updateOutreachCardDescription } from "./update-outreach-card-description.js";
 export { moveOutreachCard } from "./move-outreach-card.js";
 export { deleteOutreachCard } from "./delete-outreach-card.js";
 
