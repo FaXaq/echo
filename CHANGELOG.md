@@ -1,3 +1,9 @@
+## [0.14.0](https://github.com/FaXaq/echo/compare/v0.13.0...v0.14.0) (2026-09-23)
+
+### ✨ Features
+
+* **outreach:** card detail ([#46](https://github.com/FaXaq/echo/issues/46)) ([41ccaae](https://github.com/FaXaq/echo/commit/41ccaae991860f6f1649064057b11034ea76edec))
+
 ## [0.13.0](https://github.com/FaXaq/echo/compare/v0.12.0...v0.13.0) (2026-09-21)
 
 ### ✨ Features
