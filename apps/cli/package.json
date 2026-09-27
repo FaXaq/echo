@@ -30,6 +30,7 @@
     "drive:backfill-durations": "node dist/main.js drive backfill-durations"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1093.0",
     "@echo/adapters": "workspace:*",
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
