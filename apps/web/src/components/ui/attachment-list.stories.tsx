@@ -17,6 +17,7 @@ function makeFile(overrides: Partial<EventFile>): EventFile {
     kind: "document",
     mimeType: "application/pdf",
     sizeBytes: 86_000,
+    durationSeconds: null,
     filename: "setlist.pdf",
     originalFilename: "setlist.pdf",
     s3Key: "s3-key",

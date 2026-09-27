@@ -26,9 +26,11 @@
     "session:revoke": "node dist/main.js session revoke",
     "rgpd:export": "node dist/main.js rgpd export",
     "rgpd:anonymize": "node dist/main.js rgpd anonymize",
-    "rgpd:report": "node dist/main.js rgpd report"
+    "rgpd:report": "node dist/main.js rgpd report",
+    "drive:backfill-durations": "node dist/main.js drive backfill-durations"
   },
   "dependencies": {
+    "@echo/adapters": "workspace:*",
     "@echo/auth": "workspace:*",
     "@echo/db": "workspace:*",
     "@echo/modules": "workspace:*",
@@ -36,6 +38,7 @@
     "commander": "^13.1.0",
     "dotenv": "catalog:",
     "kysely": "catalog:",
+    "music-metadata": "^11.16.1",
     "pg": "catalog:",
     "zod": "catalog:"
   },

@@ -86,6 +86,7 @@ export const makeDriveRouter = () =>
           folderId: z.string().nullish(),
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
+          durationSeconds: z.number().int().nonnegative().nullish(),
           filename: z.string().min(1),
         }),
       )

@@ -62,6 +62,7 @@ export interface Contact {
 
 export interface File {
   created_at: Generated<Timestamp | null>;
+  duration_seconds: number | null;
   event_id: string | null;
   filename: string;
   folder_id: string | null;

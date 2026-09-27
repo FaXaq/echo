@@ -41,6 +41,7 @@ export type FileRecord = {
   kind: FileKind;
   mimeType: string;
   sizeBytes: number;
+  durationSeconds: number | null;
   filename: string;
   originalFilename: string;
   s3Key: string;

@@ -1,3 +1,6 @@
+import { kindForMimeType } from "@echo/modules/drive/domain";
+import { match } from "ts-pattern";
+
 export function downloadBlob(blob: Blob, filename: string) {
   const objectUrl = URL.createObjectURL(blob);
 
@@ -44,4 +47,54 @@ export function formatDuration(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
   return `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+// TODO(human): read this File's play length client-side, before it's ever
+// uploaded, so it can be sent alongside mimeType/sizeBytes in createUpload.
+//
+// - Only audio/video files have a duration; other kinds should resolve null
+//   immediately without touching the DOM.
+// - Use a temporary <audio> or <video> element (HTMLMediaElement.duration,
+//   available once the "loadedmetadata" event fires) fed via
+//   URL.createObjectURL(file) — the same technique audio-player-store.ts
+//   already uses for playback.
+// - Resolve null (never reject) if the browser can't decode the file
+//   (corrupt/unsupported) — this must never block the upload.
+// - Round to whole seconds (the backend column is an integer).
+// - Clean up: revoke the object URL once metadata has loaded (or once it's
+//   clear it never will) so you don't leak blob URLs.
+export function getMediaDuration(file: File): Promise<number | null> {
+  const kind = kindForMimeType(file.type);
+  if (kind !== "audio" && kind !== "video") return Promise.resolve(null);
+
+  const url = URL.createObjectURL(file);
+
+  const mediaElement = match(kind)
+    .with("audio", () => {
+      const audio = document.createElement("audio");
+      audio.setAttribute("src", url);
+      return audio;
+    })
+    .with("video", () => {
+      const video = document.createElement("video");
+      const source = document.createElement("source");
+      source.setAttribute("src", url);
+      source.setAttribute("type", file.type);
+
+      video.appendChild(source);
+      return video;
+    })
+    .exhaustive();
+
+  return new Promise((resolve) => {
+    mediaElement.addEventListener("loadedmetadata", () => {
+      URL.revokeObjectURL(url);
+      resolve(Number.isFinite(mediaElement.duration) ? Math.round(mediaElement.duration) : null);
+    });
+
+    mediaElement.addEventListener("error", () => {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    });
+  });
 }

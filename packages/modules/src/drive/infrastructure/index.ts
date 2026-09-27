@@ -149,3 +149,12 @@ export type {
   SearchDriveQueryPort,
 } from "./search-drive.query.port.js";
 export { searchDriveQueryFactory } from "./search-drive.query.kysely.js";
+
+export type { FindFilesMissingDurationQueryPort } from "./find-files-missing-duration.query.port.js";
+export { findFilesMissingDurationQueryFactory } from "./find-files-missing-duration.query.kysely.js";
+
+export type {
+  UpdateFileDurationByIdInput,
+  UpdateFileDurationByIdCommandPort,
+} from "./update-file-duration-by-id.command.port.js";
+export { updateFileDurationByIdCommandFactory } from "./update-file-duration-by-id.command.kysely.js";
