@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "@/lib/dayjs";
 import dayjs from "dayjs";
-import { MapPin, MoreVertical, Share2, Timer, User } from "lucide-react";
+import { MapPin, MoreVertical, Plus, Share2, Timer, User } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 import { capitalize } from "remeda";
 
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
 import { MarkdownEditor, type MarkdownSaveStatus } from "@/components/ui/markdown-editor";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { eventDotClasses } from "./colors";
 import { getEventLabel, EventTypeIcon } from "./event-types";
 import type { CalendarEvent } from "./types";
@@ -40,7 +41,8 @@ export interface EventDetailProps {
   onEdit: () => void;
   onDelete: () => void;
   attachments: React.ReactNode;
-  playlistsPicker?: React.ReactNode;
+  playlistsList?: React.ReactNode;
+  addPlaylistPicker?: React.ReactNode;
   className?: string;
 }
 
@@ -53,7 +55,8 @@ export function EventDetail({
   onEdit,
   onDelete,
   attachments,
-  playlistsPicker,
+  playlistsList,
+  addPlaylistPicker,
   className,
 }: EventDetailProps) {
   const { t } = useLingui();
@@ -202,10 +205,29 @@ export function EventDetail({
           />
         </div>
 
-        {playlistsPicker && (
+        {(playlistsList || addPlaylistPicker) && (
           <div className="flex flex-col gap-2">
-            <span className="text-[13px] font-semibold">{t`Playlists`}</span>
-            {playlistsPicker}
+            <div className="flex items-center justify-between">
+              <span className="text-[13px] font-semibold">{t`Playlists`}</span>
+              {addPlaylistPicker && (
+                <Popover>
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-xs"
+                        aria-label={t`Add playlist`}
+                      />
+                    }
+                  >
+                    <Plus />
+                  </PopoverTrigger>
+                  <PopoverContent align="end">{addPlaylistPicker}</PopoverContent>
+                </Popover>
+              )}
+            </div>
+            {playlistsList}
           </div>
         )}
       </EntityDetailLayout>

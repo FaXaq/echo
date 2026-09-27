@@ -1,8 +1,7 @@
 import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
-import type { OrganizationScope } from "@echo/modules/shared/domain";
-import { computeReorderPosition } from "../domain/index.js";
+import { computeReorderPosition, type OrganizationScope } from "@echo/modules/shared/domain";
 import type { ListOutreachColumnsQueryPort } from "../infrastructure/list-outreach-columns.query.port.js";
 import type { MoveOutreachColumnCommandPort } from "../infrastructure/move-outreach-column.command.port.js";
 

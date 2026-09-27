@@ -5,6 +5,7 @@ export { listPlaylists } from "./list-playlists.js";
 export { listPlaylistSongs } from "./list-playlist-songs.js";
 export { addSongToPlaylist } from "./add-song-to-playlist.js";
 export { removeSongFromPlaylist } from "./remove-song-from-playlist.js";
+export { moveSongInPlaylist } from "./move-song-in-playlist.js";
 export { attachPlaylistToEvent } from "./attach-playlist-to-event.js";
 export { detachPlaylistFromEvent } from "./detach-playlist-from-event.js";
 export { listEventPlaylists } from "./list-event-playlists.js";

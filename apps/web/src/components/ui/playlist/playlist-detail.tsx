@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ListMusic, MoreVertical } from "lucide-react";
+import { ListMusic, MoreVertical, Plus } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 
 import {
@@ -20,18 +20,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Playlist } from "@/services/resources/playlist";
 
 export interface PlaylistDetailProps {
   playlist: Playlist;
-  songsPicker: React.ReactNode;
+  songsList: React.ReactNode;
+  addSongPicker: React.ReactNode;
   onDelete: () => void;
   className?: string;
 }
 
 export function PlaylistDetail({
   playlist,
-  songsPicker,
+  songsList,
+  addSongPicker,
   onDelete,
   className,
 }: PlaylistDetailProps) {
@@ -78,8 +81,20 @@ export function PlaylistDetail({
         className={className}
       >
         <div className="flex flex-col gap-2">
-          <h2 className="text-sm font-medium text-muted-foreground">{t`Songs`}</h2>
-          {songsPicker}
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-muted-foreground">{t`Songs`}</h2>
+            <Popover>
+              <PopoverTrigger
+                render={
+                  <Button type="button" variant="outline" size="icon-xs" aria-label={t`Add song`} />
+                }
+              >
+                <Plus />
+              </PopoverTrigger>
+              <PopoverContent align="end">{addSongPicker}</PopoverContent>
+            </Popover>
+          </div>
+          {songsList}
         </div>
       </EntityDetailLayout>
 

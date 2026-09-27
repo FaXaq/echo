@@ -8,6 +8,7 @@ import {
   listPlaylistSongs,
   addSongToPlaylist,
   removeSongFromPlaylist,
+  moveSongInPlaylist,
   attachPlaylistToEvent,
   detachPlaylistFromEvent,
   listEventPlaylists,
@@ -21,6 +22,7 @@ import {
   listPlaylistSongsQueryFactory,
   addSongToPlaylistCommandFactory,
   removeSongFromPlaylistCommandFactory,
+  moveSongInPlaylistCommandFactory,
   attachPlaylistToEventCommandFactory,
   detachPlaylistFromEventCommandFactory,
   listEventPlaylistsQueryFactory,
@@ -34,6 +36,7 @@ const listPlaylistsQuery = listPlaylistsQueryFactory();
 const listPlaylistSongsQuery = listPlaylistSongsQueryFactory();
 const addSongToPlaylistCommand = addSongToPlaylistCommandFactory();
 const removeSongFromPlaylistCommand = removeSongFromPlaylistCommandFactory();
+const moveSongInPlaylistCommand = moveSongInPlaylistCommandFactory();
 const attachPlaylistToEventCommand = attachPlaylistToEventCommandFactory();
 const detachPlaylistFromEventCommand = detachPlaylistFromEventCommandFactory();
 const listEventPlaylistsQuery = listEventPlaylistsQueryFactory();
@@ -121,6 +124,7 @@ export const makePlaylistRouter = () =>
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            listPlaylistSongsQuery,
             addSongToPlaylistCommand,
           },
           { playlistId: input.playlistId, songId: input.songId, scope: ctx.organizationScope },
@@ -137,6 +141,33 @@ export const makePlaylistRouter = () =>
             removeSongFromPlaylistCommand,
           },
           { playlistId: input.playlistId, songId: input.songId, scope: ctx.organizationScope },
+        ),
+      ),
+
+    moveSongInPlaylist: organizationProcedure
+      .input(
+        z.object({
+          playlistId: z.string(),
+          songId: z.string(),
+          beforeId: z.string().nullable(),
+          afterId: z.string().nullable(),
+        }),
+      )
+      .mutation(({ ctx, input }) =>
+        moveSongInPlaylist(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            listPlaylistSongsQuery,
+            moveSongInPlaylistCommand,
+          },
+          {
+            scope: ctx.organizationScope,
+            playlistId: input.playlistId,
+            songId: input.songId,
+            beforeId: input.beforeId,
+            afterId: input.afterId,
+          },
         ),
       ),
 

@@ -119,6 +119,22 @@ export function useRemoveSongFromPlaylistMutation({ organizationId }: { organiza
   });
 }
 
+export function useMoveSongInPlaylistMutation({ organizationId }: { organizationId: string }) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: {
+      playlistId: string;
+      songId: string;
+      beforeId: string | null;
+      afterId: string | null;
+    }) => apiClient.playlist.moveSongInPlaylist.mutate({ organizationId, ...input }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+    },
+  });
+}
+
 export function useAttachPlaylistToEventMutation({ organizationId }: { organizationId: string }) {
   const queryClient = useQueryClient();
 

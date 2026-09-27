@@ -124,7 +124,7 @@ msgstr "Actions pour les fichiers sélectionnés"
 msgid "Add a contact"
 msgstr "Ajouter un contact"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:199
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:202
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:197
 msgid "Add a description…"
 msgstr "Ajouter une description…"
@@ -150,6 +150,14 @@ msgstr "Ajouter une colonne"
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:220
+msgid "Add playlist"
+msgstr "Ajouter une playlist"
+
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:89
+msgid "Add song"
+msgstr "Ajouter une chanson"
+
 #: apps/web/src/components/ui/song/song-detail.tsx:60
 msgid "Added by"
 msgstr "Ajouté par"
@@ -162,7 +170,7 @@ msgstr "Administrateur"
 msgid "Agenda"
 msgstr "Agenda"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:66
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:69
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:281
 #: apps/web/src/components/ui/event-calendar/time-grid-view.tsx:158
 msgid "All day"
@@ -177,8 +185,12 @@ msgid "Already have an account? <0>Sign in</0>"
 msgstr "Déjà un compte ? <0>Se connecter</0>"
 
 #: apps/web/src/components/app-error-page.tsx:47
-msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
-msgstr "Une erreur inattendue s'est produite. Nous avons été notifié avec le code d'erreur <0>{humanReadableErrorId}</0>. Recharger la page résout généralement le problème."
+#~ msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
+#~ msgstr "Une erreur inattendue s'est produite. Nous avons été notifié avec le code d'erreur <0>{humanReadableErrorId}</0>. Recharger la page résout généralement le problème."
+
+#: apps/web/src/components/app-error-page.tsx:47
+msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0><1>{humanReadableErrorId}</1></0> attached. Reloading the page usually fixes it."
+msgstr "Une erreur inattendue s'est produite. Nous avons été notifié avec le code d'erreur <0><1>{humanReadableErrorId}</1></0>. Recharger la page résout généralement le problème."
 
 #: apps/web/src/components/app-error-page.tsx:36
 #~ msgid "An unexpected error occurred. Reloading the page usually fixes it."
@@ -235,7 +247,7 @@ msgstr "Au moins une lettre majuscule"
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:213
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:221
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
@@ -251,7 +263,7 @@ msgstr "Retour à l'accueil"
 msgid "Back to Outreach"
 msgstr "Retour au démarchage"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:143
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:173
 msgid "Back to playlists"
 msgstr "Retour aux playlists"
 
@@ -300,11 +312,11 @@ msgstr "Impossible de lire {filename}"
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:335
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:69
 #: apps/web/src/components/ui/confirm-dialog.tsx:60
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:222
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:244
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:95
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:110
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:88
 #: apps/web/src/components/ui/song/song-detail.tsx:121
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
@@ -333,7 +345,7 @@ msgstr "Carte supprimée"
 msgid "Card not found"
 msgstr "Carte introuvable"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:132
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:135
 msgid "Category"
 msgstr "Catégorie"
 
@@ -472,6 +484,10 @@ msgstr "Impossible de charger ce fichier"
 msgid "Couldn't move card"
 msgstr "Impossible de déplacer la carte"
 
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:86
+msgid "Couldn't move song"
+msgstr "Impossible de déplacer la chanson"
+
 #: apps/web/src/components/features/outreach/outreach-board.tsx:162
 msgid "Couldn't rename column"
 msgstr "Impossible de renommer la colonne"
@@ -499,7 +515,7 @@ msgstr "Impossible d'importer {0}"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
-#: apps/web/src/components/ui/song/song-list-item.tsx:37
+#: apps/web/src/components/ui/song/song-list-item.tsx:38
 msgid "Cover"
 msgstr "Reprise"
 
@@ -535,7 +551,7 @@ msgstr "Créer le projet"
 msgid "Create song"
 msgstr "Créer la chanson"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:43
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:46
 msgid "Created by"
 msgstr "Créée par"
 
@@ -543,7 +559,7 @@ msgstr "Créée par"
 msgid "Danger zone"
 msgstr "Zone de danger"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:92
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:95
 msgid "Date"
 msgstr "Date"
 
@@ -578,14 +594,14 @@ msgstr "Définir comme"
 #: apps/web/src/components/ui/attachment-list.tsx:436
 #: apps/web/src/components/ui/attachment-list.tsx:478
 #: apps/web/src/components/ui/attachment-list.tsx:489
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:184
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:229
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:187
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:251
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:182
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:220
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:71
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:102
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:74
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:117
 #: apps/web/src/components/ui/song/song-detail.tsx:99
 #: apps/web/src/components/ui/song/song-detail.tsx:128
 msgid "Delete"
@@ -604,7 +620,7 @@ msgstr "Supprimer la colonne"
 msgid "Delete column?"
 msgstr "Supprimer la colonne ?"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:216
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:238
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:383
 msgid "Delete event?"
 msgstr "Supprimer l'événement ?"
@@ -615,7 +631,7 @@ msgstr "Supprimer l'événement ?"
 #~ msgid "Delete organization"
 #~ msgstr "Supprimer le groupe"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:89
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:104
 msgid "Delete playlist?"
 msgstr "Supprimer la playlist ?"
 
@@ -648,9 +664,9 @@ msgstr "Démo"
 msgid "Desc"
 msgstr "Décroissant"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:195
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:198
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:193
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:42
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:45
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:79
 msgid "Description"
 msgstr "Description"
@@ -685,6 +701,10 @@ msgstr "Télécharger"
 #: apps/web/src/components/ui/file-upload.tsx:90
 msgid "Drag and drop files here, or click to select"
 msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
+
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:41
+msgid "Drag to reorder"
+msgstr "Glisser pour réordonner"
 
 #: apps/web/src/hooks/use-navigation.ts:73
 msgid "Drive"
@@ -779,11 +799,11 @@ msgstr "Entrez votre email pour recevoir un lien de réinitialisation"
 msgid "Event"
 msgstr "Événement"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:175
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:178
 msgid "Event actions"
 msgstr "Actions de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:70
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:71
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
@@ -791,7 +811,7 @@ msgstr "Événement supprimé"
 msgid "Event details"
 msgstr "Détails de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:215
 msgid "Event not found"
 msgstr "Événement introuvable"
 
@@ -853,7 +873,7 @@ msgstr "Échec du renvoi de l'invitation"
 msgid "Failed to revoke membership"
 msgstr "Échec de la suppression du membre"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:65
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:66
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:52
 msgid "Failed to save description"
 msgstr "Échec de l'enregistrement de la description"
@@ -1044,7 +1064,7 @@ msgstr "Lettres, chiffres, _ et - uniquement"
 msgid "Lieu"
 msgstr "Lieu"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:94
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:95
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:70
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:78
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
@@ -1055,7 +1075,7 @@ msgstr "Lien copié dans le presse-papiers"
 #~ msgid "Linked files"
 #~ msgstr "Fichiers liés"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:107
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:110
 msgid "Location"
 msgstr "Lieu"
 
@@ -1300,7 +1320,7 @@ msgstr "Seule une sélection de fichiers peut être téléchargée en groupe"
 msgid "Open {0}"
 msgstr "Ouvrir {0}"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:118
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:121
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:104
 msgid "Open in Maps"
 msgstr "Ouvrir dans Maps"
@@ -1334,13 +1354,13 @@ msgstr "Orange"
 #~ msgid "Organization not found"
 #~ msgstr "Organisation introuvable"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:74
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:77
 msgid "Organizer"
 msgstr "Organisateur"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
-#: apps/web/src/components/ui/song/song-list-item.tsx:37
+#: apps/web/src/components/ui/song/song-list-item.tsx:38
 msgid "Original"
 msgstr "Original"
 
@@ -1420,19 +1440,19 @@ msgstr "Lire"
 #~ msgid "Play {0} instead?"
 #~ msgstr "Lire {0} à la place ?"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:63
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:66
 msgid "Playlist actions"
 msgstr "Actions de la playlist"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:54
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:55
 msgid "Playlist deleted"
 msgstr "Playlist supprimée"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:167
 msgid "Playlist not found"
 msgstr "Playlist introuvable"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:207
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:211
 #: apps/web/src/hooks/use-navigation.ts:68
 msgid "Playlists"
 msgstr "Playlists"
@@ -1493,7 +1513,7 @@ msgstr "Rouge"
 msgid "Rehearsal"
 msgstr "Répétition"
 
-#: apps/web/src/components/app-error-page.tsx:57
+#: apps/web/src/components/app-error-page.tsx:60
 msgid "Reload"
 msgstr "Recharger"
 
@@ -1502,7 +1522,7 @@ msgstr "Recharger"
 msgid "Remove {0}"
 msgstr "Retirer {0}"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:147
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:151
 msgid "Remove playlist"
 msgstr "Retirer la playlist"
 
@@ -1510,7 +1530,7 @@ msgstr "Retirer la playlist"
 msgid "Remove role"
 msgstr "Supprimer le rôle"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:89
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:62
 msgid "Remove song"
 msgstr "Retirer la chanson"
 
@@ -1536,6 +1556,10 @@ msgstr "Renommer le dossier"
 #: apps/web/src/components/features/outreach/outreach-column.tsx:75
 msgid "Reorder column"
 msgstr "Réorganiser la colonne"
+
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:51
+#~ msgid "Reorder song"
+#~ msgstr "Réorganiser la chanson"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:160
 msgid "Resend"
@@ -1672,7 +1696,7 @@ msgstr "Défini comme dernière version finale"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:163
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:166
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:161
 #: apps/web/src/components/ui/song/song-detail.tsx:78
 msgid "Share"
@@ -1693,10 +1717,10 @@ msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 
 #: apps/web/src/components/app-error-page.tsx:42
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:215
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:144
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:167
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
@@ -1717,7 +1741,7 @@ msgstr "Détails de la chanson"
 msgid "Song not found"
 msgstr "Chanson introuvable"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:81
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:85
 #: apps/web/src/hooks/use-navigation.ts:63
 #: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Songs"
@@ -1743,7 +1767,7 @@ msgstr "Cette carte n'existe pas ou a été supprimée."
 msgid "This code has expired, request a new one"
 msgstr "Ce code a expiré, demandez-en un nouveau"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:210
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:218
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
@@ -1800,7 +1824,7 @@ msgstr "Cette action supprime définitivement le dossier ainsi que les fichiers 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "Cette action supprime définitivement les fichiers sélectionnés, y compris de tout événement ou morceau auquel ils sont rattachés. Cette action est irréversible."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:140
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:170
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "Cette playlist n'existe pas ou a été supprimée."
 
@@ -1841,12 +1865,12 @@ msgstr "Cette action supprimera définitivement les fichiers sélectionnés. Cet
 msgid "This will permanently delete this card. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette carte. Cette action est irréversible."
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:218
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:240
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:385
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "Cette action supprimera définitivement cet événement. Cette action est irréversible."
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:91
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:106
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette playlist. Cette action est irréversible."
 
@@ -1909,7 +1933,7 @@ msgstr "Indisponibilité"
 msgid "Undo"
 msgstr "Annuler"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:182
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:185
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:180
 #: apps/web/src/components/ui/song/song-detail.tsx:97
 msgid "Update"

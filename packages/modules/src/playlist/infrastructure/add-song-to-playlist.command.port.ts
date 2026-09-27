@@ -1,7 +1,7 @@
 import type { KyselyDB } from "@echo/db";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 
-export type AddSongToPlaylistInput = { playlistId: string; songId: string };
+export type AddSongToPlaylistInput = { playlistId: string; songId: string; position: number };
 
 export type AddSongToPlaylistCommandPort = (
   db: KyselyDB,

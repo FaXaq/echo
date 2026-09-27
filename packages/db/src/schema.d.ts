@@ -169,6 +169,7 @@ export interface PlaylistEvent {
 export interface PlaylistSong {
   created_at: Generated<Timestamp>;
   playlist_id: string;
+  position: number;
   song_id: string;
 }
 

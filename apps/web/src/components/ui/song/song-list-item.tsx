@@ -27,6 +27,7 @@ export function SongListItem({
     <Link
       to="/projects/$projectSlug/songs/$songId"
       params={{ projectSlug, songId: song.id }}
+      draggable={false}
       className="rounded-xs hover:bg-muted/50 flex items-center gap-2.5 p-1 no-underline opacity-70 hover:opacity-100"
     >
       {leading ?? <Music className="size-4 text-muted-foreground" />}
