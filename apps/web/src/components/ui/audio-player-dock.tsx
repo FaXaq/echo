@@ -85,7 +85,7 @@ export function AudioPlayerDock({
   const isPlaying = status === "playing";
 
   return (
-    <div className="fixed inset-x-0 bottom-3 z-50 mx-auto flex w-[min(640px,calc(100vw-32px))] items-center gap-3 rounded-full border border-border bg-[color-mix(in_oklch,var(--card)_85%,transparent)] py-2 pr-3 pl-2 shadow-[0px_0px_10px_8px_rgba(0,0,0,0.05)] backdrop-blur-md">
+    <div className="w-full z-50 mx-auto flex items-center gap-3 border border-border bg-[color-mix(in_oklch,var(--card)_85%,transparent)] py-2 pr-3 pl-2 shadow-[0px_0px_10px_8px_rgba(0,0,0,0.05)] backdrop-blur-md">
       <Button
         type="button"
         size="icon"

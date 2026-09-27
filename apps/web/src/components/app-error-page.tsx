@@ -35,7 +35,7 @@ export function AppErrorPage({ error }: { error: unknown }) {
   }, [error, isNetworkError]);
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6">
+    <div className="flex min-h-full w-full items-center justify-center p-6">
       <Empty className="max-w-md">
         <EmptyHeader>
           <EmptyMedia variant="icon">{isNetworkError ? <WifiOff /> : <TriangleAlert />}</EmptyMedia>
