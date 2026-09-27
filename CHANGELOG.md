@@ -1,3 +1,9 @@
+## [0.16.0](https://github.com/FaXaq/echo/compare/v0.15.1...v0.16.0) (2026-09-27)
+
+### ✨ Features
+
+* **files:** duration on audio / video files ([#49](https://github.com/FaXaq/echo/issues/49)) ([ee75319](https://github.com/FaXaq/echo/commit/ee75319725e62aac8c36a5ce31eeb5ab63dc9534))
+
 ## [0.15.1](https://github.com/FaXaq/echo/compare/v0.15.0...v0.15.1) (2026-09-27)
 
 ### 🐛 Bug Fixes
