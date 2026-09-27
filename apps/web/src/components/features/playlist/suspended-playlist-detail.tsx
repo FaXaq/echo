@@ -91,53 +91,53 @@ function PlaylistDetailContent({
     <PlaylistDetail
       playlist={playlist}
       onDelete={handleDelete}
-      songsPicker={
-        <>
-          <DragDropProvider
-            onDragStart={() => {
-              dragSnapshotRef.current = orderRef.current;
-            }}
-            onDragOver={(event) => {
-              orderRef.current = move(orderRef.current, event);
-              setOrder(orderRef.current);
-            }}
-            onDragEnd={(event) => {
-              const { source, canceled } = event.operation;
-              if (canceled) {
-                orderRef.current = dragSnapshotRef.current;
-                setOrder(dragSnapshotRef.current);
-                return;
-              }
-              if (source) persistSongMove(String(source.id));
-            }}
-          >
-            <div className="flex flex-col gap-0">
-              {order.map((songId, index) => {
-                const song = songsById.get(songId);
-                if (!song) return null;
-                return (
-                  <SortablePlaylistSong
-                    key={songId}
-                    song={song}
-                    index={index}
-                    organizationId={organizationId}
-                    projectSlug={projectSlug}
-                    onRemove={() => removeSongMutation.mutate({ playlistId: playlist.id, songId })}
-                  />
-                );
-              })}
-            </div>
-          </DragDropProvider>
-          <SongPickerCombobox
-            organizationId={organizationId}
-            selectedSongs={songs.map((song) => ({
-              id: song.songId,
-              title: song.title,
-              artist: song.artist,
-            }))}
-            onAdd={(songId) => addSongMutation.mutate({ playlistId: playlist.id, songId })}
-          />
-        </>
+      songsList={
+        <DragDropProvider
+          onDragStart={() => {
+            dragSnapshotRef.current = orderRef.current;
+          }}
+          onDragOver={(event) => {
+            orderRef.current = move(orderRef.current, event);
+            setOrder(orderRef.current);
+          }}
+          onDragEnd={(event) => {
+            const { source, canceled } = event.operation;
+            if (canceled) {
+              orderRef.current = dragSnapshotRef.current;
+              setOrder(dragSnapshotRef.current);
+              return;
+            }
+            if (source) persistSongMove(String(source.id));
+          }}
+        >
+          <div className="flex flex-col gap-0">
+            {order.map((songId, index) => {
+              const song = songsById.get(songId);
+              if (!song) return null;
+              return (
+                <SortablePlaylistSong
+                  key={songId}
+                  song={song}
+                  index={index}
+                  organizationId={organizationId}
+                  projectSlug={projectSlug}
+                  onRemove={() => removeSongMutation.mutate({ playlistId: playlist.id, songId })}
+                />
+              );
+            })}
+          </div>
+        </DragDropProvider>
+      }
+      addSongPicker={
+        <SongPickerCombobox
+          organizationId={organizationId}
+          selectedSongs={songs.map((song) => ({
+            id: song.songId,
+            title: song.title,
+            artist: song.artist,
+          }))}
+          onAdd={(songId) => addSongMutation.mutate({ playlistId: playlist.id, songId })}
+        />
       }
     />
   );
