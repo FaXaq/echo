@@ -11,6 +11,12 @@ export type {
 export { deletePlaylistCommandFactory } from "./delete-playlist.command.kysely.js";
 
 export type {
+  UpdatePlaylistInput,
+  UpdatePlaylistCommandPort,
+} from "./update-playlist.command.port.js";
+export { updatePlaylistCommandFactory } from "./update-playlist.command.kysely.js";
+
+export type {
   GetPlaylistByIdQueryInput,
   GetPlaylistByIdQueryPort,
 } from "./get-playlist-by-id.query.port.js";

@@ -6,7 +6,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PlaylistDialog } from "@/components/ui/playlist/playlist-dialog";
+import { PlaylistDialog, type PlaylistDialogState } from "@/components/ui/playlist/playlist-dialog";
 import { PlaylistListItem } from "@/components/ui/playlist/playlist-list-item";
 import {
   getPlaylistsQueryOptions,
@@ -28,12 +28,12 @@ function PlaylistListContent({
   const { t } = useLingui();
   const posthog = usePostHog();
   const { data: playlists } = useSuspenseQuery(getPlaylistsQueryOptions({ organizationId }));
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogState, setDialogState] = useState<PlaylistDialogState>(null);
 
   const createPlaylistMutation = useCreatePlaylistMutation({
     onSuccess: (playlist) => {
       posthog.capture("playlist_created");
-      setDialogOpen(false);
+      setDialogState(null);
       onPlaylistCreated(playlist);
     },
   });
@@ -41,12 +41,17 @@ function PlaylistListContent({
   return (
     <div className="p-6 flex flex-col gap-2">
       <div className="flex items-center justify-end">
-        <Button type="button" onClick={() => setDialogOpen(true)} size="icon" className="md:hidden">
+        <Button
+          type="button"
+          onClick={() => setDialogState({ mode: "create" })}
+          size="icon"
+          className="md:hidden"
+        >
           <Plus />
         </Button>
         <Button
           type="button"
-          onClick={() => setDialogOpen(true)}
+          onClick={() => setDialogState({ mode: "create" })}
           size="sm"
           className="hidden md:inline-flex"
         >
@@ -68,8 +73,8 @@ function PlaylistListContent({
       )}
 
       <PlaylistDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        state={dialogState}
+        onOpenChange={(open) => !open && setDialogState(null)}
         onSubmit={async (values) => {
           await createPlaylistMutation.mutateAsync({ organizationId, ...values });
         }}

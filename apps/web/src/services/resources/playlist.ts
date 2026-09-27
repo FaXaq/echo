@@ -76,6 +76,28 @@ export function useCreatePlaylistMutation({
   });
 }
 
+export function useUpdatePlaylistMutation({
+  organizationId,
+  onSuccess,
+  onError,
+}: {
+  organizationId: string;
+  onSuccess?: (playlist: Playlist) => void;
+  onError?: () => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string; title: string; description?: string }) =>
+      apiClient.playlist.updatePlaylist.mutate({ organizationId, ...input }),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.(result);
+    },
+    onError,
+  });
+}
+
 export function useDeletePlaylistMutation({
   organizationId,
   onSuccess,

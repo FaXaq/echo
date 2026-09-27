@@ -3,6 +3,7 @@ import { organizationProcedure, router } from "../trpc";
 import {
   createPlaylist,
   deletePlaylist,
+  updatePlaylist,
   getPlaylistById,
   listPlaylists,
   listPlaylistSongs,
@@ -17,6 +18,7 @@ import {
 import {
   insertPlaylistCommandFactory,
   deletePlaylistCommandFactory,
+  updatePlaylistCommandFactory,
   getPlaylistByIdQueryFactory,
   listPlaylistsQueryFactory,
   listPlaylistSongsQueryFactory,
@@ -32,6 +34,7 @@ import { listSongAudioVersionsQueryFactory } from "@echo/modules/drive/infrastru
 
 const insertPlaylistCommand = insertPlaylistCommandFactory();
 const deletePlaylistCommand = deletePlaylistCommandFactory();
+const updatePlaylistCommand = updatePlaylistCommandFactory();
 const getPlaylistByIdQuery = getPlaylistByIdQueryFactory();
 const listPlaylistsQuery = listPlaylistsQueryFactory();
 const listPlaylistSongsQuery = listPlaylistSongsQueryFactory();
@@ -87,6 +90,31 @@ export const makePlaylistRouter = () =>
             insertPlaylistCommand,
           },
           {
+            scope: ctx.organizationScope,
+            userId: ctx.session.user.id,
+            title: input.title,
+            description: input.description ?? null,
+          },
+        ),
+      ),
+
+    updatePlaylist: organizationProcedure
+      .input(
+        z.object({
+          id: z.string(),
+          title: z.string().min(1, "Title is required"),
+          description: z.string().optional(),
+        }),
+      )
+      .mutation(({ ctx, input }) =>
+        updatePlaylist(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            updatePlaylistCommand,
+          },
+          {
+            id: input.id,
             scope: ctx.organizationScope,
             userId: ctx.session.user.id,
             title: input.title,
