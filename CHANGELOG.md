@@ -1,3 +1,9 @@
+## [0.16.1](https://github.com/FaXaq/echo/compare/v0.16.0...v0.16.1) (2026-09-27)
+
+### 🐛 Bug Fixes
+
+* **cli:** declare @aws-sdk/client-s3 as direct dependency ([#50](https://github.com/FaXaq/echo/issues/50)) ([2c55401](https://github.com/FaXaq/echo/commit/2c55401f1f361422ee6e225b51546f3d4582d167))
+
 ## [0.16.0](https://github.com/FaXaq/echo/compare/v0.15.1...v0.16.0) (2026-09-27)
 
 ### ✨ Features
