@@ -7,7 +7,7 @@ const { key, getResourceKey } = initResourceKey("playlist");
 
 export { key };
 
-export type Playlist = RouterOutputs["playlist"]["listPlaylists"][number];
+export type Playlist = RouterOutputs["playlist"]["getPlaylistById"];
 export type PlaylistSongEntry = RouterOutputs["playlist"]["listPlaylistSongs"][number];
 export type PlaylistSummary = RouterOutputs["playlist"]["listEventPlaylists"][number];
 

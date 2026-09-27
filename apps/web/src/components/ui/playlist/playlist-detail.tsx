@@ -86,7 +86,6 @@ export function PlaylistDetail({
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div className="flex flex-row items-baseline gap-2">
-              <h2 className="text-sm font-medium text-muted-foreground">{t`Songs`}</h2>
               {!!durationInSeconds && (
                 <span className="text-xs text-muted-foreground">
                   {formatDuration(durationInSeconds)}

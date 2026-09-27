@@ -28,12 +28,14 @@ import {
   listEventPlaylistsQueryFactory,
   searchPlaylistsQueryFactory,
 } from "@echo/modules/playlist/infrastructure";
+import { listSongAudioVersionsQueryFactory } from "@echo/modules/drive/infrastructure";
 
 const insertPlaylistCommand = insertPlaylistCommandFactory();
 const deletePlaylistCommand = deletePlaylistCommandFactory();
 const getPlaylistByIdQuery = getPlaylistByIdQueryFactory();
 const listPlaylistsQuery = listPlaylistsQueryFactory();
 const listPlaylistSongsQuery = listPlaylistSongsQueryFactory();
+const listSongAudioVersionsQuery = listSongAudioVersionsQueryFactory();
 const addSongToPlaylistCommand = addSongToPlaylistCommandFactory();
 const removeSongFromPlaylistCommand = removeSongFromPlaylistCommandFactory();
 const moveSongInPlaylistCommand = moveSongInPlaylistCommandFactory();
@@ -63,6 +65,8 @@ export const makePlaylistRouter = () =>
           db: ctx.db,
           userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           listPlaylistsQuery,
+          listPlaylistSongsQuery,
+          listSongAudioVersionsQuery,
         },
         { scope: ctx.organizationScope },
       ),

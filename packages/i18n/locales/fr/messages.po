@@ -154,7 +154,7 @@ msgstr "Ajouter des fichiers"
 msgid "Add playlist"
 msgstr "Ajouter une playlist"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:99
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:98
 msgid "Add song"
 msgstr "Ajouter une chanson"
 
@@ -316,7 +316,7 @@ msgstr "Impossible de lire {filename}"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:120
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:119
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:88
 #: apps/web/src/components/ui/song/song-detail.tsx:121
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
@@ -601,7 +601,7 @@ msgstr "Définir comme"
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:182
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:220
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:77
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:127
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:126
 #: apps/web/src/components/ui/song/song-detail.tsx:99
 #: apps/web/src/components/ui/song/song-detail.tsx:128
 msgid "Delete"
@@ -631,7 +631,7 @@ msgstr "Supprimer l'événement ?"
 #~ msgid "Delete organization"
 #~ msgstr "Supprimer le groupe"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:114
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:113
 msgid "Delete playlist?"
 msgstr "Supprimer la playlist ?"
 
@@ -1741,7 +1741,6 @@ msgstr "Détails de la chanson"
 msgid "Song not found"
 msgstr "Chanson introuvable"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:89
 #: apps/web/src/hooks/use-navigation.ts:63
 #: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Songs"
@@ -1870,7 +1869,7 @@ msgstr "Cela supprimera définitivement cette carte. Cette action est irréversi
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "Cette action supprimera définitivement cet événement. Cette action est irréversible."
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:115
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette playlist. Cette action est irréversible."
 
