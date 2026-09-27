@@ -30,28 +30,33 @@ function RouteComponent() {
 
   return (
     <SessionProvider session={session}>
-      <SidebarProvider className="overflow-x-clip">
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-full" />
-            <DynamicBreadcrumb projectSlug={projectSlug} />
-            <div className="ml-auto">
-              <UserMenu
-                name={session.user.name}
-                username={session.user.username ?? ""}
-                email={session.user.email}
-                image={session.user.image}
+      <div className="h-screen flex flex-col">
+        <SidebarProvider className="overflow-x-clip flex-1 min-h-0">
+          <AppSidebar />
+          <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator
+                orientation="vertical"
+                className="mr-2 data-[orientation=vertical]:h-full"
               />
+              <DynamicBreadcrumb projectSlug={projectSlug} />
+              <div className="ml-auto">
+                <UserMenu
+                  name={session.user.name}
+                  username={session.user.username ?? ""}
+                  email={session.user.email}
+                  image={session.user.image}
+                />
+              </div>
+            </header>
+            <div className="flex-1 overflow-y-auto typeset typeset-notes">
+              <Outlet />
             </div>
-          </header>
-          <div className="flex-1 overflow-y-auto typeset typeset-notes">
-            <Outlet />
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
-      <AudioPlayerDockContainer />
+          </SidebarInset>
+        </SidebarProvider>
+        <AudioPlayerDockContainer />
+      </div>
     </SessionProvider>
   );
 }
