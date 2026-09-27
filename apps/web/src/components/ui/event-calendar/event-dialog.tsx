@@ -387,7 +387,11 @@ export function EventDialog({
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel disabled={isDeleting}>{t`Cancel`}</AlertDialogCancel>
-                    <AlertDialogAction isLoading={isDeleting} onClick={handleDelete}>
+                    <AlertDialogAction
+                      variant="destructive"
+                      isLoading={isDeleting}
+                      onClick={handleDelete}
+                    >
                       {t`Delete`}
                     </AlertDialogAction>
                   </AlertDialogFooter>

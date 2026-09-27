@@ -158,7 +158,10 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
-      uploadMutation.mutate({ songId, organizationId, file });
+      uploadMutation.mutate(
+        { songId, organizationId, file },
+        { onSuccess: () => toast.add({ title: t`${file.name} uploaded`, type: "success" }) },
+      );
     });
   };
 

@@ -221,6 +221,7 @@ export function EventDetail({
           <AlertDialogFooter>
             <AlertDialogCancel>{t`Cancel`}</AlertDialogCancel>
             <AlertDialogAction
+              variant="destructive"
               onClick={() => {
                 setDeleteConfirmOpen(false);
                 onDelete();

@@ -94,6 +94,7 @@ export function PlaylistDetail({
           <AlertDialogFooter>
             <AlertDialogCancel>{t`Cancel`}</AlertDialogCancel>
             <AlertDialogAction
+              variant="destructive"
               onClick={() => {
                 setDeleteConfirmOpen(false);
                 onDelete();

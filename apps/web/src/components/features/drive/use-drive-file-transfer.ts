@@ -52,7 +52,10 @@ export function useDriveFileTransfer({
     uploadMutation.mutate(
       { organizationId, folderId: targetFolderId, file },
       {
-        onSuccess: () => posthog.capture("drive_file_uploaded", { file_type: file.type }),
+        onSuccess: () => {
+          posthog.capture("drive_file_uploaded", { file_type: file.type });
+          toast.add({ title: t`${file.name} uploaded`, type: "success" });
+        },
         onError: () => toast.add({ title: t`Couldn't upload ${file.name}`, type: "error" }),
       },
     );

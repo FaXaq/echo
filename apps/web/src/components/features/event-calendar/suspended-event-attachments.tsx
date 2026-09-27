@@ -144,7 +144,10 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
-      uploadMutation.mutate({ eventId, organizationId, file });
+      uploadMutation.mutate(
+        { eventId, organizationId, file },
+        { onSuccess: () => toast.add({ title: t`${file.name} uploaded`, type: "success" }) },
+      );
     });
   };
 

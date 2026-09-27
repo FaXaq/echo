@@ -36,8 +36,8 @@ msgstr "{0, plural, one {Delete # file?} other {Delete # files?}}"
 #. placeholder {0}: filesToDelete.length
 #. placeholder {0}: selectedFiles.length
 #: apps/web/src/components/features/drive/drive-explorer.tsx:228
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:156
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:170
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:159
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:173
 msgid "{0} files deleted"
 msgstr "{0} files deleted"
 
@@ -70,6 +70,13 @@ msgstr "{0} of {1} moved — failed: {2}"
 #: apps/web/src/components/ui/data-table-pagination.tsx:25
 msgid "{0} of {1} row(s) selected."
 msgstr "{0} of {1} row(s) selected."
+
+#. placeholder {0}: file.name
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:57
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:149
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:163
+msgid "{0} uploaded"
+msgstr "{0} uploaded"
 
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:96
 msgid "{bulkDeleteCount, plural, one {Delete # file?} other {Delete # files?}}"
@@ -191,7 +198,7 @@ msgstr "Are you sure you want to cancel this invitation?"
 #~ msgid "Are you sure you want to remove this member from the organization?"
 #~ msgstr "Are you sure you want to remove this member from the organization?"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:235
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:236
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Are you sure you want to remove this member from the project?"
 
@@ -291,12 +298,12 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:65
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:195
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:327
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:341
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:345
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:69
 #: apps/web/src/components/ui/confirm-dialog.tsx:60
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:222
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:407
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:95
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:88
 #: apps/web/src/components/ui/song/song-detail.tsx:121
@@ -378,7 +385,7 @@ msgstr "Could not generate a unique organization slug"
 msgid "Could not load plan usage"
 msgstr "Could not load plan usage"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:133
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:136
 msgid "Couldn't build the download"
 msgstr "Couldn't build the download"
 
@@ -402,16 +409,16 @@ msgstr "Couldn't delete file"
 msgid "Couldn't delete folder"
 msgstr "Couldn't delete folder"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:87
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:90
 msgid "Couldn't download file"
 msgstr "Couldn't download file"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:111
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:114
 msgid "Couldn't download the selected files"
 msgstr "Couldn't download the selected files"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:227
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:259
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:230
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:262
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
 
@@ -467,7 +474,7 @@ msgid "Couldn't save card"
 msgstr "Couldn't save card"
 
 #. placeholder {0}: file.name
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:56
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:59
 msgid "Couldn't upload {0}"
 msgstr "Couldn't upload {0}"
 
@@ -542,24 +549,24 @@ msgstr "Define as"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:226
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:68
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:75
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:208
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:202
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:317
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:329
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:333
 #: apps/web/src/components/features/outreach/outreach-column.tsx:141
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:237
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:240
 #: apps/web/src/components/ui/attachment-list.tsx:276
 #: apps/web/src/components/ui/attachment-list.tsx:436
 #: apps/web/src/components/ui/attachment-list.tsx:478
 #: apps/web/src/components/ui/attachment-list.tsx:489
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:184
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:229
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:230
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:395
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:71
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:102
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:103
 #: apps/web/src/components/ui/song/song-detail.tsx:99
-#: apps/web/src/components/ui/song/song-detail.tsx:128
+#: apps/web/src/components/ui/song/song-detail.tsx:129
 msgid "Delete"
 msgstr "Delete"
 
@@ -601,8 +608,8 @@ msgid "Delete song?"
 msgstr "Delete song?"
 
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:86
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:203
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:235
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:206
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:238
 msgid "Delete this file?"
 msgstr "Delete this file?"
 
@@ -853,8 +860,8 @@ msgid "Failed to update project name"
 msgstr "Failed to update project name"
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:498
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:209
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:241
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:212
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:244
 msgid "File deleted"
 msgstr "File deleted"
 
@@ -879,7 +886,7 @@ msgstr "Folder deleted"
 msgid "Folders"
 msgstr "Folders"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:70
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:73
 msgid "Folders aren't supported yet — drop files only"
 msgstr "Folders aren't supported yet — drop files only"
 
@@ -1200,7 +1207,7 @@ msgstr "No matching playlists"
 msgid "No matching songs"
 msgstr "No matching songs"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:258
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:259
 msgid "No members yet"
 msgstr "No members yet"
 
@@ -1237,7 +1244,7 @@ msgstr "No songs yet."
 msgid "No, keep it"
 msgstr "No, keep it"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:239
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:240
 msgid "No, keep them"
 msgstr "No, keep them"
 
@@ -1517,11 +1524,11 @@ msgstr "Reset password"
 msgid "Retry"
 msgstr "Retry"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:229
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:230
 msgid "Revoke"
 msgstr "Revoke"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:233
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:234
 msgid "Revoke membership"
 msgstr "Revoke membership"
 
@@ -1530,7 +1537,7 @@ msgstr "Revoke membership"
 msgid "Role"
 msgstr "Role"
 
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:226
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:229
 msgid "Role removed"
 msgstr "Role removed"
 
@@ -1544,15 +1551,15 @@ msgstr "Rows per page"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:55
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:66
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:344
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:348
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:70
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:410
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:67
 msgid "Save"
 msgstr "Save"
 
-#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:344
-#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
+#: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:348
+#: apps/web/src/components/ui/event-calendar/event-dialog.tsx:410
 #: apps/web/src/components/ui/song/song-dialog.tsx:167
 msgid "Save changes"
 msgstr "Save changes"
@@ -1623,11 +1630,11 @@ msgstr "Send reset link"
 msgid "Set a new password"
 msgstr "Set a new password"
 
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:217
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:220
 msgid "Set as latest demo"
 msgstr "Set as latest demo"
 
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:217
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:220
 msgid "Set as latest final"
 msgstr "Set as latest final"
 
@@ -1650,7 +1657,7 @@ msgstr "Size"
 
 #. placeholder {0}: allSkipped.length
 #. placeholder {1}: allSkipped.join(", ")
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:127
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:130
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
@@ -1784,8 +1791,8 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:204
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:236
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:207
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:239
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 
@@ -1942,11 +1949,11 @@ msgstr "Write the lyrics…"
 msgid "Yellow"
 msgstr "Yellow"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:180
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:181
 msgid "Yes, cancel"
 msgstr "Yes, cancel"
 
-#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:245
+#: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:246
 msgid "Yes, remove"
 msgstr "Yes, remove"
 

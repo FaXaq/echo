@@ -175,6 +175,7 @@ export function MembersTable({
                           <AlertDialogFooter>
                             <AlertDialogCancel>{t`No, keep it`}</AlertDialogCancel>
                             <AlertDialogAction
+                              variant="destructive"
                               onClick={() => handleCancelInvitation(invitation.id)}
                             >
                               {t`Yes, cancel`}
