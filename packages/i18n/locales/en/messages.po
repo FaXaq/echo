@@ -28,6 +28,11 @@ msgstr "{0, plural, one {# item selected} other {# items selected}}"
 msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# item} other {# items}}"
 
+#. placeholder {0}: playlist.songCount
+#: apps/web/src/components/ui/playlist/playlist-list-item.tsx:34
+msgid "{0, plural, one {# song} other {# songs}}"
+msgstr "{0, plural, one {# song} other {# songs}}"
+
 #. placeholder {0}: files.length
 #: apps/web/src/components/ui/attachment-list.tsx:493
 msgid "{0, plural, one {Delete # file?} other {Delete # files?}}"
@@ -461,7 +466,7 @@ msgstr "Couldn't load Drive"
 #~ msgid "Couldn't load files"
 #~ msgstr "Couldn't load files"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-list.tsx:95
+#: apps/web/src/components/features/playlist/suspended-playlist-list.tsx:83
 msgid "Couldn't load playlists"
 msgstr "Couldn't load playlists"
 
