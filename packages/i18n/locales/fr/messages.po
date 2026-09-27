@@ -702,6 +702,10 @@ msgstr "Télécharger"
 msgid "Drag and drop files here, or click to select"
 msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:41
+msgid "Drag to reorder"
+msgstr "Glisser pour réordonner"
+
 #: apps/web/src/hooks/use-navigation.ts:73
 msgid "Drive"
 msgstr "Drive"
