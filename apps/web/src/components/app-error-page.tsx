@@ -26,7 +26,7 @@ function generateHumanReadableErrorId() {
 export function AppErrorPage({ error }: { error: unknown }) {
   const { t } = useLingui();
   const isNetworkError = isTrpcNetworkError(error);
-  const humanReadableErrorId = isNetworkError ? generateHumanReadableErrorId() : null;
+  const humanReadableErrorId = !isNetworkError ? generateHumanReadableErrorId() : null;
 
   useEffect(() => {
     if (!isNetworkError) {
@@ -46,8 +46,11 @@ export function AppErrorPage({ error }: { error: unknown }) {
             ) : (
               <Trans>
                 An unexpected error occurred. An error report has been sent to the technical team
-                with the code <span className="text-lg">{humanReadableErrorId}</span> attached.
-                Reloading the page usually fixes it.
+                with the code{" "}
+                <span className="text-lg border rounded-xs px-1">
+                  <code>{humanReadableErrorId}</code>
+                </span>{" "}
+                attached. Reloading the page usually fixes it.
               </Trans>
             )}
           </EmptyDescription>

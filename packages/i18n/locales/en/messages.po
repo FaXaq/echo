@@ -177,8 +177,12 @@ msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
 #: apps/web/src/components/app-error-page.tsx:47
-msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
-msgstr "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
+#~ msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
+#~ msgstr "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
+
+#: apps/web/src/components/app-error-page.tsx:47
+msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0><1>{humanReadableErrorId}</1></0> attached. Reloading the page usually fixes it."
+msgstr "An unexpected error occurred. An error report has been sent to the technical team with the code <0><1>{humanReadableErrorId}</1></0> attached. Reloading the page usually fixes it."
 
 #: apps/web/src/components/app-error-page.tsx:36
 #~ msgid "An unexpected error occurred. Reloading the page usually fixes it."
@@ -251,7 +255,7 @@ msgstr "Back to home"
 msgid "Back to Outreach"
 msgstr "Back to Outreach"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:143
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:175
 msgid "Back to playlists"
 msgstr "Back to playlists"
 
@@ -472,6 +476,10 @@ msgstr "Couldn't load this file"
 msgid "Couldn't move card"
 msgstr "Couldn't move card"
 
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:86
+msgid "Couldn't move song"
+msgstr "Couldn't move song"
+
 #: apps/web/src/components/features/outreach/outreach-board.tsx:162
 msgid "Couldn't rename column"
 msgstr "Couldn't rename column"
@@ -499,7 +507,7 @@ msgstr "Couldn't upload {0}"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
-#: apps/web/src/components/ui/song/song-list-item.tsx:37
+#: apps/web/src/components/ui/song/song-list-item.tsx:38
 msgid "Cover"
 msgstr "Cover"
 
@@ -1340,7 +1348,7 @@ msgstr "Organizer"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
-#: apps/web/src/components/ui/song/song-list-item.tsx:37
+#: apps/web/src/components/ui/song/song-list-item.tsx:38
 msgid "Original"
 msgstr "Original"
 
@@ -1424,11 +1432,11 @@ msgstr "Play"
 msgid "Playlist actions"
 msgstr "Playlist actions"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:54
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:55
 msgid "Playlist deleted"
 msgstr "Playlist deleted"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:169
 msgid "Playlist not found"
 msgstr "Playlist not found"
 
@@ -1493,7 +1501,7 @@ msgstr "Red"
 msgid "Rehearsal"
 msgstr "Rehearsal"
 
-#: apps/web/src/components/app-error-page.tsx:57
+#: apps/web/src/components/app-error-page.tsx:60
 msgid "Reload"
 msgstr "Reload"
 
@@ -1510,7 +1518,7 @@ msgstr "Remove playlist"
 msgid "Remove role"
 msgstr "Remove role"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:89
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:62
 msgid "Remove song"
 msgstr "Remove song"
 
@@ -1536,6 +1544,10 @@ msgstr "Rename folder"
 #: apps/web/src/components/features/outreach/outreach-column.tsx:75
 msgid "Reorder column"
 msgstr "Reorder column"
+
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:51
+#~ msgid "Reorder song"
+#~ msgstr "Reorder song"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:160
 msgid "Resend"
@@ -1696,7 +1708,7 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:207
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:144
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:137
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:169
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -1800,7 +1812,7 @@ msgstr "This permanently deletes the folder and any files inside it that aren't 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:140
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:172
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "This playlist doesn't exist or has been deleted."
 

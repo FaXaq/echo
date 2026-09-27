@@ -32,6 +32,12 @@ export type {
 export { removeSongFromPlaylistCommandFactory } from "./remove-song-from-playlist.command.kysely.js";
 
 export type {
+  MoveSongInPlaylistInput,
+  MoveSongInPlaylistCommandPort,
+} from "./move-song-in-playlist.command.port.js";
+export { moveSongInPlaylistCommandFactory } from "./move-song-in-playlist.command.kysely.js";
+
+export type {
   ListPlaylistSongsQueryInput,
   ListPlaylistSongsQueryPort,
 } from "./list-playlist-songs.query.port.js";

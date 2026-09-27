@@ -18,6 +18,7 @@ export type PlaylistSongEntry = {
   songId: string;
   title: string;
   artist: string | null;
+  position: number;
 };
 
 export type PlaylistSummary = {

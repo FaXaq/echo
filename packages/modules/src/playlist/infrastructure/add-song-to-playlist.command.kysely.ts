@@ -4,12 +4,13 @@ export const addSongToPlaylistCommandFactory: AddSongToPlaylistCommandPortFactor
   () => async (db, scope, input) => {
     await db
       .insertInto("playlist_song")
-      .columns(["playlist_id", "song_id"])
+      .columns(["playlist_id", "song_id", "position"])
       .expression(
         db
           .selectNoFrom((eb) => [
             eb.val(input.playlistId).as("playlist_id"),
             eb.val(input.songId).as("song_id"),
+            eb.val(input.position).as("position"),
           ])
           .where((eb) =>
             eb.exists(

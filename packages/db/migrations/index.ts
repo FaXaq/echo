@@ -26,6 +26,7 @@ import * as migration_20260920124842 from "./20260920124842_outreach";
 import * as migration_20260920155821 from "./20260920155821_contact";
 import * as migration_20260920155834 from "./20260920155834_outreach-card-contact";
 import * as migration_20260921231500 from "./20260921231500_backfill-organization-logo-patterns";
+import * as migration_20260927120650 from "./20260927120650_add-position-to-playlist-song";
 
 type Migration = {
   up: (db: Kysely<any>) => Promise<void>;
@@ -61,4 +62,5 @@ export const migrations: Migrations = {
   "20260920155821_contact": migration_20260920155821,
   "20260920155834_outreach-card-contact": migration_20260920155834,
   "20260921231500_backfill-organization-logo-patterns": migration_20260921231500,
+  "20260927120650_add-position-to-playlist-song": migration_20260927120650,
 };
