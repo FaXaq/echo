@@ -1,3 +1,9 @@
+## [0.15.1](https://github.com/FaXaq/echo/compare/v0.15.0...v0.15.1) (2026-09-27)
+
+### 🐛 Bug Fixes
+
+* modify docked player shape ([#48](https://github.com/FaXaq/echo/issues/48)) ([d11fd61](https://github.com/FaXaq/echo/commit/d11fd613c51a6f88c61a815f7da17404f8688e79))
+
 ## [0.15.0](https://github.com/FaXaq/echo/compare/v0.14.0...v0.15.0) (2026-09-27)
 
 ### ✨ Features
