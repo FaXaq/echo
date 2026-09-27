@@ -39,6 +39,7 @@ const sharedArgs = {
   onEdit: () => {},
   onDelete: () => {},
   onDescriptionChange: () => {},
+  onDescriptionBlur: () => {},
   attachments: <div className="text-xs text-muted-foreground">Attachments render here</div>,
 };
 

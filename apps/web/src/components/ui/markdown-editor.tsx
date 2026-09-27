@@ -20,6 +20,7 @@ export interface MarkdownEditorProps {
   id?: string;
   markdown: string;
   onChange?: (markdown: string) => void;
+  onBlur?: () => void;
   placeholder?: string;
   editable?: boolean;
   saveStatus?: MarkdownSaveStatus;
@@ -30,6 +31,7 @@ export function MarkdownEditor({
   id,
   markdown,
   onChange,
+  onBlur,
   placeholder,
   editable = true,
   saveStatus = "idle",
@@ -41,6 +43,7 @@ export function MarkdownEditor({
     content: markdown,
     editable,
     onUpdate: ({ editor }) => onChange?.(editor.storage.markdown.getMarkdown()),
+    onBlur: () => onBlur?.(),
   });
 
   if (!editor) return null;

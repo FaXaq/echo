@@ -26,8 +26,6 @@ import { SuspendedEventAttachments } from "./suspended-event-attachments";
 import { PlaylistPickerCombobox } from "@/components/features/playlist/playlist-picker-combobox";
 import { SuspendedPlaylistSongs } from "@/components/features/playlist/suspended-playlist-songs";
 
-const DESCRIPTION_AUTOSAVE_DEBOUNCE_MS = 300;
-
 export interface SuspendedEventDetailProps {
   eventId: string;
   organizationId: string;
@@ -51,9 +49,9 @@ function EventDetailContent({
   const viewEvent = toViewEvent(event);
   const [dialogState, setDialogState] = useState<EventDialogState>(null);
   const [description, setDescription] = useState(() => viewEvent.description ?? "");
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const descriptionRef = useRef(description);
   descriptionRef.current = description;
+  const savedDescriptionRef = useRef(description);
   const viewEventRef = useRef(viewEvent);
   viewEventRef.current = viewEvent;
 
@@ -75,19 +73,20 @@ function EventDetailContent({
   const attachPlaylistMutation = useAttachPlaylistToEventMutation({ organizationId });
   const detachPlaylistMutation = useDetachPlaylistFromEventMutation({ organizationId });
 
+  const saveDescription = () => {
+    if (descriptionRef.current === savedDescriptionRef.current) return;
+    savedDescriptionRef.current = descriptionRef.current;
+    updateDescriptionMutation.mutate({
+      id: viewEventRef.current.id,
+      ...fromViewEvent({
+        ...viewEventRef.current,
+        description: descriptionRef.current || undefined,
+      }),
+    });
+  };
+
   useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-        updateDescriptionMutation.mutate({
-          id: viewEventRef.current.id,
-          ...fromViewEvent({
-            ...viewEventRef.current,
-            description: descriptionRef.current || undefined,
-          }),
-        });
-      }
-    };
+    return () => saveDescription();
   }, [eventId, updateDescriptionMutation.mutate]);
 
   const handleShare = () => {
@@ -101,22 +100,13 @@ function EventDetailContent({
 
   const handleDescriptionChange = (markdown: string) => {
     setDescription(markdown);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      debounceRef.current = null;
-      updateDescriptionMutation.mutate({
-        id: viewEventRef.current.id,
-        ...fromViewEvent({ ...viewEventRef.current, description: markdown || undefined }),
-      });
-    }, DESCRIPTION_AUTOSAVE_DEBOUNCE_MS);
   };
 
-  const descriptionSaveStatus: MarkdownSaveStatus =
-    updateDescriptionMutation.isPending || debounceRef.current !== null
-      ? "saving"
-      : updateDescriptionMutation.isSuccess
-        ? "saved"
-        : "idle";
+  const descriptionSaveStatus: MarkdownSaveStatus = updateDescriptionMutation.isPending
+    ? "saving"
+    : updateDescriptionMutation.isSuccess
+      ? "saved"
+      : "idle";
 
   const handleDelete = async () => {
     await deleteEventMutation.mutateAsync({ id: viewEvent.id });
@@ -128,6 +118,7 @@ function EventDetailContent({
         event={viewEvent}
         description={description}
         onDescriptionChange={handleDescriptionChange}
+        onDescriptionBlur={saveDescription}
         descriptionSaveStatus={descriptionSaveStatus}
         onShare={handleShare}
         onEdit={() => setDialogState({ mode: "edit", event: viewEvent })}

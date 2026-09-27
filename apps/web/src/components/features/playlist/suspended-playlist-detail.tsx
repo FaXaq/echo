@@ -26,8 +26,6 @@ import { SongPickerCombobox } from "./song-picker-combobox";
 import { SortablePlaylistSong } from "./sortable-playlist-song";
 import { getSongDefaultAudioQueryOptions } from "@/services/resources/song";
 
-const DESCRIPTION_AUTOSAVE_DEBOUNCE_MS = 300;
-
 export interface SuspendedPlaylistDetailProps {
   playlistId: string;
   organizationId: string;
@@ -63,9 +61,9 @@ function PlaylistDetailContent({
 
   const [dialogState, setDialogState] = useState<PlaylistDialogState>(null);
   const [description, setDescription] = useState(() => playlist.description ?? "");
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const descriptionRef = useRef(description);
   descriptionRef.current = description;
+  const savedDescriptionRef = useRef(description);
   const playlistRef = useRef(playlist);
   playlistRef.current = playlist;
 
@@ -105,38 +103,29 @@ function PlaylistDetailContent({
     setOrder(next);
   }, [songs]);
 
+  const saveDescription = () => {
+    if (descriptionRef.current === savedDescriptionRef.current) return;
+    savedDescriptionRef.current = descriptionRef.current;
+    updateDescriptionMutation.mutate({
+      id: playlistRef.current.id,
+      title: playlistRef.current.title,
+      description: descriptionRef.current || undefined,
+    });
+  };
+
   useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-        updateDescriptionMutation.mutate({
-          id: playlistRef.current.id,
-          title: playlistRef.current.title,
-          description: descriptionRef.current || undefined,
-        });
-      }
-    };
+    return () => saveDescription();
   }, [playlist.id, updateDescriptionMutation.mutate]);
 
   const handleDescriptionChange = (markdown: string) => {
     setDescription(markdown);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      debounceRef.current = null;
-      updateDescriptionMutation.mutate({
-        id: playlistRef.current.id,
-        title: playlistRef.current.title,
-        description: markdown || undefined,
-      });
-    }, DESCRIPTION_AUTOSAVE_DEBOUNCE_MS);
   };
 
-  const descriptionSaveStatus: MarkdownSaveStatus =
-    updateDescriptionMutation.isPending || debounceRef.current !== null
-      ? "saving"
-      : updateDescriptionMutation.isSuccess
-        ? "saved"
-        : "idle";
+  const descriptionSaveStatus: MarkdownSaveStatus = updateDescriptionMutation.isPending
+    ? "saving"
+    : updateDescriptionMutation.isSuccess
+      ? "saved"
+      : "idle";
 
   const handleDialogSubmit = async (values: { title: string }) => {
     await updatePlaylistMutation.mutateAsync({
@@ -168,6 +157,7 @@ function PlaylistDetailContent({
         playlist={playlist}
         description={description}
         onDescriptionChange={handleDescriptionChange}
+        onDescriptionBlur={saveDescription}
         descriptionSaveStatus={descriptionSaveStatus}
         onEdit={() => setDialogState({ mode: "edit", playlist })}
         onDelete={handleDelete}

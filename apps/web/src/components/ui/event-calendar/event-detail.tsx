@@ -36,6 +36,7 @@ export interface EventDetailProps {
   event: CalendarEvent;
   description: string;
   onDescriptionChange: (markdown: string) => void;
+  onDescriptionBlur: () => void;
   descriptionSaveStatus?: MarkdownSaveStatus;
   onShare: () => void;
   onEdit: () => void;
@@ -50,6 +51,7 @@ export function EventDetail({
   event,
   description,
   onDescriptionChange,
+  onDescriptionBlur,
   descriptionSaveStatus,
   onShare,
   onEdit,
@@ -199,6 +201,7 @@ export function EventDetail({
           <MarkdownEditor
             markdown={description}
             onChange={onDescriptionChange}
+            onBlur={onDescriptionBlur}
             placeholder={t`Add a description…`}
             saveStatus={descriptionSaveStatus}
             className="min-h-24 max-h-[32rem] rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"

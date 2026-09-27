@@ -31,6 +31,7 @@ export interface OutreachCardDetailProps {
   contacts: OutreachCardContact[];
   description: string;
   onDescriptionChange: (markdown: string) => void;
+  onDescriptionBlur: () => void;
   descriptionSaveStatus?: MarkdownSaveStatus;
   onShare: () => void;
   onEdit: () => void;
@@ -44,6 +45,7 @@ export function OutreachCardDetail({
   contacts,
   description,
   onDescriptionChange,
+  onDescriptionBlur,
   descriptionSaveStatus,
   onShare,
   onEdit,
@@ -194,6 +196,7 @@ export function OutreachCardDetail({
           <MarkdownEditor
             markdown={description}
             onChange={onDescriptionChange}
+            onBlur={onDescriptionBlur}
             placeholder={t`Add a description…`}
             saveStatus={descriptionSaveStatus}
             className="min-h-24 max-h-[32rem] rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"

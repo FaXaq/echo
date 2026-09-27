@@ -18,8 +18,6 @@ import {
 } from "@/services/resources/outreach";
 import { OutreachCardDialog, type OutreachCardDialogState } from "./outreach-card-dialog";
 
-const DESCRIPTION_AUTOSAVE_DEBOUNCE_MS = 300;
-
 export interface SuspendedOutreachCardDetailProps {
   cardId: string;
   organizationId: string;
@@ -41,9 +39,9 @@ function OutreachCardDetailContent({
   );
   const [dialogState, setDialogState] = useState<OutreachCardDialogState>(null);
   const [description, setDescription] = useState(() => card.description ?? "");
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const descriptionRef = useRef(description);
   descriptionRef.current = description;
+  const savedDescriptionRef = useRef(description);
 
   useSyncPageMeta(pathname, card.title, card.title);
 
@@ -53,16 +51,14 @@ function OutreachCardDetailContent({
   });
   const deleteCardMutation = useDeleteOutreachCardMutation();
 
+  const saveDescription = () => {
+    if (descriptionRef.current === savedDescriptionRef.current) return;
+    savedDescriptionRef.current = descriptionRef.current;
+    updateDescriptionMutation.mutate({ id: card.id, description: descriptionRef.current || null });
+  };
+
   useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-        updateDescriptionMutation.mutate({
-          id: card.id,
-          description: descriptionRef.current || null,
-        });
-      }
-    };
+    return () => saveDescription();
   }, [card.id, updateDescriptionMutation.mutate]);
 
   const handleShare = () => {
@@ -72,19 +68,13 @@ function OutreachCardDetailContent({
 
   const handleDescriptionChange = (markdown: string) => {
     setDescription(markdown);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      debounceRef.current = null;
-      updateDescriptionMutation.mutate({ id: card.id, description: markdown || null });
-    }, DESCRIPTION_AUTOSAVE_DEBOUNCE_MS);
   };
 
-  const descriptionSaveStatus: MarkdownSaveStatus =
-    updateDescriptionMutation.isPending || debounceRef.current !== null
-      ? "saving"
-      : updateDescriptionMutation.isSuccess
-        ? "saved"
-        : "idle";
+  const descriptionSaveStatus: MarkdownSaveStatus = updateDescriptionMutation.isPending
+    ? "saving"
+    : updateDescriptionMutation.isSuccess
+      ? "saved"
+      : "idle";
 
   const handleDelete = async () => {
     try {
@@ -106,6 +96,7 @@ function OutreachCardDetailContent({
         contacts={contacts}
         description={description}
         onDescriptionChange={handleDescriptionChange}
+        onDescriptionBlur={saveDescription}
         descriptionSaveStatus={descriptionSaveStatus}
         onShare={handleShare}
         onEdit={() => setDialogState({ mode: "edit", card })}
