@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
 import { cn } from "@/lib/utils";
+import { SuspendedSongDuration } from "../song/suspended-song-duration";
 
 export function SortablePlaylistSong({
   song,
@@ -54,6 +55,7 @@ export function SortablePlaylistSong({
               title={song.title}
             />
           }
+          duration={<SuspendedSongDuration songId={song.songId} organizationId={organizationId} />}
           trailing={
             <Button
               type="button"

@@ -3,6 +3,7 @@ import { organizationProcedure, router } from "../trpc";
 import {
   createPlaylist,
   deletePlaylist,
+  updatePlaylist,
   getPlaylistById,
   listPlaylists,
   listPlaylistSongs,
@@ -17,6 +18,7 @@ import {
 import {
   insertPlaylistCommandFactory,
   deletePlaylistCommandFactory,
+  updatePlaylistCommandFactory,
   getPlaylistByIdQueryFactory,
   listPlaylistsQueryFactory,
   listPlaylistSongsQueryFactory,
@@ -28,12 +30,15 @@ import {
   listEventPlaylistsQueryFactory,
   searchPlaylistsQueryFactory,
 } from "@echo/modules/playlist/infrastructure";
+import { listSongAudioVersionsQueryFactory } from "@echo/modules/drive/infrastructure";
 
 const insertPlaylistCommand = insertPlaylistCommandFactory();
 const deletePlaylistCommand = deletePlaylistCommandFactory();
+const updatePlaylistCommand = updatePlaylistCommandFactory();
 const getPlaylistByIdQuery = getPlaylistByIdQueryFactory();
 const listPlaylistsQuery = listPlaylistsQueryFactory();
 const listPlaylistSongsQuery = listPlaylistSongsQueryFactory();
+const listSongAudioVersionsQuery = listSongAudioVersionsQueryFactory();
 const addSongToPlaylistCommand = addSongToPlaylistCommandFactory();
 const removeSongFromPlaylistCommand = removeSongFromPlaylistCommandFactory();
 const moveSongInPlaylistCommand = moveSongInPlaylistCommandFactory();
@@ -63,6 +68,8 @@ export const makePlaylistRouter = () =>
           db: ctx.db,
           userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
           listPlaylistsQuery,
+          listPlaylistSongsQuery,
+          listSongAudioVersionsQuery,
         },
         { scope: ctx.organizationScope },
       ),
@@ -83,6 +90,31 @@ export const makePlaylistRouter = () =>
             insertPlaylistCommand,
           },
           {
+            scope: ctx.organizationScope,
+            userId: ctx.session.user.id,
+            title: input.title,
+            description: input.description ?? null,
+          },
+        ),
+      ),
+
+    updatePlaylist: organizationProcedure
+      .input(
+        z.object({
+          id: z.string(),
+          title: z.string().min(1, "Title is required"),
+          description: z.string().optional(),
+        }),
+      )
+      .mutation(({ ctx, input }) =>
+        updatePlaylist(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            updatePlaylistCommand,
+          },
+          {
+            id: input.id,
             scope: ctx.organizationScope,
             userId: ctx.session.user.id,
             title: input.title,

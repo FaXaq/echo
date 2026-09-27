@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
 import { usePostHog } from "posthog-js/react";
@@ -10,17 +10,21 @@ import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlaylistDetail } from "@/components/ui/playlist/playlist-detail";
+import { PlaylistDialog, type PlaylistDialogState } from "@/components/ui/playlist/playlist-dialog";
+import type { MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import {
   getPlaylistQueryOptions,
   getPlaylistSongsQueryOptions,
   useAddSongToPlaylistMutation,
   useDeletePlaylistMutation,
+  useUpdatePlaylistMutation,
   useRemoveSongFromPlaylistMutation,
   useMoveSongInPlaylistMutation,
 } from "@/services/resources/playlist";
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SongPickerCombobox } from "./song-picker-combobox";
 import { SortablePlaylistSong } from "./sortable-playlist-song";
+import { getSongDefaultAudioQueryOptions } from "@/services/resources/song";
 
 export interface SuspendedPlaylistDetailProps {
   playlistId: string;
@@ -46,8 +50,36 @@ function PlaylistDetailContent({
     getPlaylistSongsQueryOptions({ playlistId, organizationId }),
   );
 
+  const fileQueries = useSuspenseQueries({
+    queries: songs.map((s) =>
+      getSongDefaultAudioQueryOptions({ songId: s.songId, organizationId }),
+    ),
+  });
+  const playlistDurationInSeconds = fileQueries
+    .map((q) => q.data?.durationSeconds ?? 0)
+    .reduce((a, b) => a + b, 0);
+
+  const [dialogState, setDialogState] = useState<PlaylistDialogState>(null);
+  const [description, setDescription] = useState(() => playlist.description ?? "");
+  const descriptionRef = useRef(description);
+  descriptionRef.current = description;
+  const savedDescriptionRef = useRef(description);
+  const playlistRef = useRef(playlist);
+  playlistRef.current = playlist;
+
   useSyncPageMeta(pathname, playlist.title, playlist.title);
 
+  const updatePlaylistMutation = useUpdatePlaylistMutation({
+    organizationId,
+    onSuccess: () => {
+      posthog.capture("playlist_updated");
+      setDialogState(null);
+    },
+  });
+  const updateDescriptionMutation = useUpdatePlaylistMutation({
+    organizationId,
+    onError: () => toast.add({ type: "error", title: t`Failed to save description` }),
+  });
   const deletePlaylistMutation = useDeletePlaylistMutation({
     organizationId,
     onSuccess: () => {
@@ -71,6 +103,38 @@ function PlaylistDetailContent({
     setOrder(next);
   }, [songs]);
 
+  const saveDescription = () => {
+    if (descriptionRef.current === savedDescriptionRef.current) return;
+    savedDescriptionRef.current = descriptionRef.current;
+    updateDescriptionMutation.mutate({
+      id: playlistRef.current.id,
+      title: playlistRef.current.title,
+      description: descriptionRef.current || undefined,
+    });
+  };
+
+  useEffect(() => {
+    return () => saveDescription();
+  }, [playlist.id, updateDescriptionMutation.mutate]);
+
+  const handleDescriptionChange = (markdown: string) => {
+    setDescription(markdown);
+  };
+
+  const descriptionSaveStatus: MarkdownSaveStatus = updateDescriptionMutation.isPending
+    ? "saving"
+    : updateDescriptionMutation.isSuccess
+      ? "saved"
+      : "idle";
+
+  const handleDialogSubmit = async (values: { title: string }) => {
+    await updatePlaylistMutation.mutateAsync({
+      id: playlist.id,
+      title: values.title,
+      description: descriptionRef.current || undefined,
+    });
+  };
+
   const handleDelete = async () => {
     await deletePlaylistMutation.mutateAsync({ id: playlist.id });
   };
@@ -88,58 +152,71 @@ function PlaylistDetailContent({
   };
 
   return (
-    <PlaylistDetail
-      playlist={playlist}
-      onDelete={handleDelete}
-      songsList={
-        <DragDropProvider
-          onDragStart={() => {
-            dragSnapshotRef.current = orderRef.current;
-          }}
-          onDragOver={(event) => {
-            orderRef.current = move(orderRef.current, event);
-            setOrder(orderRef.current);
-          }}
-          onDragEnd={(event) => {
-            const { source, canceled } = event.operation;
-            if (canceled) {
-              orderRef.current = dragSnapshotRef.current;
-              setOrder(dragSnapshotRef.current);
-              return;
-            }
-            if (source) persistSongMove(String(source.id));
-          }}
-        >
-          <div className="flex flex-col gap-0">
-            {order.map((songId, index) => {
-              const song = songsById.get(songId);
-              if (!song) return null;
-              return (
-                <SortablePlaylistSong
-                  key={songId}
-                  song={song}
-                  index={index}
-                  organizationId={organizationId}
-                  projectSlug={projectSlug}
-                  onRemove={() => removeSongMutation.mutate({ playlistId: playlist.id, songId })}
-                />
-              );
-            })}
-          </div>
-        </DragDropProvider>
-      }
-      addSongPicker={
-        <SongPickerCombobox
-          organizationId={organizationId}
-          selectedSongs={songs.map((song) => ({
-            id: song.songId,
-            title: song.title,
-            artist: song.artist,
-          }))}
-          onAdd={(songId) => addSongMutation.mutate({ playlistId: playlist.id, songId })}
-        />
-      }
-    />
+    <>
+      <PlaylistDetail
+        playlist={playlist}
+        description={description}
+        onDescriptionChange={handleDescriptionChange}
+        onDescriptionBlur={saveDescription}
+        descriptionSaveStatus={descriptionSaveStatus}
+        onEdit={() => setDialogState({ mode: "edit", playlist })}
+        onDelete={handleDelete}
+        durationInSeconds={playlistDurationInSeconds}
+        songsList={
+          <DragDropProvider
+            onDragStart={() => {
+              dragSnapshotRef.current = orderRef.current;
+            }}
+            onDragOver={(event) => {
+              orderRef.current = move(orderRef.current, event);
+              setOrder(orderRef.current);
+            }}
+            onDragEnd={(event) => {
+              const { source, canceled } = event.operation;
+              if (canceled) {
+                orderRef.current = dragSnapshotRef.current;
+                setOrder(dragSnapshotRef.current);
+                return;
+              }
+              if (source) persistSongMove(String(source.id));
+            }}
+          >
+            <div className="flex flex-col gap-0">
+              {order.map((songId, index) => {
+                const song = songsById.get(songId);
+                if (!song) return null;
+                return (
+                  <SortablePlaylistSong
+                    key={songId}
+                    song={song}
+                    index={index}
+                    organizationId={organizationId}
+                    projectSlug={projectSlug}
+                    onRemove={() => removeSongMutation.mutate({ playlistId: playlist.id, songId })}
+                  />
+                );
+              })}
+            </div>
+          </DragDropProvider>
+        }
+        addSongPicker={
+          <SongPickerCombobox
+            organizationId={organizationId}
+            selectedSongs={songs.map((song) => ({
+              id: song.songId,
+              title: song.title,
+              artist: song.artist,
+            }))}
+            onAdd={(songId) => addSongMutation.mutate({ playlistId: playlist.id, songId })}
+          />
+        }
+      />
+      <PlaylistDialog
+        state={dialogState}
+        onOpenChange={(open) => !open && setDialogState(null)}
+        onSubmit={handleDialogSubmit}
+      />
+    </>
   );
 }
 

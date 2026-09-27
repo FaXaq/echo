@@ -1,3 +1,10 @@
+import { kindForMimeType } from "@echo/modules/drive/domain";
+import { match } from "ts-pattern";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
+
 export function downloadBlob(blob: Blob, filename: string) {
   const objectUrl = URL.createObjectURL(blob);
 
@@ -41,7 +48,42 @@ export function formatSize(bytes: number): string {
 
 export function formatDuration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
+  const d = dayjs.duration(seconds * 1000);
+  return d.hours() > 0 ? d.format("H:mm:ss") : d.format("m:ss");
+}
+
+export function getMediaDuration(file: File): Promise<number | null> {
+  const kind = kindForMimeType(file.type);
+  if (kind !== "audio" && kind !== "video") return Promise.resolve(null);
+
+  const url = URL.createObjectURL(file);
+
+  const mediaElement = match(kind)
+    .with("audio", () => {
+      const audio = document.createElement("audio");
+      audio.setAttribute("src", url);
+      return audio;
+    })
+    .with("video", () => {
+      const video = document.createElement("video");
+      const source = document.createElement("source");
+      source.setAttribute("src", url);
+      source.setAttribute("type", file.type);
+
+      video.appendChild(source);
+      return video;
+    })
+    .exhaustive();
+
+  return new Promise((resolve) => {
+    mediaElement.addEventListener("loadedmetadata", () => {
+      URL.revokeObjectURL(url);
+      resolve(Number.isFinite(mediaElement.duration) ? Math.round(mediaElement.duration) : null);
+    });
+
+    mediaElement.addEventListener("error", () => {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    });
+  });
 }

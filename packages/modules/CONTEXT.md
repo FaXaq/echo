@@ -31,6 +31,9 @@ _Avoid_: File browser
 A named container for organizing an Organization's Drive files, nestable arbitrarily deep under other Folders. Scoped only to the Organization — a Folder has no Event or Song scoping, unlike `file`. The hierarchy root is implicit: a `null` parent (on a Folder) or a `null` folder (on a file) means "at Drive root," the same nullable-FK convention already used for `file.eventId`/`file.songId`.
 _Avoid_: Directory
 
+**Duration**:
+A File's play length in whole seconds, stored on the file itself and populated only for `FileKind: "audio"` and `"video"` (`null` for image/document, and for audio/video files not yet computed — files uploaded before this existed). Captured client-side from the browser's native media decoding at upload time (`<audio>`/`<video>` element per kind) and trusted the same way `mimeType`/`sizeBytes` already are, not re-verified server-side. Distinct from the audio player's own live `durationchange` value, which is read fresh from whatever file is currently loaded into it and was never stored — Duration exists so a file's length is known before it's ever loaded into a player (e.g. in a file list or Song row).
+
 **Song**:
 An Organization-scoped creative work: title (required), and optional artist, BPM, musical key, markdown lyrics, and `'original' | 'cover'` type. Like an Event, a Song has its own file list, built from its Song File Links; a file can be attached to an Event and any number of Songs at the same time (see Drive), and deleting a Song only removes that Song's link — the file itself is deleted only once every link (Event or Song) is gone.
 _Avoid_: Track

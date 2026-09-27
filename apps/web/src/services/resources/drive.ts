@@ -2,6 +2,7 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 import type { RouterOutputs } from "@echo/api/router";
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
+import { getMediaDuration } from "@/lib/file";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
@@ -200,6 +201,8 @@ export function useUploadFileMutation({
   return useMutation({
     mutationKey: uploadFileMutationKey,
     mutationFn: async (input: UploadFileInput) => {
+      const durationSeconds = await getMediaDuration(input.file);
+
       const { fileId, uploadUrl } = await apiClient.drive.createUpload.mutate({
         eventId: input.eventId,
         songId: input.songId,
@@ -207,6 +210,7 @@ export function useUploadFileMutation({
         organizationId: input.organizationId,
         mimeType: input.file.type,
         sizeBytes: input.file.size,
+        durationSeconds,
         filename: input.file.name,
       });
 

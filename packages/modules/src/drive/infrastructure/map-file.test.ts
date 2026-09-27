@@ -13,6 +13,7 @@ function makeRow(overrides: Partial<FileRow> = {}): FileRow {
     kind: "audio",
     mime_type: "audio/mpeg",
     size_bytes: 100,
+    duration_seconds: null,
     filename: "demo.mp3",
     original_filename: "demo.mp3",
     s3_key: "org/org-1/file-1/demo.mp3",
@@ -41,6 +42,14 @@ describe("toFileRecord", () => {
 
   it("throws when the stored status is unknown", () => {
     expect(() => toFileRecord(makeRow({ status: "not-a-status" }))).toThrow();
+  });
+
+  it("maps duration_seconds through", () => {
+    expect(toFileRecord(makeRow({ duration_seconds: 183 })).durationSeconds).toBe(183);
+  });
+
+  it("maps a null duration_seconds through", () => {
+    expect(toFileRecord(makeRow({ duration_seconds: null })).durationSeconds).toBeNull();
   });
 });
 

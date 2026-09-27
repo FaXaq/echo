@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,28 +17,40 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import type { Playlist } from "@/services/resources/playlist";
 
 const playlistFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  description: z.string(),
 });
 
 type PlaylistFormValues = z.infer<typeof playlistFormSchema>;
 
+export type PlaylistDialogState = { mode: "create" } | { mode: "edit"; playlist: Playlist } | null;
+
 export interface PlaylistDialogSubmitValues {
   title: string;
-  description?: string;
+}
+
+function stateToDefaultValues(state: PlaylistDialogState): PlaylistFormValues {
+  if (state?.mode === "edit") return { title: state.playlist.title };
+  return { title: "" };
 }
 
 interface PlaylistDialogProps {
-  open: boolean;
+  state: PlaylistDialogState;
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: PlaylistDialogSubmitValues) => void | Promise<void>;
 }
 
-export function PlaylistDialog({ open, onOpenChange, onSubmit }: PlaylistDialogProps) {
+export function PlaylistDialog({ state, onOpenChange, onSubmit }: PlaylistDialogProps) {
   const { t } = useLingui();
+
+  const [content, setContent] = useState(state);
+  useEffect(() => {
+    if (state !== null) setContent(state);
+  }, [state]);
+
+  const isEdit = content?.mode === "edit";
 
   const {
     register,
@@ -46,26 +59,25 @@ export function PlaylistDialog({ open, onOpenChange, onSubmit }: PlaylistDialogP
     formState: { errors, isSubmitting },
   } = useForm<PlaylistFormValues>({
     resolver: zodResolver(playlistFormSchema),
-    defaultValues: { title: "", description: "" },
+    defaultValues: stateToDefaultValues(content),
   });
 
+  useEffect(() => {
+    if (state !== null) reset(stateToDefaultValues(state));
+  }, [state, reset]);
+
   const submit = async (values: PlaylistFormValues) => {
-    await onSubmit({ title: values.title, description: values.description || undefined });
-    reset();
+    await onSubmit({ title: values.title });
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(next) => {
-        if (!next) reset();
-        onOpenChange(next);
-      }}
-    >
+    <Dialog open={state !== null} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t`New playlist`}</DialogTitle>
-          <DialogDescription className="sr-only">{t`New playlist`}</DialogDescription>
+          <DialogTitle>{isEdit ? t`Edit playlist` : t`New playlist`}</DialogTitle>
+          <DialogDescription className="sr-only">
+            {isEdit ? t`Edit playlist` : t`New playlist`}
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4">
           <FieldGroup>
@@ -73,11 +85,6 @@ export function PlaylistDialog({ open, onOpenChange, onSubmit }: PlaylistDialogP
               <FieldLabel htmlFor="playlist-title">{t`Title`}</FieldLabel>
               <Input id="playlist-title" autoFocus {...register("title")} />
               <FieldError>{errors.title && translateDynamic(t, errors.title.message!)}</FieldError>
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="playlist-description">{t`Description`}</FieldLabel>
-              <Textarea id="playlist-description" {...register("description")} />
             </Field>
           </FieldGroup>
 
@@ -88,7 +95,7 @@ export function PlaylistDialog({ open, onOpenChange, onSubmit }: PlaylistDialogP
               {t`Cancel`}
             </DialogClose>
             <Button type="submit" isLoading={isSubmitting}>
-              {t`Create playlist`}
+              {isEdit ? t`Save changes` : t`Create playlist`}
             </Button>
           </DialogFooter>
         </form>

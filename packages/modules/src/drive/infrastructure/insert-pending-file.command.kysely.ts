@@ -14,6 +14,7 @@ export const insertPendingFileCommandFactory: InsertPendingFileCommandPortFactor
         kind: input.kind,
         mime_type: input.mimeType,
         size_bytes: input.sizeBytes,
+        duration_seconds: input.durationSeconds,
         filename: input.originalFilename,
         original_filename: input.originalFilename,
         s3_key: input.s3Key,

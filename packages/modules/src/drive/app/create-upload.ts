@@ -41,6 +41,7 @@ export async function createUpload(
     scope: OrganizationScope;
     mimeType: string;
     sizeBytes: number;
+    durationSeconds?: number | null;
     filename: string;
   },
 ): Promise<{ fileId: string; uploadUrl: string }> {
@@ -95,6 +96,7 @@ export async function createUpload(
     kind,
     mimeType: input.mimeType,
     sizeBytes: input.sizeBytes,
+    durationSeconds: input.durationSeconds ?? null,
     originalFilename: input.filename,
     s3Key,
   });

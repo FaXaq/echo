@@ -93,6 +93,52 @@ describe("createUpload", () => {
     expect(inserted[0].scope.organizationId).toBe("org-1");
   });
 
+  it("passes durationSeconds through to the inserted file when provided", async () => {
+    const inserted: InsertPendingFileInput[] = [];
+
+    await createUpload(
+      {
+        db: makeFakeDb(),
+        findFolderByIdQuery: makeFakeFindFolderById(),
+        s3Storage: makeFakeS3Storage(),
+        insertPendingFileCommand: makeFakeInsertPendingFile((_scope, input) =>
+          inserted.push(input),
+        ),
+        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
+        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+        ...makeFakePermissionChecks(),
+        ...makeFakeQuotaPorts(),
+      },
+      { ...baseInput, durationSeconds: 183 },
+    );
+
+    expect(inserted[0].durationSeconds).toBe(183);
+  });
+
+  it("defaults durationSeconds to null when the client didn't provide one", async () => {
+    const inserted: InsertPendingFileInput[] = [];
+
+    await createUpload(
+      {
+        db: makeFakeDb(),
+        findFolderByIdQuery: makeFakeFindFolderById(),
+        s3Storage: makeFakeS3Storage(),
+        insertPendingFileCommand: makeFakeInsertPendingFile((_scope, input) =>
+          inserted.push(input),
+        ),
+        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
+        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+        ...makeFakePermissionChecks(),
+        ...makeFakeQuotaPorts(),
+      },
+      baseInput,
+    );
+
+    expect(inserted[0].durationSeconds).toBeNull();
+  });
+
   it("rejects a songId that doesn't belong to the caller's organization", async () => {
     const linked: string[] = [];
 

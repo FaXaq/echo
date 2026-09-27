@@ -1,5 +1,6 @@
 export { createPlaylist } from "./create-playlist.js";
 export { deletePlaylist } from "./delete-playlist.js";
+export { updatePlaylist } from "./update-playlist.js";
 export { getPlaylistById } from "./get-playlist-by-id.js";
 export { listPlaylists } from "./list-playlists.js";
 export { listPlaylistSongs } from "./list-playlist-songs.js";

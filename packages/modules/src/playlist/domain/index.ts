@@ -14,6 +14,11 @@ export type Playlist = {
   updatedAt: Date | null;
 };
 
+export type PlaylistWithStats = Playlist & {
+  songCount: number;
+  totalDurationSeconds: number;
+};
+
 export type PlaylistSongEntry = {
   songId: string;
   title: string;

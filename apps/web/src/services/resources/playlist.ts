@@ -7,7 +7,7 @@ const { key, getResourceKey } = initResourceKey("playlist");
 
 export { key };
 
-export type Playlist = RouterOutputs["playlist"]["listPlaylists"][number];
+export type Playlist = RouterOutputs["playlist"]["getPlaylistById"];
 export type PlaylistSongEntry = RouterOutputs["playlist"]["listPlaylistSongs"][number];
 export type PlaylistSummary = RouterOutputs["playlist"]["listEventPlaylists"][number];
 
@@ -73,6 +73,28 @@ export function useCreatePlaylistMutation({
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.(result);
     },
+  });
+}
+
+export function useUpdatePlaylistMutation({
+  organizationId,
+  onSuccess,
+  onError,
+}: {
+  organizationId: string;
+  onSuccess?: (playlist: Playlist) => void;
+  onError?: () => void;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { id: string; title: string; description?: string }) =>
+      apiClient.playlist.updatePlaylist.mutate({ organizationId, ...input }),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.(result);
+    },
+    onError,
   });
 }
 

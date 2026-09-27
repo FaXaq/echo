@@ -14,11 +14,13 @@ export function SongListItem({
   song,
   leading,
   trailing,
+  duration,
   projectSlug,
 }: {
   song: SongListItemSong;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
+  duration?: React.ReactNode;
   projectSlug: string;
 }) {
   const { t } = useLingui();
@@ -34,6 +36,7 @@ export function SongListItem({
       <span className="flex-1 text-sm font-medium">
         {song.title} {song.type !== "original" && song.artist ? `- ${song.artist}` : ""}
       </span>
+      <span className="text-muted-foreground">{duration}</span>
       {song.type && (
         <Badge variant="secondary">{song.type === "original" ? t`Original` : t`Cover`}</Badge>
       )}

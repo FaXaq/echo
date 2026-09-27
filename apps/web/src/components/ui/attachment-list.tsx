@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatSize } from "@/lib/file";
+import { formatDuration, formatSize } from "@/lib/file";
 import { match } from "ts-pattern";
 
 export interface PendingAttachment {
@@ -56,9 +56,15 @@ export interface AttachmentFile {
   kind: FileKind;
   mimeType: string;
   sizeBytes: number;
+  durationSeconds?: number | null;
   downloadUrl: string;
   role?: Role | null;
   version?: number | null;
+}
+
+function formatFileMeta(file: Pick<AttachmentFile, "sizeBytes" | "durationSeconds">): string {
+  const size = formatSize(file.sizeBytes);
+  return file.durationSeconds != null ? `${size} · ${formatDuration(file.durationSeconds)}` : size;
 }
 
 export interface AttachmentListProps<F extends AttachmentFile> {
@@ -200,7 +206,7 @@ function AttachmentListItems<F extends AttachmentFile>({
                   )}
                 </AttachmentTitle>
                 <AttachmentDescription>
-                  {failed ? t`Couldn't load this file` : formatSize(file.sizeBytes)}
+                  {failed ? t`Couldn't load this file` : formatFileMeta(file)}
                 </AttachmentDescription>
               </AttachmentContent>
               <AttachmentActions>
@@ -384,7 +390,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
               <AttachmentContent>
                 <AttachmentTitle>{file.filename}</AttachmentTitle>
                 <AttachmentDescription>
-                  {failed ? t`Couldn't load this file` : formatSize(file.sizeBytes)}
+                  {failed ? t`Couldn't load this file` : formatFileMeta(file)}
                 </AttachmentDescription>
               </AttachmentContent>
               <AttachmentActions>
