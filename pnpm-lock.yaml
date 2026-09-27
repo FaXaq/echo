@@ -207,6 +207,9 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.1093.0
         version: 3.1093.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: ^3.1093.0
+        version: 3.1093.0
       '@echo/adapters':
         specifier: workspace:*
         version: link:../../packages/adapters
