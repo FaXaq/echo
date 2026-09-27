@@ -1,3 +1,9 @@
+## [0.16.2](https://github.com/FaXaq/echo/compare/v0.16.1...v0.16.2) (2026-09-27)
+
+### 🐛 Bug Fixes
+
+* **cli:** declare @aws-sdk/s3-request-presigner as direct dependency ([#51](https://github.com/FaXaq/echo/issues/51)) ([87e9e96](https://github.com/FaXaq/echo/commit/87e9e96142e6eb0311a4125b144de877a87b3985))
+
 ## [0.16.1](https://github.com/FaXaq/echo/compare/v0.16.0...v0.16.1) (2026-09-27)
 
 ### 🐛 Bug Fixes
