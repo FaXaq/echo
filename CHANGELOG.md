@@ -1,3 +1,9 @@
+## [0.15.0](https://github.com/FaXaq/echo/compare/v0.14.0...v0.15.0) (2026-09-27)
+
+### ✨ Features
+
+* **playlist:** song ordering ([#47](https://github.com/FaXaq/echo/issues/47)) ([5c8a100](https://github.com/FaXaq/echo/commit/5c8a100b8264a1b06a545ff40100663cf9fec669))
+
 ## [0.14.0](https://github.com/FaXaq/echo/compare/v0.13.0...v0.14.0) (2026-09-23)
 
 ### ✨ Features
