@@ -3,9 +3,10 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
-import { X } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventDetail, EventDialog, type EventDialogState } from "@/ui/event-calendar";
 import type { MarkdownSaveStatus } from "@/components/ui/markdown-editor";
@@ -134,12 +135,15 @@ function EventDetailContent({
         attachments={
           <SuspendedEventAttachments eventId={viewEvent.id} organizationId={organizationId} />
         }
-        playlistsPicker={
+        playlistsList={
           <>
             {eventPlaylists.map((playlist) => (
-              <div key={playlist.id} className="flex flex-col gap-2">
+              <Collapsible key={playlist.id} className="flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-medium">{playlist.title}</span>
+                  <CollapsibleTrigger className="group flex items-center gap-1.5 text-sm font-medium">
+                    <ChevronRight className="size-4 text-muted-foreground transition-transform group-data-[panel-open]:rotate-90" />
+                    {playlist.title}
+                  </CollapsibleTrigger>
                   <Button
                     type="button"
                     variant="ghost"
@@ -155,21 +159,25 @@ function EventDetailContent({
                     <X />
                   </Button>
                 </div>
-                <SuspendedPlaylistSongs
-                  playlistId={playlist.id}
-                  organizationId={organizationId}
-                  projectSlug={projectSlug}
-                />
-              </div>
+                <CollapsibleContent>
+                  <SuspendedPlaylistSongs
+                    playlistId={playlist.id}
+                    organizationId={organizationId}
+                    projectSlug={projectSlug}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
             ))}
-            <PlaylistPickerCombobox
-              organizationId={organizationId}
-              selectedPlaylists={eventPlaylists}
-              onAdd={(playlistId) =>
-                attachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
-              }
-            />
           </>
+        }
+        addPlaylistPicker={
+          <PlaylistPickerCombobox
+            organizationId={organizationId}
+            selectedPlaylists={eventPlaylists}
+            onAdd={(playlistId) =>
+              attachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
+            }
+          />
         }
       />
       <EventDialog
