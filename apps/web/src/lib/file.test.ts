@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getMediaDuration } from "./file.js";
+import { formatDuration, getMediaDuration } from "./file.js";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -8,6 +8,21 @@ afterEach(() => {
 function makeFile(name: string, type: string): File {
   return new File(["fake-bytes"], name, { type });
 }
+
+describe("formatDuration", () => {
+  it("formats sub-hour durations as mm:ss", () => {
+    expect(formatDuration(65)).toBe("1:05");
+  });
+
+  it("formats durations of an hour or more as h:mm:ss", () => {
+    expect(formatDuration(3725)).toBe("1:02:05");
+  });
+
+  it("falls back to 0:00 for negative or non-finite input", () => {
+    expect(formatDuration(-5)).toBe("0:00");
+    expect(formatDuration(Number.NaN)).toBe("0:00");
+  });
+});
 
 function findCreatedElement<T extends Element>(
   createElement: ReturnType<typeof vi.spyOn>,

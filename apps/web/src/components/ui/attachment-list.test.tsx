@@ -227,6 +227,31 @@ describe("AttachmentList", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
+  it("shows duration next to file size when known, and just the size when it isn't", () => {
+    render(
+      <AttachmentList
+        files={[
+          makeFile({
+            id: "audio-1",
+            kind: "audio",
+            filename: "no-duration-yet.mp3",
+            sizeBytes: 2048,
+          }),
+          makeFile({
+            id: "audio-2",
+            kind: "audio",
+            filename: "demo.mp3",
+            sizeBytes: 2048,
+            durationSeconds: 65,
+          }),
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("2 KB")).toBeInTheDocument();
+    expect(screen.getByText("2 KB · 1:05")).toBeInTheDocument();
+  });
+
   it("shows an error state in the row and preview dialog when the file fails to load", async () => {
     const user = userEvent.setup();
     render(<AttachmentList files={[makeFile()]} />);

@@ -1,5 +1,9 @@
 import { kindForMimeType } from "@echo/modules/drive/domain";
 import { match } from "ts-pattern";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
 
 export function downloadBlob(blob: Blob, filename: string) {
   const objectUrl = URL.createObjectURL(blob);
@@ -44,25 +48,10 @@ export function formatSize(bytes: number): string {
 
 export function formatDuration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
+  const d = dayjs.duration(seconds * 1000);
+  return d.hours() > 0 ? d.format("H:mm:ss") : d.format("m:ss");
 }
 
-// TODO(human): read this File's play length client-side, before it's ever
-// uploaded, so it can be sent alongside mimeType/sizeBytes in createUpload.
-//
-// - Only audio/video files have a duration; other kinds should resolve null
-//   immediately without touching the DOM.
-// - Use a temporary <audio> or <video> element (HTMLMediaElement.duration,
-//   available once the "loadedmetadata" event fires) fed via
-//   URL.createObjectURL(file) — the same technique audio-player-store.ts
-//   already uses for playback.
-// - Resolve null (never reject) if the browser can't decode the file
-//   (corrupt/unsupported) — this must never block the upload.
-// - Round to whole seconds (the backend column is an integer).
-// - Clean up: revoke the object URL once metadata has loaded (or once it's
-//   clear it never will) so you don't leak blob URLs.
 export function getMediaDuration(file: File): Promise<number | null> {
   const kind = kindForMimeType(file.type);
   if (kind !== "audio" && kind !== "video") return Promise.resolve(null);

@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
 import { usePostHog } from "posthog-js/react";
@@ -21,6 +21,7 @@ import {
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SongPickerCombobox } from "./song-picker-combobox";
 import { SortablePlaylistSong } from "./sortable-playlist-song";
+import { getSongDefaultAudioQueryOptions } from "@/services/resources/song";
 
 export interface SuspendedPlaylistDetailProps {
   playlistId: string;
@@ -45,6 +46,15 @@ function PlaylistDetailContent({
   const { data: songs } = useSuspenseQuery(
     getPlaylistSongsQueryOptions({ playlistId, organizationId }),
   );
+
+  const fileQueries = useSuspenseQueries({
+    queries: songs.map((s) =>
+      getSongDefaultAudioQueryOptions({ songId: s.songId, organizationId }),
+    ),
+  });
+  const playlistDurationInSeconds = fileQueries
+    .map((q) => q.data?.durationSeconds ?? 0)
+    .reduce((a, b) => a + b, 0);
 
   useSyncPageMeta(pathname, playlist.title, playlist.title);
 
@@ -91,6 +101,7 @@ function PlaylistDetailContent({
     <PlaylistDetail
       playlist={playlist}
       onDelete={handleDelete}
+      durationInSeconds={playlistDurationInSeconds}
       songsList={
         <DragDropProvider
           onDragStart={() => {

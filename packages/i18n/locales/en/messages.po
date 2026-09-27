@@ -29,7 +29,7 @@ msgid "{0, plural, one {# item} other {# items}}"
 msgstr "{0, plural, one {# item} other {# items}}"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/ui/attachment-list.tsx:487
+#: apps/web/src/components/ui/attachment-list.tsx:493
 msgid "{0, plural, one {Delete # file?} other {Delete # files?}}"
 msgstr "{0, plural, one {Delete # file?} other {Delete # files?}}"
 
@@ -111,12 +111,12 @@ msgstr "Actions"
 #. placeholder {0}: folder.name
 #: apps/web/src/components/features/drive/drive-file-row.tsx:147
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:169
-#: apps/web/src/components/ui/attachment-list.tsx:217
-#: apps/web/src/components/ui/attachment-list.tsx:401
+#: apps/web/src/components/ui/attachment-list.tsx:223
+#: apps/web/src/components/ui/attachment-list.tsx:407
 msgid "Actions for {0}"
 msgstr "Actions for {0}"
 
-#: apps/web/src/components/ui/attachment-list.tsx:469
+#: apps/web/src/components/ui/attachment-list.tsx:475
 msgid "Actions for selected files"
 msgstr "Actions for selected files"
 
@@ -154,7 +154,7 @@ msgstr "Add files"
 msgid "Add playlist"
 msgstr "Add playlist"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:89
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:99
 msgid "Add song"
 msgstr "Add song"
 
@@ -243,7 +243,7 @@ msgid "At least one uppercase letter"
 msgstr "At least one uppercase letter"
 
 #. placeholder {0}: audioFiles.length + audioPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:558
+#: apps/web/src/components/ui/attachment-list.tsx:564
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
@@ -263,7 +263,7 @@ msgstr "Back to home"
 msgid "Back to Outreach"
 msgstr "Back to Outreach"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:173
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:184
 msgid "Back to playlists"
 msgstr "Back to playlists"
 
@@ -316,7 +316,7 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:110
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:120
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:88
 #: apps/web/src/components/ui/song/song-detail.tsx:121
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
@@ -466,7 +466,7 @@ msgid "Couldn't load playlists"
 msgstr "Couldn't load playlists"
 
 #: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:50
-#: apps/web/src/components/features/song/suspended-song-list.tsx:91
+#: apps/web/src/components/features/song/suspended-song-list.tsx:95
 msgid "Couldn't load songs"
 msgstr "Couldn't load songs"
 
@@ -474,8 +474,8 @@ msgstr "Couldn't load songs"
 msgid "Couldn't load the Outreach board"
 msgstr "Couldn't load the Outreach board"
 
-#: apps/web/src/components/ui/attachment-list.tsx:203
-#: apps/web/src/components/ui/attachment-list.tsx:387
+#: apps/web/src/components/ui/attachment-list.tsx:209
+#: apps/web/src/components/ui/attachment-list.tsx:393
 #: apps/web/src/components/ui/file-preview-dialog.tsx:44
 msgid "Couldn't load this file"
 msgstr "Couldn't load this file"
@@ -484,7 +484,7 @@ msgstr "Couldn't load this file"
 msgid "Couldn't move card"
 msgstr "Couldn't move card"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:86
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:96
 msgid "Couldn't move song"
 msgstr "Couldn't move song"
 
@@ -515,7 +515,7 @@ msgstr "Couldn't upload {0}"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
-#: apps/web/src/components/ui/song/song-list-item.tsx:38
+#: apps/web/src/components/ui/song/song-list-item.tsx:41
 msgid "Cover"
 msgstr "Cover"
 
@@ -551,7 +551,7 @@ msgstr "Create project"
 msgid "Create song"
 msgstr "Create song"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:46
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:49
 msgid "Created by"
 msgstr "Created by"
 
@@ -571,7 +571,7 @@ msgstr "Date"
 msgid "Day"
 msgstr "Day"
 
-#: apps/web/src/components/ui/attachment-list.tsx:261
+#: apps/web/src/components/ui/attachment-list.tsx:267
 msgid "Define as"
 msgstr "Define as"
 
@@ -590,18 +590,18 @@ msgstr "Define as"
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:323
 #: apps/web/src/components/features/outreach/outreach-column.tsx:144
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:237
-#: apps/web/src/components/ui/attachment-list.tsx:276
-#: apps/web/src/components/ui/attachment-list.tsx:436
-#: apps/web/src/components/ui/attachment-list.tsx:478
-#: apps/web/src/components/ui/attachment-list.tsx:489
+#: apps/web/src/components/ui/attachment-list.tsx:282
+#: apps/web/src/components/ui/attachment-list.tsx:442
+#: apps/web/src/components/ui/attachment-list.tsx:484
+#: apps/web/src/components/ui/attachment-list.tsx:495
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:187
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:251
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:182
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:220
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:74
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:117
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:77
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:127
 #: apps/web/src/components/ui/song/song-detail.tsx:99
 #: apps/web/src/components/ui/song/song-detail.tsx:128
 msgid "Delete"
@@ -631,7 +631,7 @@ msgstr "Delete event?"
 #~ msgid "Delete organization"
 #~ msgstr "Delete organization"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:104
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:114
 msgid "Delete playlist?"
 msgstr "Delete playlist?"
 
@@ -656,7 +656,7 @@ msgid "Delete this folder?"
 msgstr "Delete this folder?"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:78
-#: apps/web/src/components/ui/attachment-list.tsx:197
+#: apps/web/src/components/ui/attachment-list.tsx:203
 msgid "Demo"
 msgstr "Demo"
 
@@ -666,13 +666,13 @@ msgstr "Desc"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:198
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:193
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:45
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:48
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:79
 msgid "Description"
 msgstr "Description"
 
-#: apps/web/src/components/ui/attachment-list.tsx:226
-#: apps/web/src/components/ui/attachment-list.tsx:410
+#: apps/web/src/components/ui/attachment-list.tsx:232
+#: apps/web/src/components/ui/attachment-list.tsx:416
 msgid "Deselect"
 msgstr "Deselect"
 
@@ -692,8 +692,8 @@ msgstr "Don't have an account? <0>Sign up</0>"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:215
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:52
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:59
-#: apps/web/src/components/ui/attachment-list.tsx:248
-#: apps/web/src/components/ui/attachment-list.tsx:430
+#: apps/web/src/components/ui/attachment-list.tsx:254
+#: apps/web/src/components/ui/attachment-list.tsx:436
 #: apps/web/src/components/ui/file-preview-dialog.tsx:58
 msgid "Download"
 msgstr "Download"
@@ -702,7 +702,7 @@ msgstr "Download"
 msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
-#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:41
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:42
 msgid "Drag to reorder"
 msgstr "Drag to reorder"
 
@@ -921,7 +921,7 @@ msgid "Fill in the details below to get started"
 msgstr "Fill in the details below to get started"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:79
-#: apps/web/src/components/ui/attachment-list.tsx:197
+#: apps/web/src/components/ui/attachment-list.tsx:203
 msgid "Final"
 msgstr "Final"
 
@@ -952,7 +952,7 @@ msgid "Full name is required"
 msgstr "Full name is required"
 
 #. placeholder {0}: galleryFiles.length + galleryPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:561
+#: apps/web/src/components/ui/attachment-list.tsx:567
 msgid "Gallery ({0})"
 msgstr "Gallery ({0})"
 
@@ -1047,11 +1047,11 @@ msgstr "Language"
 msgid "Last modified"
 msgstr "Last modified"
 
-#: apps/web/src/components/ui/attachment-list.tsx:265
+#: apps/web/src/components/ui/attachment-list.tsx:271
 msgid "Latest demo"
 msgstr "Latest demo"
 
-#: apps/web/src/components/ui/attachment-list.tsx:268
+#: apps/web/src/components/ui/attachment-list.tsx:274
 msgid "Latest final"
 msgstr "Latest final"
 
@@ -1146,7 +1146,7 @@ msgid "Members"
 msgstr "Members"
 
 #. placeholder {0}: miscFiles.length + miscPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:564
+#: apps/web/src/components/ui/attachment-list.tsx:570
 msgid "Misc ({0})"
 msgstr "Misc ({0})"
 
@@ -1204,7 +1204,7 @@ msgstr "New playlist"
 msgid "New project"
 msgstr "New project"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:52
+#: apps/web/src/components/features/song/suspended-song-list.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:103
 #: apps/web/src/components/ui/song/song-dialog.tsx:105
 msgid "New song"
@@ -1230,8 +1230,8 @@ msgstr "No contacts"
 msgid "No events scheduled"
 msgstr "No events scheduled"
 
-#: apps/web/src/components/ui/attachment-list.tsx:137
-#: apps/web/src/components/ui/attachment-list.tsx:317
+#: apps/web/src/components/ui/attachment-list.tsx:143
+#: apps/web/src/components/ui/attachment-list.tsx:323
 msgid "No files here yet."
 msgstr "No files here yet."
 
@@ -1285,7 +1285,7 @@ msgstr "No results."
 msgid "No songs in this playlist."
 msgstr "No songs in this playlist."
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:57
+#: apps/web/src/components/features/song/suspended-song-list.tsx:58
 msgid "No songs yet."
 msgstr "No songs yet."
 
@@ -1315,8 +1315,8 @@ msgid "Only a selection of files can be downloaded together"
 msgstr "Only a selection of files can be downloaded together"
 
 #. placeholder {0}: file.filename
-#: apps/web/src/components/ui/attachment-list.tsx:173
-#: apps/web/src/components/ui/attachment-list.tsx:353
+#: apps/web/src/components/ui/attachment-list.tsx:179
+#: apps/web/src/components/ui/attachment-list.tsx:359
 msgid "Open {0}"
 msgstr "Open {0}"
 
@@ -1360,7 +1360,7 @@ msgstr "Organizer"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
-#: apps/web/src/components/ui/song/song-list-item.tsx:38
+#: apps/web/src/components/ui/song/song-list-item.tsx:41
 msgid "Original"
 msgstr "Original"
 
@@ -1440,15 +1440,15 @@ msgstr "Play"
 #~ msgid "Play {0} instead?"
 #~ msgstr "Play {0} instead?"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:66
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:69
 msgid "Playlist actions"
 msgstr "Playlist actions"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:55
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:65
 msgid "Playlist deleted"
 msgstr "Playlist deleted"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:167
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:178
 msgid "Playlist not found"
 msgstr "Playlist not found"
 
@@ -1526,11 +1526,11 @@ msgstr "Remove {0}"
 msgid "Remove playlist"
 msgstr "Remove playlist"
 
-#: apps/web/src/components/ui/attachment-list.tsx:254
+#: apps/web/src/components/ui/attachment-list.tsx:260
 msgid "Remove role"
 msgstr "Remove role"
 
-#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:62
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:64
 msgid "Remove song"
 msgstr "Remove song"
 
@@ -1538,8 +1538,8 @@ msgstr "Remove song"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:213
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:184
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
-#: apps/web/src/components/ui/attachment-list.tsx:238
-#: apps/web/src/components/ui/attachment-list.tsx:420
+#: apps/web/src/components/ui/attachment-list.tsx:244
+#: apps/web/src/components/ui/attachment-list.tsx:426
 msgid "Rename"
 msgstr "Rename"
 
@@ -1651,8 +1651,8 @@ msgstr "Search songs to add…"
 msgid "Searching…"
 msgstr "Searching…"
 
-#: apps/web/src/components/ui/attachment-list.tsx:226
-#: apps/web/src/components/ui/attachment-list.tsx:410
+#: apps/web/src/components/ui/attachment-list.tsx:232
+#: apps/web/src/components/ui/attachment-list.tsx:416
 msgid "Select"
 msgstr "Select"
 
@@ -1720,7 +1720,7 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:215
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:144
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:167
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:178
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -1741,7 +1741,7 @@ msgstr "Song details"
 msgid "Song not found"
 msgstr "Song not found"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:85
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:89
 #: apps/web/src/hooks/use-navigation.ts:63
 #: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Songs"
@@ -1824,7 +1824,7 @@ msgstr "This permanently deletes the folder and any files inside it that aren't 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:170
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:181
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "This playlist doesn't exist or has been deleted."
 
@@ -1856,7 +1856,7 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 
-#: apps/web/src/components/ui/attachment-list.tsx:488
+#: apps/web/src/components/ui/attachment-list.tsx:494
 msgid "This will permanently delete the selected files. This action cannot be undone."
 msgstr "This will permanently delete the selected files. This action cannot be undone."
 
@@ -1870,7 +1870,7 @@ msgstr "This will permanently delete this card. This action cannot be undone."
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "This will permanently delete this event. This action cannot be undone."
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:106
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "This will permanently delete this playlist. This action cannot be undone."
 
@@ -1955,8 +1955,8 @@ msgstr "Upload files"
 msgid "Uploaded by"
 msgstr "Uploaded by"
 
-#: apps/web/src/components/ui/attachment-list.tsx:152
-#: apps/web/src/components/ui/attachment-list.tsx:332
+#: apps/web/src/components/ui/attachment-list.tsx:158
+#: apps/web/src/components/ui/attachment-list.tsx:338
 msgid "Uploading…"
 msgstr "Uploading…"
 

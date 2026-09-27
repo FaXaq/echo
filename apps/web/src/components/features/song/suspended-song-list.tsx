@@ -10,6 +10,7 @@ import { SongDialog, type SongDialogState } from "@/components/ui/song/song-dial
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getSongsQueryOptions, useCreateSongMutation, type Song } from "@/services/resources/song";
 import { SuspendedSongPlayButton } from "./suspended-song-play-button";
+import { SuspendedSongDuration } from "./suspended-song-duration";
 
 export interface SuspendedSongListProps {
   organizationId: string;
@@ -68,6 +69,9 @@ function SongListContent({ organizationId, projectSlug, onSongCreated }: Suspend
                     organizationId={organizationId}
                     title={song.title}
                   />
+                }
+                duration={
+                  <SuspendedSongDuration songId={song.id} organizationId={organizationId} />
                 }
               />
             </li>
