@@ -2,6 +2,7 @@ export type Playlist = {
   id: string;
   title: string;
   description: string | null;
+  intervalSeconds: number | null;
   organization: {
     id: string;
     name: string;

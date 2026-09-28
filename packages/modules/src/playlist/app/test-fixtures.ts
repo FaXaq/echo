@@ -27,6 +27,7 @@ export function makeFakePlaylist(overrides: Partial<Playlist> = {}): Playlist {
     id: "playlist-1",
     title: "Summer Rehearsal",
     description: null,
+    intervalSeconds: null,
     organization: { id: "org-1", name: "The Band", slug: "the-band" },
     createdAt: new Date("2026-01-01"),
     createdBy: "user-1",

@@ -13,6 +13,7 @@ export function toPlaylist(row: PlaylistRow): Playlist {
     id: row.id,
     title: row.title,
     description: row.description,
+    intervalSeconds: row.interval_seconds,
     organization: {
       id: row.organization_id,
       name: row.organization_name,

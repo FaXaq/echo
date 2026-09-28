@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useLingui } from "@lingui/react/macro";
-import { AlertTriangle, Pause, Play, Volume2, X } from "lucide-react";
+import { AlertTriangle, Layers, Pause, Play, SkipForward, Volume2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
 import { Spinner } from "@/components/ui/spinner";
 import { formatDuration } from "@/lib/file";
-import type { AudioPlayerStatus } from "@/stores/audio-player-store";
+import type { AudioPlayerStatus, QueueItem } from "@/stores/audio-player-store";
 
 const PLAYBACK_RATE_LABELS: Record<number, string> = {
   1: "1.0×",
@@ -24,12 +24,15 @@ export interface AudioPlayerDockProps {
   volume: number;
   playbackRate: number;
   errorMessage: string | null;
+  queue: QueueItem[];
   onToggle: () => void;
   onSeek: (time: number) => void;
   onVolumeChange: (volume: number) => void;
   onCycleRate: () => void;
   onRetry: () => void;
   onDismiss: () => void;
+  onSkipNext: () => void;
+  onJumpToQueueItem: (index: number) => void;
 }
 
 export function AudioPlayerDock({
@@ -41,12 +44,15 @@ export function AudioPlayerDock({
   volume,
   playbackRate,
   errorMessage,
+  queue,
   onToggle,
   onSeek,
   onVolumeChange,
   onCycleRate,
   onRetry,
   onDismiss,
+  onSkipNext,
+  onJumpToQueueItem,
 }: AudioPlayerDockProps) {
   const { t } = useLingui();
   const [dragValue, setDragValue] = useState<number | null>(null);
@@ -83,6 +89,8 @@ export function AudioPlayerDock({
 
   const isLoading = status === "loading";
   const isPlaying = status === "playing";
+  const isWaiting = status === "waiting";
+  const upNext = isWaiting ? queue[0] : undefined;
 
   return (
     <div className="w-full z-50 mx-auto flex items-center gap-3 border border-border bg-[color-mix(in_oklch,var(--card)_85%,transparent)] py-2 pr-3 pl-2 shadow-[0px_0px_10px_8px_rgba(0,0,0,0.05)] backdrop-blur-md">
@@ -91,10 +99,10 @@ export function AudioPlayerDock({
         size="icon"
         className="size-9 shrink-0 rounded-full bg-foreground text-background hover:bg-foreground/85"
         aria-label={isPlaying ? t`Pause` : t`Play`}
-        disabled={isLoading}
+        disabled={isLoading || isWaiting}
         onClick={onToggle}
       >
-        {isLoading ? (
+        {isLoading || isWaiting ? (
           <Spinner className="size-4" />
         ) : isPlaying ? (
           <Pause className="size-3.5 fill-current" />
@@ -103,11 +111,28 @@ export function AudioPlayerDock({
         )}
       </Button>
 
+      {queue.length > 0 && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-xs"
+          className="shrink-0 rounded-full"
+          aria-label={t`Next`}
+          onClick={onSkipNext}
+        >
+          <SkipForward />
+        </Button>
+      )}
+
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <div className="flex items-baseline gap-2">
-          <span className="truncate text-[12.5px] font-medium">{filename}</span>
-          {contextLabel && (
-            <span className="truncate text-[10.5px] text-muted-foreground">{contextLabel}</span>
+          <span className="truncate text-[12.5px] font-medium">
+            {upNext ? t`Up next: ${upNext.title}` : filename}
+          </span>
+          {(upNext ? (upNext.artist ?? t`Unknown artist`) : contextLabel) && (
+            <span className="truncate text-[10.5px] text-muted-foreground">
+              {upNext ? (upNext.artist ?? t`Unknown artist`) : contextLabel}
+            </span>
           )}
         </div>
         <div className="relative">
@@ -124,7 +149,7 @@ export function AudioPlayerDock({
             min={0}
             max={duration || 0}
             step={0.1}
-            disabled={isLoading || duration === 0}
+            disabled={isLoading || isWaiting || duration === 0}
             onValueChange={(value) => setDragValue(Array.isArray(value) ? value[0] : value)}
             onValueCommitted={(value) => {
               const time = Array.isArray(value) ? value[0] : value;
@@ -179,6 +204,45 @@ export function AudioPlayerDock({
           />
         </PopoverContent>
       </Popover>
+
+      {queue.length > 0 && (
+        <Popover>
+          <PopoverTrigger
+            render={
+              <button
+                type="button"
+                className="flex min-w-0 shrink-0 items-center gap-1.5 rounded-full px-1 text-muted-foreground hover:text-foreground"
+              />
+            }
+          >
+            <Layers className="size-3.5 shrink-0" />
+            <span className="flex min-w-0 flex-col items-start leading-none">
+              <span className="max-w-32 truncate text-[10.5px] font-medium">{queue[0].title}</span>
+              <span className="max-w-32 truncate text-[9.5px]">
+                {queue[0].artist ?? t`Unknown artist`} · {formatDuration(queue[0].durationSeconds)}
+              </span>
+            </span>
+          </PopoverTrigger>
+          <PopoverContent side="top" align="end" className="w-64 gap-1 p-2">
+            <span className="px-1.5 py-1 text-[10.5px] font-medium text-muted-foreground">
+              {t`Up next`}
+            </span>
+            {queue.map((item, index) => (
+              <button
+                key={`${item.songId}-${index}`}
+                type="button"
+                className="flex flex-col items-start gap-0.5 rounded-md px-1.5 py-1.5 text-left hover:bg-accent"
+                onClick={() => onJumpToQueueItem(index)}
+              >
+                <span className="w-full truncate text-[12px] font-medium">{item.title}</span>
+                <span className="w-full truncate text-[10.5px] text-muted-foreground">
+                  {item.artist ?? t`Unknown artist`} · {formatDuration(item.durationSeconds)}
+                </span>
+              </button>
+            ))}
+          </PopoverContent>
+        </Popover>
+      )}
 
       <Button
         type="button"

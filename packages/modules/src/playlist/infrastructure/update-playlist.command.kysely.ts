@@ -10,6 +10,7 @@ export const updatePlaylistCommandFactory: UpdatePlaylistCommandPortFactory =
         .set({
           title: input.title,
           description: input.description,
+          interval_seconds: input.intervalSeconds,
           updated_by: input.userId,
           updated_at: new Date(),
         })
