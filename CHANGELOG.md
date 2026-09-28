@@ -1,3 +1,9 @@
+## [0.17.0](https://github.com/FaXaq/echo/compare/v0.16.2...v0.17.0) (2026-09-28)
+
+### ✨ Features
+
+* **playlist:** add play whole playlist ([#52](https://github.com/FaXaq/echo/issues/52)) ([3ae8357](https://github.com/FaXaq/echo/commit/3ae83576188bae6898b9e22da5fac116bacf7bc5))
+
 ## [0.16.2](https://github.com/FaXaq/echo/compare/v0.16.1...v0.16.2) (2026-09-27)
 
 ### 🐛 Bug Fixes
