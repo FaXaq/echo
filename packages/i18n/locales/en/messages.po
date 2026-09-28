@@ -269,7 +269,7 @@ msgstr "Back to home"
 msgid "Back to Outreach"
 msgstr "Back to Outreach"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:302
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:306
 msgid "Back to playlists"
 msgstr "Back to playlists"
 
@@ -490,7 +490,7 @@ msgstr "Couldn't load this file"
 msgid "Couldn't move card"
 msgstr "Couldn't move card"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:198
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:202
 msgid "Couldn't move song"
 msgstr "Couldn't move song"
 
@@ -1468,7 +1468,7 @@ msgstr "Playlist actions"
 msgid "Playlist deleted"
 msgstr "Playlist deleted"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:296
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:300
 msgid "Playlist not found"
 msgstr "Playlist not found"
 
@@ -1745,7 +1745,7 @@ msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:206
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:135
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:296
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:300
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -1848,7 +1848,7 @@ msgstr "This permanently deletes the folder and any files inside it that aren't 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:299
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:303
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "This playlist doesn't exist or has been deleted."
 
