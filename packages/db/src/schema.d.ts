@@ -155,6 +155,7 @@ export interface Playlist {
   created_by: string;
   description: string | null;
   id: string;
+  interval_seconds: number | null;
   organization_id: string;
   title: string;
   updated_at: Generated<Timestamp | null>;

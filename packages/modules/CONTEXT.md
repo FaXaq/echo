@@ -58,6 +58,17 @@ A Song's single best-guess playable audio for a context with room for only one: 
 An Organization-scoped ordered list of Songs: title (required) and optional description. A Song can appear at most once in a Playlist (`playlist_song` is a unique `(playlist_id, song_id)` pair) — duplicate entries are deferred until needed, unscoped for now. Order is manually set by drag-and-drop and is a property of the Playlist itself, not of any Event it's linked to: a Playlist used as the Setlist for two different Events shows the same order in both. A Playlist may be linked to zero or more Events (e.g. a rehearsal or concert), and an Event may have several Playlists at once — both the Song and Event links are many-to-many, not single attachments. Colloquially, a Playlist linked to an Event is called a "Setlist," but there is no separate Setlist entity or table: it's the same Playlist, just in that role. Playlist CRUD is gated on the `playlist` permission, granted to every role (`member`/`owner`/`admin`) — the same tier as `calendarEvent`/`drive`/`quota`, not the `owner`/`admin`-only tier `plan` uses.
 _Avoid_: Setlist (as a distinct entity — it's a usage of Playlist, not its own type)
 
+**Interval**:
+An optional whole-seconds gap on a Playlist, applied uniformly between every consecutive pair of Songs when the Playlist is played as a Queue (`null` means no gap; it never applies after the last Song). Distinct from Duration — Duration is a File's own length, Interval is silence the Player inserts between two Songs.
+_Avoid_: Gap
+
+**Queue**:
+The ordered list of Songs still to come after the one currently playing in the Player. Only ever built by a Playlist's own "Play playlist" action, starting from its first Song in Playlist order — a Song's own play button never queues anything, even when shown inside a Playlist's song list, so listening to one Song standalone can't surprise-queue the rest of it. Only one Queue exists at a time: playing a different Playlist, or a standalone Song, replaces it outright. A Song with no Primary Audio is left out rather than surfaced as a broken entry.
+_Avoid_: Playlist (as a synonym once it's loaded for playback — the Playlist is the saved, ordered list; the Queue is what's left to play from it, and can end early once songs are skipped)
+
+**Player**:
+The single app-wide audio playback surface: one currently-playing file plus its Queue and transport controls, independent of whichever Song or Playlist page happens to be open — navigating away doesn't stop it. A Song's or Playlist's own play button is a trigger into the Player, not a separate player instance.
+
 **Selection**:
 A set of Drive rows (files and/or folders, any mix) marked for a Bulk Action within the current folder view — via row checkbox or shift/cmd-click. Scoped to one folder view: navigating to a different folder clears it.
 _Avoid_: Multi-select (reserve for the UI mechanism, not the resulting set)

@@ -104,6 +104,7 @@ export const makePlaylistRouter = () =>
           id: z.string(),
           title: z.string().min(1, "Title is required"),
           description: z.string().optional(),
+          intervalSeconds: z.number().int().min(0).nullish(),
         }),
       )
       .mutation(({ ctx, input }) =>
@@ -119,6 +120,7 @@ export const makePlaylistRouter = () =>
             userId: ctx.session.user.id,
             title: input.title,
             description: input.description ?? null,
+            intervalSeconds: input.intervalSeconds ?? null,
           },
         ),
       ),

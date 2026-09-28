@@ -88,8 +88,12 @@ export function useUpdatePlaylistMutation({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { id: string; title: string; description?: string }) =>
-      apiClient.playlist.updatePlaylist.mutate({ organizationId, ...input }),
+    mutationFn: (input: {
+      id: string;
+      title: string;
+      description?: string;
+      intervalSeconds?: number | null;
+    }) => apiClient.playlist.updatePlaylist.mutate({ organizationId, ...input }),
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.(result);

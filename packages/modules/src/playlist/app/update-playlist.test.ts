@@ -24,7 +24,14 @@ describe("updatePlaylist", () => {
             }),
           }),
         },
-        { id: "playlist-1", scope, userId: "user-1", title: "Summer Rehearsal", description: null },
+        {
+          id: "playlist-1",
+          scope,
+          userId: "user-1",
+          title: "Summer Rehearsal",
+          description: null,
+          intervalSeconds: null,
+        },
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
   });
@@ -35,7 +42,14 @@ describe("updatePlaylist", () => {
     await expect(
       updatePlaylist(
         { db: makeFakeDb(), updatePlaylistCommand, ...makeFakePermissionChecks() },
-        { id: "playlist-1", scope, userId: "user-1", title: "Summer Rehearsal", description: null },
+        {
+          id: "playlist-1",
+          scope,
+          userId: "user-1",
+          title: "Summer Rehearsal",
+          description: null,
+          intervalSeconds: null,
+        },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
@@ -55,11 +69,18 @@ describe("updatePlaylist", () => {
         userId: "user-1",
         title: "Fall Rehearsal",
         description: "Updated notes",
+        intervalSeconds: 5,
       },
     );
 
     expect(updated).toEqual([
-      { id: "playlist-1", userId: "user-1", title: "Fall Rehearsal", description: "Updated notes" },
+      {
+        id: "playlist-1",
+        userId: "user-1",
+        title: "Fall Rehearsal",
+        description: "Updated notes",
+        intervalSeconds: 5,
+      },
     ]);
     expect(result.title).toBe("Fall Rehearsal");
   });

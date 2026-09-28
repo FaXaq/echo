@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ListMusic, MoreVertical, Plus } from "lucide-react";
+import { Layers, ListMusic, MoreVertical, Play, Plus } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 
 import {
@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
+import { Input } from "@/components/ui/input";
 import { MarkdownEditor, type MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Playlist } from "@/services/resources/playlist";
@@ -31,11 +32,15 @@ export interface PlaylistDetailProps {
   onDescriptionChange: (markdown: string) => void;
   onDescriptionBlur: () => void;
   descriptionSaveStatus?: MarkdownSaveStatus;
+  intervalSeconds: number | null;
+  onIntervalChange: (seconds: number | null) => void;
+  onIntervalBlur: () => void;
   songsList: React.ReactNode;
   addSongPicker: React.ReactNode;
   durationInSeconds?: number;
   onEdit: () => void;
   onDelete: () => void;
+  onPlayPlaylist: () => void;
   className?: string;
 }
 
@@ -45,10 +50,14 @@ export function PlaylistDetail({
   onDescriptionChange,
   onDescriptionBlur,
   descriptionSaveStatus,
+  intervalSeconds,
+  onIntervalChange,
+  onIntervalBlur,
   songsList,
   addSongPicker,
   onEdit,
   onDelete,
+  onPlayPlaylist,
   className,
   durationInSeconds,
 }: PlaylistDetailProps) {
@@ -67,26 +76,37 @@ export function PlaylistDetail({
         }
         title={playlist.title}
         actions={
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon-sm"
-                  aria-label={t`Playlist actions`}
-                />
-              }
+          <div className="flex items-center gap-1.5">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon-sm"
+              aria-label={t`Play playlist`}
+              onClick={onPlayPlaylist}
             >
-              <MoreVertical />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onEdit}>{t`Update`}</DropdownMenuItem>
-              <DropdownMenuItem variant="destructive" onClick={() => setDeleteConfirmOpen(true)}>
-                {t`Delete`}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <Play />
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon-sm"
+                    aria-label={t`Playlist actions`}
+                  />
+                }
+              >
+                <MoreVertical />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onEdit}>{t`Update`}</DropdownMenuItem>
+                <DropdownMenuItem variant="destructive" onClick={() => setDeleteConfirmOpen(true)}>
+                  {t`Delete`}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         }
         sidebarItems={sidebarItems}
         attachments={null}
@@ -102,6 +122,25 @@ export function PlaylistDetail({
             saveStatus={descriptionSaveStatus}
             className="min-h-24 max-h-[32rem] rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"
           />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Layers className="size-3.5 shrink-0 text-muted-foreground" />
+          <span className="text-[13px] text-muted-foreground">{t`Interval between songs`}</span>
+          <Input
+            type="number"
+            min={0}
+            step={1}
+            value={intervalSeconds ?? ""}
+            placeholder="0"
+            className="h-7 w-20"
+            onChange={(event) => {
+              const raw = event.target.value;
+              onIntervalChange(raw === "" ? null : Math.max(0, Number(raw)));
+            }}
+            onBlur={onIntervalBlur}
+          />
+          <span className="text-[11px] text-muted-foreground">{t`seconds`}</span>
         </div>
 
         <div className="flex flex-col gap-2">

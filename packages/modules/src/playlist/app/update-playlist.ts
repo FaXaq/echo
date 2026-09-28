@@ -17,6 +17,7 @@ export async function updatePlaylist(
     userId: string;
     title: string;
     description: string | null;
+    intervalSeconds: number | null;
   },
 ): Promise<Playlist> {
   const { success } = await deps.userHasPermissionInOrganization({
@@ -30,6 +31,7 @@ export async function updatePlaylist(
     userId: input.userId,
     title: input.title,
     description: input.description,
+    intervalSeconds: input.intervalSeconds,
   });
   if (!updated) throw notFound("Playlist");
   return updated;

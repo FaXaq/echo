@@ -25,6 +25,7 @@ import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SongPickerCombobox } from "./song-picker-combobox";
 import { SortablePlaylistSong } from "./sortable-playlist-song";
 import { getSongDefaultAudioQueryOptions } from "@/services/resources/song";
+import { useAudioPlayerStore, type QueueItem } from "@/stores/audio-player-store";
 
 export interface SuspendedPlaylistDetailProps {
   playlistId: string;
@@ -55,17 +56,27 @@ function PlaylistDetailContent({
       getSongDefaultAudioQueryOptions({ songId: s.songId, organizationId }),
     ),
   });
-  const playlistDurationInSeconds = fileQueries
+  const songsDurationInSeconds = fileQueries
     .map((q) => q.data?.durationSeconds ?? 0)
     .reduce((a, b) => a + b, 0);
+  const gapsDurationInSeconds =
+    songs.length > 1 ? (songs.length - 1) * (playlist.intervalSeconds ?? 0) : 0;
+  const playlistDurationInSeconds = songsDurationInSeconds + gapsDurationInSeconds;
 
   const [dialogState, setDialogState] = useState<PlaylistDialogState>(null);
   const [description, setDescription] = useState(() => playlist.description ?? "");
   const descriptionRef = useRef(description);
   descriptionRef.current = description;
   const savedDescriptionRef = useRef(description);
+  const [intervalSeconds, setIntervalSeconds] = useState<number | null>(
+    () => playlist.intervalSeconds,
+  );
+  const intervalSecondsRef = useRef(intervalSeconds);
+  intervalSecondsRef.current = intervalSeconds;
+  const savedIntervalSecondsRef = useRef(intervalSeconds);
   const playlistRef = useRef(playlist);
   playlistRef.current = playlist;
+  const playQueue = useAudioPlayerStore((s) => s.playQueue);
 
   useSyncPageMeta(pathname, playlist.title, playlist.title);
 
@@ -110,15 +121,55 @@ function PlaylistDetailContent({
       id: playlistRef.current.id,
       title: playlistRef.current.title,
       description: descriptionRef.current || undefined,
+      intervalSeconds: intervalSecondsRef.current,
+    });
+  };
+
+  const saveIntervalSeconds = () => {
+    if (intervalSecondsRef.current === savedIntervalSecondsRef.current) return;
+    savedIntervalSecondsRef.current = intervalSecondsRef.current;
+    updateDescriptionMutation.mutate({
+      id: playlistRef.current.id,
+      title: playlistRef.current.title,
+      description: descriptionRef.current || undefined,
+      intervalSeconds: intervalSecondsRef.current,
     });
   };
 
   useEffect(() => {
-    return () => saveDescription();
+    return () => {
+      saveDescription();
+      saveIntervalSeconds();
+    };
   }, [playlist.id, updateDescriptionMutation.mutate]);
 
   const handleDescriptionChange = (markdown: string) => {
     setDescription(markdown);
+  };
+
+  const handlePlayPlaylist = () => {
+    const audioBySongId = new Map(
+      songs.map((song, index) => [song.songId, fileQueries[index]?.data ?? null]),
+    );
+    const items: QueueItem[] = order
+      .map((songId) => {
+        const song = songsById.get(songId);
+        const audioFile = audioBySongId.get(songId);
+        if (!song || !audioFile) return null;
+        return {
+          songId: song.songId,
+          title: song.title,
+          artist: song.artist,
+          durationSeconds: audioFile.durationSeconds ?? 0,
+          file: {
+            id: audioFile.id,
+            filename: audioFile.filename,
+            downloadUrl: audioFile.downloadUrl,
+          },
+        };
+      })
+      .filter((item): item is QueueItem => item !== null);
+    playQueue(items, playlist.intervalSeconds ?? 0);
   };
 
   const descriptionSaveStatus: MarkdownSaveStatus = updateDescriptionMutation.isPending
@@ -132,6 +183,7 @@ function PlaylistDetailContent({
       id: playlist.id,
       title: values.title,
       description: descriptionRef.current || undefined,
+      intervalSeconds: intervalSecondsRef.current,
     });
   };
 
@@ -159,8 +211,12 @@ function PlaylistDetailContent({
         onDescriptionChange={handleDescriptionChange}
         onDescriptionBlur={saveDescription}
         descriptionSaveStatus={descriptionSaveStatus}
+        intervalSeconds={intervalSeconds}
+        onIntervalChange={setIntervalSeconds}
+        onIntervalBlur={saveIntervalSeconds}
         onEdit={() => setDialogState({ mode: "edit", playlist })}
         onDelete={handleDelete}
+        onPlayPlaylist={handlePlayPlaylist}
         durationInSeconds={playlistDurationInSeconds}
         songsList={
           <DragDropProvider

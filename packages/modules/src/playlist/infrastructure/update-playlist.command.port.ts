@@ -7,6 +7,7 @@ export type UpdatePlaylistInput = {
   userId: string;
   title: string;
   description: string | null;
+  intervalSeconds: number | null;
 };
 
 export type UpdatePlaylistCommandPort = (

@@ -15,6 +15,9 @@ export function AudioPlayerDockContainer() {
   const cyclePlaybackRate = useAudioPlayerStore((s) => s.cyclePlaybackRate);
   const retry = useAudioPlayerStore((s) => s.retry);
   const dismiss = useAudioPlayerStore((s) => s.dismiss);
+  const queue = useAudioPlayerStore((s) => s.queue);
+  const skipNext = useAudioPlayerStore((s) => s.skipNext);
+  const jumpToQueueItem = useAudioPlayerStore((s) => s.jumpToQueueItem);
 
   if (!file) return null;
 
@@ -28,12 +31,15 @@ export function AudioPlayerDockContainer() {
       volume={volume}
       playbackRate={playbackRate}
       errorMessage={errorMessage}
+      queue={queue}
       onToggle={toggle}
       onSeek={seek}
       onVolumeChange={setVolume}
       onCycleRate={cyclePlaybackRate}
       onRetry={retry}
       onDismiss={dismiss}
+      onSkipNext={skipNext}
+      onJumpToQueueItem={jumpToQueueItem}
     />
   );
 }

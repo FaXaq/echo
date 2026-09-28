@@ -40,10 +40,14 @@ export async function listPlaylists(
         }),
       );
 
+      const songsDurationSeconds = durations.reduce((total, duration) => total + duration, 0);
+      const gapsSeconds =
+        songs.length > 1 ? (songs.length - 1) * (playlist.intervalSeconds ?? 0) : 0;
+
       return {
         ...playlist,
         songCount: songs.length,
-        totalDurationSeconds: durations.reduce((total, duration) => total + duration, 0),
+        totalDurationSeconds: songsDurationSeconds + gapsSeconds,
       };
     }),
   );
