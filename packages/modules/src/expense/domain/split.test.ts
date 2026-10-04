@@ -9,11 +9,11 @@ describe("apportion", () => {
     const result = apportion({
       weights: ["a", "b", "c"].map((userId) => ({ userId, weight: 1 })),
       total: 100,
-      payerId: "a",
+      payerId: "b",
     });
     expect(result).toEqual([
-      { userId: "a", amountMinor: 34 },
-      { userId: "b", amountMinor: 33 },
+      { userId: "a", amountMinor: 33 },
+      { userId: "b", amountMinor: 34 },
       { userId: "c", amountMinor: 33 },
     ]);
   });
@@ -54,12 +54,26 @@ describe("buildExpenseShares", () => {
     const shares = buildExpenseShares({
       amountMinor: 1001,
       convertedAmountMinor: 1001,
-      payerId: "a",
+      payerId: "b",
       split: { mode: "equal", userIds: ["a", "b"] },
     });
     expect(shares).toEqual([
-      { userId: "a", amountMinor: 501, convertedAmountMinor: 501 },
-      { userId: "b", amountMinor: 500, convertedAmountMinor: 500 },
+      { userId: "a", amountMinor: 500, convertedAmountMinor: 500 },
+      { userId: "b", amountMinor: 501, convertedAmountMinor: 501 },
+    ]);
+  });
+
+  it("gives the leftover to the first share holder when the payer holds no share", () => {
+    const shares = buildExpenseShares({
+      amountMinor: 100,
+      convertedAmountMinor: 100,
+      payerId: "p",
+      split: { mode: "equal", userIds: ["a", "b", "c"] },
+    });
+    expect(shares).toEqual([
+      { userId: "a", amountMinor: 34, convertedAmountMinor: 34 },
+      { userId: "b", amountMinor: 33, convertedAmountMinor: 33 },
+      { userId: "c", amountMinor: 33, convertedAmountMinor: 33 },
     ]);
   });
 
