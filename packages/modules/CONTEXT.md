@@ -5,7 +5,7 @@ Domain modules for Echo: calendar, contact, drive, expense, invitation, notifica
 ## Language
 
 **Organization**:
-The tenant boundary. Every user has a personal Organization (`isPersonal: true`) created for them; bands/groups are non-personal Organizations. All organization-owned data (files, calendar events, invitations, plan usage) is scoped to exactly one Organization.
+The tenant boundary. Every user has a personal Organization (`isPersonal: true`) created for them; bands/groups are non-personal Organizations. All organization-owned data (files, calendar events, invitations, plan usage) is scoped to exactly one Organization. In the web UI and routes (`/projects/$projectSlug`) an Organization is shown to users as a "Project" ("Projet" in French) — a UI-only alias; code and domain language stay "Organization".
 _Avoid_: Tenant, account, workspace
 
 **Invitation**:
