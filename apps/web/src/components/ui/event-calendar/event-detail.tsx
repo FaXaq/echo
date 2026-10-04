@@ -81,10 +81,7 @@ export function EventDetail({
       label: t`Organizer`,
       value: (
         <div className="flex min-w-0 items-center gap-1.5">
-          <Blobatar
-            name={event.createdByName}
-            blobatar={{ animate: "always", traits: { shape: 0.11 } }}
-          />
+          <Blobatar name={event.createdByName} blobatar={{ animate: "always" }} />
           <span className="truncate text-[13px] font-medium">{event.createdByName}</span>
         </div>
       ),

@@ -51,7 +51,7 @@ export function Blobatar({ name, src, alt, blobatar, ...props }: BlobatarProps) 
     <Avatar {...props}>
       {src ? <AvatarImage src={src} alt={alt ?? name} /> : null}
       <AvatarFallback className="bg-transparent">
-        <Generated {...blobatar} name={name} className="size-full" />
+        <Generated {...blobatar} name={name} className="size-full m-0" />
       </AvatarFallback>
     </Avatar>
   );
