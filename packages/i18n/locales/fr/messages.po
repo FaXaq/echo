@@ -85,12 +85,12 @@ msgstr "{bulkDeleteCount, plural, one {Supprimer # fichier ?} other {Supprimer #
 #~ msgstr "{count, plural, one {# élément sélectionné} other {# éléments sélectionnés}}"
 
 #: apps/web/src/components/ui/expense/repayment-list-item.tsx:38
-msgid "{fromName} paid {toName}"
-msgstr "{fromName} a remboursé {toName}"
+#~ msgid "{fromName} paid {toName}"
+#~ msgstr "{fromName} a remboursé {toName}"
 
 #: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:28
-msgid "{fromName} pays {toName}"
-msgstr "{fromName} rembourse {toName}"
+#~ msgid "{fromName} pays {toName}"
+#~ msgstr "{fromName} rembourse {toName}"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:43
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:51
@@ -122,6 +122,8 @@ msgstr "Accepter l'invitation"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:74
 #: apps/web/src/components/ui/expense/expense-table.tsx:76
+#: apps/web/src/components/ui/expense/repayment-table.tsx:74
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:61
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:128
 msgid "Actions"
 msgstr "Actions"
@@ -211,6 +213,8 @@ msgstr "Déjà un compte ? <0>Se connecter</0>"
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:168
 #: apps/web/src/components/ui/expense/expense-table.tsx:73
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:160
+#: apps/web/src/components/ui/expense/repayment-table.tsx:72
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:59
 msgid "Amount"
 msgstr "Montant"
 
@@ -305,7 +309,7 @@ msgstr "Retour aux chansons"
 #~ msgid "Backlog"
 #~ msgstr "Backlog"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:91
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:53
 msgid "Balances"
 msgstr "Soldes"
 
@@ -493,7 +497,7 @@ msgstr "Impossible de supprimer la carte"
 msgid "Couldn't delete column"
 msgstr "Impossible de supprimer la colonne"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:198
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:118
 msgid "Couldn't delete expense"
 msgstr "Impossible de supprimer la dépense"
 
@@ -505,7 +509,7 @@ msgstr "Impossible de supprimer le fichier"
 msgid "Couldn't delete folder"
 msgstr "Impossible de supprimer le dossier"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:215
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:135
 msgid "Couldn't delete repayment"
 msgstr "Impossible de supprimer le remboursement"
 
@@ -522,12 +526,16 @@ msgstr "Impossible de télécharger les fichiers sélectionnés"
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
+#: apps/web/src/components/features/expense/suspended-balances.tsx:31
+msgid "Couldn't load balances"
+msgstr "Impossible de charger les soldes"
+
 #: apps/web/src/components/features/drive/drive-explorer.tsx:533
 msgid "Couldn't load Drive"
 msgstr "Impossible de charger le Drive"
 
 #: apps/web/src/components/features/expense/suspended-event-expenses.tsx:53
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:225
+#: apps/web/src/components/features/expense/suspended-expense-table.tsx:39
 msgid "Couldn't load expenses"
 msgstr "Impossible de charger les dépenses"
 
@@ -539,10 +547,18 @@ msgstr "Impossible de charger les dépenses"
 msgid "Couldn't load playlists"
 msgstr "Impossible de charger les playlists"
 
+#: apps/web/src/components/features/expense/suspended-repayment-table.tsx:40
+msgid "Couldn't load repayments"
+msgstr "Impossible de charger les remboursements"
+
 #: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:50
 #: apps/web/src/components/features/song/suspended-song-list.tsx:95
 msgid "Couldn't load songs"
 msgstr "Impossible de charger les chansons"
+
+#: apps/web/src/components/features/expense/suspended-suggested-repayments.tsx:40
+msgid "Couldn't load suggested repayments"
+msgstr "Impossible de charger les remboursements suggérés"
 
 #: apps/web/src/components/features/outreach/suspended-outreach-board.tsx:10
 msgid "Couldn't load the Outreach board"
@@ -582,11 +598,11 @@ msgstr "Impossible de réorganiser la colonne"
 msgid "Couldn't save card"
 msgstr "Impossible d'enregistrer la carte"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:158
+#: apps/web/src/components/features/expense/suspended-expense-dialog.tsx:50
 msgid "Couldn't save expense"
 msgstr "Impossible d'enregistrer la dépense"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:181
+#: apps/web/src/components/features/expense/suspended-repayment-dialog.tsx:50
 msgid "Couldn't save repayment"
 msgstr "Impossible d'enregistrer le remboursement"
 
@@ -663,6 +679,7 @@ msgstr "Zone de danger"
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:212
 #: apps/web/src/components/ui/expense/expense-table.tsx:71
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:165
+#: apps/web/src/components/ui/expense/repayment-table.tsx:70
 msgid "Date"
 msgstr "Date"
 
@@ -693,8 +710,8 @@ msgstr "Définir comme"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:68
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:75
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:191
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:208
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:111
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:128
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:208
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:311
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:323
@@ -709,7 +726,7 @@ msgstr "Définir comme"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
 #: apps/web/src/components/ui/expense/expense-table.tsx:134
-#: apps/web/src/components/ui/expense/repayment-list-item.tsx:66
+#: apps/web/src/components/ui/expense/repayment-table.tsx:107
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:184
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:223
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
@@ -737,7 +754,7 @@ msgstr "Supprimer la colonne ?"
 msgid "Delete event?"
 msgstr "Supprimer l'événement ?"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:189
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:109
 msgid "Delete expense?"
 msgstr "Supprimer la dépense ?"
 
@@ -757,7 +774,7 @@ msgstr "Supprimer la playlist ?"
 msgid "Delete project"
 msgstr "Supprimer le projet"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:206
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:126
 msgid "Delete repayment?"
 msgstr "Supprimer le remboursement ?"
 
@@ -976,7 +993,7 @@ msgstr "Événements du {0}"
 msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Chaque action ici est destructive. Veuillez procéder avec prudence."
 
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:54
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:46
 msgid "Everyone is settled up."
 msgstr "Tout le monde est à jour."
 
@@ -993,7 +1010,7 @@ msgid "Expense actions"
 msgstr "Actions de la dépense"
 
 #: apps/web/src/components/features/expense/suspended-event-expenses.tsx:26
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:114
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:75
 #: apps/web/src/hooks/use-navigation.ts:83
 #: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Expenses"
@@ -1132,6 +1149,8 @@ msgid "Former member"
 msgstr "Ancien membre"
 
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:150
+#: apps/web/src/components/ui/expense/repayment-table.tsx:68
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:57
 msgid "From"
 msgstr "De"
 
@@ -1380,7 +1399,7 @@ msgstr "Nouvelle carte"
 msgid "New event"
 msgstr "Nouvel événement"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:86
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:48
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:152
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:154
 msgid "New expense"
@@ -1506,6 +1525,10 @@ msgstr "Pas encore de playlist."
 msgid "No preview available"
 msgstr "Aucun aperçu disponible"
 
+#: apps/web/src/components/ui/expense/repayment-table.tsx:56
+msgid "No repayments yet"
+msgstr "Aucun remboursement pour le moment"
+
 #: apps/web/src/components/ui/data-table.tsx:54
 msgid "No results."
 msgstr "Aucun résultat."
@@ -1536,6 +1559,7 @@ msgid "None yet"
 msgstr "Aucun pour le moment"
 
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:170
+#: apps/web/src/components/ui/expense/repayment-table.tsx:71
 msgid "Note"
 msgstr "Note"
 
@@ -1755,11 +1779,11 @@ msgstr "Violet"
 #~ msgid "Quote"
 #~ msgstr "Citation"
 
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:36
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:75
 msgid "Record"
 msgstr "Enregistrer"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:82
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:44
 msgid "Record repayment"
 msgstr "Enregistrer un remboursement"
 
@@ -1819,13 +1843,17 @@ msgstr "Réorganiser la colonne"
 #~ msgid "Reorder song"
 #~ msgstr "Réorganiser la chanson"
 
-#: apps/web/src/components/ui/expense/repayment-list-item.tsx:57
+#: apps/web/src/components/ui/expense/repayment-table.tsx:98
 msgid "Repayment actions"
 msgstr "Actions du remboursement"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:127
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:84
 msgid "Repayments"
 msgstr "Remboursements"
+
+#: apps/web/src/components/ui/expense/repayment-table.tsx:57
+msgid "Repayments you record will show up here."
+msgstr "Les remboursements que vous enregistrez apparaîtront ici."
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:160
 msgid "Resend"
@@ -2037,7 +2065,7 @@ msgstr "Début"
 msgid "Storage"
 msgstr "Stockage"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:96
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:58
 msgid "Suggested repayments"
 msgstr "Remboursements suggérés"
 
@@ -2160,7 +2188,7 @@ msgstr "Cela supprimera définitivement cette carte. Cette action est irréversi
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "Cette action supprimera définitivement cet événement. Cette action est irréversible."
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:190
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:110
 msgid "This will permanently delete this expense and change everyone's balance. This action cannot be undone."
 msgstr "Cette dépense sera définitivement supprimée et les soldes de chacun seront modifiés. Cette action est irréversible."
 
@@ -2168,7 +2196,7 @@ msgstr "Cette dépense sera définitivement supprimée et les soldes de chacun s
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette playlist. Cette action est irréversible."
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:207
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:127
 msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
 msgstr "Ce remboursement sera définitivement supprimé et les soldes seront modifiés. Cette action est irréversible."
 
@@ -2195,6 +2223,8 @@ msgid "Title is required"
 msgstr "Le titre est requis"
 
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:155
+#: apps/web/src/components/ui/expense/repayment-table.tsx:69
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:58
 msgid "To"
 msgstr "À"
 
@@ -2260,7 +2290,7 @@ msgstr "À suivre : {0}"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:189
 #: apps/web/src/components/ui/expense/expense-table.tsx:132
-#: apps/web/src/components/ui/expense/repayment-list-item.tsx:64
+#: apps/web/src/components/ui/expense/repayment-table.tsx:105
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:182
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:103
 #: apps/web/src/components/ui/song/song-detail.tsx:97

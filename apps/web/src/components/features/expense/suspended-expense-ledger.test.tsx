@@ -67,7 +67,7 @@ describe("SuspendedExpenseLedger", () => {
     expect(await screen.findByText("Is owed €20.00")).toBeInTheDocument();
     expect(screen.getByText("Owes €20.00")).toBeInTheDocument();
     expect(screen.getByText("Former member")).toBeInTheDocument();
-    expect(screen.getByText("Paul pays Marie")).toBeInTheDocument();
+    expect(screen.getByRole("row", { name: /Paul Marie €20\.00 Record/ })).toBeInTheDocument();
     expect(screen.getByText("Rehearsal room")).toBeInTheDocument();
   });
 
@@ -80,6 +80,7 @@ describe("SuspendedExpenseLedger", () => {
 
     expect(await screen.findByText("No expenses yet")).toBeInTheDocument();
     expect(screen.getByText("Everyone is settled up.")).toBeInTheDocument();
+    expect(screen.getByText("No repayments yet")).toBeInTheDocument();
   });
 
   it("opens the new-expense dialog", async () => {
