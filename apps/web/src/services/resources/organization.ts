@@ -3,6 +3,7 @@ import type { RouterInputs, RouterOutputs } from "@echo/api/router";
 import { apiClient } from "@/services/api-client";
 import { authClient } from "@/lib/auth";
 import { initResourceKey } from "./init-resource-key";
+import { key as expenseKey } from "./expense";
 
 const { key, getResourceKey } = initResourceKey("organization");
 
@@ -59,6 +60,26 @@ export function useUpdateOrganizationMutation() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
+    },
+  });
+}
+
+export type UpdateOrganizationCurrencyInput = { organizationId: string; currency: string };
+export function useUpdateOrganizationCurrencyMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ organizationId, currency }: UpdateOrganizationCurrencyInput) => {
+      const { data, error } = await authClient.organization.update({
+        organizationId,
+        data: { currency },
+      });
+      if (error) throw new Error(error.message ?? "Failed to update currency");
+      return data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      await queryClient.invalidateQueries({ queryKey: expenseKey });
     },
   });
 }
