@@ -15,9 +15,9 @@ describe("BalanceList", () => {
       />,
     );
 
-    expect(screen.getByText("Is owed €20.00")).toBeInTheDocument();
-    expect(screen.getByText("Owes €20.00")).toBeInTheDocument();
-    expect(screen.getByText("Settled")).toBeInTheDocument();
+    expect(screen.getByText("+ €20.00")).toBeInTheDocument();
+    expect(screen.getByText("- €20.00")).toBeInTheDocument();
+    expect(screen.getByText("-")).toBeInTheDocument();
     expect(screen.getByText("Former member")).toBeInTheDocument();
   });
 });

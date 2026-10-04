@@ -71,8 +71,8 @@ describe("SuspendedExpenseLedger", () => {
   it("shows balances, the suggested repayment and the expense list", async () => {
     renderLedger({ summary, expenses: [expense], repayments: [] });
 
-    expect(await screen.findByText("Is owed €20.00")).toBeInTheDocument();
-    expect(screen.getByText("Owes €20.00")).toBeInTheDocument();
+    expect(await screen.findByText("+ €20.00")).toBeInTheDocument();
+    expect(screen.getByText("- €20.00")).toBeInTheDocument();
     expect(screen.getByText("Former member")).toBeInTheDocument();
     expect(screen.getByRole("row", { name: /Paul Marie €20\.00 Record/ })).toBeInTheDocument();
     expect(screen.getByText("Rehearsal room")).toBeInTheDocument();
