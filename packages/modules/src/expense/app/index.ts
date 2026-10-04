@@ -3,3 +3,8 @@ export { createExpense } from "./create-expense.js";
 export { updateExpense } from "./update-expense.js";
 export { deleteExpense } from "./delete-expense.js";
 export { listExpenses } from "./list-expenses.js";
+export type { RepaymentDraft } from "./prepare-repayment.js";
+export { createRepayment } from "./create-repayment.js";
+export { updateRepayment } from "./update-repayment.js";
+export { deleteRepayment } from "./delete-repayment.js";
+export { listRepayments } from "./list-repayments.js";
