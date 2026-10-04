@@ -2,7 +2,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@/lib/test-utils";
 import type { Expense } from "@/services/resources/expense";
-import { ExpenseDialog } from "./expense-dialog";
+import { ExpenseDialog, type ExpenseDialogState } from "./expense-dialog";
 
 const participants = [
   { userId: "marie", name: "Marie", isMember: true },
@@ -82,5 +82,24 @@ describe("ExpenseDialog", () => {
     renderDialog({ mode: "edit", expense: makeExpense() });
 
     expect(await screen.findByRole("checkbox", { name: "Paul" })).toBeInTheDocument();
+  });
+
+  it("keeps typed values when props re-render with equal but new participants", async () => {
+    const user = userEvent.setup();
+    const state: ExpenseDialogState = { mode: "create" };
+    const props = {
+      state,
+      events: [],
+      organizationCurrency: "EUR",
+      currentUserId: "marie",
+      onOpenChange: vi.fn(),
+      onSubmit: vi.fn(),
+    };
+    const { rerender } = render(<ExpenseDialog {...props} participants={[...participants]} />);
+
+    await user.type(screen.getByLabelText("Title"), "Strings");
+    rerender(<ExpenseDialog {...props} participants={[...participants]} />);
+
+    expect(screen.getByLabelText("Title")).toHaveValue("Strings");
   });
 });

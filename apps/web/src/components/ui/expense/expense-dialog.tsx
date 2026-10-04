@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useLingui } from "@lingui/react/macro";
 import dayjs from "dayjs";
@@ -99,11 +99,14 @@ export function ExpenseDialog({
     defaultValues: getDefaults(content, { participants, organizationCurrency, currentUserId }),
   });
 
+  const context = useRef({ participants, organizationCurrency, currentUserId });
+  context.current = { participants, organizationCurrency, currentUserId };
+
   useEffect(() => {
     if (state === null) return;
-    reset(getDefaults(state, { participants, organizationCurrency, currentUserId }));
+    reset(getDefaults(state, context.current));
     setError(null);
-  }, [state, reset, participants, organizationCurrency, currentUserId]);
+  }, [state, reset]);
 
   const values = watch();
   const keptUserIds = new Set(
