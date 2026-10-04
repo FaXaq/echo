@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@/lib/test-utils";
+import { render, screen, waitFor } from "@/lib/test-utils";
 import type { Expense } from "@/services/resources/expense";
 import { ExpenseDialog, type ExpenseDialogState } from "./expense-dialog";
 
@@ -101,5 +101,22 @@ describe("ExpenseDialog", () => {
     rerender(<ExpenseDialog {...props} participants={[...participants]} />);
 
     expect(screen.getByLabelText("Title")).toHaveValue("Strings");
+  });
+
+  it("disables the submit button while saving so it cannot be submitted twice", async () => {
+    const user = userEvent.setup();
+    const onSubmit = renderDialog(
+      { mode: "create" },
+      vi.fn(() => new Promise<void>(() => {})),
+    );
+
+    await user.type(screen.getByLabelText("Title"), "Strings");
+    await user.type(screen.getByLabelText("Amount"), "12,50");
+    const submit = screen.getByRole("button", { name: "Create expense" });
+    await user.click(submit);
+
+    await waitFor(() => expect(submit).toBeDisabled());
+    await user.click(submit);
+    expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 });

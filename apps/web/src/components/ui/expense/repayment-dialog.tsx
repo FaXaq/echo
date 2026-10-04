@@ -178,7 +178,11 @@ export function RepaymentDialog({
             >
               {t`Cancel`}
             </DialogClose>
-            <Button type="submit" isLoading={formState.isSubmitting}>
+            <Button
+              type="submit"
+              isLoading={formState.isSubmitting}
+              disabled={formState.isSubmitting}
+            >
               {isEdit ? t`Save changes` : t`Create repayment`}
             </Button>
           </DialogFooter>
