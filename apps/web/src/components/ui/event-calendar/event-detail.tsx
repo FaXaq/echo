@@ -44,6 +44,7 @@ export interface EventDetailProps {
   attachments: React.ReactNode;
   playlistsList?: React.ReactNode;
   addPlaylistPicker?: React.ReactNode;
+  expensesSection?: React.ReactNode;
   className?: string;
 }
 
@@ -59,6 +60,7 @@ export function EventDetail({
   attachments,
   playlistsList,
   addPlaylistPicker,
+  expensesSection,
   className,
 }: EventDetailProps) {
   const { t } = useLingui();
@@ -233,6 +235,7 @@ export function EventDetail({
             {playlistsList}
           </div>
         )}
+        {expensesSection}
       </EntityDetailLayout>
 
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>

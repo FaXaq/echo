@@ -13,6 +13,7 @@ import { SuspendedEventDetail } from "./suspended-event-detail";
 import * as calendarResource from "@/services/resources/calendar";
 import * as driveResource from "@/services/resources/drive";
 import * as playlistResource from "@/services/resources/playlist";
+import * as expenseResource from "@/services/resources/expense";
 
 function makeEvent(): calendarResource.CalendarEvent {
   return {
@@ -66,6 +67,15 @@ describe("SuspendedEventDetail", () => {
         organizationId: "org-1",
       }).queryKey,
       [],
+    );
+    client.setQueryData(
+      expenseResource.getExpensesQueryOptions({ organizationId: "org-1", eventId: "event-1" })
+        .queryKey,
+      [],
+    );
+    client.setQueryData(
+      expenseResource.getLedgerSettingsQueryOptions({ organizationId: "org-1" }).queryKey,
+      { currency: "EUR", locked: false },
     );
 
     renderWithClient(client);

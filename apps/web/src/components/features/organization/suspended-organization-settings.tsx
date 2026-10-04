@@ -39,6 +39,7 @@ import { useSession } from "@/hooks/use-session";
 import { InviteForm } from "@/routes/projects/$projectSlug/settings/-invite-form";
 import { MembersTable } from "@/routes/projects/$projectSlug/settings/-members-table";
 import { SuspendedPlanUsage } from "@/components/features/organization/suspended-plan-usage";
+import { SuspendedOrganizationCurrency } from "@/components/features/organization/suspended-organization-currency";
 
 export interface SuspendedOrganizationSettingsProps {
   organizationId: string;
@@ -115,6 +116,11 @@ function OrganizationSettingsContent({
           organizationId={organization.id}
           isPersonal={organization.isPersonal === true}
         />
+      </section>
+
+      <section className="mb-8 max-w-xl">
+        <h2 className="mb-4 text-xl font-semibold">{t`Currency`}</h2>
+        <SuspendedOrganizationCurrency organizationId={organization.id} />
       </section>
 
       {!organization.isPersonal && (
