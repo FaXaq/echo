@@ -208,7 +208,7 @@ msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:168
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:164
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:160
 msgid "Amount"
 msgstr "Amount"
 
@@ -353,7 +353,7 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:363
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:183
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:179
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:216
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
@@ -400,15 +400,15 @@ msgstr "Check your email to verify your account"
 msgid "Choose a strong password for your account"
 msgstr "Choose a strong password for your account"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:104
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:100
 msgid "Choose two different people"
 msgstr "Choose two different people"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:103
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:99
 msgid "Choose who is being paid back"
 msgstr "Choose who is being paid back"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:102
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:98
 msgid "Choose who is paying"
 msgstr "Choose who is paying"
 
@@ -615,7 +615,7 @@ msgstr "Create account"
 msgid "Create an account"
 msgstr "Create an account"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:366
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:370
 msgid "Create expense"
 msgstr "Create expense"
 
@@ -659,7 +659,7 @@ msgstr "Danger zone"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:99
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:212
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:169
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:165
 msgid "Date"
 msgstr "Date"
 
@@ -668,7 +668,7 @@ msgstr "Date"
 #~ msgstr "Date added"
 
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:128
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:106
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:102
 msgid "Date is required"
 msgstr "Date is required"
 
@@ -860,8 +860,8 @@ msgstr "Edit expense"
 msgid "Edit playlist"
 msgstr "Edit playlist"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:146
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:148
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:142
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:144
 msgid "Edit repayment"
 msgstr "Edit repayment"
 
@@ -907,7 +907,7 @@ msgid "End date must be after start date"
 msgstr "End date must be after start date"
 
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:129
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:105
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:101
 msgid "Enter a valid amount"
 msgstr "Enter a valid amount"
 
@@ -1122,7 +1122,7 @@ msgstr "Forgot your password?"
 msgid "Former member"
 msgstr "Former member"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:154
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:150
 msgid "From"
 msgstr "From"
 
@@ -1401,8 +1401,8 @@ msgstr "New playlist"
 msgid "New project"
 msgstr "New project"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:146
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:148
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:142
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:144
 msgid "New repayment"
 msgstr "New repayment"
 
@@ -1522,7 +1522,7 @@ msgstr "None"
 msgid "None yet"
 msgstr "None yet"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:174
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:170
 msgid "Note"
 msgstr "Note"
 
@@ -1867,7 +1867,7 @@ msgstr "Save"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:338
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:366
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:370
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:186
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:98
 #: apps/web/src/components/ui/song/song-dialog.tsx:167
@@ -2179,7 +2179,7 @@ msgstr "Title"
 msgid "Title is required"
 msgstr "Title is required"
 
-#: apps/web/src/components/ui/expense/repayment-dialog.tsx:159
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:155
 msgid "To"
 msgstr "To"
 
