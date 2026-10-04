@@ -57,6 +57,9 @@ export function buildExpenseShares(input: {
       total: amountMinor,
       payerId,
     });
+    if (ownShares.some((share) => share.amountMinor === 0)) {
+      throw invalidLedgerEntry("Expense", "Amount is too small to split among everyone");
+    }
   } else {
     if (split.shares.some((share) => !isValidAmount(share.amountMinor))) {
       throw invalidLedgerEntry("Expense", "Every exact share must be a positive whole amount");
@@ -67,13 +70,15 @@ export function buildExpenseShares(input: {
     ownShares = split.shares;
   }
 
-  const converted = new Map(
-    apportion({
-      weights: ownShares.map((share) => ({ userId: share.userId, weight: share.amountMinor })),
-      total: convertedAmountMinor,
-      payerId,
-    }).map((share) => [share.userId, share.amountMinor]),
-  );
+  const convertedShares = apportion({
+    weights: ownShares.map((share) => ({ userId: share.userId, weight: share.amountMinor })),
+    total: convertedAmountMinor,
+    payerId,
+  });
+  if (convertedShares.some((share) => share.amountMinor === 0)) {
+    throw invalidLedgerEntry("Expense", "Converted amount is too small to split");
+  }
+  const converted = new Map(convertedShares.map((share) => [share.userId, share.amountMinor]));
 
   return ownShares.map((share) => ({
     userId: share.userId,

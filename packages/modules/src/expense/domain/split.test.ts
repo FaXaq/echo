@@ -150,4 +150,32 @@ describe("buildExpenseShares", () => {
       ).toThrow(DataValidationFailedError);
     }
   });
+
+  it("rejects an equal split smaller than the number of people", () => {
+    const base = { convertedAmountMinor: 3, payerId: "a" };
+    const split = { mode: "equal" as const, userIds: ["a", "b", "c"] };
+    expect(() => buildExpenseShares({ ...base, amountMinor: 2, split })).toThrow(
+      DataValidationFailedError,
+    );
+    expect(
+      buildExpenseShares({ ...base, amountMinor: 3, split }).map((share) => share.amountMinor),
+    ).toEqual([1, 1, 1]);
+  });
+
+  it("rejects a conversion that leaves a share holder with a zero converted share", () => {
+    expect(() =>
+      buildExpenseShares({
+        amountMinor: 1001,
+        convertedAmountMinor: 5,
+        payerId: "a",
+        split: {
+          mode: "exact",
+          shares: [
+            { userId: "a", amountMinor: 1000 },
+            { userId: "b", amountMinor: 1 },
+          ],
+        },
+      }),
+    ).toThrow(DataValidationFailedError);
+  });
 });
