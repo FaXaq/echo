@@ -19,6 +19,26 @@ export interface SuspendedExpenseLedgerProps {
   currentUserId: string;
 }
 
+function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <>
+      <Button
+        type="button"
+        size="icon-sm"
+        aria-label={label}
+        onClick={onClick}
+        className="lg:hidden"
+      >
+        <Plus />
+      </Button>
+      <Button type="button" size="sm" onClick={onClick} className="hidden lg:inline-flex">
+        <Plus data-icon="inline-start" />
+        {label}
+      </Button>
+    </>
+  );
+}
+
 type PendingDelete = { kind: "expense" | "repayment"; id: string } | null;
 
 export function SuspendedExpenseLedger({
@@ -35,20 +55,6 @@ export function SuspendedExpenseLedger({
 
   return (
     <div className="flex flex-col gap-8 p-6">
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setRepaymentDialog({ mode: "create" })}
-        >
-          {t`Record repayment`}
-        </Button>
-        <Button type="button" onClick={() => setExpenseDialog({ mode: "create" })}>
-          <Plus data-icon="inline-start" />
-          {t`New expense`}
-        </Button>
-      </div>
-
       <section className="flex max-w-xl flex-col gap-3">
         <h2 className="m-0 text-xl font-semibold">{t`Balances`}</h2>
         <SuspendedBalances organizationId={organizationId} />
@@ -72,7 +78,10 @@ export function SuspendedExpenseLedger({
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="m-0 text-xl font-semibold">{t`Expenses`}</h2>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="m-0 text-xl font-semibold">{t`Expenses`}</h2>
+          <AddButton label={t`New expense`} onClick={() => setExpenseDialog({ mode: "create" })} />
+        </div>
         <SuspendedExpenseTable
           organizationId={organizationId}
           onEdit={(expense) => setExpenseDialog({ mode: "edit", expense })}
@@ -81,7 +90,13 @@ export function SuspendedExpenseLedger({
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="m-0 text-xl font-semibold">{t`Repayments`}</h2>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="m-0 text-xl font-semibold">{t`Repayments`}</h2>
+          <AddButton
+            label={t`Record repayment`}
+            onClick={() => setRepaymentDialog({ mode: "create" })}
+          />
+        </div>
         <SuspendedRepaymentTable
           organizationId={organizationId}
           onEdit={(repayment) => setRepaymentDialog({ mode: "edit", repayment })}

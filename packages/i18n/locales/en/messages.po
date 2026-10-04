@@ -321,7 +321,7 @@ msgstr "Back to songs"
 #~ msgid "Backlog"
 #~ msgstr "Backlog"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:53
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:59
 msgid "Balances"
 msgstr "Balances"
 
@@ -509,7 +509,7 @@ msgstr "Couldn't delete card"
 msgid "Couldn't delete column"
 msgstr "Couldn't delete column"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:118
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:130
 msgid "Couldn't delete expense"
 msgstr "Couldn't delete expense"
 
@@ -521,7 +521,7 @@ msgstr "Couldn't delete file"
 msgid "Couldn't delete folder"
 msgstr "Couldn't delete folder"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:135
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:147
 msgid "Couldn't delete repayment"
 msgstr "Couldn't delete repayment"
 
@@ -726,8 +726,8 @@ msgstr "Define as"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:68
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:75
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:111
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:128
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:123
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:140
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:208
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:311
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:323
@@ -770,7 +770,7 @@ msgstr "Delete column?"
 msgid "Delete event?"
 msgstr "Delete event?"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:109
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:121
 msgid "Delete expense?"
 msgstr "Delete expense?"
 
@@ -790,7 +790,7 @@ msgstr "Delete playlist?"
 msgid "Delete project"
 msgstr "Delete project"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:126
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:138
 msgid "Delete repayment?"
 msgstr "Delete repayment?"
 
@@ -1026,7 +1026,7 @@ msgid "Expense actions"
 msgstr "Expense actions"
 
 #: apps/web/src/components/features/expense/suspended-event-expenses.tsx:26
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:75
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:82
 #: apps/web/src/hooks/use-navigation.ts:67
 #: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Expenses"
@@ -1419,7 +1419,7 @@ msgstr "New card"
 msgid "New event"
 msgstr "New event"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:48
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:83
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:152
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:154
 msgid "New expense"
@@ -1815,7 +1815,7 @@ msgstr "Reach"
 msgid "Record"
 msgstr "Record"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:44
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:95
 msgid "Record repayment"
 msgstr "Record repayment"
 
@@ -1879,7 +1879,7 @@ msgstr "Reorder column"
 msgid "Repayment actions"
 msgstr "Repayment actions"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:84
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:94
 msgid "Repayments"
 msgstr "Repayments"
 
@@ -2097,7 +2097,7 @@ msgstr "Start"
 msgid "Storage"
 msgstr "Storage"
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:58
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:64
 msgid "Suggested repayments"
 msgstr "Suggested repayments"
 
@@ -2220,7 +2220,7 @@ msgstr "This will permanently delete this card. This action cannot be undone."
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "This will permanently delete this event. This action cannot be undone."
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:110
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:122
 msgid "This will permanently delete this expense and change everyone's balance. This action cannot be undone."
 msgstr "This will permanently delete this expense and change everyone's balance. This action cannot be undone."
 
@@ -2228,7 +2228,7 @@ msgstr "This will permanently delete this expense and change everyone's balance.
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "This will permanently delete this playlist. This action cannot be undone."
 
-#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:127
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:139
 msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
 msgstr "This will permanently delete this repayment and change the balances. This action cannot be undone."
 

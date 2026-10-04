@@ -94,7 +94,7 @@ describe("SuspendedExpenseLedger", () => {
     const user = userEvent.setup();
     renderLedger({ summary, expenses: [], repayments: [] });
 
-    await user.click(await screen.findByRole("button", { name: "New expense" }));
+    await user.click((await screen.findAllByRole("button", { name: "New expense" }))[0]);
 
     expect(screen.getByRole("heading", { name: "New expense" })).toBeInTheDocument();
   });
