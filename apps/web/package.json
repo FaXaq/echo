@@ -8,7 +8,7 @@
     "build": "tsc --build && vite build --mode ${VITE_MODE:-production}",
     "preview": "vite preview",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --pretty false",
     "storybook": "storybook dev --config-dir .storybook --port 6006",
     "build-storybook": "storybook build --config-dir .storybook"
   },
