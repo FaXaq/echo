@@ -159,6 +159,18 @@
     "./contact/app": {
       "types": "./src/contact/app/index.ts",
       "default": "./src/contact/app/index.ts"
+    },
+    "./expense/domain": {
+      "types": "./src/expense/domain/index.ts",
+      "default": "./src/expense/domain/index.ts"
+    },
+    "./expense/infrastructure": {
+      "types": "./src/expense/infrastructure/index.ts",
+      "default": "./src/expense/infrastructure/index.ts"
+    },
+    "./expense/app": {
+      "types": "./src/expense/app/index.ts",
+      "default": "./src/expense/app/index.ts"
     }
   },
   "scripts": {

@@ -16,6 +16,11 @@ import {
 } from "@echo/modules/organization/infrastructure";
 import { createOrganization } from "@echo/modules/organization/app";
 import { hasSeatAvailable } from "@echo/modules/plan/app";
+import { checkCurrencyChange } from "@echo/modules/expense/app";
+import {
+  getOrganizationCurrencyQueryFactory,
+  hasLedgerEntriesQueryFactory,
+} from "@echo/modules/expense/infrastructure";
 import {
   getOrganizationSeatUsageQueryFactory,
   resolvePlanQueryFactory,
@@ -32,6 +37,8 @@ const logger = makeLogger();
 const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
 const resolvePlanQuery = resolvePlanQueryFactory();
 const getOrganizationSeatUsageQuery = getOrganizationSeatUsageQueryFactory();
+const getOrganizationCurrencyQuery = getOrganizationCurrencyQueryFactory();
+const hasLedgerEntriesQuery = hasLedgerEntriesQueryFactory();
 
 const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
   secret: appConfig.auth.secret,
@@ -98,6 +105,11 @@ const auth: ReturnType<typeof makeServerAuth> = makeServerAuth({
     hasSeatAvailable(
       { db, resolvePlanQuery, getOrganizationSeatUsageQuery },
       { scope: createSystemOrganizationScope(organizationId), excludeInvitationId },
+    ),
+  validateOrganizationCurrencyChange: async (organizationId, currency) =>
+    checkCurrencyChange(
+      { db, getOrganizationCurrencyQuery, hasLedgerEntriesQuery },
+      { scope: createSystemOrganizationScope(organizationId), currency },
     ),
   sendOrganizationInvitation: async ({ invitation, organization, inviter }) => {
     const i18n = makeServerI18n(toLocale((inviter as { locale?: string }).locale));
