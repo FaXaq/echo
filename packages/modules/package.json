@@ -173,6 +173,7 @@
     "@echo/errors": "workspace:*",
     "@echo/i18n": "workspace:*",
     "@echo/logger": "workspace:*",
+    "decimal.js": "catalog:",
     "kysely": "catalog:",
     "mjml": "^4.18.0",
     "ts-pattern": "catalog:",

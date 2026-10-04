@@ -1,6 +1,6 @@
 # Modules
 
-Domain modules for Echo: calendar, contact, drive, invitation, notification, organization, outreach, place, plan, playlist, song, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
+Domain modules for Echo: calendar, contact, drive, expense, invitation, notification, organization, outreach, place, plan, playlist, song, user. Each module has `domain/`, `app/`, and `infrastructure/` layers.
 
 ## Language
 
@@ -99,6 +99,30 @@ _Avoid_: But (the field's name in the original ticket; canonicalized as Title)
 **Contact**:
 An Organization-wide, reusable record of a person to reach out to: name (required), phone, email, description (all optional, filled in progressively). Lives in its own `contact` module — it's shared throughout the Organization, not owned by Outreach — and is linked to Outreach Cards many-to-many via the `outreach_card_contact` join (that join, and the link/unlink operations, live in the `outreach` module's infrastructure, the same way `playlist_song` lives in `playlist` even though it references `song`). Gated on its own `contact` permission, separate from the `outreach` permission covering Columns/Cards.
 _Avoid_: OutreachContact (this module's original name before it was split out); embedding contact fields directly on Outreach Card (rejected — Contacts are meant to be reused across cards, not copy-pasted per card)
+
+**Expense**:
+A cost one Organization member paid on behalf of the group, recorded in the Organization's single expense ledger — like Drive, Playlist and Outreach Board, there's one per Organization, no multi-ledger/trip concept. Has exactly one Payer, an amount in its own currency (which may differ from the Organization Currency, with an Exchange Rate converting it), and is divided into Shares among Organization members. Carries a required title, an optional description, and the date it was paid (not the date it was recorded); no categories or receipt attachments yet. Expense and Repayment CRUD is gated on the `expense` permission, granted to every role, and any member may edit or delete any Expense or Repayment — the ledger is a small trusted group's record, not a frozen audit trail. Available in personal Organizations too (a solo artist can track their own costs; Balances are trivially zero). May optionally link to at most one Calendar Event; deleting that Event only clears the link and never deletes the Expense, since the money was still spent.
+_Avoid_: Cost, charge, bill; Group (Tricount's name for what Echo already calls Organization)
+
+**Payer**:
+The single Organization member who paid an Expense out of pocket. If two members each paid, that's two Expenses, not one with two Payers. Only Organization members can be a Payer or hold a Share — non-members must be invited first. A member who later leaves keeps their ledger history, shown as a "former member", and their Balance stays visible until settled by a Repayment; leaving is never blocked by a non-zero Balance.
+_Avoid_: Creditor (that's a computed position on a Balance, not a role on an Expense)
+
+**Share**:
+One member's portion of an Expense — what they owe toward it. An Expense is split either equally among a chosen subset of members or by exact per-member amounts; a Share is the resulting amount either way. An Expense remembers which mode it was split in, so editing the amount or participants of an equal split re-splits it equally, while an exact split whose edit would break the sum is rejected. Percentage and weighted splits are deferred. The split is entered in the Expense's own currency; each Share's converted amount in the Organization Currency is derived from it. Shares always add up exactly to the Expense amount, and their converted amounts to the Expense's converted total; each Share is rounded down and the leftover minor units are absorbed by the Payer if they hold a Share, otherwise by the first Share holder (this applies both to an equal split and to conversion rounding, and never makes a Share negative).
+
+**Organization Currency**:
+The base currency an Organization's Balances and Repayments are expressed in, set in organization settings by an owner or admin. Any ISO 4217 currency is allowed, and amounts are whole multiples of that currency's smallest unit (its minor unit — cents for EUR, none for JPY). Organizations default to EUR. Locked once the first Expense or Repayment exists, because every Expense's stored converted amount is only meaningful against one base.
+
+**Exchange Rate**:
+The rate an Expense in a non-Organization Currency was converted at, typed in by the member when recording it and frozen on that Expense — never re-fetched or recomputed, so a past Expense's converted amount (and every Balance built on it) can't drift on its own. Editing the Expense, including its rate, is the only way it changes. An Expense already in the Organization Currency has no rate to enter. Automatically fetched rates are a possible future addition, not current behavior.
+_Avoid_: converting at read time with the current rate (rejected — old debts would silently change)
+
+**Balance**:
+A member's net position across the whole ledger: what they paid out on Expenses plus Repayments they made, minus their Shares and Repayments they received (paying someone back brings your Balance up toward zero, theirs down), all in the Organization Currency (each Expense contributing its converted amounts). Positive means the Organization owes them, negative means they owe it. Always derived from the Expense and Repayment history, never stored — there is no balance table or snapshot to drift or reconcile. Answers "who owes what"; the Organization's Balances sum to zero.
+
+**Repayment**:
+A recorded transfer of money from one member to another outside Echo to settle up, which brings their Balances back toward zero. Its own record, not a negative Expense: from-member, to-member (different people), a positive amount always in the Organization Currency (no per-Repayment currency or rate; if real money moved in another currency, the member records the converted amount), the date it was paid and an optional note. The amount isn't capped at what's owed — overpaying just flips the debt. Not linked to Events: it settles people, not an Event. The app also suggests the minimal set of Repayments that would settle everyone, but suggestions are computed, not stored — only a Repayment someone actually recorded exists.
 
 ## Exceptions
 
