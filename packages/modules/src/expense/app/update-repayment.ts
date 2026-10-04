@@ -4,6 +4,7 @@ import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { Repayment } from "../domain/index.js";
 import type { GetRepaymentByIdQueryPort } from "../infrastructure/get-repayment-by-id.query.port.js";
+import type { ListLedgerParticipantsQueryPort } from "../infrastructure/list-ledger-participants.query.port.js";
 import type { ListOrganizationMemberIdsQueryPort } from "../infrastructure/list-organization-member-ids.query.port.js";
 import type { UpdateRepaymentCommandPort } from "../infrastructure/update-repayment.command.port.js";
 import { prepareRepayment, type RepaymentDraft } from "./prepare-repayment.js";
@@ -15,6 +16,7 @@ export async function updateRepayment(
     getRepaymentByIdQuery: GetRepaymentByIdQueryPort;
     updateRepaymentCommand: UpdateRepaymentCommandPort;
     listOrganizationMemberIdsQuery: ListOrganizationMemberIdsQueryPort;
+    listLedgerParticipantsQuery: ListLedgerParticipantsQueryPort;
   },
   input: { scope: OrganizationScope; id: string; draft: RepaymentDraft },
 ): Promise<Repayment> {
@@ -27,10 +29,15 @@ export async function updateRepayment(
   const existing = await deps.getRepaymentByIdQuery(deps.db, input.scope, { id: input.id });
   if (!existing) throw notFound("Repayment");
 
+  const participants = await deps.listLedgerParticipantsQuery(deps.db, input.scope);
   const prepared = await prepareRepayment(deps, {
     scope: input.scope,
     draft: input.draft,
-    keepUserIds: [existing.fromUserId, existing.toUserId],
+    keepUserIds: [
+      existing.fromUserId,
+      existing.toUserId,
+      ...participants.map((participant) => participant.userId),
+    ],
   });
 
   const updated = await deps.updateRepaymentCommand(deps.db, input.scope, {

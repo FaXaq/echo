@@ -202,6 +202,7 @@ export const makeExpenseRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             insertRepaymentCommand,
             listOrganizationMemberIdsQuery,
+            listLedgerParticipantsQuery,
           },
           {
             scope: ctx.organizationScope,
@@ -221,6 +222,7 @@ export const makeExpenseRouter = () =>
               getRepaymentByIdQuery,
               updateRepaymentCommand,
               listOrganizationMemberIdsQuery,
+              listLedgerParticipantsQuery,
             },
             { scope: ctx.organizationScope, id: input.id, draft: toRepaymentDraft(input) },
           ),

@@ -105,7 +105,7 @@ A cost one Organization member paid on behalf of the group, recorded in the Orga
 _Avoid_: Cost, charge, bill; Group (Tricount's name for what Echo already calls Organization)
 
 **Payer**:
-The single Organization member who paid an Expense out of pocket. If two members each paid, that's two Expenses, not one with two Payers. Only Organization members can be a Payer or hold a Share — non-members must be invited first. A member who later leaves keeps their ledger history, shown as a "former member", and their Balance stays visible until settled by a Repayment; leaving is never blocked by a non-zero Balance.
+The single Organization member who paid an Expense out of pocket. If two members each paid, that's two Expenses, not one with two Payers. Only Organization members can be a Payer or hold a Share of an Expense — non-members must be invited first (this rule does not apply to Repayment parties). A member who later leaves keeps their ledger history, shown as a "former member", and their Balance stays visible until settled by a Repayment; leaving is never blocked by a non-zero Balance.
 _Avoid_: Creditor (that's a computed position on a Balance, not a role on an Expense)
 
 **Share**:
@@ -122,7 +122,7 @@ _Avoid_: converting at read time with the current rate (rejected — old debts w
 A member's net position across the whole ledger: what they paid out on Expenses plus Repayments they made, minus their Shares and Repayments they received (paying someone back brings your Balance up toward zero, theirs down), all in the Organization Currency (each Expense contributing its converted amounts). Positive means the Organization owes them, negative means they owe it. Always derived from the Expense and Repayment history, never stored — there is no balance table or snapshot to drift or reconcile. Answers "who owes what"; the Organization's Balances sum to zero.
 
 **Repayment**:
-A recorded transfer of money from one member to another outside Echo to settle up, which brings their Balances back toward zero. Its own record, not a negative Expense: from-member, to-member (different people), a positive amount always in the Organization Currency (no per-Repayment currency or rate; if real money moved in another currency, the member records the converted amount), the date it was paid and an optional note. The amount isn't capped at what's owed — overpaying just flips the debt. Not linked to Events: it settles people, not an Event. The app also suggests the minimal set of Repayments that would settle everyone, but suggestions are computed, not stored — only a Repayment someone actually recorded exists.
+A recorded transfer of money from one person to another outside Echo to settle up, which brings their Balances back toward zero. Its own record, not a negative Expense: from-person, to-person (different people, each an Organization member or a former member with ledger history, so a leaver's Balance can still be settled), a positive amount always in the Organization Currency (no per-Repayment currency or rate; if real money moved in another currency, the member records the converted amount), the date it was paid and an optional note. The amount isn't capped at what's owed — overpaying just flips the debt. Not linked to Events: it settles people, not an Event. The app also suggests the minimal set of Repayments that would settle everyone, but suggestions are computed, not stored — only a Repayment someone actually recorded exists.
 
 ## Exceptions
 

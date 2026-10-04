@@ -20,6 +20,11 @@ const draft = {
   note: null,
 };
 
+const participants = [
+  { userId: "marie", name: "Marie", image: null, isMember: true },
+  { userId: "paul", name: "Paul", image: null, isMember: true },
+];
+
 function makeDeps(overrides: Partial<Parameters<typeof createRepayment>[0]> = {}) {
   const inserted: Parameters<InsertRepaymentCommandPort>[2][] = [];
   const deps = {
@@ -30,6 +35,7 @@ function makeDeps(overrides: Partial<Parameters<typeof createRepayment>[0]> = {}
       return makeFakeRepayment();
     }) satisfies InsertRepaymentCommandPort,
     listOrganizationMemberIdsQuery: async () => ["marie", "paul"],
+    listLedgerParticipantsQuery: async () => participants,
     ...overrides,
   };
   return { deps, inserted };
@@ -70,11 +76,25 @@ describe("createRepayment", () => {
     }
   });
 
-  it("rejects a party who is not a member", async () => {
-    const { deps } = makeDeps({ listOrganizationMemberIdsQuery: async () => ["marie"] });
+  it("lets a former member with ledger history settle their balance", async () => {
+    const { deps, inserted } = makeDeps({
+      listOrganizationMemberIdsQuery: async () => ["marie"],
+      listLedgerParticipantsQuery: async () => [
+        participants[0]!,
+        { userId: "paul", name: "Paul", image: null, isMember: false },
+      ],
+    });
 
-    await expect(createRepayment(deps, { scope, userId: "paul", draft })).rejects.toBeInstanceOf(
-      DataValidationFailedError,
-    );
+    await createRepayment(deps, { scope, userId: "marie", draft });
+
+    expect(inserted).toEqual([{ id: expect.any(String), userId: "marie", ...draft }]);
+  });
+
+  it("still rejects a stranger with no membership or ledger history", async () => {
+    const { deps } = makeDeps();
+
+    await expect(
+      createRepayment(deps, { scope, userId: "paul", draft: { ...draft, fromUserId: "stranger" } }),
+    ).rejects.toBeInstanceOf(DataValidationFailedError);
   });
 });

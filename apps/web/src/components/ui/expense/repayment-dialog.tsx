@@ -92,10 +92,6 @@ export function RepaymentDialog({
     setError(null);
   }, [state, reset, organizationCurrency, currentUserId]);
 
-  const keptUserIds = new Set(
-    content?.mode === "edit" ? [content.repayment.fromUserId, content.repayment.toUserId] : [],
-  );
-  const selectable = participants.filter((p) => p.isMember || keptUserIds.has(p.userId));
   const nameOf = (userId: string) => participants.find((p) => p.userId === userId)?.name ?? userId;
 
   const errorMessages: Record<RepaymentFormError, string> = {
@@ -128,7 +124,7 @@ export function RepaymentDialog({
             <SelectValue>{() => (field.value === "" ? "" : nameOf(field.value))}</SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {selectable.map((participant) => (
+            {participants.map((participant) => (
               <SelectItem key={participant.userId} value={participant.userId}>
                 {participant.name}
               </SelectItem>

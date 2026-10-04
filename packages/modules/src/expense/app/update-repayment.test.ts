@@ -31,6 +31,7 @@ function makeDeps(overrides: Partial<Parameters<typeof updateRepayment>[0]> = {}
       return makeFakeRepayment({ amountMinor: input.amountMinor });
     }) satisfies UpdateRepaymentCommandPort,
     listOrganizationMemberIdsQuery: async () => ["marie"],
+    listLedgerParticipantsQuery: async () => [],
     ...overrides,
   };
   return { deps, updated };
@@ -71,5 +72,18 @@ describe("updateRepayment", () => {
         draft: { ...draft, fromUserId: "stranger" },
       }),
     ).rejects.toBeInstanceOf(DataValidationFailedError);
+  });
+
+  it("lets the repayment switch to another former member with ledger history", async () => {
+    const { deps, updated } = makeDeps({
+      listLedgerParticipantsQuery: async () => [
+        { userId: "stranger", name: "Sam", image: null, isMember: false },
+      ],
+    });
+    const next = { ...draft, fromUserId: "stranger" };
+
+    await updateRepayment(deps, { scope, id: "repayment-1", draft: next });
+
+    expect(updated).toEqual([{ id: "repayment-1", ...next }]);
   });
 });
