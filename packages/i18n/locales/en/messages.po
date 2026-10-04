@@ -121,9 +121,9 @@ msgid "Accept invitation"
 msgstr "Accept invitation"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:74
-#: apps/web/src/components/ui/expense/expense-table.tsx:76
+#: apps/web/src/components/ui/expense/expense-table.tsx:79
 #: apps/web/src/components/ui/expense/repayment-table.tsx:74
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:61
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:56
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:128
 msgid "Actions"
 msgstr "Actions"
@@ -211,10 +211,10 @@ msgid "Already have an account? <0>Sign in</0>"
 msgstr "Already have an account? <0>Sign in</0>"
 
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:168
-#: apps/web/src/components/ui/expense/expense-table.tsx:73
+#: apps/web/src/components/ui/expense/expense-table.tsx:76
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:160
 #: apps/web/src/components/ui/expense/repayment-table.tsx:72
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:59
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:54
 msgid "Amount"
 msgstr "Amount"
 
@@ -535,7 +535,7 @@ msgid "Couldn't load Drive"
 msgstr "Couldn't load Drive"
 
 #: apps/web/src/components/features/expense/suspended-event-expenses.tsx:53
-#: apps/web/src/components/features/expense/suspended-expense-table.tsx:39
+#: apps/web/src/components/features/expense/suspended-expense-table.tsx:42
 msgid "Couldn't load expenses"
 msgstr "Couldn't load expenses"
 
@@ -547,7 +547,7 @@ msgstr "Couldn't load expenses"
 msgid "Couldn't load playlists"
 msgstr "Couldn't load playlists"
 
-#: apps/web/src/components/features/expense/suspended-repayment-table.tsx:40
+#: apps/web/src/components/features/expense/suspended-repayment-table.tsx:36
 msgid "Couldn't load repayments"
 msgstr "Couldn't load repayments"
 
@@ -677,7 +677,7 @@ msgstr "Danger zone"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:99
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:212
-#: apps/web/src/components/ui/expense/expense-table.tsx:71
+#: apps/web/src/components/ui/expense/expense-table.tsx:74
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:165
 #: apps/web/src/components/ui/expense/repayment-table.tsx:70
 msgid "Date"
@@ -725,8 +725,8 @@ msgstr "Define as"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:257
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
-#: apps/web/src/components/ui/expense/expense-table.tsx:134
-#: apps/web/src/components/ui/expense/repayment-table.tsx:107
+#: apps/web/src/components/ui/expense/expense-table.tsx:145
+#: apps/web/src/components/ui/expense/repayment-table.tsx:109
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:184
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:223
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
@@ -803,7 +803,7 @@ msgstr "Desc"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:202
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:353
-#: apps/web/src/components/ui/expense/expense-table.tsx:70
+#: apps/web/src/components/ui/expense/expense-table.tsx:73
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:195
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
 msgid "Description"
@@ -964,7 +964,7 @@ msgstr "Equally"
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:37
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:9
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:323
-#: apps/web/src/components/ui/expense/expense-table.tsx:72
+#: apps/web/src/components/ui/expense/expense-table.tsx:75
 msgid "Event"
 msgstr "Event"
 
@@ -993,7 +993,7 @@ msgstr "Events on {0}"
 msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Every action here is destructive. Please proceed with caution."
 
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:46
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:41
 msgid "Everyone is settled up."
 msgstr "Everyone is settled up."
 
@@ -1005,7 +1005,7 @@ msgstr "Exact amounts must add up to the total"
 msgid "Exchange rate"
 msgstr "Exchange rate"
 
-#: apps/web/src/components/ui/expense/expense-table.tsx:123
+#: apps/web/src/components/ui/expense/expense-table.tsx:134
 msgid "Expense actions"
 msgstr "Expense actions"
 
@@ -1016,7 +1016,7 @@ msgstr "Expense actions"
 msgid "Expenses"
 msgstr "Expenses"
 
-#: apps/web/src/components/ui/expense/expense-table.tsx:58
+#: apps/web/src/components/ui/expense/expense-table.tsx:61
 msgid "Expenses you add will show up here."
 msgstr "Expenses you add will show up here."
 
@@ -1150,7 +1150,7 @@ msgstr "Former member"
 
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:150
 #: apps/web/src/components/ui/expense/repayment-table.tsx:68
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:57
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:52
 msgid "From"
 msgstr "From"
 
@@ -1470,7 +1470,7 @@ msgstr "No events scheduled"
 msgid "No expenses linked to this event."
 msgstr "No expenses linked to this event."
 
-#: apps/web/src/components/ui/expense/expense-table.tsx:57
+#: apps/web/src/components/ui/expense/expense-table.tsx:60
 msgid "No expenses yet"
 msgstr "No expenses yet"
 
@@ -1641,7 +1641,7 @@ msgid "Page {0} of {1}"
 msgstr "Page {0} of {1}"
 
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:218
-#: apps/web/src/components/ui/expense/expense-table.tsx:74
+#: apps/web/src/components/ui/expense/expense-table.tsx:77
 msgid "Paid by"
 msgstr "Paid by"
 
@@ -1779,7 +1779,7 @@ msgstr "Purple"
 #~ msgid "Quote"
 #~ msgstr "Quote"
 
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:75
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:70
 msgid "Record"
 msgstr "Record"
 
@@ -2211,7 +2211,7 @@ msgstr "This will permanently delete this song and remove it from any playlists.
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:230
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:216
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:161
-#: apps/web/src/components/ui/expense/expense-table.tsx:69
+#: apps/web/src/components/ui/expense/expense-table.tsx:72
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:85
 #: apps/web/src/components/ui/song/song-dialog.tsx:111
 msgid "Title"
@@ -2224,7 +2224,7 @@ msgstr "Title is required"
 
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:155
 #: apps/web/src/components/ui/expense/repayment-table.tsx:69
-#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:58
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:53
 msgid "To"
 msgstr "To"
 
@@ -2289,8 +2289,8 @@ msgid "Up next: {0}"
 msgstr "Up next: {0}"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:189
-#: apps/web/src/components/ui/expense/expense-table.tsx:132
-#: apps/web/src/components/ui/expense/repayment-table.tsx:105
+#: apps/web/src/components/ui/expense/expense-table.tsx:143
+#: apps/web/src/components/ui/expense/repayment-table.tsx:107
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:182
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:103
 #: apps/web/src/components/ui/song/song-detail.tsx:97

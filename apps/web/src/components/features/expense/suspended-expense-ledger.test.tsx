@@ -1,9 +1,16 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@/lib/test-utils";
 import * as calendarResource from "@/services/resources/calendar";
 import * as expenseResource from "@/services/resources/expense";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tanstack/react-router")>()),
+  useParams: () => ({ projectSlug: "acme-inc" }),
+  Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+}));
+
 import { SuspendedExpenseLedger } from "./suspended-expense-ledger";
 
 const summary: expenseResource.LedgerSummary = {

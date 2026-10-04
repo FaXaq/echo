@@ -1,4 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tanstack/react-router")>()),
+  Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
+}));
+
 import { render, screen } from "@/lib/test-utils";
 import type { Expense } from "@/services/resources/expense";
 import { ExpenseTable } from "./expense-table";
@@ -33,6 +39,7 @@ describe("ExpenseTable", () => {
         events={events}
         participants={participants}
         organizationCurrency="EUR"
+        projectSlug="acme-inc"
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />,
@@ -49,6 +56,7 @@ describe("ExpenseTable", () => {
         events={events}
         participants={participants}
         organizationCurrency="EUR"
+        projectSlug="acme-inc"
         onEdit={vi.fn()}
         onDelete={vi.fn()}
       />,

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 import { useLingui } from "@lingui/react/macro";
 import { ExpenseTable } from "@/components/ui/expense/expense-table";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,6 +19,7 @@ export interface SuspendedExpenseTableProps {
 }
 
 function ExpenseTableContent({ organizationId, onEdit, onDelete }: SuspendedExpenseTableProps) {
+  const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: summary } = useSuspenseQuery(getLedgerSummaryQueryOptions({ organizationId }));
   const { data: expenses } = useSuspenseQuery(getExpensesQueryOptions({ organizationId }));
   const { data: events } = useSuspenseQuery(getEventsQueryOptions({ organizationId }));
@@ -28,6 +30,7 @@ function ExpenseTableContent({ organizationId, onEdit, onDelete }: SuspendedExpe
       events={events}
       participants={summary.participants}
       organizationCurrency={summary.currency}
+      projectSlug={projectSlug}
       onEdit={onEdit}
       onDelete={onDelete}
     />

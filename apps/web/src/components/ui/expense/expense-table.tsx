@@ -1,6 +1,7 @@
 import "@/lib/dayjs";
 import dayjs from "dayjs";
-import { MoreVertical, Receipt } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { MoreVertical, Receipt, SquareArrowOutUpRight } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +34,7 @@ export interface ExpenseTableProps {
   events: Pick<CalendarEvent, "id" | "title" | "startDate">[];
   participants: Pick<LedgerSummary["participants"][number], "userId" | "name">[];
   organizationCurrency: string;
+  projectSlug: string;
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
 }
@@ -42,6 +44,7 @@ export function ExpenseTable({
   events,
   participants,
   organizationCurrency,
+  projectSlug,
   onEdit,
   onDelete,
 }: ExpenseTableProps) {
@@ -70,8 +73,8 @@ export function ExpenseTable({
             <TableHead>{t`Description`}</TableHead>
             <TableHead>{t`Date`}</TableHead>
             <TableHead>{t`Event`}</TableHead>
-            <TableHead className="text-right">{t`Amount`}</TableHead>
             <TableHead>{t`Paid by`}</TableHead>
+            <TableHead className="text-right">{t`Amount`}</TableHead>
             <TableHead className="w-10">
               <span className="sr-only">{t`Actions`}</span>
             </TableHead>
@@ -91,13 +94,25 @@ export function ExpenseTable({
                 <TableCell>{dayjs(expense.paidOn).format("LL")}</TableCell>
                 <TableCell>
                   {event && (
-                    <div className="flex flex-col">
-                      <span>{event.title}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {dayjs(event.startDate).format("LLL")}
-                      </span>
-                    </div>
+                    <Link
+                      to="/projects/$projectSlug/calendar/$eventId"
+                      params={{ projectSlug, eventId: event.id }}
+                      target="_blank"
+                      className="flex items-center gap-2 no-underline hover:underline"
+                    >
+                      <div className="flex flex-col">
+                        <span>{event.title}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {dayjs(event.startDate).format("LLL")}
+                        </span>
+                      </div>
+                      <SquareArrowOutUpRight className="size-3.5 shrink-0 text-muted-foreground" />
+                    </Link>
                   )}
+                </TableCell>
+                <TableCell>
+                  {participants.find((participant) => participant.userId === expense.payerId)
+                    ?.name ?? expense.payerId}
                 </TableCell>
                 <TableCell className="text-right tabular-nums">
                   <div>{formatMoney(expense.amountMinor, expense.currency, i18n.locale)}</div>
@@ -107,10 +122,6 @@ export function ExpenseTable({
                       {formatMoney(expense.convertedAmountMinor, organizationCurrency, i18n.locale)}
                     </div>
                   )}
-                </TableCell>
-                <TableCell>
-                  {participants.find((participant) => participant.userId === expense.payerId)
-                    ?.name ?? expense.payerId}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
