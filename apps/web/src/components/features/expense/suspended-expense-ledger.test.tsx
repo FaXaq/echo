@@ -78,7 +78,7 @@ describe("SuspendedExpenseLedger", () => {
       repayments: [],
     });
 
-    expect(await screen.findByText("No expenses yet.")).toBeInTheDocument();
+    expect(await screen.findByText("No expenses yet")).toBeInTheDocument();
     expect(screen.getByText("Everyone is settled up.")).toBeInTheDocument();
   });
 

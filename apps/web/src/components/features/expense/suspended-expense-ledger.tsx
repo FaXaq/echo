@@ -5,7 +5,7 @@ import { useLingui } from "@lingui/react/macro";
 import { Plus } from "lucide-react";
 import { BalanceList } from "@/components/ui/expense/balance-list";
 import { ExpenseDialog, type ExpenseDialogState } from "@/components/ui/expense/expense-dialog";
-import { ExpenseListItem } from "@/components/ui/expense/expense-list-item";
+import { ExpenseTable } from "@/components/ui/expense/expense-table";
 import {
   RepaymentDialog,
   type RepaymentDialogState,
@@ -56,8 +56,6 @@ function ExpenseLedgerContent({ organizationId, currentUserId }: SuspendedExpens
 
   const nameOf = (userId: string) =>
     summary.participants.find((participant) => participant.userId === userId)?.name ?? userId;
-  const eventTitleOf = (eventId: string | null) =>
-    events.find((event) => event.id === eventId)?.title;
 
   const balanceEntries = summary.balances.map((balance) => ({
     userId: balance.userId,
@@ -114,21 +112,14 @@ function ExpenseLedgerContent({ organizationId, currentUserId }: SuspendedExpens
 
       <section className="flex flex-col gap-2">
         <h2 className="m-0 text-xl font-semibold">{t`Expenses`}</h2>
-        {expenses.length === 0 ? (
-          <p className="m-0 text-sm text-muted-foreground">{t`No expenses yet.`}</p>
-        ) : (
-          expenses.map((expense) => (
-            <ExpenseListItem
-              key={expense.id}
-              expense={expense}
-              payerName={nameOf(expense.payerId)}
-              organizationCurrency={summary.currency}
-              eventTitle={eventTitleOf(expense.eventId)}
-              onEdit={() => setExpenseDialog({ mode: "edit", expense })}
-              onDelete={() => setPendingDelete({ kind: "expense", id: expense.id })}
-            />
-          ))
-        )}
+        <ExpenseTable
+          expenses={expenses}
+          events={events}
+          participants={summary.participants}
+          organizationCurrency={summary.currency}
+          onEdit={(expense) => setExpenseDialog({ mode: "edit", expense })}
+          onDelete={(expense) => setPendingDelete({ kind: "expense", id: expense.id })}
+        />
       </section>
 
       {repayments.length > 0 && (
