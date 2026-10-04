@@ -45,4 +45,42 @@ describe("makeOrganizationCurrencyHooks.beforeUpdateOrganization", () => {
       hooks.beforeUpdateOrganization({ organization: { currency: "USD" }, member }),
     ).rejects.toBeInstanceOf(APIError);
   });
+
+  it("rejects a null currency without consulting the validator", async () => {
+    const seen: string[] = [];
+    const hooks = makeOrganizationCurrencyHooks(async (organizationId) => {
+      seen.push(organizationId);
+      return "ok";
+    });
+
+    await expect(
+      hooks.beforeUpdateOrganization({ organization: { currency: null }, member }),
+    ).rejects.toMatchObject({ status: "BAD_REQUEST" });
+    expect(seen).toEqual([]);
+  });
+});
+
+describe("makeOrganizationCurrencyHooks.beforeCreateOrganization", () => {
+  const hooks = makeOrganizationCurrencyHooks(async () => "ok");
+
+  it("rejects an unsupported currency as a bad request", async () => {
+    await expect(
+      hooks.beforeCreateOrganization({ organization: { currency: "XXXX" } }),
+    ).rejects.toMatchObject({ status: "BAD_REQUEST" });
+  });
+
+  it("rejects a null currency as a bad request", async () => {
+    await expect(
+      hooks.beforeCreateOrganization({ organization: { currency: null } }),
+    ).rejects.toMatchObject({ status: "BAD_REQUEST" });
+  });
+
+  it("accepts a supported or absent currency", async () => {
+    await expect(
+      hooks.beforeCreateOrganization({ organization: { currency: "USD" } }),
+    ).resolves.toBeUndefined();
+    await expect(
+      hooks.beforeCreateOrganization({ organization: { name: "Band" } }),
+    ).resolves.toBeUndefined();
+  });
 });

@@ -13,6 +13,7 @@ An Expense may be in any currency; it records its amount in that currency plus a
 
 - Repayments are always in the Organization Currency; there is no per-Repayment currency or rate.
 - Editing an Expense's rate retroactively changes Balances. That is accepted: any member may freely edit any Expense, and the ledger is not an audit trail.
+- User foreign keys on `expense`, `expense_share` and `repayment` have no ON DELETE action, so a user with ledger history cannot be hard-deleted (the CLI `user delete` fails with a foreign-key error). This is deliberate: Balances never change when an account is removed.
 
 ## Future: fetched rates
 
