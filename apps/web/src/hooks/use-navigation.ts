@@ -79,6 +79,11 @@ export function useNavigation() {
               to: "/projects/$projectSlug/outreach",
               params: { projectSlug: slug },
             },
+            {
+              title: t`Expenses`,
+              to: "/projects/$projectSlug/expenses",
+              params: { projectSlug: slug },
+            },
             ...(isActiveOrganizationAdmin
               ? [
                   {
