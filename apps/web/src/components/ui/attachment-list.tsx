@@ -6,6 +6,7 @@ import {
   FileWarning,
   ListChecks,
   MoreVertical,
+  Paperclip,
   Music,
   Pen,
   Square,
@@ -26,6 +27,7 @@ import {
   AttachmentTrigger,
 } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FilePreviewDialog } from "@/components/ui/file-preview-dialog";
 import {
@@ -77,6 +79,7 @@ export interface AttachmentListProps<F extends AttachmentFile> {
   onDeleteSelected?: (files: F[]) => Promise<void>;
   onDelete?: (file: F) => void;
   onRename?: (file: F) => void;
+  onLinkToSong?: (file: F) => void;
   onDownload?: (file: F) => void;
   onPlayAudio?: (file: F) => void;
   onSetAudioRole?: (file: F, role: Role) => void;
@@ -116,6 +119,7 @@ function AttachmentListItems<F extends AttachmentFile>({
   onOpen,
   onPlayAudio,
   onRename,
+  onLinkToSong,
   onDownload,
   onDelete,
   onSetAudioRole,
@@ -129,6 +133,7 @@ function AttachmentListItems<F extends AttachmentFile>({
   onOpen: (id: string) => void;
   onPlayAudio?: (file: F) => void;
   onRename?: (file: F) => void;
+  onLinkToSong?: (file: F) => void;
   onDownload?: (file: F) => void;
   onDelete?: (file: F) => void;
   onSetAudioRole?: (file: F, role: Role) => void;
@@ -139,9 +144,11 @@ function AttachmentListItems<F extends AttachmentFile>({
 
   if (files.length === 0 && pendingFiles.length === 0) {
     return (
-      <p className="py-5 text-center text-[13px] text-muted-foreground">
-        <Trans>No files here yet.</Trans>
-      </p>
+      <ListEmptyState
+        icon={<Paperclip />}
+        title={t`No files yet`}
+        description={t`Upload files with the button above.`}
+      />
     );
   }
 
@@ -231,9 +238,12 @@ function AttachmentListItems<F extends AttachmentFile>({
                       {selected ? <SquareCheck /> : <Square />}
                       {selected ? t`Deselect` : t`Select`}
                     </DropdownMenuItem>
-                    {(onRename || onDownload || onDelete || onSetAudioRole || onClearAudioRole) && (
-                      <DropdownMenuSeparator />
-                    )}
+                    {(onRename ||
+                      onLinkToSong ||
+                      onDownload ||
+                      onDelete ||
+                      onSetAudioRole ||
+                      onClearAudioRole) && <DropdownMenuSeparator />}
                     {onRename && (
                       <DropdownMenuItem
                         onClick={() => {
@@ -242,6 +252,12 @@ function AttachmentListItems<F extends AttachmentFile>({
                       >
                         <Pen />
                         {t`Rename`}
+                      </DropdownMenuItem>
+                    )}
+                    {onLinkToSong && (
+                      <DropdownMenuItem onClick={() => onLinkToSong(file)}>
+                        <Music />
+                        {t`Link to a song`}
                       </DropdownMenuItem>
                     )}
                     {onDownload && (
@@ -301,6 +317,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   onToggleSelect,
   onOpen,
   onRename,
+  onLinkToSong,
   onDownload,
   onDelete,
 }: {
@@ -311,6 +328,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   onToggleSelect: (file: F) => void;
   onOpen: (id: string) => void;
   onRename?: (file: F) => void;
+  onLinkToSong?: (file: F) => void;
   onDownload?: (file: F) => void;
   onDelete?: (file: F) => void;
 }) {
@@ -319,9 +337,11 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
 
   if (files.length === 0 && pendingFiles.length === 0) {
     return (
-      <p className="py-5 text-center text-[13px] text-muted-foreground">
-        <Trans>No files here yet.</Trans>
-      </p>
+      <ListEmptyState
+        icon={<Paperclip />}
+        title={t`No files yet`}
+        description={t`Upload files with the button above.`}
+      />
     );
   }
 
@@ -415,7 +435,9 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                       {selected ? <SquareCheck /> : <Square />}
                       {selected ? t`Deselect` : t`Select`}
                     </DropdownMenuItem>
-                    {(onRename || onDownload || onDelete) && <DropdownMenuSeparator />}
+                    {(onRename || onLinkToSong || onDownload || onDelete) && (
+                      <DropdownMenuSeparator />
+                    )}
                     {onRename && (
                       <DropdownMenuItem
                         onClick={() => {
@@ -424,6 +446,12 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                       >
                         <Pen />
                         {t`Rename`}
+                      </DropdownMenuItem>
+                    )}
+                    {onLinkToSong && (
+                      <DropdownMenuItem onClick={() => onLinkToSong(file)}>
+                        <Music />
+                        {t`Link to a song`}
                       </DropdownMenuItem>
                     )}
                     {onDownload && (
@@ -509,6 +537,7 @@ export function AttachmentList<F extends AttachmentFile>({
   onDeleteSelected,
   onDelete,
   onRename,
+  onLinkToSong,
   onDownload,
   onPlayAudio,
   onSetAudioRole,
@@ -549,6 +578,7 @@ export function AttachmentList<F extends AttachmentFile>({
     onOpen: setPreviewId,
     onPlayAudio,
     onRename,
+    onLinkToSong,
     onDownload,
     onDelete,
     onSetAudioRole,
@@ -589,6 +619,7 @@ export function AttachmentList<F extends AttachmentFile>({
             onToggleSelect={onToggleSelect}
             onOpen={openGalleryPreview}
             onRename={onRename}
+            onLinkToSong={onLinkToSong}
             onDownload={onDownload}
             onDelete={onDelete}
           />

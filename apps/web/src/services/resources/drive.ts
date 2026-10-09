@@ -119,6 +119,19 @@ export function useDeleteFolderMutation({ onSuccess }: { onSuccess?: () => void 
   });
 }
 
+export function useLinkFileToSongMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { fileId: string; songId: string; organizationId: string }) =>
+      apiClient.drive.linkFileToSong.mutate(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
+}
+
 export function useMoveFileMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
   const queryClient = useQueryClient();
 

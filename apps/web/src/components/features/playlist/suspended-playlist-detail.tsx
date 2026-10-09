@@ -4,10 +4,12 @@ import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
 import { usePostHog } from "posthog-js/react";
+import { Music } from "lucide-react";
 import { DragDropProvider } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlaylistDetail } from "@/components/ui/playlist/playlist-detail";
 import { PlaylistDialog, type PlaylistDialogState } from "@/components/ui/playlist/playlist-dialog";
@@ -238,6 +240,13 @@ function PlaylistDetailContent({
             }}
           >
             <div className="flex flex-col gap-0">
+              {order.length === 0 && (
+                <ListEmptyState
+                  icon={<Music />}
+                  title={t`No songs in this playlist`}
+                  description={t`Add songs with the + button.`}
+                />
+              )}
               {order.map((songId, index) => {
                 const song = songsById.get(songId);
                 if (!song) return null;

@@ -3,14 +3,16 @@ import { ErrorBoundary } from "react-error-boundary";
 import { usePostHog } from "posthog-js/react";
 import { useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Music, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SongDialog, type SongDialogState } from "@/components/ui/song/song-dialog";
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getSongsQueryOptions, useCreateSongMutation, type Song } from "@/services/resources/song";
 import { SuspendedSongPlayButton } from "./suspended-song-play-button";
 import { SuspendedSongDuration } from "./suspended-song-duration";
+import { SongAudioDropTarget } from "./song-audio-drop-target";
 
 export interface SuspendedSongListProps {
   organizationId: string;
@@ -55,25 +57,37 @@ function SongListContent({ organizationId, projectSlug, onSongCreated }: Suspend
       </div>
 
       {songs.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t`No songs yet.`}</p>
+        <ListEmptyState
+          icon={<Music />}
+          title={t`No songs yet`}
+          description={t`Create a song to gather its demos, lyrics and files in one place.`}
+          action={
+            <Button type="button" size="sm" onClick={() => setDialogState({ mode: "create" })}>
+              <Plus data-icon="inline-start" />
+              {t`New song`}
+            </Button>
+          }
+        />
       ) : (
         <ul className="flex flex-col m-0 p-0">
           {songs.map((song) => (
             <li key={song.id} className="m-0 p-0 list-none">
-              <SongListItem
-                song={song}
-                projectSlug={projectSlug}
-                leading={
-                  <SuspendedSongPlayButton
-                    songId={song.id}
-                    organizationId={organizationId}
-                    title={song.title}
-                  />
-                }
-                duration={
-                  <SuspendedSongDuration songId={song.id} organizationId={organizationId} />
-                }
-              />
+              <SongAudioDropTarget songId={song.id} organizationId={organizationId}>
+                <SongListItem
+                  song={song}
+                  projectSlug={projectSlug}
+                  leading={
+                    <SuspendedSongPlayButton
+                      songId={song.id}
+                      organizationId={organizationId}
+                      title={song.title}
+                    />
+                  }
+                  duration={
+                    <SuspendedSongDuration songId={song.id} organizationId={organizationId} />
+                  }
+                />
+              </SongAudioDropTarget>
             </li>
           ))}
         </ul>

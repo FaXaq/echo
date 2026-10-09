@@ -82,7 +82,7 @@ function renderWithFiles(files: driveResource.SongFile[]) {
 describe("SuspendedSongAttachments", () => {
   it("shows the empty state and an upload button when there are no files", async () => {
     renderWithFiles([]);
-    expect(await screen.findByText("No files here yet.")).toBeInTheDocument();
+    expect(await screen.findByText("No files yet")).toBeInTheDocument();
     expect(screen.getByLabelText("Add files", { selector: "input" })).toBeInTheDocument();
   });
 

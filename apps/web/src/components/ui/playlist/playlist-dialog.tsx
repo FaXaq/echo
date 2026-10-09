@@ -7,7 +7,6 @@ import { useLingui } from "@lingui/react/macro";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -15,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DirtyGuardDialog } from "@/components/ui/dirty-guard-dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { Playlist } from "@/services/resources/playlist";
@@ -56,7 +56,7 @@ export function PlaylistDialog({ state, onOpenChange, onSubmit }: PlaylistDialog
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<PlaylistFormValues>({
     resolver: zodResolver(playlistFormSchema),
     defaultValues: stateToDefaultValues(content),
@@ -71,7 +71,7 @@ export function PlaylistDialog({ state, onOpenChange, onSubmit }: PlaylistDialog
   };
 
   return (
-    <Dialog open={state !== null} onOpenChange={onOpenChange}>
+    <DirtyGuardDialog open={state !== null} onOpenChange={onOpenChange} isDirty={isDirty}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? t`Edit playlist` : t`New playlist`}</DialogTitle>
@@ -100,6 +100,6 @@ export function PlaylistDialog({ state, onOpenChange, onSubmit }: PlaylistDialog
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+    </DirtyGuardDialog>
   );
 }

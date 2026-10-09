@@ -46,6 +46,10 @@ Multi-context — a root `CONTEXT-MAP.md` pointing at per-context `CONTEXT.md` f
 
 `packages/modules/src/<module>/infrastructure` and `app` follow a port/factory DI pattern — when `db`/`scope` are explicit port args vs. when a dependency is closed over by the factory, and why `app/` never imports `infrastructure/` directly. See `.claude/skills/di-ports-and-factories/SKILL.md` and ADR-0004.
 
+### Empty states
+
+Every list in `apps/web` must render a `ListEmptyState` when it has no items. See `.claude/skills/frontend-empty-states/SKILL.md`.
+
 ## Translations
 
 - UI strings (`apps/web/src`): mark with Lingui macros (`Trans`, `t`, `msg`), then run `pnpm i18n:extract` to add them to `packages/i18n/locales/{locale}/messages.po`, fill in `msgstr` for `fr` by hand, then `pnpm i18n:compile`. In JSX, prefer `<Trans>` over `t`\`...\` — reserve `t` for strings needed outside JSX (attributes, variables, non-component code).

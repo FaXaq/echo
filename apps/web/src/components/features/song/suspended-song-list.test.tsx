@@ -50,7 +50,7 @@ function renderWithSongs(songs: songResource.Song[], onSongCreated = vi.fn()) {
 describe("SuspendedSongList", () => {
   it("shows an empty state when there are no songs", async () => {
     renderWithSongs([]);
-    expect(await screen.findByText("No songs yet.")).toBeInTheDocument();
+    expect(await screen.findByText("No songs yet")).toBeInTheDocument();
   });
 
   it("lists every song by title", async () => {
@@ -61,9 +61,9 @@ describe("SuspendedSongList", () => {
 
   it("opens the create dialog from the New song button", async () => {
     const user = userEvent.setup();
-    renderWithSongs([]);
+    renderWithSongs([makeSong()]);
 
-    await screen.findByText("No songs yet.");
+    await screen.findByText("Empty Road");
     await user.click(screen.getByRole("button", { name: "New song" }));
 
     expect(screen.getByRole("heading", { name: "New song" })).toBeInTheDocument();

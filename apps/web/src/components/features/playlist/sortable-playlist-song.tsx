@@ -7,6 +7,7 @@ import { SongListItem } from "@/components/ui/song/song-list-item";
 import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
 import { cn } from "@/lib/utils";
 import { SuspendedSongDuration } from "../song/suspended-song-duration";
+import { SongAudioDropTarget } from "@/components/features/song/song-audio-drop-target";
 
 export function SortablePlaylistSong({
   song,
@@ -44,7 +45,11 @@ export function SortablePlaylistSong({
       >
         <GripVertical className="size-4" />
       </button>
-      <div className="min-w-0 flex-1">
+      <SongAudioDropTarget
+        songId={song.songId}
+        organizationId={organizationId}
+        className="min-w-0 flex-1"
+      >
         <SongListItem
           song={{ ...song, id: song.songId }}
           projectSlug={projectSlug}
@@ -71,7 +76,7 @@ export function SortablePlaylistSong({
             </Button>
           }
         />
-      </div>
+      </SongAudioDropTarget>
     </div>
   );
 }

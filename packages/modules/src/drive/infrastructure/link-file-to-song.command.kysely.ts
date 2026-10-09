@@ -18,5 +18,6 @@ export const linkFileToSongCommandFactory: LinkFileToSongCommandPortFactory =
           .where("file.id", "=", input.fileId)
           .where("file.organization_id", "=", scope.organizationId),
       )
+      .onConflict((oc) => oc.columns(["song_id", "file_id"]).doNothing())
       .execute();
   };

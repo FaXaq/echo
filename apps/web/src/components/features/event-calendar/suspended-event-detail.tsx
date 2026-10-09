@@ -3,9 +3,10 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
-import { ChevronRight, X } from "lucide-react";
+import { ChevronRight, ListMusic, X } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventDetail, EventDialog, type EventDialogState } from "@/ui/event-calendar";
@@ -129,6 +130,13 @@ function EventDetailContent({
         }
         playlistsList={
           <>
+            {eventPlaylists.length === 0 && (
+              <ListEmptyState
+                icon={<ListMusic />}
+                title={t`No playlists for this event`}
+                description={t`Add the setlist you'll play with the + button.`}
+              />
+            )}
             {eventPlaylists.map((playlist) => (
               <Collapsible key={playlist.id} className="flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-2">

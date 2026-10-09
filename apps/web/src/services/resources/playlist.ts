@@ -2,6 +2,7 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 import type { RouterInputs, RouterOutputs } from "@echo/api/router";
 import { apiClient } from "@/services/api-client";
 import { initResourceKey } from "./init-resource-key";
+import { getSongDefaultAudioQueryOptions } from "./song";
 
 const { key, getResourceKey } = initResourceKey("playlist");
 
@@ -127,7 +128,11 @@ export function useAddSongToPlaylistMutation({ organizationId }: { organizationI
   return useMutation({
     mutationFn: (input: { playlistId: string; songId: string }) =>
       apiClient.playlist.addSongToPlaylist.mutate({ organizationId, ...input }),
-    onSuccess: async () => {
+    onSuccess: async (_, { songId }) => {
+      // Playlist detail suspends on each song's default audio; warm it so the refetch doesn't.
+      await queryClient.ensureQueryData(
+        getSongDefaultAudioQueryOptions({ songId, organizationId }),
+      );
       await queryClient.invalidateQueries({ queryKey: key });
     },
   });
