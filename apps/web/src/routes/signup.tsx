@@ -6,7 +6,6 @@ import { usePostHog } from "posthog-js/react";
 import { SignupForm, type SignupFormValues } from "@/components/signup-form";
 import { logger } from "@/lib/logger";
 import { useSignUpEmailMutation } from "@/services/resources/auth";
-import { getSessionQueryOptions } from "@/services/resources/session";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -15,9 +14,8 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/signup")({
   staticData: { title: "Sign up" },
   validateSearch: searchSchema,
-  beforeLoad: async ({ context }) => {
-    const session = await context.queryClient.ensureQueryData(getSessionQueryOptions());
-    if (session) throw redirect({ to: "/" });
+  beforeLoad: ({ search }) => {
+    throw redirect({ to: "/login", search });
   },
   component: SignupPage,
 });

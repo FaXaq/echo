@@ -3,9 +3,9 @@ import type { PlanEntitlements, PlanName } from "./plan.js";
 export const planCatalog = {
   free: {
     limits: {
-      storageBytes: 10_000_000_000,
+      storageBytes: 100_000_000_000,
       memberSeats: 4,
-      maxFileSizeBytes: 1_000_000_000,
+      maxFileSizeBytes: 5_000_000_000,
     },
     features: {
       customSlug: false,
@@ -15,9 +15,10 @@ export const planCatalog = {
   },
   pro: {
     limits: {
-      storageBytes: 50_000_000_000,
+      storageBytes: 200_000_000_000,
       memberSeats: 25,
-      maxFileSizeBytes: 2_000_000_000,
+      // ponytail: 5 GiB = S3 single-PUT max; raising this needs multipart upload
+      maxFileSizeBytes: 5_368_709_120,
     },
     features: {
       customSlug: true,

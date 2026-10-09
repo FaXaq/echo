@@ -69,6 +69,7 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
     secret: config.secret,
     emailAndPassword: {
       enabled: true,
+      disableSignUp: true,
       revokeSessionsOnPasswordReset: true,
       requireEmailVerification: true,
       sendResetPassword: async ({ user, token }) => {

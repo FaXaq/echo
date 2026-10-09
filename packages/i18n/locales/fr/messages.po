@@ -872,8 +872,8 @@ msgid "Dismiss"
 msgstr "Ignorer"
 
 #: apps/web/src/components/login-form.tsx:113
-msgid "Don't have an account? <0>Sign up</0>"
-msgstr "Pas encore de compte ? <0>S’inscrire</0>"
+#~ msgid "Don't have an account? <0>Sign up</0>"
+#~ msgstr "Pas encore de compte ? <0>S’inscrire</0>"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:162
 #: apps/web/src/components/features/drive/drive-file-row.tsx:195
@@ -949,7 +949,7 @@ msgid "Edit song"
 msgstr "Modifier la chanson"
 
 #: apps/web/src/components/forgot-password-form.tsx:65
-#: apps/web/src/components/login-form.tsx:61
+#: apps/web/src/components/login-form.tsx:59
 #: apps/web/src/components/signup-form.tsx:121
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:70
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:126
@@ -1005,7 +1005,7 @@ msgstr "Saisissez le code à 6 chiffres"
 #~ msgid "Enter your email or username to login"
 #~ msgstr "Entrez votre email ou nom d'utilisateur pour vous connecter"
 
-#: apps/web/src/components/login-form.tsx:53
+#: apps/web/src/components/login-form.tsx:51
 msgid "Enter your email to login"
 msgstr "Entrez votre email pour vous connecter"
 
@@ -1201,8 +1201,8 @@ msgid "Folders aren't supported yet — drop files only"
 msgstr "Les dossiers ne sont pas encore pris en charge — déposez uniquement des fichiers"
 
 #: apps/web/src/components/forgot-password-form.tsx:49
-#: apps/web/src/components/login-form.tsx:85
-#: apps/web/src/components/login-form.tsx:89
+#: apps/web/src/components/login-form.tsx:83
+#: apps/web/src/components/login-form.tsx:87
 msgid "Forgot your password?"
 msgstr "Mot de passe oublié ?"
 
@@ -1381,7 +1381,7 @@ msgstr "Lieu"
 msgid "Log out"
 msgstr "Se déconnecter"
 
-#: apps/web/src/components/login-form.tsx:107
+#: apps/web/src/components/login-form.tsx:105
 msgid "Login"
 msgstr "Connexion"
 
@@ -1389,7 +1389,7 @@ msgstr "Connexion"
 msgid "Login failed"
 msgstr "Échec de la connexion"
 
-#: apps/web/src/components/login-form.tsx:50
+#: apps/web/src/components/login-form.tsx:48
 msgid "Login to your account"
 msgstr "Connexion à votre compte"
 
@@ -1757,7 +1757,7 @@ msgstr "Payé par"
 #~ msgid "Paid by {payerName}"
 #~ msgstr "Payé par {payerName}"
 
-#: apps/web/src/components/login-form.tsx:77
+#: apps/web/src/components/login-form.tsx:75
 #: apps/web/src/components/signup-form.tsx:138
 msgid "Password"
 msgstr "Mot de passe"
