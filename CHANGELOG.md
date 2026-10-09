@@ -1,3 +1,9 @@
+## [0.19.0](https://github.com/FaXaq/echo/compare/v0.18.1...v0.19.0) (2026-10-09)
+
+### ✨ Features
+
+* product frustrations batch (ECH-114, ECH-126, ECH-131) ([#55](https://github.com/FaXaq/echo/issues/55)) ([acb4fac](https://github.com/FaXaq/echo/commit/acb4fac11f50b0ffd1c79d300af0eebbe935432c))
+
 ## [0.18.1](https://github.com/FaXaq/echo/compare/v0.18.0...v0.18.1) (2026-10-09)
 
 ### 🐛 Bug Fixes
