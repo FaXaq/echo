@@ -30,6 +30,7 @@
     "@lingui/message-utils": "catalog:",
     "@trpc/server": "catalog:",
     "better-auth": "catalog:",
+    "decimal.js": "catalog:",
     "dotenv": "catalog:",
     "fastify": "^5.10.0",
     "kysely": "catalog:",
