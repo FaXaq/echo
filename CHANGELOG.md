@@ -1,3 +1,9 @@
+## [0.20.0](https://github.com/FaXaq/echo/compare/v0.19.0...v0.20.0) (2026-10-09)
+
+### ✨ Features
+
+* disable signup and raise plan storage limits ([#56](https://github.com/FaXaq/echo/issues/56)) ([df8635b](https://github.com/FaXaq/echo/commit/df8635b4b0e1401eb6f9d0e406dc92e5acc69e02))
+
 ## [0.19.0](https://github.com/FaXaq/echo/compare/v0.18.1...v0.19.0) (2026-10-09)
 
 ### ✨ Features
