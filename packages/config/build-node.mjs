@@ -7,7 +7,11 @@ const [entry, outfile] = process.argv.slice(2);
 const { dependencies = {} } = JSON.parse(readFileSync("package.json", "utf8"));
 const missing = new Set();
 
-const packageName = (path) => path.split("/").slice(0, path.startsWith("@") ? 2 : 1).join("/");
+const packageName = (path) =>
+  path
+    .split("/")
+    .slice(0, path.startsWith("@") ? 2 : 1)
+    .join("/");
 
 await build({
   entryPoints: [entry],
