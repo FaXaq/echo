@@ -1,3 +1,9 @@
+## [0.18.0](https://github.com/FaXaq/echo/compare/v0.17.0...v0.18.0) (2026-10-09)
+
+### ✨ Features
+
+* expense ledger ([#53](https://github.com/FaXaq/echo/issues/53)) ([e6eb444](https://github.com/FaXaq/echo/commit/e6eb444649127abc4e66d0c792ac53730effde53))
+
 ## [0.17.0](https://github.com/FaXaq/echo/compare/v0.16.2...v0.17.0) (2026-09-28)
 
 ### ✨ Features
