@@ -30,6 +30,7 @@ import {
 } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { useEventUploadingFiles, useEventUploadMutation } from "./event-upload-context";
+import { LinkFileToSongDialog } from "@/components/features/song/link-file-to-song-dialog";
 
 export interface SuspendedEventAttachmentsProps {
   eventId: string;
@@ -138,6 +139,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
   const [renamingFile, setRenamingFile] = useState<EventFile | null>(null);
+  const [linkingFile, setLinkingFile] = useState<EventFile | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
@@ -185,6 +187,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         onDeleteSelected={handleDeleteSelected}
         onDelete={(file) => setDeletingFileId(file.id)}
         onRename={(file) => setRenamingFile(file)}
+        onLinkToSong={(file) => setLinkingFile(file)}
         onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
         onPlayAudio={(file) =>
           requestPlay({
@@ -208,6 +211,12 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
           await deleteMutation.mutateAsync({ id: deletingFileId, organizationId });
           toast.add({ title: t`File deleted`, type: "success" });
         }}
+      />
+
+      <LinkFileToSongDialog
+        file={linkingFile}
+        organizationId={organizationId}
+        onOpenChange={(open) => !open && setLinkingFile(null)}
       />
 
       <RenameFileDialog

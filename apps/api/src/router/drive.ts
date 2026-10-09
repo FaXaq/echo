@@ -13,6 +13,7 @@ import {
   listOrganizationFiles,
   listSongFiles,
   moveFile,
+  linkFileToSong,
   moveFolder,
   renameFile,
   renameFolder,
@@ -244,6 +245,21 @@ export const makeDriveRouter = () =>
             moveFileToFolderCommand,
           },
           { id: input.id, scope: ctx.organizationScope, folderId: input.folderId },
+        ),
+      ),
+
+    linkFileToSong: organizationProcedure
+      .input(z.object({ fileId: z.string(), songId: z.string() }))
+      .mutation(({ ctx, input }) =>
+        linkFileToSong(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFileByIdQuery,
+            songExistsInOrganizationQuery,
+            linkFileToSongCommand,
+          },
+          { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
         ),
       ),
 

@@ -10,6 +10,7 @@ export { deleteOrganizationFiles } from "./delete-organization-files.js";
 export type { DeleteOrganizationFilesFailure } from "./delete-organization-files.js";
 export { renameFile } from "./rename-file.js";
 export { moveFile } from "./move-file.js";
+export { linkFileToSong } from "./link-file-to-song.js";
 export { createFolder } from "./create-folder.js";
 export { renameFolder } from "./rename-folder.js";
 export { moveFolder } from "./move-folder.js";
