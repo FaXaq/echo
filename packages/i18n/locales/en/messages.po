@@ -471,8 +471,8 @@ msgstr "Couldn't load Drive"
 msgid "Couldn't load playlists"
 msgstr "Couldn't load playlists"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:50
-#: apps/web/src/components/features/song/suspended-song-list.tsx:95
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:52
+#: apps/web/src/components/features/song/suspended-song-list.tsx:98
 msgid "Couldn't load songs"
 msgstr "Couldn't load songs"
 
@@ -715,13 +715,17 @@ msgstr "Download"
 msgid "Drag and drop files here, or click to select"
 msgstr "Drag and drop files here, or click to select"
 
-#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:42
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:43
 msgid "Drag to reorder"
 msgstr "Drag to reorder"
 
 #: apps/web/src/hooks/use-navigation.ts:73
 msgid "Drive"
 msgstr "Drive"
+
+#: apps/web/src/components/features/song/song-audio-drop-target.tsx:40
+msgid "Drop an audio file"
+msgstr "Drop an audio file"
 
 #: apps/web/src/routes/projects/$projectSlug/calendar/$eventId.tsx:78
 #: apps/web/src/routes/projects/$projectSlug/songs/$songId.tsx:74
@@ -1231,7 +1235,7 @@ msgstr "New playlist"
 msgid "New project"
 msgstr "New project"
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:53
+#: apps/web/src/components/features/song/suspended-song-list.tsx:54
 #: apps/web/src/components/ui/song/song-dialog.tsx:103
 #: apps/web/src/components/ui/song/song-dialog.tsx:105
 msgid "New song"
@@ -1309,11 +1313,11 @@ msgstr "No preview available"
 msgid "No results."
 msgstr "No results."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:25
+#: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:26
 msgid "No songs in this playlist."
 msgstr "No songs in this playlist."
 
-#: apps/web/src/components/features/song/suspended-song-list.tsx:58
+#: apps/web/src/components/features/song/suspended-song-list.tsx:59
 msgid "No songs yet."
 msgstr "No songs yet."
 
@@ -1562,7 +1566,7 @@ msgstr "Remove playlist"
 msgid "Remove role"
 msgstr "Remove role"
 
-#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:64
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:69
 msgid "Remove song"
 msgstr "Remove song"
 
@@ -1721,10 +1725,12 @@ msgstr "Send reset link"
 msgid "Set a new password"
 msgstr "Set a new password"
 
+#: apps/web/src/components/features/song/song-audio-drop-target.tsx:53
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:217
 msgid "Set as latest demo"
 msgstr "Set as latest demo"
 
+#: apps/web/src/components/features/song/song-audio-drop-target.tsx:53
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:217
 msgid "Set as latest final"
 msgstr "Set as latest final"
@@ -1996,6 +2002,7 @@ msgstr "Update"
 msgid "Upload"
 msgstr "Upload"
 
+#: apps/web/src/components/features/song/song-audio-drop-target.tsx:56
 #: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Upload failed"
 msgstr "Upload failed"

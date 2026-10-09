@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getPlaylistSongsQueryOptions } from "@/services/resources/playlist";
 import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
+import { SongAudioDropTarget } from "@/components/features/song/song-audio-drop-target";
 
 function PlaylistSongsContent({
   playlistId,
@@ -28,18 +29,19 @@ function PlaylistSongsContent({
   return (
     <div className="flex flex-col gap-1.5">
       {songs.map((song) => (
-        <SongListItem
-          key={song.songId}
-          song={{ ...song, id: song.songId }}
-          projectSlug={projectSlug}
-          leading={
-            <SuspendedSongPlayButton
-              songId={song.songId}
-              organizationId={organizationId}
-              title={song.title}
-            />
-          }
-        />
+        <SongAudioDropTarget key={song.songId} songId={song.songId} organizationId={organizationId}>
+          <SongListItem
+            song={{ ...song, id: song.songId }}
+            projectSlug={projectSlug}
+            leading={
+              <SuspendedSongPlayButton
+                songId={song.songId}
+                organizationId={organizationId}
+                title={song.title}
+              />
+            }
+          />
+        </SongAudioDropTarget>
       ))}
     </div>
   );

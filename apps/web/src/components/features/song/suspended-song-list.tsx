@@ -11,6 +11,7 @@ import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getSongsQueryOptions, useCreateSongMutation, type Song } from "@/services/resources/song";
 import { SuspendedSongPlayButton } from "./suspended-song-play-button";
 import { SuspendedSongDuration } from "./suspended-song-duration";
+import { SongAudioDropTarget } from "./song-audio-drop-target";
 
 export interface SuspendedSongListProps {
   organizationId: string;
@@ -60,20 +61,22 @@ function SongListContent({ organizationId, projectSlug, onSongCreated }: Suspend
         <ul className="flex flex-col m-0 p-0">
           {songs.map((song) => (
             <li key={song.id} className="m-0 p-0 list-none">
-              <SongListItem
-                song={song}
-                projectSlug={projectSlug}
-                leading={
-                  <SuspendedSongPlayButton
-                    songId={song.id}
-                    organizationId={organizationId}
-                    title={song.title}
-                  />
-                }
-                duration={
-                  <SuspendedSongDuration songId={song.id} organizationId={organizationId} />
-                }
-              />
+              <SongAudioDropTarget songId={song.id} organizationId={organizationId}>
+                <SongListItem
+                  song={song}
+                  projectSlug={projectSlug}
+                  leading={
+                    <SuspendedSongPlayButton
+                      songId={song.id}
+                      organizationId={organizationId}
+                      title={song.title}
+                    />
+                  }
+                  duration={
+                    <SuspendedSongDuration songId={song.id} organizationId={organizationId} />
+                  }
+                />
+              </SongAudioDropTarget>
             </li>
           ))}
         </ul>
