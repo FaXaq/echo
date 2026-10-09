@@ -75,7 +75,6 @@ function LoginPage() {
           <div className="w-full max-w-xs">
             <LoginForm
               onSubmit={handleLogin}
-              onSignupClick={() => router.navigate({ to: "/signup", search: { redirect } })}
               onForgotPasswordClick={() =>
                 router.navigate({ to: "/forgot-password", search: { redirect } })
               }

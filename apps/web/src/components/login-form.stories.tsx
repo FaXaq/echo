@@ -22,7 +22,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const WithNavigation: Story = {
-  args: { onSignupClick: () => {}, onForgotPasswordClick: () => {} },
+  args: { onForgotPasswordClick: () => {} },
 };
 
 export const Loading: Story = {

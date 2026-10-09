@@ -17,7 +17,6 @@ export type LoginFormValues = z.infer<typeof schema>;
 
 export interface LoginFormProps {
   onSubmit: (values: LoginFormValues) => Promise<void> | void;
-  onSignupClick?: () => void;
   onForgotPasswordClick?: () => void;
   isLoading?: boolean;
   serverError?: string;
@@ -26,7 +25,6 @@ export interface LoginFormProps {
 
 export function LoginForm({
   onSubmit,
-  onSignupClick,
   onForgotPasswordClick,
   isLoading = false,
   serverError,
@@ -107,21 +105,6 @@ export function LoginForm({
             <Trans>Login</Trans>
           </Button>
         </Field>
-
-        {onSignupClick && (
-          <p className="text-center text-sm text-muted-foreground">
-            <Trans>
-              Don&apos;t have an account?{" "}
-              <button
-                type="button"
-                className="text-foreground underline underline-offset-4 hover:opacity-80"
-                onClick={onSignupClick}
-              >
-                Sign up
-              </button>
-            </Trans>
-          </p>
-        )}
       </FieldGroup>
     </form>
   );
