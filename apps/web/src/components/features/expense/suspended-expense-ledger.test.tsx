@@ -71,14 +71,17 @@ describe("SuspendedExpenseLedger", () => {
   it("shows balances, the suggested repayment and the expense list", async () => {
     renderLedger({ summary, expenses: [expense], repayments: [] });
 
-    expect(await screen.findByText("+ €20.00")).toBeInTheDocument();
+    expect(await screen.findAllByText("+ €20.00")).toHaveLength(2);
     expect(screen.getByText("- €20.00")).toBeInTheDocument();
     expect(screen.getByText("Former member")).toBeInTheDocument();
-    expect(screen.getByRole("row", { name: /Paul Marie €20\.00 Record/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Record" }).closest("li")).toHaveTextContent(
+      "PaulMarie€20.00Record",
+    );
     expect(screen.getByText("Rehearsal room")).toBeInTheDocument();
   });
 
   it("shows empty states when there is nothing yet", async () => {
+    const user = userEvent.setup();
     renderLedger({
       summary: { ...summary, balances: [], suggestedRepayments: [] },
       expenses: [],
@@ -87,6 +90,9 @@ describe("SuspendedExpenseLedger", () => {
 
     expect(await screen.findByText("No expenses yet")).toBeInTheDocument();
     expect(screen.getByText("Everyone is settled up.")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: "Repayments" }));
+
     expect(screen.getByText("No repayments yet")).toBeInTheDocument();
   });
 

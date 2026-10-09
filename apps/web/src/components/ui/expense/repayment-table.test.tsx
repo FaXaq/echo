@@ -47,6 +47,6 @@ describe("RepaymentTable", () => {
       />,
     );
 
-    expect(screen.getByRole("row", { name: /Paul Marie .* Cash €20\.00/ })).toBeInTheDocument();
+    expect(screen.getByRole("row", { name: /Paul Marie Cash €20\.00/ })).toBeInTheDocument();
   });
 });

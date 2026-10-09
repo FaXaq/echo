@@ -7,7 +7,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => ({
 
 import { render, screen } from "@/lib/test-utils";
 import type { Expense } from "@/services/resources/expense";
-import { ExpenseTable } from "./expense-table";
+import { ExpenseTable, groupByMonth } from "./expense-table";
 
 const expense: Expense = {
   id: "expense-1",
@@ -66,6 +66,22 @@ describe("ExpenseTable", () => {
     expect(screen.getByText("Two hours")).toBeInTheDocument();
     expect(screen.getByText("Spring gig")).toBeInTheDocument();
     expect(screen.getByText("Marie")).toBeInTheDocument();
-    expect(screen.getByText("€40.00")).toBeInTheDocument();
+    expect(screen.getByText("March 2026")).toBeInTheDocument();
+    expect(screen.getAllByText("€40.00")).toHaveLength(2);
+  });
+
+  it("groups expenses by month with a converted total", () => {
+    const months = groupByMonth([
+      { ...expense, id: "a", paidOn: "2026-04-02", convertedAmountMinor: 1000 },
+      { ...expense, id: "b", paidOn: "2026-03-20", convertedAmountMinor: 2500 },
+      { ...expense, id: "c", paidOn: "2026-03-05", convertedAmountMinor: 500 },
+    ]);
+
+    expect(
+      months.map(({ key, totalMinor, expenses }) => [key, totalMinor, expenses.length]),
+    ).toEqual([
+      ["2026-04", 1000, 1],
+      ["2026-03", 3000, 2],
+    ]);
   });
 });

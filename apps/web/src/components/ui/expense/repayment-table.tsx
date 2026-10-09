@@ -1,6 +1,4 @@
-import "@/lib/dayjs";
-import dayjs from "dayjs";
-import { HandCoins, MoreVertical } from "lucide-react";
+import { ArrowRight, HandCoins, MoreVertical } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DateTile } from "@/components/ui/expense/date-tile";
 import { formatMoney } from "@/lib/money";
 import type { LedgerSummary, Repayment } from "@/services/resources/expense";
 
@@ -61,33 +60,40 @@ export function RepaymentTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="overflow-hidden rounded-lg border">
       <Table className="m-0">
-        <TableHeader>
+        <TableHeader className="sr-only">
           <TableRow>
+            <TableHead>{t`Date`}</TableHead>
             <TableHead>{t`From`}</TableHead>
             <TableHead>{t`To`}</TableHead>
-            <TableHead>{t`Date`}</TableHead>
             <TableHead>{t`Note`}</TableHead>
-            <TableHead className="text-right">{t`Amount`}</TableHead>
-            <TableHead className="w-10">
-              <span className="sr-only">{t`Actions`}</span>
-            </TableHead>
+            <TableHead>{t`Amount`}</TableHead>
+            <TableHead>{t`Actions`}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {repayments.map((repayment) => (
             <TableRow key={repayment.id}>
-              <TableCell className="font-medium">{nameOf(repayment.fromUserId)}</TableCell>
-              <TableCell className="font-medium">{nameOf(repayment.toUserId)}</TableCell>
-              <TableCell>{dayjs(repayment.paidOn).format("LL")}</TableCell>
+              <TableCell className="w-14">
+                <DateTile date={repayment.paidOn} />
+              </TableCell>
+              <TableCell className="w-0 font-semibold whitespace-nowrap">
+                {nameOf(repayment.fromUserId)}
+              </TableCell>
+              <TableCell className="font-semibold">
+                <span className="flex items-center gap-2">
+                  <ArrowRight aria-hidden className="size-4 text-muted-foreground" />
+                  {nameOf(repayment.toUserId)}
+                </span>
+              </TableCell>
               <TableCell className="max-w-64 truncate text-muted-foreground">
                 {repayment.note}
               </TableCell>
-              <TableCell className="text-right tabular-nums">
+              <TableCell className="text-right font-semibold tabular-nums">
                 {formatMoney(repayment.amountMinor, currency, i18n.locale)}
               </TableCell>
-              <TableCell>
+              <TableCell className="w-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     render={
