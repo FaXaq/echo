@@ -62,7 +62,7 @@ export function RepaymentTable({
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table className="m-0">
-        <TableHeader className="sr-only">
+        <TableHeader className="sr-only hidden">
           <TableRow>
             <TableHead>{t`Date`}</TableHead>
             <TableHead>{t`From`}</TableHead>
