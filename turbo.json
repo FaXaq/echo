@@ -20,7 +20,8 @@
       "dependsOn": ["dev:api"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["VITEST_QUIET"]
     },
     "storybook": {
       "cache": false,

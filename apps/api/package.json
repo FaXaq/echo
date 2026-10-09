@@ -13,7 +13,7 @@
     "build": "build-node src/server.ts dist/server.js",
     "start": "node dist/server.js",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --pretty false"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1093.0",
@@ -30,6 +30,7 @@
     "@lingui/message-utils": "catalog:",
     "@trpc/server": "catalog:",
     "better-auth": "catalog:",
+    "decimal.js": "catalog:",
     "dotenv": "catalog:",
     "fastify": "^5.10.0",
     "kysely": "catalog:",

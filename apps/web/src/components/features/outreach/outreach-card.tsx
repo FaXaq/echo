@@ -57,7 +57,7 @@ export function OutreachCardPreview({ card, columnId, index, onClick, onEdit }: 
                   <Blobatar
                     className="self-start"
                     name={card.assigneeName}
-                    blobatar={{ animate: "always", traits: { shape: 0.11 } }}
+                    blobatar={{ animate: "always" }}
                   />
                 </TooltipTrigger>
                 <TooltipContent>

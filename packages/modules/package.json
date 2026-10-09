@@ -159,11 +159,23 @@
     "./contact/app": {
       "types": "./src/contact/app/index.ts",
       "default": "./src/contact/app/index.ts"
+    },
+    "./expense/domain": {
+      "types": "./src/expense/domain/index.ts",
+      "default": "./src/expense/domain/index.ts"
+    },
+    "./expense/infrastructure": {
+      "types": "./src/expense/infrastructure/index.ts",
+      "default": "./src/expense/infrastructure/index.ts"
+    },
+    "./expense/app": {
+      "types": "./src/expense/app/index.ts",
+      "default": "./src/expense/app/index.ts"
     }
   },
   "scripts": {
     "build": "tsc --build",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --pretty false",
     "test": "vitest run"
   },
   "dependencies": {
@@ -173,6 +185,7 @@
     "@echo/errors": "workspace:*",
     "@echo/i18n": "workspace:*",
     "@echo/logger": "workspace:*",
+    "decimal.js": "catalog:",
     "kysely": "catalog:",
     "mjml": "^4.18.0",
     "ts-pattern": "catalog:",

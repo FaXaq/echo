@@ -10,6 +10,7 @@ import { makeSongRouter } from "./song";
 import { makePlaylistRouter } from "./playlist";
 import { makeOutreachRouter } from "./outreach";
 import { makeContactRouter } from "./contact";
+import { makeExpenseRouter } from "./expense";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export const makeAppRouter = () =>
@@ -26,6 +27,7 @@ export const makeAppRouter = () =>
       playlist: makePlaylistRouter(),
       outreach: makeOutreachRouter(),
       contact: makeContactRouter(),
+      expense: makeExpenseRouter(),
     }),
   );
 

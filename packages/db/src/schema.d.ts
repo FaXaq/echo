@@ -11,6 +11,8 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 
 export type Int8 = ColumnType<string, bigint | number | string>;
 
+export type Numeric = ColumnType<string, number | string>;
+
 export type Timestamp = ColumnType<Date, Date | string>;
 
 export interface Account {
@@ -58,6 +60,32 @@ export interface Contact {
   organization_id: string;
   phone: string | null;
   updated_at: Generated<Timestamp | null>;
+}
+
+export interface Expense {
+  amount_minor: number;
+  converted_amount_minor: number;
+  created_at: Generated<Timestamp>;
+  created_by: string;
+  currency: string;
+  description: string | null;
+  event_id: string | null;
+  exchange_rate: Numeric | null;
+  id: string;
+  organization_id: string;
+  paid_on: Timestamp;
+  payer_id: string;
+  split_mode: string;
+  title: string;
+  updated_at: Generated<Timestamp | null>;
+  updated_by: string | null;
+}
+
+export interface ExpenseShare {
+  amount_minor: number;
+  converted_amount_minor: number;
+  expense_id: string;
+  user_id: string;
 }
 
 export interface File {
@@ -109,6 +137,7 @@ export interface Member {
 export interface Organization {
   createdAt: Timestamp;
   createdBy: string | null;
+  currency: string | null;
   id: string;
   isPersonal: boolean | null;
   logo: string | null;
@@ -182,6 +211,18 @@ export interface RateLimit {
   lastRequest: Int8;
 }
 
+export interface Repayment {
+  amount_minor: number;
+  created_at: Generated<Timestamp>;
+  created_by: string;
+  from_user_id: string;
+  id: string;
+  note: string | null;
+  organization_id: string;
+  paid_on: Timestamp;
+  to_user_id: string;
+}
+
 export interface Session {
   activeOrganizationId: string | null;
   createdAt: Generated<Timestamp>;
@@ -250,6 +291,8 @@ export interface DB {
   account: Account;
   calendar_event: CalendarEvent;
   contact: Contact;
+  expense: Expense;
+  expense_share: ExpenseShare;
   file: File;
   folder: Folder;
   invitation: Invitation;
@@ -262,6 +305,7 @@ export interface DB {
   playlist_event: PlaylistEvent;
   playlist_song: PlaylistSong;
   rateLimit: RateLimit;
+  repayment: Repayment;
   session: Session;
   song: Song;
   song_file: SongFile;

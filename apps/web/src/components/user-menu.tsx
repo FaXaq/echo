@@ -54,7 +54,6 @@ export function UserMenu({ username, name, email, image }: UserMenuProps) {
           src={image ?? undefined}
           alt={`${username}-profile-picture`}
           blobatar={{
-            traits: { shape: 0.11 },
             animate: "always",
           }}
         ></Blobatar>

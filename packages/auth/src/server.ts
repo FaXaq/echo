@@ -10,6 +10,7 @@ import {
 } from "./plugins/organization/permissions";
 import { organizationAdditionalFields, userAdditionalFields } from "./additional-fields";
 import { makeOrganizationSeatHooks } from "./organization-seat-hooks";
+import { makeOrganizationCurrencyHooks } from "./organization-currency-hooks";
 
 export type ServerAuthConfig = {
   secret: string;
@@ -26,6 +27,10 @@ export type ServerAuthConfig = {
   sendVerificationOTP?: (email: string, otp: string) => Promise<void>;
   onOrganizationDeleted?: (organization: { id: string }) => Promise<void>;
   hasSeatAvailable?: (organizationId: string, excludeInvitationId?: string) => Promise<boolean>;
+  validateOrganizationCurrencyChange?: (
+    organizationId: string,
+    currency: string,
+  ) => Promise<"ok" | "unsupported" | "locked">;
 };
 
 export const makeServerAuth = (config: ServerAuthConfig) => {
@@ -126,6 +131,7 @@ export const makeServerAuth = (config: ServerAuthConfig) => {
             await config.onOrganizationDeleted?.(organization);
           },
           ...makeOrganizationSeatHooks(config.hasSeatAvailable),
+          ...makeOrganizationCurrencyHooks(config.validateOrganizationCurrencyChange),
         },
       }),
       username(),

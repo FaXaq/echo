@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --pretty false",
     "test": "vitest run"
   },
   "dependencies": {

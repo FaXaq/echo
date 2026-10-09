@@ -26,6 +26,7 @@ import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedEventAttachments } from "./suspended-event-attachments";
 import { PlaylistPickerCombobox } from "@/components/features/playlist/playlist-picker-combobox";
 import { SuspendedPlaylistSongs } from "@/components/features/playlist/suspended-playlist-songs";
+import { SuspendedEventExpenses } from "@/components/features/expense/suspended-event-expenses";
 
 export interface SuspendedEventDetailProps {
   eventId: string;
@@ -177,6 +178,9 @@ function EventDetailContent({
               attachPlaylistMutation.mutate({ playlistId, eventId: viewEvent.id })
             }
           />
+        }
+        expensesSection={
+          <SuspendedEventExpenses organizationId={organizationId} eventId={viewEvent.id} />
         }
       />
       <EventDialog

@@ -10,6 +10,7 @@ const quotaActions = ["create", "read", "delete", "update"] as const;
 const playlistActions = ["create", "read", "delete", "update"] as const;
 const outreachActions = ["create", "read", "delete", "update"] as const;
 const contactActions = ["create", "read", "delete", "update"] as const;
+const expenseActions = ["create", "read", "delete", "update"] as const;
 
 export const statement = {
   ...defaultStatements,
@@ -20,6 +21,7 @@ export const statement = {
   playlist: [...playlistActions],
   outreach: [...outreachActions],
   contact: [...contactActions],
+  expense: [...expenseActions],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -31,6 +33,7 @@ const member = ac.newRole({
   playlist: [...playlistActions],
   outreach: [...outreachActions],
   contact: [...contactActions],
+  expense: [...expenseActions],
 });
 
 // Default Better-Auth role
@@ -43,6 +46,7 @@ const owner = ac.newRole({
   playlist: [...playlistActions],
   outreach: [...outreachActions],
   contact: [...contactActions],
+  expense: [...expenseActions],
 });
 
 // Default Better-Auth role
@@ -55,6 +59,7 @@ const admin = ac.newRole({
   playlist: [...playlistActions],
   outreach: [...outreachActions],
   contact: [...contactActions],
+  expense: [...expenseActions],
 });
 
 // Define roles

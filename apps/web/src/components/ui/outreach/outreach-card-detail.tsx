@@ -61,10 +61,7 @@ export function OutreachCardDetail({
       value: card.assigneeName ? (
         <div className="flex min-w-0 items-center justify-end gap-1.5">
           <span className="truncate text-[13px] font-medium">{card.assigneeName}</span>
-          <Blobatar
-            name={card.assigneeName}
-            blobatar={{ animate: "always", traits: { shape: 0.11 } }}
-          />
+          <Blobatar name={card.assigneeName} blobatar={{ animate: "always" }} />
         </div>
       ) : (
         <span className="text-[13px] font-medium">{t`Unassigned`}</span>
