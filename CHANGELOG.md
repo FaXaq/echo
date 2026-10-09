@@ -1,3 +1,9 @@
+## [0.18.1](https://github.com/FaXaq/echo/compare/v0.18.0...v0.18.1) (2026-10-09)
+
+### 🐛 Bug Fixes
+
+* **api:** declare decimal.js and guard undeclared external imports ([#54](https://github.com/FaXaq/echo/issues/54)) ([59723c7](https://github.com/FaXaq/echo/commit/59723c7ad544a2d1f291f44441348b40078be47c))
+
 ## [0.18.0](https://github.com/FaXaq/echo/compare/v0.17.0...v0.18.0) (2026-10-09)
 
 ### ✨ Features
