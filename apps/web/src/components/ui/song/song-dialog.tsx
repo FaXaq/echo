@@ -7,7 +7,6 @@ import { useLingui } from "@lingui/react/macro";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -15,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DirtyGuardDialog } from "@/components/ui/dirty-guard-dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
@@ -76,7 +76,7 @@ export function SongDialog({ state, onOpenChange, onSubmit }: SongDialogProps) {
     control,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<SongFormValues>({
     resolver: zodResolver(songFormSchema),
     defaultValues: stateToDefaultValues(content),
@@ -97,7 +97,7 @@ export function SongDialog({ state, onOpenChange, onSubmit }: SongDialogProps) {
   };
 
   return (
-    <Dialog open={state !== null} onOpenChange={onOpenChange}>
+    <DirtyGuardDialog open={state !== null} onOpenChange={onOpenChange} isDirty={isDirty}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? t`Edit song` : t`New song`}</DialogTitle>
@@ -169,6 +169,6 @@ export function SongDialog({ state, onOpenChange, onSubmit }: SongDialogProps) {
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+    </DirtyGuardDialog>
   );
 }

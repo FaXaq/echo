@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -28,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DirtyGuardDialog } from "@/components/ui/dirty-guard-dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -151,7 +151,7 @@ export function EventDialog({
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: stateToDefaultValues(content, defaultOrganizationId),
@@ -201,7 +201,7 @@ export function EventDialog({
   };
 
   return (
-    <Dialog open={state !== null} onOpenChange={onOpenChange}>
+    <DirtyGuardDialog open={state !== null} onOpenChange={onOpenChange} isDirty={isDirty}>
       <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? t`Edit event` : t`New event`}</DialogTitle>
@@ -409,6 +409,6 @@ export function EventDialog({
           </DialogFooter>
         </form>
       </DialogContent>
-    </Dialog>
+    </DirtyGuardDialog>
   );
 }

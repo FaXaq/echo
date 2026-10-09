@@ -681,6 +681,14 @@ msgstr "Description"
 msgid "Deselect"
 msgstr "Deselect"
 
+#: apps/web/src/components/ui/dirty-guard-dialog.tsx:36
+msgid "Discard"
+msgstr "Discard"
+
+#: apps/web/src/components/ui/dirty-guard-dialog.tsx:34
+msgid "Discard changes?"
+msgstr "Discard changes?"
+
 #: apps/web/src/components/ui/audio-player-dock.tsx:81
 msgid "Dismiss"
 msgstr "Dismiss"
@@ -1048,6 +1056,10 @@ msgstr "It's your personal space."
 #: apps/web/src/components/ui/lyrics-editor.tsx:65
 #~ msgid "Italic"
 #~ msgstr "Italic"
+
+#: apps/web/src/components/ui/dirty-guard-dialog.tsx:37
+msgid "Keep editing"
+msgstr "Keep editing"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:58
 #: apps/web/src/components/ui/song/song-dialog.tsx:128
@@ -2076,3 +2088,7 @@ msgstr "Your current plan and what you have used of it."
 #: apps/web/src/components/features/song/suspended-song-list.tsx:36
 #~ msgid "Your project's songs and lyrics"
 #~ msgstr "Your project's songs and lyrics"
+
+#: apps/web/src/components/ui/dirty-guard-dialog.tsx:35
+msgid "Your unsaved changes will be lost."
+msgstr "Your unsaved changes will be lost."
