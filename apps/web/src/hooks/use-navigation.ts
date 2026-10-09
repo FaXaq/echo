@@ -49,49 +49,65 @@ export function useNavigation() {
   };
 
   const slug = activeOrganization?.slug ?? "";
-  const navGroups: NavGroup[] = activeOrganization
-    ? [
+  const navGroups: NavGroup[] = [
+    {
+      title: t`Organize`,
+      items: [
         {
-          title: activeOrganization.name,
-          items: [
-            {
-              title: t`Calendar`,
-              to: "/projects/$projectSlug/calendar",
-              params: { projectSlug: slug },
-            },
-            {
-              title: t`Songs`,
-              to: "/projects/$projectSlug/songs",
-              params: { projectSlug: slug },
-            },
-            {
-              title: t`Playlists`,
-              to: "/projects/$projectSlug/playlists",
-              params: { projectSlug: slug },
-            },
-            {
-              title: t`Drive`,
-              to: "/projects/$projectSlug/drive",
-              params: { projectSlug: slug },
-            },
-            {
-              title: t`Outreach`,
-              to: "/projects/$projectSlug/outreach",
-              params: { projectSlug: slug },
-            },
-            ...(isActiveOrganizationAdmin
-              ? [
-                  {
-                    title: t`Settings`,
-                    to: "/projects/$projectSlug/settings" as const,
-                    params: { projectSlug: slug },
-                  },
-                ]
-              : []),
-          ],
+          title: t`Calendar`,
+          to: "/projects/$projectSlug/calendar",
+          params: { projectSlug: slug },
         },
-      ]
-    : [];
+        {
+          title: t`Drive`,
+          to: "/projects/$projectSlug/drive",
+          params: { projectSlug: slug },
+        },
+        {
+          title: t`Expenses`,
+          to: "/projects/$projectSlug/expenses",
+          params: { projectSlug: slug },
+        },
+      ],
+    },
+    {
+      title: t`Create`,
+      items: [
+        {
+          title: t`Songs`,
+          to: "/projects/$projectSlug/songs",
+          params: { projectSlug: slug },
+        },
+        {
+          title: t`Playlists`,
+          to: "/projects/$projectSlug/playlists",
+          params: { projectSlug: slug },
+        },
+      ],
+    },
+    {
+      title: t`Reach`,
+      items: [
+        {
+          title: t`Outreach`,
+          to: "/projects/$projectSlug/outreach",
+          params: { projectSlug: slug },
+        },
+      ],
+    },
+  ];
+
+  if (isActiveOrganizationAdmin)
+    navGroups.push({
+      title: t`Manage`,
+      items: [
+        {
+          title: t`Project settings`,
+          to: "/projects/$projectSlug/settings" as const,
+          params: { projectSlug: slug },
+        },
+      ],
+    });
 
   return { orgOptions, activeOrganization, setActiveOrganization, navGroups };
 }

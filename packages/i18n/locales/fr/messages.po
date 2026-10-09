@@ -13,6 +13,14 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: apps/web/src/components/ui/expense/balance-list.tsx:26
+msgid "-"
+msgstr "-"
+
+#: apps/web/src/components/ui/expense/balance-list.tsx:26
+msgid "- {amount}"
+msgstr "- {amount}"
+
 #. placeholder {0}: files.length
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:163
 #~ msgid "{0, plural, one {# file} other {# files}}"
@@ -84,30 +92,57 @@ msgstr "{bulkDeleteCount, plural, one {Supprimer # fichier ?} other {Supprimer #
 #~ msgid "{count, plural, one {# item selected} other {# items selected}}"
 #~ msgstr "{count, plural, one {# élément sélectionné} other {# éléments sélectionnés}}"
 
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:57
+msgid "{expenseCount, plural, one {# expense} other {# expenses}}"
+msgstr "{expenseCount, plural, one {# dépense} other {# dépenses}}"
+
+#: apps/web/src/components/ui/expense/repayment-list-item.tsx:38
+#~ msgid "{fromName} paid {toName}"
+#~ msgstr "{fromName} a remboursé {toName}"
+
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:28
+#~ msgid "{fromName} pays {toName}"
+#~ msgstr "{fromName} rembourse {toName}"
+
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:43
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:51
 msgid "{label} history"
 msgstr "Historique {label}"
+
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:80
+msgid "{settleCount, plural, =0 {Nothing to settle} one {# repayment settles everyone} other {# repayments settle everyone}}"
+msgstr "{settleCount, plural, =0 {Rien à régler} one {# remboursement règle tout} other {# remboursements règlent tout}}"
 
 #: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:23
 #: apps/web/src/components/features/drive/drive-breadcrumbs.tsx:28
 msgid "/"
 msgstr "/"
 
+#: apps/web/src/components/ui/expense/balance-list.tsx:26
+msgid "+ {amount}"
+msgstr "+ {amount}"
+
 #: apps/web/src/components/forgot-password-form.tsx:89
 msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
+
+#. placeholder {0}: values.currency
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:203
+msgid "1 {0} = how many {organizationCurrency}?"
+msgstr "1 {0} = combien de {organizationCurrency} ?"
 
 #: apps/web/src/lib/dynamic-messages.ts:39
 msgid "A new code has been sent"
 msgstr "Un nouveau code a été envoyé"
 
-#: apps/web/src/lib/dynamic-messages.ts:55
+#: apps/web/src/lib/dynamic-messages.ts:56
 #: apps/web/src/routes/accept-invitation.tsx:117
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:74
+#: apps/web/src/components/ui/expense/expense-table.tsx:107
+#: apps/web/src/components/ui/expense/repayment-table.tsx:72
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:128
 msgid "Actions"
 msgstr "Actions"
@@ -129,8 +164,8 @@ msgstr "Actions pour les fichiers sélectionnés"
 msgid "Add a contact"
 msgstr "Ajouter un contact"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:205
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:200
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:204
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:197
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:121
 msgid "Add a description…"
 msgstr "Ajouter une description…"
@@ -139,7 +174,7 @@ msgstr "Ajouter une description…"
 #~ msgid "Add a new member to your organization"
 #~ msgstr "Ajouter un nouveau membre à votre organisation"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:129
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:135
 msgid "Add a new member to your project"
 msgstr "Ajouter un nouveau membre à votre projet"
 
@@ -156,7 +191,7 @@ msgstr "Ajouter une colonne"
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:223
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:222
 msgid "Add playlist"
 msgstr "Ajouter une playlist"
 
@@ -168,7 +203,7 @@ msgstr "Ajouter une chanson"
 msgid "Added by"
 msgstr "Ajouté par"
 
-#: apps/web/src/lib/dynamic-messages.ts:59
+#: apps/web/src/lib/dynamic-messages.ts:60
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -176,7 +211,11 @@ msgstr "Administrateur"
 msgid "Agenda"
 msgstr "Agenda"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:71
+#: apps/web/src/components/features/organization/suspended-organization-currency.tsx:38
+msgid "All balances and repayments are expressed in this currency."
+msgstr "Les soldes et remboursements sont exprimés dans cette devise."
+
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:73
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:281
 #: apps/web/src/components/ui/event-calendar/time-grid-view.tsx:158
 msgid "All day"
@@ -189,6 +228,13 @@ msgstr "Toute la journée"
 #: apps/web/src/components/signup-form.tsx:178
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Déjà un compte ? <0>Se connecter</0>"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:168
+#: apps/web/src/components/ui/expense/expense-table.tsx:106
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:160
+#: apps/web/src/components/ui/expense/repayment-table.tsx:71
+msgid "Amount"
+msgstr "Montant"
 
 #: apps/web/src/components/app-error-page.tsx:47
 #~ msgid "An unexpected error occurred. An error report has been sent to the technical team with the code <0>{humanReadableErrorId}</0> attached. Reloading the page usually fixes it."
@@ -253,7 +299,7 @@ msgstr "Au moins une lettre majuscule"
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:212
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:216
 msgid "Back to calendar"
 msgstr "Retour au calendrier"
 
@@ -281,6 +327,10 @@ msgstr "Retour aux chansons"
 #~ msgid "Backlog"
 #~ msgstr "Backlog"
 
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:117
+msgid "Balances"
+msgstr "Soldes"
+
 #: apps/web/src/components/ui/event-calendar/colors.ts:26
 msgid "Blue"
 msgstr "Bleu"
@@ -302,7 +352,12 @@ msgstr "Le BPM doit être un nombre entier"
 #~ msgid "Bullet list"
 #~ msgstr "Liste à puces"
 
-#: apps/web/src/hooks/use-navigation.ts:58
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:255
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:260
+msgid "By exact amounts"
+msgstr "Par montants exacts"
+
+#: apps/web/src/hooks/use-navigation.ts:57
 #: apps/web/src/lib/dynamic-messages.ts:49
 msgid "Calendar"
 msgstr "Agenda"
@@ -313,7 +368,7 @@ msgstr "Impossible de lire {filename}"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:54
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:65
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:195
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:201
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:321
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:335
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:69
@@ -321,7 +376,9 @@ msgstr "Impossible de lire {filename}"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:247
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:216
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:363
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:179
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
 #: apps/web/src/components/ui/song/song-detail.tsx:121
@@ -339,7 +396,7 @@ msgid "Cannot find the invitation you're looking for"
 msgstr "Impossible de trouver l’invitation que vous recherchez"
 
 #: apps/web/src/components/features/outreach/outreach-card.tsx:75
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:175
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:172
 msgid "Card actions"
 msgstr "Actions de la carte"
 
@@ -351,7 +408,7 @@ msgstr "Carte supprimée"
 msgid "Card not found"
 msgstr "Carte introuvable"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:137
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:136
 msgid "Category"
 msgstr "Catégorie"
 
@@ -366,6 +423,26 @@ msgstr "Consultez votre e-mail pour vérifier votre compte"
 #: apps/web/src/components/reset-password-form.tsx:63
 msgid "Choose a strong password for your account"
 msgstr "Choisissez un mot de passe robuste pour votre compte"
+
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:100
+msgid "Choose two different people"
+msgstr "Choisissez deux personnes différentes"
+
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:99
+msgid "Choose who is being paid back"
+msgstr "Choisissez qui est remboursé"
+
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:98
+msgid "Choose who is paying"
+msgstr "Choisissez qui rembourse"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:131
+msgid "Choose who paid"
+msgstr "Choisissez qui a payé"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:132
+msgid "Choose who shares this expense"
+msgstr "Choisissez qui partage cette dépense"
 
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:14
 msgid "Class"
@@ -387,7 +464,7 @@ msgstr "Fermer"
 msgid "Color"
 msgstr "Couleur"
 
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:80
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:77
 msgid "Column"
 msgstr "Colonne"
 
@@ -405,7 +482,7 @@ msgid "Confirm password"
 msgstr "Confirmer le mot de passe"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:286
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:120
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:117
 msgid "Contacts"
 msgstr "Contacts"
 
@@ -438,6 +515,10 @@ msgstr "Impossible de supprimer la carte"
 msgid "Couldn't delete column"
 msgstr "Impossible de supprimer la colonne"
 
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:176
+msgid "Couldn't delete expense"
+msgstr "Impossible de supprimer la dépense"
+
 #: apps/web/src/components/features/drive/drive-explorer.tsx:500
 msgid "Couldn't delete file"
 msgstr "Impossible de supprimer le fichier"
@@ -445,6 +526,10 @@ msgstr "Impossible de supprimer le fichier"
 #: apps/web/src/components/features/drive/drive-explorer.tsx:477
 msgid "Couldn't delete folder"
 msgstr "Impossible de supprimer le dossier"
+
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:193
+msgid "Couldn't delete repayment"
+msgstr "Impossible de supprimer le remboursement"
 
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:87
 msgid "Couldn't download file"
@@ -459,9 +544,18 @@ msgstr "Impossible de télécharger les fichiers sélectionnés"
 msgid "Couldn't load attachments"
 msgstr "Impossible de charger les pièces jointes"
 
+#: apps/web/src/components/features/expense/suspended-balances.tsx:31
+msgid "Couldn't load balances"
+msgstr "Impossible de charger les soldes"
+
 #: apps/web/src/components/features/drive/drive-explorer.tsx:533
 msgid "Couldn't load Drive"
 msgstr "Impossible de charger le Drive"
+
+#: apps/web/src/components/features/expense/suspended-event-expenses.tsx:53
+#: apps/web/src/components/features/expense/suspended-expense-table.tsx:42
+msgid "Couldn't load expenses"
+msgstr "Impossible de charger les dépenses"
 
 #: apps/web/src/components/features/drive/suspended-drive-files.tsx:110
 #~ msgid "Couldn't load files"
@@ -471,14 +565,26 @@ msgstr "Impossible de charger le Drive"
 msgid "Couldn't load playlists"
 msgstr "Impossible de charger les playlists"
 
+#: apps/web/src/components/features/expense/suspended-repayment-table.tsx:36
+msgid "Couldn't load repayments"
+msgstr "Impossible de charger les remboursements"
+
 #: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:50
 #: apps/web/src/components/features/song/suspended-song-list.tsx:95
 msgid "Couldn't load songs"
 msgstr "Impossible de charger les chansons"
 
+#: apps/web/src/components/features/expense/suspended-suggested-repayments.tsx:40
+msgid "Couldn't load suggested repayments"
+msgstr "Impossible de charger les remboursements suggérés"
+
 #: apps/web/src/components/features/outreach/suspended-outreach-board.tsx:10
 msgid "Couldn't load the Outreach board"
 msgstr "Impossible de charger le tableau de démarchage"
+
+#: apps/web/src/components/features/expense/suspended-ledger-stats.tsx:38
+msgid "Couldn't load the summary"
+msgstr "Impossible de charger le résumé"
 
 #: apps/web/src/components/ui/attachment-list.tsx:209
 #: apps/web/src/components/ui/attachment-list.tsx:393
@@ -514,6 +620,14 @@ msgstr "Impossible de réorganiser la colonne"
 msgid "Couldn't save card"
 msgstr "Impossible d'enregistrer la carte"
 
+#: apps/web/src/components/features/expense/suspended-expense-dialog.tsx:50
+msgid "Couldn't save expense"
+msgstr "Impossible d'enregistrer la dépense"
+
+#: apps/web/src/components/features/expense/suspended-repayment-dialog.tsx:50
+msgid "Couldn't save repayment"
+msgstr "Impossible d'enregistrer le remboursement"
+
 #. placeholder {0}: file.name
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:56
 msgid "Couldn't upload {0}"
@@ -524,6 +638,10 @@ msgstr "Impossible d'importer {0}"
 #: apps/web/src/components/ui/song/song-list-item.tsx:41
 msgid "Cover"
 msgstr "Reprise"
+
+#: apps/web/src/hooks/use-navigation.ts:74
+msgid "Create"
+msgstr "Créer"
 
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:126
 msgid "Create \"{trimmedQuery}\""
@@ -541,6 +659,10 @@ msgstr "Créer un compte"
 msgid "Create an account"
 msgstr "Créer un compte"
 
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:370
+msgid "Create expense"
+msgstr "Créer la dépense"
+
 #: apps/web/src/routes/organizations/new.tsx:83
 #~ msgid "Create organization"
 #~ msgstr "Créer le groupe"
@@ -553,6 +675,10 @@ msgstr "Créer la playlist"
 msgid "Create project"
 msgstr "Créer le projet"
 
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:186
+msgid "Create repayment"
+msgstr "Créer le remboursement"
+
 #: apps/web/src/components/ui/song/song-dialog.tsx:167
 msgid "Create song"
 msgstr "Créer la chanson"
@@ -561,17 +687,36 @@ msgstr "Créer la chanson"
 msgid "Created by"
 msgstr "Créée par"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:154
+#: apps/web/src/components/features/organization/suspended-organization-currency.tsx:46
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:122
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:173
+msgid "Currency"
+msgstr "Devise"
+
+#: apps/web/src/components/features/organization/suspended-organization-currency.tsx:28
+msgid "Currency updated"
+msgstr "Devise mise à jour"
+
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:160
 msgid "Danger zone"
 msgstr "Zone de danger"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:97
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:96
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:212
+#: apps/web/src/components/ui/expense/expense-table.tsx:102
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:165
+#: apps/web/src/components/ui/expense/repayment-table.tsx:67
 msgid "Date"
 msgstr "Date"
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:1005
 #~ msgid "Date added"
 #~ msgstr "Date d'ajout"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:128
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:102
+msgid "Date is required"
+msgstr "La date est requise"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:34
 msgid "Day"
@@ -591,7 +736,9 @@ msgstr "Définir comme"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:68
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:75
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:205
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:202
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:169
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:186
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:208
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:311
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:323
 #: apps/web/src/components/features/outreach/outreach-column.tsx:144
@@ -600,12 +747,14 @@ msgstr "Définir comme"
 #: apps/web/src/components/ui/attachment-list.tsx:442
 #: apps/web/src/components/ui/attachment-list.tsx:484
 #: apps/web/src/components/ui/attachment-list.tsx:495
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:189
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:188
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:254
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:184
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:223
+#: apps/web/src/components/ui/expense/expense-table.tsx:190
+#: apps/web/src/components/ui/expense/repayment-table.tsx:115
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:181
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:220
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:186
 #: apps/web/src/components/ui/song/song-detail.tsx:99
@@ -614,7 +763,7 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:315
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:210
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:207
 msgid "Delete card?"
 msgstr "Supprimer la carte ?"
 
@@ -631,6 +780,10 @@ msgstr "Supprimer la colonne ?"
 msgid "Delete event?"
 msgstr "Supprimer l'événement ?"
 
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:167
+msgid "Delete expense?"
+msgstr "Supprimer la dépense ?"
+
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:207
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:215
 #: apps/web/src/routes/organizations/$organizationSlug/settings/index.tsx:220
@@ -641,11 +794,15 @@ msgstr "Supprimer l'événement ?"
 msgid "Delete playlist?"
 msgstr "Supprimer la playlist ?"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:164
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:179
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:184
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:170
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:185
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:190
 msgid "Delete project"
 msgstr "Supprimer le projet"
+
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:184
+msgid "Delete repayment?"
+msgstr "Supprimer le remboursement ?"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:115
 msgid "Delete song?"
@@ -670,8 +827,9 @@ msgstr "Démo"
 msgid "Desc"
 msgstr "Décroissant"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:200
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:195
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:199
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:353
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:192
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
 msgid "Description"
 msgstr "Description"
@@ -711,7 +869,7 @@ msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 msgid "Drag to reorder"
 msgstr "Glisser pour réordonner"
 
-#: apps/web/src/hooks/use-navigation.ts:73
+#: apps/web/src/hooks/use-navigation.ts:62
 msgid "Drive"
 msgstr "Drive"
 
@@ -738,10 +896,20 @@ msgstr "Modifier la carte"
 msgid "Edit event"
 msgstr "Modifier l'événement"
 
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:152
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:154
+msgid "Edit expense"
+msgstr "Modifier la dépense"
+
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:77
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:79
 msgid "Edit playlist"
 msgstr "Modifier la playlist"
+
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:142
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:144
+msgid "Edit repayment"
+msgstr "Modifier le remboursement"
 
 #: apps/web/src/components/ui/song/song-dialog.tsx:103
 #: apps/web/src/components/ui/song/song-dialog.tsx:105
@@ -784,6 +952,15 @@ msgstr "Fin"
 msgid "End date must be after start date"
 msgstr "La date de fin doit être postérieure à la date de début"
 
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:129
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:101
+msgid "Enter a valid amount"
+msgstr "Saisissez un montant valide"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:130
+msgid "Enter a valid exchange rate"
+msgstr "Saisissez un taux de change valide"
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-invite-form.tsx:75
 msgid "Enter email address"
 msgstr "Entrez l'adresse email"
@@ -804,24 +981,31 @@ msgstr "Entrez votre email pour vous connecter"
 msgid "Enter your email to receive a reset link"
 msgstr "Entrez votre email pour recevoir un lien de réinitialisation"
 
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:255
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:259
+msgid "Equally"
+msgstr "À parts égales"
+
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:37
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:9
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:323
+#: apps/web/src/components/ui/expense/expense-table.tsx:104
 msgid "Event"
 msgstr "Événement"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:180
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:179
 msgid "Event actions"
 msgstr "Actions de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:69
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:70
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
-#: apps/web/src/lib/dynamic-messages.ts:51
+#: apps/web/src/lib/dynamic-messages.ts:52
 msgid "Event details"
 msgstr "Détails de l'événement"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:206
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:210
 msgid "Event not found"
 msgstr "Événement introuvable"
 
@@ -830,9 +1014,37 @@ msgstr "Événement introuvable"
 msgid "Events on {0}"
 msgstr "Événements du {0}"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:157
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:163
 msgid "Every action here is destructive. Please proceed with caution."
 msgstr "Chaque action ici est destructive. Veuillez procéder avec prudence."
+
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:29
+msgid "Everyone is settled up."
+msgstr "Tout le monde est à jour."
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:133
+msgid "Exact amounts must add up to the total"
+msgstr "Les montants exacts doivent totaliser le montant de la dépense"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:200
+msgid "Exchange rate"
+msgstr "Taux de change"
+
+#: apps/web/src/components/ui/expense/expense-table.tsx:179
+msgid "Expense actions"
+msgstr "Actions de la dépense"
+
+#: apps/web/src/components/features/expense/suspended-event-expenses.tsx:26
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:73
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:94
+#: apps/web/src/hooks/use-navigation.ts:67
+#: apps/web/src/lib/dynamic-messages.ts:51
+msgid "Expenses"
+msgstr "Dépenses"
+
+#: apps/web/src/components/ui/expense/expense-table.tsx:91
+msgid "Expenses you add will show up here."
+msgstr "Les dépenses que vous ajoutez apparaîtront ici."
 
 #: apps/web/src/lib/dynamic-messages.ts:44
 #: apps/web/src/routes/accept-invitation.tsx:92
@@ -855,7 +1067,7 @@ msgstr "Échec de la création du projet"
 #~ msgid "Failed to delete organization"
 #~ msgstr "Échec de la suppression du groupe"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:96
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:97
 msgid "Failed to delete project"
 msgstr "Échec de la suppression du projet"
 
@@ -883,7 +1095,7 @@ msgstr "Échec du renvoi de l'invitation"
 msgid "Failed to revoke membership"
 msgstr "Échec de la suppression du membre"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:64
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:65
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:50
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:92
 msgid "Failed to save description"
@@ -904,6 +1116,10 @@ msgstr "Échec de l'envoi du code de vérification"
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:147
 msgid "Failed to set audio version"
 msgstr "Échec de la définition de la version audio"
+
+#: apps/web/src/components/features/organization/suspended-organization-currency.tsx:29
+msgid "Failed to update currency"
+msgstr "Échec de la mise à jour de la devise"
 
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:111
 msgid "Failed to update member role"
@@ -953,6 +1169,15 @@ msgstr "Les dossiers ne sont pas encore pris en charge — déposez uniquement d
 #: apps/web/src/components/login-form.tsx:89
 msgid "Forgot your password?"
 msgstr "Mot de passe oublié ?"
+
+#: apps/web/src/components/ui/expense/balance-list.tsx:34
+msgid "Former member"
+msgstr "Ancien membre"
+
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:150
+#: apps/web/src/components/ui/expense/repayment-table.tsx:68
+msgid "From"
+msgstr "De"
 
 #: apps/web/src/components/signup-form.tsx:89
 msgid "Full name"
@@ -1032,8 +1257,8 @@ msgstr "Invitation envoyée"
 msgid "Invite"
 msgstr "Inviter"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:125
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:128
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:131
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:134
 msgid "Invite a member"
 msgstr "Inviter un membre"
 
@@ -1041,7 +1266,11 @@ msgstr "Inviter un membre"
 msgid "Inviting..."
 msgstr "Invitation en cours..."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:107
+#: apps/web/src/components/ui/expense/balance-list.tsx:20
+#~ msgid "Is owed {amount}"
+#~ msgstr "Doit recevoir {amount}"
+
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:108
 msgid "It's your personal space."
 msgstr "C'est votre espace personnel."
 
@@ -1054,7 +1283,7 @@ msgstr "C'est votre espace personnel."
 msgid "Key"
 msgstr "Tonalité"
 
-#: apps/web/src/components/user-menu.tsx:93
+#: apps/web/src/components/user-menu.tsx:92
 msgid "Language"
 msgstr "Langue"
 
@@ -1070,16 +1299,20 @@ msgstr "Dernière démo"
 msgid "Latest final"
 msgstr "Dernière version finale"
 
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:77
+msgid "Left to settle"
+msgstr "Reste à régler"
+
 #: apps/web/src/lib/dynamic-messages.ts:13
 msgid "Letters, numbers, _ and - only"
 msgstr "Lettres, chiffres, _ et - uniquement"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:242
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:95
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:92
 msgid "Lieu"
 msgstr "Lieu"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:94
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:95
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:66
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:78
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
@@ -1090,11 +1323,11 @@ msgstr "Lien copié dans le presse-papiers"
 #~ msgid "Linked files"
 #~ msgstr "Fichiers liés"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:112
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:111
 msgid "Location"
 msgstr "Lieu"
 
-#: apps/web/src/components/user-menu.tsx:110
+#: apps/web/src/components/user-menu.tsx:109
 msgid "Log out"
 msgstr "Se déconnecter"
 
@@ -1117,6 +1350,10 @@ msgstr "Connexion à votre compte"
 #: apps/web/src/components/ui/lyrics-editor.tsx:15
 msgid "Lyrics"
 msgstr "Paroles"
+
+#: apps/web/src/hooks/use-navigation.ts:102
+msgid "Manage"
+msgstr "Gérer"
 
 #: apps/web/src/routes/organizations/$organizationSlug/members/index.tsx:85
 #~ msgid "Manage members and invitations for your project"
@@ -1146,7 +1383,7 @@ msgstr "Taille maximale de fichier"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:58
+#: apps/web/src/lib/dynamic-messages.ts:59
 msgid "Member"
 msgstr "Membre"
 
@@ -1154,9 +1391,9 @@ msgstr "Membre"
 msgid "Member removed"
 msgstr "Membre supprimé"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:123
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:129
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
-#: apps/web/src/lib/dynamic-messages.ts:53
+#: apps/web/src/lib/dynamic-messages.ts:54
 msgid "Members"
 msgstr "Membres"
 
@@ -1195,6 +1432,12 @@ msgstr "Nouvelle carte"
 msgid "New event"
 msgstr "Nouvel événement"
 
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:82
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:152
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:154
+msgid "New expense"
+msgstr "Nouvelle dépense"
+
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:52
 msgid "New folder"
 msgstr "Nouveau dossier"
@@ -1214,10 +1457,15 @@ msgid "New playlist"
 msgstr "Nouvelle playlist"
 
 #: apps/web/src/components/version-switcher.tsx:86
-#: apps/web/src/lib/dynamic-messages.ts:54
+#: apps/web/src/lib/dynamic-messages.ts:55
 #: apps/web/src/routes/projects/new.tsx:70
 msgid "New project"
 msgstr "Nouveau projet"
+
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:142
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:144
+msgid "New repayment"
+msgstr "Nouveau remboursement"
 
 #: apps/web/src/components/features/song/suspended-song-list.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:103
@@ -1242,9 +1490,26 @@ msgstr "Pas de connexion"
 msgid "No contacts"
 msgstr "Aucun contact"
 
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:335
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:340
+msgid "No event"
+msgstr "Aucun événement"
+
 #: apps/web/src/components/ui/event-calendar/agenda-view.tsx:30
 msgid "No events scheduled"
 msgstr "Aucun événement prévu"
+
+#: apps/web/src/components/features/expense/suspended-event-expenses.tsx:34
+msgid "No expenses linked to this event."
+msgstr "Aucune dépense liée à cet événement."
+
+#: apps/web/src/components/ui/expense/expense-table.tsx:90
+msgid "No expenses yet"
+msgstr "Aucune dépense pour le moment"
+
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:118
+#~ msgid "No expenses yet."
+#~ msgstr "Aucune dépense pour le moment."
 
 #: apps/web/src/components/ui/attachment-list.tsx:143
 #: apps/web/src/components/ui/attachment-list.tsx:323
@@ -1293,6 +1558,10 @@ msgstr "Pas encore de playlist."
 msgid "No preview available"
 msgstr "Aucun aperçu disponible"
 
+#: apps/web/src/components/ui/expense/repayment-table.tsx:55
+msgid "No repayments yet"
+msgstr "Aucun remboursement pour le moment"
+
 #: apps/web/src/components/ui/data-table.tsx:54
 msgid "No results."
 msgstr "Aucun résultat."
@@ -1322,6 +1591,11 @@ msgstr "Aucun"
 msgid "None yet"
 msgstr "Aucun pour le moment"
 
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:170
+#: apps/web/src/components/ui/expense/repayment-table.tsx:70
+msgid "Note"
+msgstr "Note"
+
 #: apps/web/src/components/features/drive/drive-explorer.tsx:216
 msgid "Only a selection of files can be deleted together"
 msgstr "Seule une sélection de fichiers peut être supprimée en groupe"
@@ -1336,8 +1610,8 @@ msgstr "Seule une sélection de fichiers peut être téléchargée en groupe"
 msgid "Open {0}"
 msgstr "Ouvrir {0}"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:123
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:106
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:122
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:103
 msgid "Open in Maps"
 msgstr "Ouvrir dans Maps"
 
@@ -1370,7 +1644,11 @@ msgstr "Orange"
 #~ msgid "Organization not found"
 #~ msgstr "Organisation introuvable"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:79
+#: apps/web/src/hooks/use-navigation.ts:54
+msgid "Organize"
+msgstr "Organiser"
+
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:81
 msgid "Organizer"
 msgstr "Organisateur"
 
@@ -1381,11 +1659,15 @@ msgid "Original"
 msgstr "Original"
 
 #: apps/web/src/components/features/outreach/outreach-board.tsx:120
-#: apps/web/src/hooks/use-navigation.ts:78
+#: apps/web/src/hooks/use-navigation.ts:92
 msgid "Outreach"
 msgstr "Démarchage"
 
-#: apps/web/src/lib/dynamic-messages.ts:60
+#: apps/web/src/components/ui/expense/balance-list.tsx:21
+#~ msgid "Owes {amount}"
+#~ msgstr "Doit {amount}"
+
+#: apps/web/src/lib/dynamic-messages.ts:61
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -1394,6 +1676,15 @@ msgstr "Propriétaire"
 #: apps/web/src/components/ui/data-table-pagination.tsx:53
 msgid "Page {0} of {1}"
 msgstr "Page {0} sur {1}"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:218
+#: apps/web/src/components/ui/expense/expense-table.tsx:105
+msgid "Paid by"
+msgstr "Payé par"
+
+#: apps/web/src/components/ui/expense/expense-list-item.tsx:40
+#~ msgid "Paid by {payerName}"
+#~ msgstr "Payé par {payerName}"
 
 #: apps/web/src/components/login-form.tsx:77
 #: apps/web/src/components/signup-form.tsx:138
@@ -1425,7 +1716,7 @@ msgstr "En attente"
 #~ msgid "Permanently delete this organization and all of its data. This action cannot be undone."
 #~ msgstr "Supprime définitivement ce groupe et toutes ses données. Cette action est irréversible."
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:166
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:172
 msgid "Permanently delete this project and all of its data. This action cannot be undone."
 msgstr "Supprime définitivement ce projet et toutes ses données. Cette action est irréversible."
 
@@ -1438,7 +1729,7 @@ msgstr "Personnel"
 msgid "Place"
 msgstr "Lieu"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:113
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:114
 msgid "Plan"
 msgstr "Forfait"
 
@@ -1472,8 +1763,8 @@ msgstr "Playlist supprimée"
 msgid "Playlist not found"
 msgstr "Playlist introuvable"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:214
-#: apps/web/src/hooks/use-navigation.ts:68
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:213
+#: apps/web/src/hooks/use-navigation.ts:82
 msgid "Playlists"
 msgstr "Playlists"
 
@@ -1493,7 +1784,7 @@ msgstr "Précédent"
 msgid "Project"
 msgstr "Projet"
 
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:91
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:92
 msgid "Project deleted"
 msgstr "Projet supprimé"
 
@@ -1513,6 +1804,10 @@ msgstr "Le nom du projet est requis"
 msgid "Project not found"
 msgstr "Projet introuvable"
 
+#: apps/web/src/hooks/use-navigation.ts:105
+msgid "Project settings"
+msgstr "Paramètres du projet"
+
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:129
 #~ msgid "Project slug"
 #~ msgstr "Identifiant du projet"
@@ -1524,6 +1819,18 @@ msgstr "Violet"
 #: apps/web/src/components/ui/lyrics-editor.tsx:98
 #~ msgid "Quote"
 #~ msgstr "Citation"
+
+#: apps/web/src/hooks/use-navigation.ts:89
+msgid "Reach"
+msgstr "Diffuser"
+
+#: apps/web/src/components/ui/expense/suggested-repayment-list.tsx:52
+msgid "Record"
+msgstr "Enregistrer"
+
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:76
+msgid "Record repayment"
+msgstr "Enregistrer un remboursement"
 
 #: apps/web/src/components/ui/event-calendar/colors.ts:28
 msgid "Red"
@@ -1542,7 +1849,7 @@ msgstr "Recharger"
 msgid "Remove {0}"
 msgstr "Retirer {0}"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:142
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:143
 msgid "Remove playlist"
 msgstr "Retirer la playlist"
 
@@ -1581,6 +1888,18 @@ msgstr "Réorganiser la colonne"
 #~ msgid "Reorder song"
 #~ msgstr "Réorganiser la chanson"
 
+#: apps/web/src/components/ui/expense/repayment-table.tsx:104
+msgid "Repayment actions"
+msgstr "Actions du remboursement"
+
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:95
+msgid "Repayments"
+msgstr "Remboursements"
+
+#: apps/web/src/components/ui/expense/repayment-table.tsx:56
+msgid "Repayments you record will show up here."
+msgstr "Les remboursements que vous enregistrez apparaîtront ici."
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:160
 msgid "Resend"
 msgstr "Renvoyer"
@@ -1590,7 +1909,7 @@ msgid "Resend code"
 msgstr "Renvoyer le code"
 
 #: apps/web/src/components/reset-password-form.tsx:103
-#: apps/web/src/lib/dynamic-messages.ts:56
+#: apps/web/src/lib/dynamic-messages.ts:57
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -1625,6 +1944,7 @@ msgstr "Lignes par page"
 
 #: apps/web/src/components/features/drive/folder-name-dialog.tsx:55
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:66
+#: apps/web/src/components/features/organization/suspended-organization-currency.tsx:63
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:338
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:70
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
@@ -1634,6 +1954,8 @@ msgstr "Enregistrer"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:338
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:370
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:186
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:98
 #: apps/web/src/components/ui/song/song-dialog.tsx:167
 msgid "Save changes"
@@ -1717,12 +2039,20 @@ msgstr "Défini comme dernière démo"
 msgid "Set as latest final"
 msgstr "Défini comme dernière version finale"
 
-#: apps/web/src/hooks/use-navigation.ts:85
-msgid "Settings"
-msgstr "Paramètres"
+#: apps/web/src/hooks/use-navigation.ts:102
+#~ msgid "Settings"
+#~ msgstr "Paramètres"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:168
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:163
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:127
+msgid "Settle up"
+msgstr "Régler les comptes"
+
+#: apps/web/src/components/ui/expense/balance-list.tsx:18
+#~ msgid "Settled"
+#~ msgstr "À jour"
+
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:167
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:160
 #: apps/web/src/components/ui/song/song-detail.tsx:78
 msgid "Share"
 msgstr "Partager"
@@ -1742,8 +2072,9 @@ msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 
 #: apps/web/src/components/app-error-page.tsx:42
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:206
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:227
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:210
+#: apps/web/src/components/features/organization/suspended-organization-currency.tsx:72
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:233
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:135
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:300
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
@@ -1758,7 +2089,7 @@ msgstr "Actions de la chanson"
 msgid "Song deleted"
 msgstr "Chanson supprimée"
 
-#: apps/web/src/lib/dynamic-messages.ts:52
+#: apps/web/src/lib/dynamic-messages.ts:53
 msgid "Song details"
 msgstr "Détails de la chanson"
 
@@ -1766,10 +2097,14 @@ msgstr "Détails de la chanson"
 msgid "Song not found"
 msgstr "Chanson introuvable"
 
-#: apps/web/src/hooks/use-navigation.ts:63
+#: apps/web/src/hooks/use-navigation.ts:77
 #: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Songs"
-msgstr "Chansons"
+msgstr "Morceaux"
+
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:244
+msgid "Split"
+msgstr "Répartition"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:251
 msgid "Start"
@@ -1779,7 +2114,23 @@ msgstr "Début"
 msgid "Storage"
 msgstr "Stockage"
 
-#: apps/web/src/components/user-menu.tsx:77
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:64
+#~ msgid "Suggested repayments"
+#~ msgstr "Remboursements suggérés"
+
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:51
+msgid "Summary"
+msgstr "Résumé"
+
+#: apps/web/src/components/features/organization/suspended-organization-currency.tsx:37
+msgid "The currency can't be changed once the project has expenses or repayments."
+msgstr "La devise ne peut plus être modifiée dès que le projet contient des dépenses ou des remboursements."
+
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:129
+msgid "The fewest transfers to clear every balance."
+msgstr "Le moins de virements possible pour solder tous les comptes."
+
+#: apps/web/src/components/user-menu.tsx:76
 msgid "Theme"
 msgstr "Thème"
 
@@ -1791,7 +2142,7 @@ msgstr "Cette carte n'existe pas ou a été supprimée."
 msgid "This code has expired, request a new one"
 msgstr "Ce code a expiré, demandez-en un nouveau"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:209
+#: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:213
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
 
@@ -1867,7 +2218,7 @@ msgid "This will permanently delete \"{0}\". This action cannot be undone."
 msgstr "Cela supprimera définitivement « {0} ». Cette action est irréversible."
 
 #. placeholder {0}: organization.name
-#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:187
+#: apps/web/src/components/features/organization/suspended-organization-settings.tsx:193
 msgid "This will permanently delete <0>{0}</0> and all of its data. This action cannot be undone."
 msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses données. Cette action est irréversible."
 
@@ -1885,7 +2236,7 @@ msgid "This will permanently delete the selected files. This action cannot be un
 msgstr "Cette action supprimera définitivement les fichiers sélectionnés. Cette action est irréversible."
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:317
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:212
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:209
 msgid "This will permanently delete this card. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette carte. Cette action est irréversible."
 
@@ -1894,9 +2245,17 @@ msgstr "Cela supprimera définitivement cette carte. Cette action est irréversi
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "Cette action supprimera définitivement cet événement. Cette action est irréversible."
 
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:168
+msgid "This will permanently delete this expense and change everyone's balance. This action cannot be undone."
+msgstr "Cette dépense sera définitivement supprimée et les soldes de chacun seront modifiés. Cette action est irréversible."
+
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:175
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette playlist. Cette action est irréversible."
+
+#: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:185
+msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
+msgstr "Ce remboursement sera définitivement supprimé et les soldes seront modifiés. Cette action est irréversible."
 
 #: apps/web/src/components/ui/song/song-detail.tsx:117
 msgid "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
@@ -1908,14 +2267,22 @@ msgstr "Cela supprimera définitivement cette chanson et la retirera de toutes l
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:230
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:216
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:161
+#: apps/web/src/components/ui/expense/expense-table.tsx:103
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:85
 #: apps/web/src/components/ui/song/song-dialog.tsx:111
 msgid "Title"
 msgstr "Titre"
 
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:127
 #: apps/web/src/lib/dynamic-messages.ts:25
 msgid "Title is required"
 msgstr "Le titre est requis"
+
+#: apps/web/src/components/ui/expense/repayment-dialog.tsx:155
+#: apps/web/src/components/ui/expense/repayment-table.tsx:69
+msgid "To"
+msgstr "À"
 
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:136
 msgid "Today"
@@ -1928,6 +2295,14 @@ msgstr "Basculer les colonnes"
 #: apps/web/src/lib/dynamic-messages.ts:42
 msgid "Too many attempts, request a new code"
 msgstr "Trop de tentatives, demandez un nouveau code"
+
+#: apps/web/src/components/features/expense/suspended-event-expenses.tsx:29
+msgid "Total"
+msgstr "Total"
+
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:55
+msgid "Total spent"
+msgstr "Total dépensé"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:326
 #: apps/web/src/components/ui/song/song-detail.tsx:59
@@ -1945,7 +2320,7 @@ msgstr "Tapez pour rechercher des chansons"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:268
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:273
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:70
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:67
 msgid "Unassigned"
 msgstr "Non assigné"
 
@@ -1973,8 +2348,10 @@ msgstr "À suivre"
 msgid "Up next: {0}"
 msgstr "À suivre : {0}"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:187
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:182
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:186
+#: apps/web/src/components/ui/expense/expense-table.tsx:188
+#: apps/web/src/components/ui/expense/repayment-table.tsx:113
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:103
 #: apps/web/src/components/ui/song/song-detail.tsx:97
 msgid "Update"
@@ -2061,9 +2438,25 @@ msgstr "Oui, annuler"
 msgid "Yes, remove"
 msgstr "Oui, retirer"
 
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:66
+msgid "You are owed"
+msgstr "On vous doit"
+
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:69
+msgid "You are settled up"
+msgstr "Vous êtes à jour"
+
 #: apps/web/src/routes/accept-invitation.tsx:112
 msgid "You have been invited to join"
 msgstr "Vous avez été invité(e) à rejoindre"
+
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:68
+msgid "You owe"
+msgstr "Vous devez"
+
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:60
+msgid "Your balance"
+msgstr "Votre solde"
 
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:39
 msgid "Your current plan and what you have used of it."

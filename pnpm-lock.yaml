@@ -36,6 +36,9 @@ catalogs:
     better-auth:
       specifier: ^1.6.24
       version: 1.6.24
+    decimal.js:
+      specifier: ^10.6.0
+      version: 10.6.0
     dotenv:
       specifier: ^16.6.1
       version: 16.6.1
@@ -698,6 +701,9 @@ importers:
       '@echo/logger':
         specifier: workspace:*
         version: link:../logger
+      decimal.js:
+        specifier: 'catalog:'
+        version: 10.6.0
       kysely:
         specifier: 'catalog:'
         version: 0.27.6

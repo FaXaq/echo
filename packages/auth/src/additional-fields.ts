@@ -30,6 +30,12 @@ export const organizationAdditionalFields = {
     input: false,
     defaultValue: false,
   },
+  currency: {
+    type: "string",
+    required: false,
+    input: true,
+    defaultValue: "EUR",
+  },
 } satisfies {
   [key: string]: DBFieldAttribute;
 };

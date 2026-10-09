@@ -10,7 +10,7 @@
     "dev": "tsx watch src/main.ts",
     "execute": "tsx src/main.ts",
     "build": "build-node src/main.ts dist/main.js",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --pretty false",
     "test": "vitest run",
     "db:migrate": "node dist/main.js db migrate",
     "user:create": "node dist/main.js user create",

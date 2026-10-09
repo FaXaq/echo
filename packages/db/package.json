@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc --build",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --pretty false",
     "schema:generate": "pnpm exec kysely-codegen --env-file .env --out-file src/schema.d.ts",
     "migration:create": "node src/migration-create.ts",
     "migration:down": "node src/migrate-down.ts"

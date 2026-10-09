@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc --build",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --pretty false"
   },
   "dependencies": {
     "pino": "^9.14.0"

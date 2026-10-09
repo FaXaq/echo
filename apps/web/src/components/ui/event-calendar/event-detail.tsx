@@ -44,6 +44,7 @@ export interface EventDetailProps {
   attachments: React.ReactNode;
   playlistsList?: React.ReactNode;
   addPlaylistPicker?: React.ReactNode;
+  expensesSection?: React.ReactNode;
   className?: string;
 }
 
@@ -59,6 +60,7 @@ export function EventDetail({
   attachments,
   playlistsList,
   addPlaylistPicker,
+  expensesSection,
   className,
 }: EventDetailProps) {
   const { t } = useLingui();
@@ -79,10 +81,7 @@ export function EventDetail({
       label: t`Organizer`,
       value: (
         <div className="flex min-w-0 items-center gap-1.5">
-          <Blobatar
-            name={event.createdByName}
-            blobatar={{ animate: "always", traits: { shape: 0.11 } }}
-          />
+          <Blobatar name={event.createdByName} blobatar={{ animate: "always" }} />
           <span className="truncate text-[13px] font-medium">{event.createdByName}</span>
         </div>
       ),
@@ -233,6 +232,7 @@ export function EventDetail({
             {playlistsList}
           </div>
         )}
+        {expensesSection}
       </EntityDetailLayout>
 
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
