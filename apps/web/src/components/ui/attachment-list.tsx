@@ -6,6 +6,7 @@ import {
   FileWarning,
   ListChecks,
   MoreVertical,
+  Paperclip,
   Music,
   Pen,
   Square,
@@ -26,6 +27,7 @@ import {
   AttachmentTrigger,
 } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FilePreviewDialog } from "@/components/ui/file-preview-dialog";
 import {
@@ -139,9 +141,11 @@ function AttachmentListItems<F extends AttachmentFile>({
 
   if (files.length === 0 && pendingFiles.length === 0) {
     return (
-      <p className="py-5 text-center text-[13px] text-muted-foreground">
-        <Trans>No files here yet.</Trans>
-      </p>
+      <ListEmptyState
+        icon={<Paperclip />}
+        title={t`No files yet`}
+        description={t`Upload files with the button above.`}
+      />
     );
   }
 
@@ -319,9 +323,11 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
 
   if (files.length === 0 && pendingFiles.length === 0) {
     return (
-      <p className="py-5 text-center text-[13px] text-muted-foreground">
-        <Trans>No files here yet.</Trans>
-      </p>
+      <ListEmptyState
+        icon={<Paperclip />}
+        title={t`No files yet`}
+        description={t`Upload files with the button above.`}
+      />
     );
   }
 

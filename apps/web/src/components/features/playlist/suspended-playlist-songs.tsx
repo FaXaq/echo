@@ -2,11 +2,13 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
+import { Music } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { getPlaylistSongsQueryOptions } from "@/services/resources/playlist";
 import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
 import { SongAudioDropTarget } from "@/components/features/song/song-audio-drop-target";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 
 function PlaylistSongsContent({
   playlistId,
@@ -23,7 +25,9 @@ function PlaylistSongsContent({
   );
 
   if (songs.length === 0) {
-    return <p className="text-xs text-muted-foreground">{t`No songs in this playlist.`}</p>;
+    return (
+      <ListEmptyState icon={<Music />} title={t`No songs in this playlist`} className="py-4" />
+    );
   }
 
   return (

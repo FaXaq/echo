@@ -3,8 +3,9 @@ import { ErrorBoundary } from "react-error-boundary";
 import { usePostHog } from "posthog-js/react";
 import { useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { ListMusic, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlaylistDialog, type PlaylistDialogState } from "@/components/ui/playlist/playlist-dialog";
 import { PlaylistListItem } from "@/components/ui/playlist/playlist-list-item";
@@ -61,7 +62,17 @@ function PlaylistListContent({
       </div>
 
       {playlists.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t`No playlists yet.`}</p>
+        <ListEmptyState
+          icon={<ListMusic />}
+          title={t`No playlists yet`}
+          description={t`Build a setlist for your next gig or rehearsal.`}
+          action={
+            <Button type="button" size="sm" onClick={() => setDialogState({ mode: "create" })}>
+              <Plus data-icon="inline-start" />
+              {t`New playlist`}
+            </Button>
+          }
+        />
       ) : (
         <ul className="flex flex-col gap-2 m-0 p-0">
           {playlists.map((playlist) => (
