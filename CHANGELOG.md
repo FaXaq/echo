@@ -1,3 +1,9 @@
+## [0.22.0](https://github.com/FaXaq/echo/compare/v0.21.0...v0.22.0) (2026-10-25)
+
+### ✨ Features
+
+* **web:** dynamic page titles for entity details, drive folders and project home ([#58](https://github.com/FaXaq/echo/issues/58)) ([d1696e1](https://github.com/FaXaq/echo/commit/d1696e17bd9fd5cc192121c31597913e5c9f6477))
+
 ## [0.21.0](https://github.com/FaXaq/echo/compare/v0.20.0...v0.21.0) (2026-10-25)
 
 ### ✨ Features
