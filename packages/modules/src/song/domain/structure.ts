@@ -29,6 +29,8 @@ export const DEFAULT_TIME_SIGNATURE: TimeSignature = { beats: 4, beatType: 4 };
 
 export const TIME_SIGNATURE_PATTERN = /^([1-9]|[12]\d|3[0-2])\/(1|2|4|8|16|32)$/;
 
+const noNul = (value: string) => !value.includes("\0");
+
 export const barSchema = z.object({
   chords: z.array(z.string().refine(isChordSymbol, { message: "Invalid chord symbol" })).max(8),
   time: timeSignatureSchema.optional(),
@@ -38,11 +40,11 @@ export type Bar = z.infer<typeof barSchema>;
 export const songSectionSchema = z.object({
   id: z.string().min(1),
   kind: sectionKindSchema,
-  name: z.string().min(1).max(50),
+  name: z.string().min(1).max(50).refine(noNul),
   repeat: z.number().int().min(1).max(16),
   time: timeSignatureSchema,
   bars: z.array(barSchema).min(1).max(256),
-  notes: z.string().max(5000),
+  notes: z.string().max(5000).refine(noNul),
 });
 export type SongSection = z.infer<typeof songSectionSchema>;
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { barLabel, barsToText, textToBars } from "./chord-chart-text.js";
+import { barLabel, barsToText, normalizeBars, textToBars } from "./chord-chart-text.js";
 import type { Bar } from "./structure.js";
 
 const bars = (...xs: string[][]): Bar[] => xs.map((chords) => ({ chords }));
@@ -51,5 +51,28 @@ describe("chord chart text", () => {
 
   it("rejects % as the first bar", () => {
     expect(textToBars("| % |")).toEqual({ ok: false, bar: 1, token: "%" });
+  });
+
+  it("rejects a bar with more than 8 chords, reporting the 9th", () => {
+    expect(textToBars("| C | Am F C G Am F C G Am |")).toEqual({ ok: false, bar: 2, token: "Am" });
+    expect(textToBars("| Am F C G Am F C G |").ok).toBe(true);
+  });
+
+  it("drops a bar time equal to the section time", () => {
+    const time = { beats: 4, beatType: 4 };
+    expect(
+      normalizeBars(
+        [
+          { chords: ["Am"], time },
+          { chords: ["G"], time: { beats: 3, beatType: 4 } },
+          { chords: [] },
+        ],
+        time,
+      ),
+    ).toEqual([
+      { chords: ["Am"] },
+      { chords: ["G"], time: { beats: 3, beatType: 4 } },
+      { chords: [] },
+    ]);
   });
 });

@@ -1,4 +1,5 @@
 import type { SearchSongsQueryPortFactory } from "./search-songs.query.port.js";
+import { songColumns } from "./common.js";
 import { toSong } from "./map-song.js";
 
 const SEARCH_RESULT_LIMIT = 10;
@@ -11,7 +12,7 @@ export const searchSongsQueryFactory: SearchSongsQueryPortFactory =
       .selectFrom("song")
       .innerJoin("user", "user.id", "created_by")
       .innerJoin("organization", "song.organization_id", "organization.id")
-      .selectAll("song")
+      .select(songColumns)
       .select("user.name as created_by_name")
       .select(["organization.name as organization_name", "organization.slug as organization_slug"])
       .where("song.organization_id", "=", scope.organizationId)

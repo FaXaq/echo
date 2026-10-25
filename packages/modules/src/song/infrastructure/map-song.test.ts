@@ -11,7 +11,6 @@ function makeRow(overrides: Partial<SongRow> = {}): SongRow {
     key: null,
     lyrics: null,
     type: null,
-    score: null,
     time_signature: null,
     organization_id: "org-1",
     created_by: "user-1",

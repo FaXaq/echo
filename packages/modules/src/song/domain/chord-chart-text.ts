@@ -1,7 +1,13 @@
 import { isChordSymbol } from "./chord-symbol.js";
-import { formatTimeSignature, parseTimeSignature, type Bar } from "./structure.js";
+import {
+  formatTimeSignature,
+  parseTimeSignature,
+  type Bar,
+  type TimeSignature,
+} from "./structure.js";
 
 const BARS_PER_LINE = 4;
+const MAX_CHORDS_PER_BAR = 8;
 const TIME_PREFIX = /^\((\d+\/\d+)\)\s*/;
 
 export function barLabel(bars: Bar[], index: number): string {
@@ -63,10 +69,19 @@ export function textToBars(text: string): ChordTextResult {
       chords = body.split(/\s+/).filter((token) => token !== "/");
       const invalid = chords.find((token) => !isChordSymbol(token));
       if (invalid !== undefined) return fail(invalid);
+      if (chords.length > MAX_CHORDS_PER_BAR) return fail(chords[MAX_CHORDS_PER_BAR]);
     }
 
     bars.push(time ? { chords, time } : { chords });
   }
 
   return { ok: true, bars };
+}
+
+export function normalizeBars(bars: Bar[], sectionTime: TimeSignature): Bar[] {
+  return bars.map(({ time, ...bar }) =>
+    time && (time.beats !== sectionTime.beats || time.beatType !== sectionTime.beatType)
+      ? { ...bar, time }
+      : bar,
+  );
 }

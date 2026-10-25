@@ -2,6 +2,8 @@ import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { isChordSymbol, parseChordSymbol } from "./chord-symbol.js";
 import {
   DEFAULT_TIME_SIGNATURE,
+  formatTimeSignature,
+  parseTimeSignature,
   sectionKindSchema,
   timeSignatureSchema,
   type Bar,
@@ -75,6 +77,9 @@ export function toMusicXml(structure: SongStructure, options: { title: string })
     const first = measures.length + 1;
     fields.push(
       `<miscellaneous-field name="echo:section:${first}:kind">${section.kind}</miscellaneous-field>`,
+    );
+    fields.push(
+      `<miscellaneous-field name="echo:section:${first}:time">${formatTimeSignature(section.time)}</miscellaneous-field>`,
     );
     if (section.notes !== "") {
       fields.push(
@@ -264,7 +269,8 @@ export function fromMusicXml(xml: string): SongStructure {
   const sections = starts.map((start, index): SongSection => {
     const end = starts[index + 1] ?? measures.length;
     const slice = measures.slice(start, end);
-    const time = slice[0].time;
+    const time =
+      parseTimeSignature(fields.get(`echo:section:${start + 1}:time`) ?? "") ?? slice[0].time;
     const backward = slice.at(-1)?.backwardTimes ?? 1;
     const kind = sectionKindSchema.safeParse(fields.get(`echo:section:${start + 1}:kind`));
     return {

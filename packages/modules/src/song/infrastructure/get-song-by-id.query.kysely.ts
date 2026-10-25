@@ -1,4 +1,5 @@
 import type { GetSongByIdQueryPortFactory } from "./get-song-by-id.query.port.js";
+import { songColumns } from "./common.js";
 import { toSong } from "./map-song.js";
 
 export const getSongByIdQueryFactory: GetSongByIdQueryPortFactory =
@@ -6,7 +7,7 @@ export const getSongByIdQueryFactory: GetSongByIdQueryPortFactory =
     const row = await db
       .selectFrom("song")
       .innerJoin("user", "user.id", "created_by")
-      .selectAll("song")
+      .select(songColumns)
       .select("user.name as created_by_name")
       .innerJoin("organization", "song.organization_id", "organization.id")
       .select(["organization.name as organization_name", "organization.slug as organization_slug"])

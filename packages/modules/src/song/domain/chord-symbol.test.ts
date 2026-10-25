@@ -22,4 +22,8 @@ describe("chord symbol", () => {
       expect(formatChordSymbol(parsed)).toBe(s);
     }
   });
+
+  it("rejects a NUL character", () => {
+    expect(isChordSymbol("Am\u00007")).toBe(false);
+  });
 });

@@ -57,4 +57,13 @@ describe("structure", () => {
     expect(songStructureSchema.safeParse(sections(100)).success).toBe(true);
     expect(songStructureSchema.safeParse(sections(101)).success).toBe(false);
   });
+
+  it.each([
+    ["name", { name: "a\u0000b" }],
+    ["notes", { notes: "a\u0000b" }],
+  ])("rejects a NUL character in %s", (_, override) => {
+    expect(songStructureSchema.safeParse({ sections: [{ ...section, ...override }] }).success).toBe(
+      false,
+    );
+  });
 });

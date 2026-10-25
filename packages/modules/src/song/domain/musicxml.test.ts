@@ -141,4 +141,23 @@ describe("musicxml", () => {
   it("throws on malformed XML", () => {
     expect(() => fromMusicXml("<score-partwise><part>")).toThrow();
   });
+
+  it("round-trips a time override on a section's first bar", () => {
+    const first: SongStructure = {
+      sections: [
+        {
+          ...structure.sections[0],
+          bars: [{ chords: ["Am"], time: { beats: 3, beatType: 4 } }, { chords: ["G"] }],
+        },
+      ],
+    };
+    expect(fromMusicXml(toMusicXml(first, { title: "T" }))).toEqual(ids(first));
+  });
+
+  it("falls back to the first measure's time when the section time field is absent", () => {
+    const xml = score(
+      `<measure number="1"><attributes><divisions>24</divisions><time><beats>3</beats><beat-type>4</beat-type></time></attributes>${harmony("C")}</measure>`,
+    );
+    expect(fromMusicXml(xml).sections[0].time).toEqual({ beats: 3, beatType: 4 });
+  });
 });

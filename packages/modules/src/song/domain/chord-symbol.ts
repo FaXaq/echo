@@ -28,7 +28,7 @@ function accidental(alter: Alter) {
 }
 
 export function parseChordSymbol(value: string): ChordSymbol | null {
-  const match = CHORD_PATTERN.exec(value);
+  const match = value.includes("\0") ? null : CHORD_PATTERN.exec(value);
   if (!match) return null;
   const [, root, rootAlter, suffix, bassStep, bassAlter] = match;
   const rootStep = toStep(root);
