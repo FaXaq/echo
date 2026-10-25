@@ -59,6 +59,12 @@ export type {
 export { linkFileToSongCommandFactory } from "./link-file-to-song.command.kysely.js";
 
 export type {
+  LinkFileToEventInput,
+  LinkFileToEventCommandPort,
+} from "./link-file-to-event.command.port.js";
+export { linkFileToEventCommandFactory } from "./link-file-to-event.command.kysely.js";
+
+export type {
   SongExistsInOrganizationInput,
   SongExistsInOrganizationQueryPort,
 } from "./song-exists-in-organization.query.port.js";

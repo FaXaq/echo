@@ -13,6 +13,7 @@ import type {
   FindFolderByParentAndNameQueryPort,
   InsertPendingFileCommandPort,
   InsertPendingFileInput,
+  LinkFileToEventCommandPort,
   LinkFileToSongCommandPort,
   MarkFileUploadedCommandPort,
   SongExistsInOrganizationQueryPort,
@@ -116,6 +117,10 @@ export function makeFakeLinkFileToSong(
   return async (_db, _scope, input) => {
     onLink?.(input.songId, input.fileId);
   };
+}
+
+export function makeFakeLinkFileToEvent(linked = true): LinkFileToEventCommandPort {
+  return async () => linked;
 }
 
 export function makeFakeSongExistsInOrganization(exists = true): SongExistsInOrganizationQueryPort {
