@@ -9,6 +9,7 @@ const { key, getResourceKey } = initResourceKey("song");
 export { key };
 
 export type Song = RouterOutputs["song"]["listSongs"][number];
+export type SongStructure = RouterOutputs["song"]["getSongStructure"];
 export type SongAudioVersions = RouterOutputs["song"]["getAudioVersions"];
 export type SongAudioVersion = SongAudioVersions["demo"][number];
 
@@ -38,6 +39,16 @@ export function getSongQueryOptions(opts: { songId: string; organizationId: stri
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
       return apiClient.song.getSongById.query(params, { signal });
+    },
+  });
+}
+
+export function getSongStructureQueryOptions(opts: { songId: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getSongStructure", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.song.getSongStructure.query(params, { signal });
     },
   });
 }
@@ -176,6 +187,20 @@ export function useUpdateSongLyricsMutation({
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
     },
+    onError,
+  });
+}
+
+export function useUpdateSongStructureMutation({
+  organizationId,
+  onError,
+}: {
+  organizationId: string;
+  onError?: (error: unknown) => void;
+}) {
+  return useMutation({
+    mutationFn: (input: { id: string; structure: SongStructure }) =>
+      apiClient.song.updateSongStructure.mutate({ organizationId, ...input }),
     onError,
   });
 }

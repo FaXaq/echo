@@ -18,7 +18,7 @@ import { DirtyGuardDialog } from "@/components/ui/dirty-guard-dialog";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
-import { songTypeSchema, type SongType } from "@echo/modules/song/domain";
+import { songTypeSchema, TIME_SIGNATURE_PATTERN, type SongType } from "@echo/modules/song/domain";
 import type { Song } from "@/services/resources/song";
 
 const songFormSchema = z.object({
@@ -26,6 +26,9 @@ const songFormSchema = z.object({
   artist: z.string(),
   bpm: z.string().refine((v) => v === "" || /^\d+$/.test(v), "BPM must be a whole number"),
   key: z.string(),
+  timeSignature: z
+    .string()
+    .refine((v) => v === "" || TIME_SIGNATURE_PATTERN.test(v), "Time signature must look like 4/4"),
   type: songTypeSchema,
 });
 
@@ -38,6 +41,7 @@ export interface SongDialogSubmitValues {
   artist?: string;
   bpm?: number;
   key?: string;
+  timeSignature?: string;
   type: SongType;
 }
 
@@ -49,10 +53,11 @@ function stateToDefaultValues(state: SongDialogState): SongFormValues {
       artist: song.artist ?? "",
       bpm: song.bpm != null ? String(song.bpm) : "",
       key: song.key ?? "",
+      timeSignature: song.timeSignature ?? "",
       type: song.type ?? "original",
     };
   }
-  return { title: "", artist: "", bpm: "", key: "", type: "original" };
+  return { title: "", artist: "", bpm: "", key: "", timeSignature: "", type: "original" };
 }
 
 interface SongDialogProps {
@@ -92,6 +97,7 @@ export function SongDialog({ state, onOpenChange, onSubmit }: SongDialogProps) {
       artist: values.artist || undefined,
       bpm: values.bpm ? Number(values.bpm) : undefined,
       key: values.key || undefined,
+      timeSignature: values.timeSignature || undefined,
       type: values.type,
     });
   };
@@ -129,6 +135,14 @@ export function SongDialog({ state, onOpenChange, onSubmit }: SongDialogProps) {
                 <Input id="song-key" {...register("key")} />
               </Field>
             </div>
+
+            <Field>
+              <FieldLabel htmlFor="song-time-signature">{t`Time signature`}</FieldLabel>
+              <Input id="song-time-signature" {...register("timeSignature")} />
+              <FieldError>
+                {errors.timeSignature && translateDynamic(t, errors.timeSignature.message!)}
+              </FieldError>
+            </Field>
 
             <Field>
               <FieldLabel>{t`Type`}</FieldLabel>

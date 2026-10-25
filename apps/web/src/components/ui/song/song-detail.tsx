@@ -56,6 +56,7 @@ export function SongDetail({
     { label: t`Artist`, value: song.artist ?? "—" },
     { label: t`BPM`, value: song.bpm ?? "—" },
     { label: t`Key`, value: song.key ?? "—" },
+    { label: t`Time signature`, value: song.timeSignature ?? "—" },
     { label: t`Type`, value: typeLabel },
     { label: t`Added by`, value: song.createdByName },
   ];
