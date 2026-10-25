@@ -21,6 +21,7 @@ export function toSong(row: SongRow): Song {
     key: row.key,
     lyrics: row.lyrics,
     type: toSongType(row.type),
+    timeSignature: row.time_signature,
     organization: {
       id: row.organization_id,
       name: row.organization_name,

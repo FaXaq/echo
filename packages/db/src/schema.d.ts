@@ -245,6 +245,8 @@ export interface Song {
   key: string | null;
   lyrics: string | null;
   organization_id: string;
+  score: string | null;
+  time_signature: string | null;
   title: string;
   type: string | null;
   updated_at: Generated<Timestamp | null>;

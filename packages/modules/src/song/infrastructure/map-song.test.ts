@@ -11,6 +11,8 @@ function makeRow(overrides: Partial<SongRow> = {}): SongRow {
     key: null,
     lyrics: null,
     type: null,
+    score: null,
+    time_signature: null,
     organization_id: "org-1",
     created_by: "user-1",
     created_by_name: "Test User",
@@ -30,6 +32,10 @@ describe("toSong", () => {
 
   it("parses a valid stored type", () => {
     expect(toSong(makeRow({ type: "cover" })).type).toBe("cover");
+  });
+
+  it("maps time_signature to timeSignature", () => {
+    expect(toSong(makeRow({ time_signature: "6/8" })).timeSignature).toBe("6/8");
   });
 
   it("throws when the stored type is not a known SongType", () => {

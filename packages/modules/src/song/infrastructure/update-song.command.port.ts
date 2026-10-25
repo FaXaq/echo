@@ -10,6 +10,7 @@ export type UpdateSongInput = {
   bpm: number | null;
   key: string | null;
   type: SongType | null;
+  timeSignature: string | null;
 };
 
 export type UpdateSongCommandPort = (

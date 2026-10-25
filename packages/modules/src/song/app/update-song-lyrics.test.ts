@@ -29,6 +29,7 @@ function makeFakeSong(lyrics: string | null): Song {
     createdAt: new Date("2026-01-01"),
     createdBy: "user-1",
     createdByName: "Test User",
+    timeSignature: null,
     updatedBy: null,
     updatedAt: null,
   };

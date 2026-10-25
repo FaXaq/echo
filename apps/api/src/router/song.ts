@@ -13,7 +13,7 @@ import {
   listSongAudioVersions,
   getSongDefaultAudio,
 } from "@echo/modules/song/app";
-import { songTypeSchema } from "@echo/modules/song/domain";
+import { songTypeSchema, TIME_SIGNATURE_PATTERN } from "@echo/modules/song/domain";
 import {
   insertSongCommandFactory,
   updateSongCommandFactory,
@@ -38,6 +38,7 @@ const songInput = {
   bpm: z.number().int().positive().optional(),
   key: z.string().optional(),
   type: songTypeSchema.nullable().optional(),
+  timeSignature: z.string().regex(TIME_SIGNATURE_PATTERN).nullable().optional(),
 };
 
 const insertSongCommand = insertSongCommandFactory();

@@ -30,6 +30,7 @@ import * as migration_20260927120650 from "./20260927120650_add-position-to-play
 import * as migration_20260927140729 from "./20260927140729_add-duration-seconds-to-file";
 import * as migration_20260928200000 from "./20260928200000_add-interval-seconds-to-playlist";
 import * as migration_20261004160000 from "./20261004160000_expense-ledger";
+import * as migration_20261025120000 from "./20261025120000_add-score-and-time-signature-to-song";
 
 type Migration = {
   up: (db: Kysely<any>) => Promise<void>;
@@ -69,4 +70,5 @@ export const migrations: Migrations = {
   "20260927140729_add-duration-seconds-to-file": migration_20260927140729,
   "20260928200000_add-interval-seconds-to-playlist": migration_20260928200000,
   "20261004160000_expense-ledger": migration_20261004160000,
+  "20261025120000_add-score-and-time-signature-to-song": migration_20261025120000,
 };

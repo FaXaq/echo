@@ -13,6 +13,7 @@ export async function createSong(
     bpm?: number | null;
     key?: string | null;
     type?: SongType | null;
+    timeSignature?: string | null;
   },
 ): Promise<Song> {
   return deps.insertSongCommand(deps.db, input.scope, {
@@ -23,5 +24,6 @@ export async function createSong(
     bpm: input.bpm ?? null,
     key: input.key ?? null,
     type: input.type ?? null,
+    timeSignature: input.timeSignature ?? null,
   });
 }

@@ -15,6 +15,7 @@ export async function updateSong(
     bpm?: number | null;
     key?: string | null;
     type?: SongType | null;
+    timeSignature?: string | null;
   },
 ): Promise<Song> {
   const updated = await deps.updateSongCommand(deps.db, input.scope, {
@@ -25,6 +26,7 @@ export async function updateSong(
     bpm: input.bpm ?? null,
     key: input.key ?? null,
     type: input.type ?? null,
+    timeSignature: input.timeSignature ?? null,
   });
 
   if (!updated) throw notFound("Song");

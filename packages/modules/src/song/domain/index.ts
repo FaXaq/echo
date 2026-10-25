@@ -12,6 +12,7 @@ export type Song = {
   key: string | null;
   lyrics: string | null;
   type: SongType | null;
+  timeSignature: string | null;
   organization: {
     id: string;
     name: string;

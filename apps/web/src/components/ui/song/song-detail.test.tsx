@@ -23,6 +23,7 @@ function makeSong(overrides: Partial<Song> = {}): Song {
     createdAt: new Date().toISOString(),
     createdBy: "user-1",
     createdByName: "Mr Me",
+    timeSignature: null,
     updatedBy: null,
     updatedAt: null,
     ...overrides,

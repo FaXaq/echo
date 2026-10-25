@@ -13,6 +13,7 @@ export const updateSongCommandFactory: UpdateSongCommandPortFactory =
           bpm: input.bpm,
           key: input.key,
           type: input.type,
+          time_signature: input.timeSignature,
           updated_by: input.userId,
           updated_at: new Date(),
         })
