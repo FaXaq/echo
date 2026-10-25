@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { barLabel, barsToText, normalizeBars, textToBars } from "./chord-chart-text.js";
-import type { Bar } from "./structure.js";
+import type { Bar, TimeSignature } from "./structure.js";
 
 const bars = (...xs: string[][]): Bar[] => xs.map((chords) => ({ chords }));
 
@@ -59,7 +59,7 @@ describe("chord chart text", () => {
   });
 
   it("drops a bar time equal to the section time", () => {
-    const time = { beats: 4, beatType: 4 };
+    const time: TimeSignature = { beats: 4, beatType: 4 };
     expect(
       normalizeBars(
         [
