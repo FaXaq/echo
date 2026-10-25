@@ -1,3 +1,9 @@
+## [0.21.0](https://github.com/FaXaq/echo/compare/v0.20.0...v0.21.0) (2026-10-25)
+
+### ✨ Features
+
+* **drive:** assign a file to an event from the drive ([#57](https://github.com/FaXaq/echo/issues/57)) ([29055ea](https://github.com/FaXaq/echo/commit/29055ea6eaf5b8cfbdec4a13fcb820d1cdb11947))
+
 ## [0.20.0](https://github.com/FaXaq/echo/compare/v0.19.0...v0.20.0) (2026-10-09)
 
 ### ✨ Features
