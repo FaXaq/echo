@@ -43,6 +43,7 @@ describe("SongDetail", () => {
         onEdit={vi.fn()}
         onDelete={vi.fn()}
         attachments={noop}
+        structure={<p>structure node</p>}
       />,
     );
 
@@ -63,10 +64,32 @@ describe("SongDetail", () => {
         onEdit={vi.fn()}
         onDelete={vi.fn()}
         attachments={noop}
+        structure={<p>structure node</p>}
       />,
     );
 
     expect(screen.getByText(/Walking down that empty road/)).toBeInTheDocument();
+  });
+
+  it("shows lyrics by default and the structure node on the Structure tab", async () => {
+    const user = userEvent.setup();
+    render(
+      <SongDetail
+        song={makeSong()}
+        lyrics="Walking down that empty road"
+        onLyricsChange={vi.fn()}
+        onShare={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+        attachments={noop}
+        structure={<p>structure node</p>}
+      />,
+    );
+
+    expect(screen.getByText(/Walking down that empty road/)).toBeInTheDocument();
+    expect(screen.queryByText("structure node")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: "Structure" }));
+    expect(screen.getByText("structure node")).toBeInTheDocument();
   });
 
   it("calls onEdit when Update is chosen from the actions menu", async () => {
@@ -81,6 +104,7 @@ describe("SongDetail", () => {
         onEdit={onEdit}
         onDelete={vi.fn()}
         attachments={noop}
+        structure={<p>structure node</p>}
       />,
     );
 
@@ -101,6 +125,7 @@ describe("SongDetail", () => {
         onEdit={vi.fn()}
         onDelete={onDelete}
         attachments={noop}
+        structure={<p>structure node</p>}
       />,
     );
 
@@ -122,6 +147,7 @@ describe("SongDetail", () => {
         onEdit={vi.fn()}
         onDelete={vi.fn()}
         attachments={<div data-testid="slot">files here</div>}
+        structure={noop}
       />,
     );
 

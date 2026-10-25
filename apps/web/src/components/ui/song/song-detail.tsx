@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LyricsEditor } from "@/components/ui/lyrics-editor";
 import type { MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import type { Song } from "@/services/resources/song";
@@ -33,6 +34,7 @@ export interface SongDetailProps {
   onEdit: () => void;
   onDelete: () => void;
   attachments: React.ReactNode;
+  structure: React.ReactNode;
   className?: string;
 }
 
@@ -45,6 +47,7 @@ export function SongDetail({
   onEdit,
   onDelete,
   attachments,
+  structure,
   className,
 }: SongDetailProps) {
   const { t } = useLingui();
@@ -107,7 +110,20 @@ export function SongDetail({
         attachments={attachments}
         className={className}
       >
-        <LyricsEditor markdown={lyrics} onChange={onLyricsChange} saveStatus={lyricsSaveStatus} />
+        <Tabs defaultValue="lyrics">
+          <TabsList>
+            <TabsTrigger value="lyrics">{t`Lyrics`}</TabsTrigger>
+            <TabsTrigger value="structure">{t`Structure`}</TabsTrigger>
+          </TabsList>
+          <TabsContent value="lyrics">
+            <LyricsEditor
+              markdown={lyrics}
+              onChange={onLyricsChange}
+              saveStatus={lyricsSaveStatus}
+            />
+          </TabsContent>
+          <TabsContent value="structure">{structure}</TabsContent>
+        </Tabs>
       </EntityDetailLayout>
 
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
