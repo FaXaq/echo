@@ -135,7 +135,7 @@ msgstr "1 {0} = combien de {organizationCurrency} ?"
 msgid "A new code has been sent"
 msgstr "Un nouveau code a été envoyé"
 
-#: apps/web/src/lib/dynamic-messages.ts:56
+#: apps/web/src/lib/dynamic-messages.ts:67
 #: apps/web/src/routes/accept-invitation.tsx:117
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
@@ -211,7 +211,7 @@ msgstr "Ajoutez la setlist que vous jouerez avec le bouton +."
 msgid "Added by"
 msgstr "Ajouté par"
 
-#: apps/web/src/lib/dynamic-messages.ts:60
+#: apps/web/src/lib/dynamic-messages.ts:71
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -912,6 +912,7 @@ msgid "Drag to reorder"
 msgstr "Glisser pour réordonner"
 
 #: apps/web/src/hooks/use-navigation.ts:62
+#: apps/web/src/lib/dynamic-messages.ts:56
 msgid "Drive"
 msgstr "Drive"
 
@@ -919,8 +920,8 @@ msgstr "Drive"
 msgid "Drop an audio file"
 msgstr "Déposez un fichier audio"
 
-#: apps/web/src/routes/projects/$projectSlug/calendar/$eventId.tsx:78
-#: apps/web/src/routes/projects/$projectSlug/songs/$songId.tsx:74
+#: apps/web/src/routes/projects/$projectSlug/calendar/$eventId.tsx:79
+#: apps/web/src/routes/projects/$projectSlug/songs/$songId.tsx:75
 msgid "Drop files to upload"
 msgstr "Déposez des fichiers pour les envoyer"
 
@@ -1218,6 +1219,10 @@ msgstr "Dossiers"
 msgid "Folders aren't supported yet — drop files only"
 msgstr "Les dossiers ne sont pas encore pris en charge — déposez uniquement des fichiers"
 
+#: apps/web/src/lib/dynamic-messages.ts:63
+msgid "Forgot password"
+msgstr "Mot de passe oublié"
+
 #: apps/web/src/components/forgot-password-form.tsx:49
 #: apps/web/src/components/login-form.tsx:83
 #: apps/web/src/components/login-form.tsx:87
@@ -1396,10 +1401,12 @@ msgid "Location"
 msgstr "Lieu"
 
 #: apps/web/src/components/user-menu.tsx:109
+#: apps/web/src/lib/dynamic-messages.ts:61
 msgid "Log out"
 msgstr "Se déconnecter"
 
 #: apps/web/src/components/login-form.tsx:105
+#: apps/web/src/lib/dynamic-messages.ts:60
 msgid "Login"
 msgstr "Connexion"
 
@@ -1451,7 +1458,7 @@ msgstr "Taille maximale de fichier"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:59
+#: apps/web/src/lib/dynamic-messages.ts:70
 msgid "Member"
 msgstr "Membre"
 
@@ -1461,7 +1468,7 @@ msgstr "Membre supprimé"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:129
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
-#: apps/web/src/lib/dynamic-messages.ts:54
+#: apps/web/src/lib/dynamic-messages.ts:65
 msgid "Members"
 msgstr "Membres"
 
@@ -1526,7 +1533,7 @@ msgid "New playlist"
 msgstr "Nouvelle playlist"
 
 #: apps/web/src/components/version-switcher.tsx:86
-#: apps/web/src/lib/dynamic-messages.ts:55
+#: apps/web/src/lib/dynamic-messages.ts:66
 #: apps/web/src/routes/projects/new.tsx:70
 msgid "New project"
 msgstr "Nouveau projet"
@@ -1753,14 +1760,19 @@ msgstr "Original"
 
 #: apps/web/src/components/features/outreach/outreach-board.tsx:120
 #: apps/web/src/hooks/use-navigation.ts:92
+#: apps/web/src/lib/dynamic-messages.ts:57
 msgid "Outreach"
 msgstr "Démarchage"
+
+#: apps/web/src/lib/dynamic-messages.ts:58
+msgid "Outreach card"
+msgstr "Fiche de démarchage"
 
 #: apps/web/src/components/ui/expense/balance-list.tsx:21
 #~ msgid "Owes {amount}"
 #~ msgstr "Doit {amount}"
 
-#: apps/web/src/lib/dynamic-messages.ts:61
+#: apps/web/src/lib/dynamic-messages.ts:72
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -1852,12 +1864,17 @@ msgstr "Actions de la playlist"
 msgid "Playlist deleted"
 msgstr "Playlist supprimée"
 
+#: apps/web/src/lib/dynamic-messages.ts:55
+msgid "Playlist details"
+msgstr "Détails de la playlist"
+
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:309
 msgid "Playlist not found"
 msgstr "Playlist introuvable"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:213
 #: apps/web/src/hooks/use-navigation.ts:82
+#: apps/web/src/lib/dynamic-messages.ts:54
 msgid "Playlists"
 msgstr "Playlists"
 
@@ -2002,7 +2019,7 @@ msgid "Resend code"
 msgstr "Renvoyer le code"
 
 #: apps/web/src/components/reset-password-form.tsx:103
-#: apps/web/src/lib/dynamic-messages.ts:57
+#: apps/web/src/lib/dynamic-messages.ts:68
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -2138,9 +2155,9 @@ msgstr "Défini comme dernière démo"
 msgid "Set as latest final"
 msgstr "Défini comme dernière version finale"
 
-#: apps/web/src/hooks/use-navigation.ts:102
-#~ msgid "Settings"
-#~ msgstr "Paramètres"
+#: apps/web/src/lib/dynamic-messages.ts:59
+msgid "Settings"
+msgstr "Paramètres"
 
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:127
 msgid "Settle up"
@@ -2155,6 +2172,10 @@ msgstr "Régler les comptes"
 #: apps/web/src/components/ui/song/song-detail.tsx:78
 msgid "Share"
 msgstr "Partager"
+
+#: apps/web/src/lib/dynamic-messages.ts:62
+msgid "Sign up"
+msgstr "Inscription"
 
 #: apps/web/src/lib/dynamic-messages.ts:30
 msgid "Sign up failed"
@@ -2502,6 +2523,10 @@ msgstr "Le nom d'utilisateur doit contenir au moins 3 caractères"
 #: apps/web/src/components/verify-email-form.tsx:110
 msgid "Verify"
 msgstr "Vérifier"
+
+#: apps/web/src/lib/dynamic-messages.ts:64
+msgid "Verify email"
+msgstr "Vérifier l'e-mail"
 
 #: apps/web/src/components/verify-email-form.tsx:55
 msgid "Verify your email"

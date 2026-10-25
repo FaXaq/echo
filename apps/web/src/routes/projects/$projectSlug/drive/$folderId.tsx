@@ -1,7 +1,13 @@
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { DriveExplorer } from "@/components/features/drive/drive-explorer";
-import { driveSortFieldSchema, driveSortOrderSchema } from "@/services/resources/drive";
+import {
+  driveSortFieldSchema,
+  driveSortOrderSchema,
+  getFolderQueryOptions,
+} from "@/services/resources/drive";
+import { useSyncPageMeta } from "@/contexts/page-meta";
 
 export const Route = createFileRoute("/projects/$projectSlug/drive/$folderId")({
   validateSearch: z.object({
@@ -19,6 +25,9 @@ function RouteComponent() {
   const navigate = useNavigate();
   const sort = search.sort ?? "name";
   const order = search.order ?? "asc";
+  const pathname = Route.useMatch({ select: (match) => match.pathname });
+  const { data: folder } = useQuery(getFolderQueryOptions({ id: folderId, organizationId }));
+  useSyncPageMeta(pathname, folder?.name, folder?.name);
 
   return (
     <div className="flex h-full min-h-0 flex-col p-6">

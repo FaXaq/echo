@@ -9,6 +9,7 @@ export const Route = createFileRoute("/projects/$projectSlug/outreach/$cardId")(
 function OrganizationOutreachCardDetailPage() {
   const { projectSlug, cardId } = Route.useParams();
   const { organizationId } = Route.useRouteContext();
+  const pathname = Route.useMatch({ select: (match) => match.pathname });
   const navigate = useNavigate();
 
   const goBack = () => navigate({ to: "/projects/$projectSlug/outreach", params: { projectSlug } });
@@ -18,7 +19,7 @@ function OrganizationOutreachCardDetailPage() {
       <SuspendedOutreachCardDetail
         cardId={cardId}
         organizationId={organizationId}
-        pathname={`/${projectSlug}/outreach/${cardId}`}
+        pathname={pathname}
         onBack={goBack}
       />
     </div>
