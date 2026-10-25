@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
 import type { SongStructure, TimeSignature } from "@echo/modules/song/domain";
 
@@ -26,7 +26,9 @@ function SongStructureContent({
   defaultTime,
 }: SuspendedSongStructureProps) {
   const { t } = useLingui();
-  const { data } = useSuspenseQuery(getSongStructureQueryOptions({ songId, organizationId }));
+  const queryClient = useQueryClient();
+  const queryOptions = getSongStructureQueryOptions({ songId, organizationId });
+  const { data } = useSuspenseQuery(queryOptions);
   const [structure, setStructure] = useState<SongStructure>(data);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const structureRef = useRef(structure);
@@ -48,6 +50,7 @@ function SongStructureContent({
 
   const handleChange = (next: SongStructure) => {
     setStructure(next);
+    queryClient.setQueryData(queryOptions.queryKey, next);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       debounceRef.current = null;

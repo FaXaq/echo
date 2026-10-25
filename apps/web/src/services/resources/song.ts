@@ -46,6 +46,7 @@ export function getSongQueryOptions(opts: { songId: string; organizationId: stri
 export function getSongStructureQueryOptions(opts: { songId: string; organizationId: string }) {
   return queryOptions({
     queryKey: getResourceKey("getSongStructure", opts),
+    staleTime: Infinity,
     queryFn: async ({ queryKey, signal }) => {
       const [{ params }] = queryKey;
       return apiClient.song.getSongStructure.query(params, { signal });

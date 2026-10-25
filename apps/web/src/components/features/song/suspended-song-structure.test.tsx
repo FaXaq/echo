@@ -26,6 +26,12 @@ vi.mock("@/components/ui/song/structure/song-structure-editor", () => ({
   ),
 }));
 
+const getSongStructure = vi.hoisted(() => vi.fn(async () => ({ sections: [] })));
+
+vi.mock("@/services/api-client", () => ({
+  apiClient: { song: { getSongStructure: { query: getSongStructure } } },
+}));
+
 import { SuspendedSongStructure } from "./suspended-song-structure";
 import * as songResource from "@/services/resources/song";
 
@@ -58,12 +64,13 @@ function setup() {
       .queryKey,
     { sections: [] },
   );
-  const view = render(
+  const ui = (
     <QueryClientProvider client={client}>
       <SuspendedSongStructure songId="song-1" organizationId="org-1" defaultTime={defaultTime} />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
-  return { mutationFn, ...view };
+  const view = render(ui);
+  return { mutationFn, client, ui, ...view };
 }
 
 const click = (name: string) =>
@@ -118,13 +125,39 @@ describe("SuspendedSongStructure", () => {
     });
   });
 
-  it("does not revert the editor when a save resolves after a newer edit", async () => {
-    setup();
+  it("keeps edits when the panel is unmounted and remounted", async () => {
+    const { unmount, ui } = setup();
+    await click("edit b");
+    unmount();
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    render(ui);
+    expect(screen.getByTestId("count")).toHaveTextContent("2");
+  });
+
+  it("does not refetch the structure on remount", async () => {
+    const { unmount, ui } = setup();
+    await click("edit a");
+    unmount();
+    render(ui);
+    await act(() => vi.advanceTimersByTimeAsync(0));
+    expect(getSongStructure).not.toHaveBeenCalled();
+  });
+
+  it("ignores the mutation response for editor and cache", async () => {
+    const { mutationFn, client } = setup();
+    mutationFn.mockResolvedValue({
+      sections: [makeSection("x"), makeSection("y"), makeSection("z")],
+    });
     await click("edit a");
     await act(() => vi.advanceTimersByTimeAsync(600));
     await click("edit b");
-    expect(screen.getByTestId("count")).toHaveTextContent("2");
     await act(() => vi.advanceTimersByTimeAsync(0));
     expect(screen.getByTestId("count")).toHaveTextContent("2");
+    expect(
+      client.getQueryData(
+        songResource.getSongStructureQueryOptions({ songId: "song-1", organizationId: "org-1" })
+          .queryKey,
+      ),
+    ).toEqual({ sections: [makeSection("a"), makeSection("b")] });
   });
 });
