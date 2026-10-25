@@ -1,7 +1,14 @@
 import { useLingui } from "@lingui/react/macro";
 import { Link } from "@tanstack/react-router";
 import { useDraggable } from "@dnd-kit/react";
-import { Calendar as CalendarIcon, Download, MoreVertical, Pen, Trash } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  CalendarPlus,
+  Download,
+  MoreVertical,
+  Pen,
+  Trash,
+} from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   ContextMenu,
@@ -33,6 +40,7 @@ export function FileRow({
   onToggleSelect,
   onContextMenuTrigger,
   onRename,
+  onAssignToEvent,
   onDelete,
   onDownload,
   onPlay,
@@ -48,6 +56,7 @@ export function FileRow({
   onToggleSelect: (event: React.MouseEvent) => void;
   onContextMenuTrigger: () => void;
   onRename: () => void;
+  onAssignToEvent: () => void;
   onDelete: () => void;
   onDownload: () => void;
   onPlay?: () => void;
@@ -171,6 +180,15 @@ export function FileRow({
                 {t`Rename`}
               </DropdownMenuItem>
               <DropdownMenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onAssignToEvent();
+                }}
+              >
+                <CalendarPlus />
+                {t`Assign to event`}
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 variant="destructive"
                 onClick={(event) => {
                   event.stopPropagation();
@@ -211,6 +229,10 @@ export function FileRow({
             <ContextMenuItem onClick={onRename}>
               <Pen />
               {t`Rename`}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={onAssignToEvent}>
+              <CalendarPlus />
+              {t`Assign to event`}
             </ContextMenuItem>
             <ContextMenuItem variant="destructive" onClick={onDelete}>
               <Trash />

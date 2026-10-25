@@ -20,6 +20,12 @@ export type { ListCalendarEventsQueryPort } from "./list-calendar-events.query.p
 export { listCalendarEventsQueryFactory } from "./list-calendar-events.query.kysely.js";
 
 export type {
+  SearchCalendarEventsQueryInput,
+  SearchCalendarEventsQueryPort,
+} from "./search-calendar-events.query.port.js";
+export { searchCalendarEventsQueryFactory } from "./search-calendar-events.query.kysely.js";
+
+export type {
   GetCalendarEventByIdQueryInput,
   GetCalendarEventByIdQueryPort,
 } from "./get-calendar-event-by-id.query.port";

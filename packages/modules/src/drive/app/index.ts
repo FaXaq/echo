@@ -11,6 +11,7 @@ export type { DeleteOrganizationFilesFailure } from "./delete-organization-files
 export { renameFile } from "./rename-file.js";
 export { moveFile } from "./move-file.js";
 export { linkFileToSong } from "./link-file-to-song.js";
+export { linkFileToEvent } from "./link-file-to-event.js";
 export { createFolder } from "./create-folder.js";
 export { renameFolder } from "./rename-folder.js";
 export { moveFolder } from "./move-folder.js";
