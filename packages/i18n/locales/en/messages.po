@@ -149,7 +149,7 @@ msgstr "Actions"
 
 #. placeholder {0}: file.filename
 #. placeholder {0}: folder.name
-#: apps/web/src/components/features/drive/drive-file-row.tsx:149
+#: apps/web/src/components/features/drive/drive-file-row.tsx:156
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:169
 #: apps/web/src/components/ui/attachment-list.tsx:230
 #: apps/web/src/components/ui/attachment-list.tsx:427
@@ -282,8 +282,8 @@ msgstr "Asc"
 msgid "Assign {0} to an event"
 msgstr "Assign {0} to an event"
 
-#: apps/web/src/components/features/drive/drive-file-row.tsx:182
-#: apps/web/src/components/features/drive/drive-file-row.tsx:228
+#: apps/web/src/components/features/drive/drive-file-row.tsx:189
+#: apps/web/src/components/features/drive/drive-file-row.tsx:235
 msgid "Assign to event"
 msgstr "Assign to event"
 
@@ -763,8 +763,8 @@ msgstr "Define as"
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:70
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:88
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:98
-#: apps/web/src/components/features/drive/drive-file-row.tsx:192
-#: apps/web/src/components/features/drive/drive-file-row.tsx:232
+#: apps/web/src/components/features/drive/drive-file-row.tsx:199
+#: apps/web/src/components/features/drive/drive-file-row.tsx:239
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:194
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:226
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:68
@@ -889,10 +889,10 @@ msgstr "Dismiss"
 #~ msgid "Don't have an account? <0>Sign up</0>"
 #~ msgstr "Don't have an account? <0>Sign up</0>"
 
-#: apps/web/src/components/features/drive/drive-file-row.tsx:164
-#: apps/web/src/components/features/drive/drive-file-row.tsx:206
+#: apps/web/src/components/features/drive/drive-file-row.tsx:171
 #: apps/web/src/components/features/drive/drive-file-row.tsx:213
 #: apps/web/src/components/features/drive/drive-file-row.tsx:220
+#: apps/web/src/components/features/drive/drive-file-row.tsx:227
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:208
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:215
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:52
@@ -1954,8 +1954,8 @@ msgstr "Remove role"
 msgid "Remove song"
 msgstr "Remove song"
 
-#: apps/web/src/components/features/drive/drive-file-row.tsx:173
-#: apps/web/src/components/features/drive/drive-file-row.tsx:224
+#: apps/web/src/components/features/drive/drive-file-row.tsx:180
+#: apps/web/src/components/features/drive/drive-file-row.tsx:231
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:184
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
 #: apps/web/src/components/ui/attachment-list.tsx:254
@@ -2102,7 +2102,7 @@ msgstr "Select"
 
 #. placeholder {0}: file.filename
 #. placeholder {0}: folder.name
-#: apps/web/src/components/features/drive/drive-file-row.tsx:100
+#: apps/web/src/components/features/drive/drive-file-row.tsx:107
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:135
 msgid "Select {0}"
 msgstr "Select {0}"
