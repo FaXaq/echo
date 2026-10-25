@@ -132,6 +132,19 @@ export function useLinkFileToSongMutation({ onSuccess }: { onSuccess?: () => voi
   });
 }
 
+export function useLinkFileToEventMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { fileId: string; eventId: string; organizationId: string }) =>
+      apiClient.drive.linkFileToEvent.mutate(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: key });
+      onSuccess?.();
+    },
+  });
+}
+
 export function useMoveFileMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
   const queryClient = useQueryClient();
 

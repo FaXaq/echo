@@ -3,6 +3,7 @@ import { organizationProcedure, router } from "../trpc";
 import {
   createEvent,
   listEvents,
+  searchEvents,
   updateEvent,
   deleteEvent,
   getEventById,
@@ -13,6 +14,7 @@ import {
   updateCalendarEventCommandFactory,
   deleteCalendarEventCommandFactory,
   listCalendarEventsQueryFactory,
+  searchCalendarEventsQueryFactory,
   getCalendarEventByIdFactory,
 } from "@echo/modules/calendar/infrastructure";
 import {
@@ -45,6 +47,7 @@ const insertCalendarEventCommand = insertCalendarEventCommandFactory();
 const updateCalendarEventCommand = updateCalendarEventCommandFactory();
 const deleteCalendarEventCommand = deleteCalendarEventCommandFactory();
 const listCalendarEventsQuery = listCalendarEventsQueryFactory();
+const searchCalendarEventsQuery = searchCalendarEventsQueryFactory();
 const getCalendarEventById = getCalendarEventByIdFactory();
 const findOrphanedFilesForEventQuery = findOrphanedFilesForEventQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
@@ -74,6 +77,19 @@ export const makeCalendarRouter = () =>
         { scope: ctx.organizationScope },
       ),
     ),
+
+    searchEvents: organizationProcedure
+      .input(z.object({ query: z.string().trim().min(1) }))
+      .query(({ ctx, input }) =>
+        searchEvents(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            searchCalendarEventsQuery,
+          },
+          { scope: ctx.organizationScope, query: input.query },
+        ),
+      ),
 
     createEvent: organizationProcedure.input(z.object(eventInput)).mutation(({ ctx, input }) =>
       createEvent(

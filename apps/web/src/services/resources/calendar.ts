@@ -19,6 +19,16 @@ export function getEventsQueryOptions(opts: { organizationId: string }) {
   });
 }
 
+export function getEventSearchQueryOptions(opts: { organizationId: string; query: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("searchEvents", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.calendar.searchEvents.query(params, { signal });
+    },
+  });
+}
+
 export function getEventQueryOptions(opts: { eventId: string; organizationId: string }) {
   return queryOptions({
     queryKey: getResourceKey("listEvents", opts),

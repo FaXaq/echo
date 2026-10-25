@@ -14,6 +14,7 @@ import {
   listSongFiles,
   moveFile,
   linkFileToSong,
+  linkFileToEvent,
   moveFolder,
   renameFile,
   renameFolder,
@@ -30,6 +31,7 @@ import {
   insertFolderCommandFactory,
   insertPendingFileCommandFactory,
   linkFileToSongCommandFactory,
+  linkFileToEventCommandFactory,
   listFilesByEventQueryFactory,
   listFilesByOrganizationQueryFactory,
   listFilesBySongQueryFactory,
@@ -55,6 +57,7 @@ const driveSortOrderSchema = z.enum(["asc", "desc"]);
 
 const insertPendingFileCommand = insertPendingFileCommandFactory();
 const linkFileToSongCommand = linkFileToSongCommandFactory();
+const linkFileToEventCommand = linkFileToEventCommandFactory();
 const songExistsInOrganizationQuery = songExistsInOrganizationQueryFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
 const findFilesByIdsQuery = findFilesByIdsQueryFactory();
@@ -260,6 +263,20 @@ export const makeDriveRouter = () =>
             linkFileToSongCommand,
           },
           { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
+        ),
+      ),
+
+    linkFileToEvent: organizationProcedure
+      .input(z.object({ fileId: z.string(), eventId: z.string() }))
+      .mutation(({ ctx, input }) =>
+        linkFileToEvent(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFileByIdQuery,
+            linkFileToEventCommand,
+          },
+          { ...input, scope: ctx.organizationScope },
         ),
       ),
 
