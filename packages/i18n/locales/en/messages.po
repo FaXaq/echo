@@ -135,6 +135,14 @@ msgstr "1 {0} = how many {organizationCurrency}?"
 msgid "A new code has been sent"
 msgstr "A new code has been sent"
 
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:29
+msgid "A section can have at most 256 bars"
+msgstr "A section can have at most 256 bars"
+
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:27
+msgid "A section needs at least one bar"
+msgstr "A section needs at least one bar"
+
 #: apps/web/src/lib/dynamic-messages.ts:68
 #: apps/web/src/routes/accept-invitation.tsx:117
 msgid "Accept invitation"
@@ -195,7 +203,7 @@ msgstr "Add files"
 msgid "Add playlist"
 msgstr "Add playlist"
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:65
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:73
 msgid "Add section"
 msgstr "Add section"
 
@@ -353,7 +361,11 @@ msgstr "Back to songs"
 msgid "Balances"
 msgstr "Balances"
 
-#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:21
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:24
+msgid "Bar {bar} has more than 8 chords"
+msgstr "Bar {bar} has more than 8 chords"
+
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:25
 msgid "Bar {bar}: \"{token}\" isn't a chord"
 msgstr "Bar {bar}: \"{token}\" isn't a chord"
 
@@ -386,7 +398,7 @@ msgstr "Bridge"
 msgid "Build a setlist for your next gig or rehearsal."
 msgstr "Build a setlist for your next gig or rehearsal."
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:82
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:90
 msgid "Build the song from intros, verses and choruses."
 msgstr "Build the song from intros, verses and choruses."
 
@@ -423,9 +435,9 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
-#: apps/web/src/components/ui/song/song-detail.tsx:138
+#: apps/web/src/components/ui/song/song-detail.tsx:142
 #: apps/web/src/components/ui/song/song-dialog.tsx:178
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:113
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:123
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Cancel"
 msgstr "Cancel"
@@ -463,7 +475,7 @@ msgstr "Check your email for a password reset link"
 msgid "Check your email to verify your account"
 msgstr "Check your email to verify your account"
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:98
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:107
 msgid "Choose a section type"
 msgstr "Choose a section type"
 
@@ -491,11 +503,11 @@ msgstr "Choose who paid"
 msgid "Choose who shares this expense"
 msgstr "Choose who shares this expense"
 
-#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:33
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:43
 msgid "Chord chart as text"
 msgstr "Chord chart as text"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:163
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:166
 msgid "Chords"
 msgstr "Chords"
 
@@ -829,7 +841,8 @@ msgstr "Define as"
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:186
 #: apps/web/src/components/ui/song/song-detail.tsx:103
-#: apps/web/src/components/ui/song/song-detail.tsx:145
+#: apps/web/src/components/ui/song/song-detail.tsx:149
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:216
 msgid "Delete"
 msgstr "Delete"
 
@@ -875,11 +888,15 @@ msgstr "Delete project"
 msgid "Delete repayment?"
 msgstr "Delete repayment?"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:205
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:208
 msgid "Delete section"
 msgstr "Delete section"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:132
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:214
+msgid "Delete section?"
+msgstr "Delete section?"
+
+#: apps/web/src/components/ui/song/song-detail.tsx:136
 msgid "Delete song?"
 msgstr "Delete song?"
 
@@ -1229,7 +1246,7 @@ msgstr "Failed to update member role"
 msgid "Failed to update project name"
 msgstr "Failed to update project name"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:137
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:140
 msgid "Fewer repeats"
 msgstr "Fewer repeats"
 
@@ -1328,7 +1345,7 @@ msgstr "Go to previous page"
 msgid "Green"
 msgstr "Green"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:167
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:170
 msgid "Grid"
 msgstr "Grid"
 
@@ -1344,11 +1361,11 @@ msgstr "Grid"
 msgid "Hide"
 msgstr "Hide"
 
-#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:103
+#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:109
 msgid "Insert a section at the end"
 msgstr "Insert a section at the end"
 
-#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:69
+#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:74
 msgid "Insert a section before {name}"
 msgstr "Insert a section before {name}"
 
@@ -1492,7 +1509,7 @@ msgstr "Login to your account"
 #~ msgstr "Lowercase letters, numbers and hyphens only"
 
 #: apps/web/src/components/ui/lyrics-editor.tsx:15
-#: apps/web/src/components/ui/song/song-detail.tsx:115
+#: apps/web/src/components/ui/song/song-detail.tsx:116
 msgid "Lyrics"
 msgstr "Lyrics"
 
@@ -1551,7 +1568,7 @@ msgstr "Misc ({0})"
 msgid "Month"
 msgstr "Month"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:150
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:153
 msgid "More repeats"
 msgstr "More repeats"
 
@@ -1564,13 +1581,13 @@ msgid "My Project"
 msgstr "My Project"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:73
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:76
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:125
 #: apps/web/src/routes/projects/new.tsx:81
 msgid "Name"
 msgstr "Name"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:84
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:87
 msgid "Name is required"
 msgstr "Name is required"
 
@@ -1736,7 +1753,7 @@ msgstr "No repayments yet"
 msgid "No results."
 msgstr "No results."
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:81
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:89
 msgid "No sections yet"
 msgstr "No sections yet"
 
@@ -1779,7 +1796,7 @@ msgstr "None yet"
 msgid "Note"
 msgstr "Note"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:188
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:191
 msgid "Notes"
 msgstr "Notes"
 
@@ -2105,11 +2122,11 @@ msgstr "Repayments"
 msgid "Repayments you record will show up here."
 msgstr "Repayments you record will show up here."
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:130
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:133
 msgid "Repeat"
 msgstr "Repeat"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:132
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:135
 msgid "Repeat count"
 msgstr "Repeat count"
 
@@ -2215,7 +2232,7 @@ msgstr "Searching…"
 msgid "seconds"
 msgstr "seconds"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:66
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:69
 msgid "Section detail"
 msgstr "Section detail"
 
@@ -2345,8 +2362,8 @@ msgstr "Start"
 msgid "Storage"
 msgstr "Storage"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:116
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:73
+#: apps/web/src/components/ui/song/song-detail.tsx:119
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:81
 msgid "Structure"
 msgstr "Structure"
 
@@ -2358,7 +2375,7 @@ msgstr "Structure"
 msgid "Summary"
 msgstr "Summary"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:170
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:173
 msgid "Text"
 msgstr "Text"
 
@@ -2497,7 +2514,7 @@ msgstr "This will permanently delete this playlist. This action cannot be undone
 msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
 msgstr "This will permanently delete this repayment and change the balances. This action cannot be undone."
 
-#: apps/web/src/components/ui/song/song-detail.tsx:134
+#: apps/web/src/components/ui/song/song-detail.tsx:138
 msgid "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 msgstr "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 
@@ -2505,9 +2522,13 @@ msgstr "This will permanently delete this song and remove it from any playlists.
 #~ msgid "This will permanently delete this song. This action cannot be undone."
 #~ msgstr "This will permanently delete this song. This action cannot be undone."
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:215
+msgid "This will remove the section and its chords."
+msgstr "This will remove the section and its chords."
+
 #: apps/web/src/components/ui/song/song-detail.tsx:62
 #: apps/web/src/components/ui/song/song-dialog.tsx:140
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:113
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:116
 msgid "Time signature"
 msgstr "Time signature"
 
@@ -2557,7 +2578,7 @@ msgstr "Total spent"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:326
 #: apps/web/src/components/ui/song/song-detail.tsx:63
 #: apps/web/src/components/ui/song/song-dialog.tsx:148
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:90
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:93
 msgid "Type"
 msgstr "Type"
 
@@ -2639,7 +2660,7 @@ msgstr "Uploaded by"
 msgid "Uploading…"
 msgstr "Uploading…"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:124
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:127
 msgid "Use a time signature like 4/4"
 msgstr "Use a time signature like 4/4"
 

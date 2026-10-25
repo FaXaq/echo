@@ -135,6 +135,14 @@ msgstr "1 {0} = combien de {organizationCurrency} ?"
 msgid "A new code has been sent"
 msgstr "Un nouveau code a été envoyé"
 
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:29
+msgid "A section can have at most 256 bars"
+msgstr "Une section peut avoir 256 mesures au maximum"
+
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:27
+msgid "A section needs at least one bar"
+msgstr "Une section doit avoir au moins une mesure"
+
 #: apps/web/src/lib/dynamic-messages.ts:68
 #: apps/web/src/routes/accept-invitation.tsx:117
 msgid "Accept invitation"
@@ -195,7 +203,7 @@ msgstr "Ajouter des fichiers"
 msgid "Add playlist"
 msgstr "Ajouter une playlist"
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:65
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:73
 msgid "Add section"
 msgstr "Ajouter une section"
 
@@ -353,7 +361,11 @@ msgstr "Retour aux chansons"
 msgid "Balances"
 msgstr "Soldes"
 
-#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:21
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:24
+msgid "Bar {bar} has more than 8 chords"
+msgstr "La mesure {bar} a plus de 8 accords"
+
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:25
 msgid "Bar {bar}: \"{token}\" isn't a chord"
 msgstr "Mesure {bar} : « {token} » n'est pas un accord"
 
@@ -386,7 +398,7 @@ msgstr "Pont"
 msgid "Build a setlist for your next gig or rehearsal."
 msgstr "Préparez une setlist pour votre prochain concert ou votre prochaine répétition."
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:82
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:90
 msgid "Build the song from intros, verses and choruses."
 msgstr "Construisez la chanson avec des intros, des couplets et des refrains."
 
@@ -423,9 +435,9 @@ msgstr "Impossible de lire {filename}"
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
-#: apps/web/src/components/ui/song/song-detail.tsx:138
+#: apps/web/src/components/ui/song/song-detail.tsx:142
 #: apps/web/src/components/ui/song/song-dialog.tsx:178
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:113
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:123
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Cancel"
 msgstr "Annuler"
@@ -463,7 +475,7 @@ msgstr "Vérifiez votre email pour le lien de réinitialisation"
 msgid "Check your email to verify your account"
 msgstr "Consultez votre e-mail pour vérifier votre compte"
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:98
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:107
 msgid "Choose a section type"
 msgstr "Choisir un type de section"
 
@@ -491,11 +503,11 @@ msgstr "Choisissez qui a payé"
 msgid "Choose who shares this expense"
 msgstr "Choisissez qui partage cette dépense"
 
-#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:33
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:43
 msgid "Chord chart as text"
 msgstr "Grille d'accords en texte"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:163
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:166
 msgid "Chords"
 msgstr "Accords"
 
@@ -829,7 +841,8 @@ msgstr "Définir comme"
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:186
 #: apps/web/src/components/ui/song/song-detail.tsx:103
-#: apps/web/src/components/ui/song/song-detail.tsx:145
+#: apps/web/src/components/ui/song/song-detail.tsx:149
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:216
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -875,11 +888,15 @@ msgstr "Supprimer le projet"
 msgid "Delete repayment?"
 msgstr "Supprimer le remboursement ?"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:205
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:208
 msgid "Delete section"
 msgstr "Supprimer la section"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:132
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:214
+msgid "Delete section?"
+msgstr "Supprimer la section ?"
+
+#: apps/web/src/components/ui/song/song-detail.tsx:136
 msgid "Delete song?"
 msgstr "Supprimer la chanson ?"
 
@@ -1229,7 +1246,7 @@ msgstr "Échec de la mise à jour du rôle"
 msgid "Failed to update project name"
 msgstr "Échec de la mise à jour du nom du projet"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:137
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:140
 msgid "Fewer repeats"
 msgstr "Moins de répétitions"
 
@@ -1328,7 +1345,7 @@ msgstr "Aller à la page précédente"
 msgid "Green"
 msgstr "Vert"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:167
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:170
 msgid "Grid"
 msgstr "Grille"
 
@@ -1344,11 +1361,11 @@ msgstr "Grille"
 msgid "Hide"
 msgstr "Masquer"
 
-#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:103
+#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:109
 msgid "Insert a section at the end"
 msgstr "Insérer une section à la fin"
 
-#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:69
+#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:74
 msgid "Insert a section before {name}"
 msgstr "Insérer une section avant {name}"
 
@@ -1492,7 +1509,7 @@ msgstr "Connexion à votre compte"
 #~ msgstr "Lettres minuscules, chiffres et tirets uniquement"
 
 #: apps/web/src/components/ui/lyrics-editor.tsx:15
-#: apps/web/src/components/ui/song/song-detail.tsx:115
+#: apps/web/src/components/ui/song/song-detail.tsx:116
 msgid "Lyrics"
 msgstr "Paroles"
 
@@ -1551,7 +1568,7 @@ msgstr "Divers ({0})"
 msgid "Month"
 msgstr "Mois"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:150
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:153
 msgid "More repeats"
 msgstr "Plus de répétitions"
 
@@ -1564,13 +1581,13 @@ msgid "My Project"
 msgstr "Mon projet"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:73
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:76
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:125
 #: apps/web/src/routes/projects/new.tsx:81
 msgid "Name"
 msgstr "Nom"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:84
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:87
 msgid "Name is required"
 msgstr "Le nom est obligatoire"
 
@@ -1736,7 +1753,7 @@ msgstr "Aucun remboursement pour le moment"
 msgid "No results."
 msgstr "Aucun résultat."
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:81
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:89
 msgid "No sections yet"
 msgstr "Aucune section pour l'instant"
 
@@ -1779,7 +1796,7 @@ msgstr "Aucun pour le moment"
 msgid "Note"
 msgstr "Note"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:188
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:191
 msgid "Notes"
 msgstr "Notes"
 
@@ -2105,11 +2122,11 @@ msgstr "Remboursements"
 msgid "Repayments you record will show up here."
 msgstr "Les remboursements que vous enregistrez apparaîtront ici."
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:130
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:133
 msgid "Repeat"
 msgstr "Répétition"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:132
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:135
 msgid "Repeat count"
 msgstr "Nombre de répétitions"
 
@@ -2215,7 +2232,7 @@ msgstr "Recherche…"
 msgid "seconds"
 msgstr "secondes"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:66
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:69
 msgid "Section detail"
 msgstr "Détail de la section"
 
@@ -2345,8 +2362,8 @@ msgstr "Début"
 msgid "Storage"
 msgstr "Stockage"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:116
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:73
+#: apps/web/src/components/ui/song/song-detail.tsx:119
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:81
 msgid "Structure"
 msgstr "Structure"
 
@@ -2358,7 +2375,7 @@ msgstr "Structure"
 msgid "Summary"
 msgstr "Résumé"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:170
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:173
 msgid "Text"
 msgstr "Texte"
 
@@ -2497,7 +2514,7 @@ msgstr "Cela supprimera définitivement cette playlist. Cette action est irréve
 msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
 msgstr "Ce remboursement sera définitivement supprimé et les soldes seront modifiés. Cette action est irréversible."
 
-#: apps/web/src/components/ui/song/song-detail.tsx:134
+#: apps/web/src/components/ui/song/song-detail.tsx:138
 msgid "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette chanson et la retirera de toutes les playlists. Cette action est irréversible."
 
@@ -2505,9 +2522,13 @@ msgstr "Cela supprimera définitivement cette chanson et la retirera de toutes l
 #~ msgid "This will permanently delete this song. This action cannot be undone."
 #~ msgstr "Cette action supprimera définitivement cette chanson. Cette action est irréversible."
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:215
+msgid "This will remove the section and its chords."
+msgstr "Cela supprimera la section et ses accords."
+
 #: apps/web/src/components/ui/song/song-detail.tsx:62
 #: apps/web/src/components/ui/song/song-dialog.tsx:140
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:113
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:116
 msgid "Time signature"
 msgstr "Signature rythmique"
 
@@ -2557,7 +2578,7 @@ msgstr "Total dépensé"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:326
 #: apps/web/src/components/ui/song/song-detail.tsx:63
 #: apps/web/src/components/ui/song/song-dialog.tsx:148
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:90
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:93
 msgid "Type"
 msgstr "Type"
 
@@ -2639,7 +2660,7 @@ msgstr "Ajouté par"
 msgid "Uploading…"
 msgstr "Importation…"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:124
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:127
 msgid "Use a time signature like 4/4"
 msgstr "Utilisez une signature rythmique comme 4/4"
 
