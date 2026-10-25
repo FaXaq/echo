@@ -161,9 +161,6 @@ importers:
       fast-xml-parser:
         specifier: ^5.11.2
         version: 5.11.2
-      fast-xml-parser:
-        specifier: ^5.11.2
-        version: 5.11.2
       fastify:
         specifier: ^5.10.0
         version: 5.10.0
