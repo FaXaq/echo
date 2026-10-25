@@ -6,7 +6,7 @@ const section = {
   kind: "verse",
   name: "Verse",
   repeat: 1,
-  time: null,
+  time: { beats: 4, beatType: 4 },
   bars: [{ chords: ["Am"] }],
   notes: "",
 };
@@ -26,9 +26,35 @@ describe("structure", () => {
     ["repeat 17", { repeat: 17 }],
     ["empty name", { name: "" }],
     ["invalid chord", { bars: [{ chords: ["H7"] }] }],
+    ["51 char name", { name: "a".repeat(51) }],
+    ["5001 char notes", { notes: "a".repeat(5001) }],
+    ["257 bars", { bars: Array.from({ length: 257 }, () => ({ chords: ["C"] })) }],
+    ["9 chords in a bar", { bars: [{ chords: Array(9).fill("C") }] }],
   ])("rejects a section with %s", (_, override) => {
     expect(songStructureSchema.safeParse({ sections: [{ ...section, ...override }] }).success).toBe(
       false,
     );
+  });
+
+  it.each([
+    ["50 char name", { name: "a".repeat(50) }],
+    ["5000 char notes", { notes: "a".repeat(5000) }],
+    ["256 bars", { bars: Array.from({ length: 256 }, () => ({ chords: ["C"] })) }],
+    ["8 chords in a bar", { bars: [{ chords: Array(8).fill("C") }] }],
+  ])("accepts a section with %s", (_, override) => {
+    expect(songStructureSchema.safeParse({ sections: [{ ...section, ...override }] }).success).toBe(
+      true,
+    );
+  });
+
+  it("rejects a section without time", () => {
+    const { time: _time, ...withoutTime } = section;
+    expect(songStructureSchema.safeParse({ sections: [withoutTime] }).success).toBe(false);
+  });
+
+  it("limits sections to 100", () => {
+    const sections = (n: number) => ({ sections: Array.from({ length: n }, () => section) });
+    expect(songStructureSchema.safeParse(sections(100)).success).toBe(true);
+    expect(songStructureSchema.safeParse(sections(101)).success).toBe(false);
   });
 });

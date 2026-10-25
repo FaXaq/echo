@@ -38,11 +38,11 @@ export type Bar = z.infer<typeof barSchema>;
 export const songSectionSchema = z.object({
   id: z.string().min(1),
   kind: sectionKindSchema,
-  name: z.string().min(1).max(100),
+  name: z.string().min(1).max(50),
   repeat: z.number().int().min(1).max(16),
-  time: timeSignatureSchema.nullable(),
+  time: timeSignatureSchema,
   bars: z.array(barSchema).min(1).max(256),
-  notes: z.string().max(2000),
+  notes: z.string().max(5000),
 });
 export type SongSection = z.infer<typeof songSectionSchema>;
 
