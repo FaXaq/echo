@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Music, MoreVertical, Share2 } from "lucide-react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 
 import {
   AlertDialog,
@@ -112,8 +112,12 @@ export function SongDetail({
       >
         <Tabs defaultValue="lyrics">
           <TabsList>
-            <TabsTrigger value="lyrics">{t`Lyrics`}</TabsTrigger>
-            <TabsTrigger value="structure">{t`Structure`}</TabsTrigger>
+            <TabsTrigger value="lyrics">
+              <Trans>Lyrics</Trans>
+            </TabsTrigger>
+            <TabsTrigger value="structure">
+              <Trans>Structure</Trans>
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="lyrics">
             <LyricsEditor

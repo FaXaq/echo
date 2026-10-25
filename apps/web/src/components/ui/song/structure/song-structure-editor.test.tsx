@@ -33,7 +33,7 @@ describe("SongStructureEditor", () => {
     );
 
     expect(screen.getByText("No sections yet")).toBeInTheDocument();
-    await user.click(screen.getAllByRole("button", { name: "Add section" })[0]);
+    await user.click(screen.getByRole("button", { name: "Add section" }));
     await user.click(screen.getByRole("button", { name: "Chorus" }));
 
     expect(onChange).toHaveBeenCalledWith({
@@ -91,5 +91,26 @@ describe("SongStructureEditor", () => {
     );
     await user.click(screen.getByRole("button", { name: "More repeats" }));
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("shows a single add button when empty", () => {
+    render(
+      <SongStructureEditor
+        structure={{ sections: [] }}
+        defaultTime={defaultTime}
+        onChange={vi.fn()}
+      />,
+    );
+    expect(screen.getAllByRole("button", { name: "Add section" })).toHaveLength(1);
+  });
+
+  it("disables inserting at 100 sections", () => {
+    const sections = Array.from({ length: 100 }, (_, i) => makeSection({ id: `s${i}` }));
+    render(
+      <SongStructureEditor structure={{ sections }} defaultTime={defaultTime} onChange={vi.fn()} />,
+    );
+    expect(screen.getByRole("button", { name: "Add section" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Insert a section at the end" })).toBeDisabled();
+    expect(screen.getAllByRole("button", { name: /Insert a section before/ })[0]).toBeDisabled();
   });
 });

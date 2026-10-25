@@ -12,10 +12,12 @@ function acceptSection(event: DragEvent) {
 
 function InsertSlot({
   label,
+  disabled,
   onInsert,
   onDropSection,
 }: {
   label: string;
+  disabled: boolean;
   onInsert: () => void;
   onDropSection?: (id: string) => void;
 }) {
@@ -23,6 +25,7 @@ function InsertSlot({
     <button
       type="button"
       aria-label={label}
+      disabled={disabled}
       onClick={onInsert}
       onDragOver={onDropSection && acceptSection}
       onDrop={
@@ -44,12 +47,14 @@ export function StructureTimeline({
   selectedId,
   onSelect,
   onMove,
+  insertDisabled,
   onInsertAt,
 }: {
   sections: SongSection[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   onMove: (id: string, toIndex: number) => void;
+  insertDisabled: boolean;
   onInsertAt: (index: number) => void;
 }) {
   const { t } = useLingui();
@@ -67,6 +72,7 @@ export function StructureTimeline({
           >
             <InsertSlot
               label={t`Insert a section before ${name}`}
+              disabled={insertDisabled}
               onInsert={() => onInsertAt(index)}
             />
             <button
@@ -101,6 +107,7 @@ export function StructureTimeline({
       })}
       <InsertSlot
         label={t`Insert a section at the end`}
+        disabled={insertDisabled}
         onInsert={() => onInsertAt(sections.length)}
         onDropSection={(id) => onMove(id, sections.length)}
       />

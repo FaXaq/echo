@@ -10,8 +10,10 @@ async function typeChart(text: string) {
   render(<ChordChartTextEditor bars={[{ chords: ["C"] }]} onChange={onChange} />);
   const box = screen.getByRole("textbox", { name: "Chord chart as text" });
   await user.clear(box);
-  await user.click(box);
-  await user.paste(text);
+  if (text) {
+    await user.click(box);
+    await user.paste(text);
+  }
   return { onChange, box };
 }
 
@@ -34,5 +36,16 @@ describe("ChordChartTextEditor", () => {
     expect(box).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByText('Bar 2: "H7" isn\'t a chord')).toBeInTheDocument();
     expect(box).toHaveValue("| Am | H7 |");
+  });
+
+  it.each([
+    ["more than 8 chords in a bar", "| C | Am F C G Am F C G Am |", "Bar 2 has more than 8 chords"],
+    ["no bars", "", "A section needs at least one bar"],
+    ["more than 256 bars", "| C ".repeat(257) + "|", "A section can have at most 256 bars"],
+  ])("flags %s without emitting", async (_, text, message) => {
+    const { onChange, box } = await typeChart(text);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(box).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByText(message)).toBeInTheDocument();
   });
 });

@@ -16,6 +16,7 @@ import { SECTION_KIND_LABELS } from "./section-kind";
 import { StructureTimeline } from "./structure-timeline";
 
 const NEW_SECTION_BARS = 4;
+const MAX_SECTIONS = 100;
 
 export function SongStructureEditor({
   structure,
@@ -30,6 +31,7 @@ export function SongStructureEditor({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [insertAt, setInsertAt] = useState<number | null>(null);
   const { sections } = structure;
+  const full = sections.length >= MAX_SECTIONS;
   const selected = sections.find((section) => section.id === selectedId) ?? sections[0];
 
   function setSections(next: SongSection[]) {
@@ -60,7 +62,13 @@ export function SongStructureEditor({
   }
 
   const addButton = (
-    <Button type="button" variant="outline" size="sm" onClick={() => setInsertAt(sections.length)}>
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      disabled={full}
+      onClick={() => setInsertAt(sections.length)}
+    >
       <Plus />
       <Trans>Add section</Trans>
     </Button>
@@ -72,7 +80,7 @@ export function SongStructureEditor({
         <h2 className="font-heading text-base font-semibold">
           <Trans>Structure</Trans>
         </h2>
-        {addButton}
+        {sections.length > 0 && addButton}
       </div>
 
       {sections.length === 0 ? (
@@ -88,6 +96,7 @@ export function SongStructureEditor({
           selectedId={selected.id}
           onSelect={setSelectedId}
           onMove={move}
+          insertDisabled={full}
           onInsertAt={setInsertAt}
         />
       )}
@@ -104,6 +113,7 @@ export function SongStructureEditor({
               type="button"
               variant="outline"
               size="sm"
+              disabled={full}
               onClick={() => insert(kind, insertAt)}
             >
               {t(SECTION_KIND_LABELS[kind])}

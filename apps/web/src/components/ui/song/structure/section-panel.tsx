@@ -4,12 +4,14 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import {
   TIME_SIGNATURE_PATTERN,
   formatTimeSignature,
+  normalizeBars,
   parseTimeSignature,
   sectionKindSchema,
   type SongSection,
 } from "@echo/modules/song/domain";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -42,6 +44,7 @@ export function SectionPanel({
 }) {
   const { t } = useLingui();
   const [draft, setDraft] = useState(() => draftOf(section));
+  const [deleteOpen, setDeleteOpen] = useState(false);
   if (draft.id !== section.id) setDraft(draftOf(section));
 
   const colorStyle: CSSProperties & Record<"--section-color", string> = {
@@ -178,7 +181,7 @@ export function SectionPanel({
           <ChordChartTextEditor
             key={section.id}
             bars={section.bars}
-            onChange={(bars) => onChange({ ...section, bars })}
+            onChange={(bars) => onChange({ ...section, bars: normalizeBars(bars, section.time) })}
           />
         </TabsContent>
       </Tabs>
@@ -199,11 +202,20 @@ export function SectionPanel({
         type="button"
         variant="outline"
         className="self-start text-destructive"
-        onClick={onDelete}
+        onClick={() => setDeleteOpen(true)}
       >
         <Trash2 />
         <Trans>Delete section</Trans>
       </Button>
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        variant="destructive"
+        title={<Trans>Delete section?</Trans>}
+        description={<Trans>This will remove the section and its chords.</Trans>}
+        confirmLabel={<Trans>Delete</Trans>}
+        onConfirm={onDelete}
+      />
     </section>
   );
 }
