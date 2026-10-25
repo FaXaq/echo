@@ -17,6 +17,7 @@ export const Route = createFileRoute("/projects/$projectSlug/calendar/$eventId")
 function OrganizationEventDetailPage() {
   const { projectSlug, eventId } = Route.useParams();
   const { organizationId } = Route.useRouteContext();
+  const pathname = Route.useMatch({ select: (match) => match.pathname });
   const navigate = useNavigate();
 
   const goBack = () =>
@@ -32,7 +33,7 @@ function OrganizationEventDetailPage() {
           eventId={eventId}
           projectSlug={projectSlug}
           organizationId={organizationId}
-          pathname={`/${projectSlug}/calendar/${eventId}`}
+          pathname={pathname}
           onBack={goBack}
         />
       </EventDropZone>

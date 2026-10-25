@@ -19,8 +19,9 @@ export const Route = createFileRoute("/projects/$projectSlug")({
     const organizations = await context.queryClient.ensureQueryData(selfListOrganizations());
     const org = organizations.find((o) => o.slug === params.projectSlug);
     if (!org) throw redirect({ to: "/" });
-    return { organizationId: org.id, session };
+    return { organizationId: org.id, organizationName: org.name, session };
   },
+  loader: ({ context }) => ({ title: context.organizationName }),
   component: RouteComponent,
 });
 

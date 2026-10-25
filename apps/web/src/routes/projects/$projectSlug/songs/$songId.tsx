@@ -17,6 +17,7 @@ export const Route = createFileRoute("/projects/$projectSlug/songs/$songId")({
 function OrganizationSongDetailPage() {
   const { projectSlug, songId } = Route.useParams();
   const { organizationId } = Route.useRouteContext();
+  const pathname = Route.useMatch({ select: (match) => match.pathname });
   const navigate = useNavigate();
 
   const goBack = () => navigate({ to: "/projects/$projectSlug/songs", params: { projectSlug } });
@@ -28,7 +29,7 @@ function OrganizationSongDetailPage() {
           key={songId}
           songId={songId}
           organizationId={organizationId}
-          pathname={`/${projectSlug}/songs/${songId}`}
+          pathname={pathname}
           onBack={goBack}
         />
       </SongDropZone>

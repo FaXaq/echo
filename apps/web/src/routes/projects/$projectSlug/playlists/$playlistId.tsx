@@ -9,6 +9,7 @@ export const Route = createFileRoute("/projects/$projectSlug/playlists/$playlist
 function OrganizationPlaylistDetailPage() {
   const { projectSlug, playlistId } = Route.useParams();
   const { organizationId } = Route.useRouteContext();
+  const pathname = Route.useMatch({ select: (match) => match.pathname });
   const navigate = useNavigate();
 
   const goBack = () =>
@@ -21,7 +22,7 @@ function OrganizationPlaylistDetailPage() {
         playlistId={playlistId}
         organizationId={organizationId}
         projectSlug={projectSlug}
-        pathname={`/${projectSlug}/playlists/${playlistId}`}
+        pathname={pathname}
         onBack={goBack}
       />
     </div>
