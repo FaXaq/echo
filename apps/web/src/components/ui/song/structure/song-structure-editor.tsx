@@ -53,14 +53,6 @@ export function SongStructureEditor({
     setInsertAt(null);
   }
 
-  function move(id: string, toIndex: number) {
-    const from = sections.findIndex((section) => section.id === id);
-    if (from < 0) return;
-    const rest = sections.filter((section) => section.id !== id);
-    rest.splice(toIndex, 0, sections[from]);
-    setSections(rest);
-  }
-
   const addButton = (
     <Button
       type="button"
@@ -95,7 +87,7 @@ export function SongStructureEditor({
           sections={sections}
           selectedId={selected.id}
           onSelect={setSelectedId}
-          onMove={move}
+          onReorder={setSections}
           insertDisabled={full}
           onInsertAt={setInsertAt}
         />

@@ -175,7 +175,11 @@ export function SectionPanel({
           </TabsList>
         </div>
         <TabsContent value="grid">
-          <ChordGrid bars={section.bars} />
+          <ChordGrid
+            key={section.id}
+            bars={section.bars}
+            onChange={(bars) => onChange({ ...section, bars: normalizeBars(bars, section.time) })}
+          />
         </TabsContent>
         <TabsContent value="text">
           <ChordChartTextEditor

@@ -8,6 +8,15 @@ i18n.activate("en");
 if (!Element.prototype.hasPointerCapture) {
   Element.prototype.hasPointerCapture = () => false;
 }
+if (!Element.prototype.setPointerCapture) {
+  Element.prototype.setPointerCapture = () => {};
+}
+if (!document.elementFromPoint) {
+  document.elementFromPoint = () => null;
+}
+if (!document.getAnimations) {
+  document.getAnimations = () => [];
+}
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }

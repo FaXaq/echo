@@ -6,17 +6,16 @@ vi.mock("@/components/features/song/song-upload-context", () => ({
 }));
 
 import { SongDropZone } from "./-song-drop-zone";
-import { SECTION_DRAG_TYPE } from "@/components/ui/song/structure/structure-timeline";
 
 describe("SongDropZone", () => {
-  it("ignores section drags", () => {
+  it("ignores non-file drags", () => {
     render(
       <SongDropZone songId="s" organizationId="o">
         <div data-testid="inner" />
       </SongDropZone>,
     );
     fireEvent.dragOver(screen.getByTestId("inner"), {
-      dataTransfer: { types: [SECTION_DRAG_TYPE] },
+      dataTransfer: { types: ["text/plain"] },
     });
     expect(screen.queryByText("Drop files to upload")).not.toBeInTheDocument();
   });
