@@ -168,6 +168,10 @@ msgstr "Actions pour {0}"
 msgid "Actions for selected files"
 msgstr "Actions pour les fichiers sélectionnés"
 
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:128
+msgid "Add a bar"
+msgstr "Ajouter une mesure"
+
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:101
 msgid "Add a contact"
 msgstr "Ajouter un contact"
@@ -203,7 +207,7 @@ msgstr "Ajouter des fichiers"
 msgid "Add playlist"
 msgstr "Ajouter une playlist"
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:73
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:65
 msgid "Add section"
 msgstr "Ajouter une section"
 
@@ -369,7 +373,7 @@ msgstr "La mesure {bar} a plus de 8 accords"
 msgid "Bar {bar}: \"{token}\" isn't a chord"
 msgstr "Mesure {bar} : « {token} » n'est pas un accord"
 
-#: apps/web/src/components/ui/song/structure/chord-grid.tsx:15
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:97
 msgid "Bar {number}: {label}"
 msgstr "Mesure {number} : {label}"
 
@@ -398,7 +402,7 @@ msgstr "Pont"
 msgid "Build a setlist for your next gig or rehearsal."
 msgstr "Préparez une setlist pour votre prochain concert ou votre prochaine répétition."
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:90
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:82
 msgid "Build the song from intros, verses and choruses."
 msgstr "Construisez la chanson avec des intros, des couplets et des refrains."
 
@@ -437,7 +441,7 @@ msgstr "Impossible de lire {filename}"
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
 #: apps/web/src/components/ui/song/song-detail.tsx:142
 #: apps/web/src/components/ui/song/song-dialog.tsx:178
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:123
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:115
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Cancel"
 msgstr "Annuler"
@@ -475,7 +479,7 @@ msgstr "Vérifiez votre email pour le lien de réinitialisation"
 msgid "Check your email to verify your account"
 msgstr "Consultez votre e-mail pour vérifier votre compte"
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:107
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:99
 msgid "Choose a section type"
 msgstr "Choisir un type de section"
 
@@ -510,6 +514,10 @@ msgstr "Grille d'accords en texte"
 #: apps/web/src/components/ui/song/structure/section-panel.tsx:166
 msgid "Chords"
 msgstr "Accords"
+
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:81
+msgid "Chords for bar {number}"
+msgstr "Accords de la mesure {number}"
 
 #: apps/web/src/components/ui/song/structure/section-kind.ts:8
 msgid "Chorus"
@@ -842,7 +850,7 @@ msgstr "Définir comme"
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:186
 #: apps/web/src/components/ui/song/song-detail.tsx:103
 #: apps/web/src/components/ui/song/song-detail.tsx:149
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:216
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:220
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -888,11 +896,11 @@ msgstr "Supprimer le projet"
 msgid "Delete repayment?"
 msgstr "Supprimer le remboursement ?"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:208
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:212
 msgid "Delete section"
 msgstr "Supprimer la section"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:214
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:218
 msgid "Delete section?"
 msgstr "Supprimer la section ?"
 
@@ -1361,7 +1369,7 @@ msgstr "Grille"
 msgid "Hide"
 msgstr "Masquer"
 
-#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:109
+#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:100
 msgid "Insert a section at the end"
 msgstr "Insérer une section à la fin"
 
@@ -1753,7 +1761,7 @@ msgstr "Aucun remboursement pour le moment"
 msgid "No results."
 msgstr "Aucun résultat."
 
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:89
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:81
 msgid "No sections yet"
 msgstr "Aucune section pour l'instant"
 
@@ -1796,7 +1804,7 @@ msgstr "Aucun pour le moment"
 msgid "Note"
 msgstr "Note"
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:191
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:195
 msgid "Notes"
 msgstr "Notes"
 
@@ -2070,6 +2078,10 @@ msgstr "Recharger"
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:81
 msgid "Remove {0}"
 msgstr "Retirer {0}"
+
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:110
+msgid "Remove bar {number}"
+msgstr "Supprimer la mesure {number}"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:151
 msgid "Remove playlist"
@@ -2363,7 +2375,7 @@ msgid "Storage"
 msgstr "Stockage"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:119
-#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:81
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:73
 msgid "Structure"
 msgstr "Structure"
 
@@ -2522,7 +2534,7 @@ msgstr "Cela supprimera définitivement cette chanson et la retirera de toutes l
 #~ msgid "This will permanently delete this song. This action cannot be undone."
 #~ msgstr "Cette action supprimera définitivement cette chanson. Cette action est irréversible."
 
-#: apps/web/src/components/ui/song/structure/section-panel.tsx:215
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:219
 msgid "This will remove the section and its chords."
 msgstr "Cela supprimera la section et ses accords."
 
