@@ -5,6 +5,8 @@ import {
   listSongs,
   updateSong,
   updateSongLyrics,
+  getSongStructure,
+  updateSongStructure,
   deleteSong,
   getSongById,
   searchSongs,
@@ -13,11 +15,17 @@ import {
   listSongAudioVersions,
   getSongDefaultAudio,
 } from "@echo/modules/song/app";
-import { songTypeSchema } from "@echo/modules/song/domain";
+import {
+  songStructureSchema,
+  songTypeSchema,
+  TIME_SIGNATURE_PATTERN,
+} from "@echo/modules/song/domain";
 import {
   insertSongCommandFactory,
   updateSongCommandFactory,
   updateSongLyricsCommandFactory,
+  getSongScoreQueryFactory,
+  updateSongScoreCommandFactory,
   deleteSongCommandFactory,
   listSongsQueryFactory,
   getSongByIdQueryFactory,
@@ -38,11 +46,14 @@ const songInput = {
   bpm: z.number().int().positive().optional(),
   key: z.string().optional(),
   type: songTypeSchema.nullable().optional(),
+  timeSignature: z.string().regex(TIME_SIGNATURE_PATTERN).nullable().optional(),
 };
 
 const insertSongCommand = insertSongCommandFactory();
 const updateSongCommand = updateSongCommandFactory();
 const updateSongLyricsCommand = updateSongLyricsCommandFactory();
+const getSongScoreQuery = getSongScoreQueryFactory();
+const updateSongScoreCommand = updateSongScoreCommandFactory();
 const deleteSongCommand = deleteSongCommandFactory();
 const listSongsQuery = listSongsQueryFactory();
 const getSongByIdQuery = getSongByIdQueryFactory();
@@ -106,6 +117,29 @@ export const makeSongRouter = () =>
             scope: ctx.organizationScope,
             userId: ctx.session.user.id,
             lyrics: input.lyrics,
+          },
+        ),
+      ),
+
+    getSongStructure: organizationProcedure
+      .input(z.object({ songId: z.string() }))
+      .query(({ ctx, input }) =>
+        getSongStructure(
+          { db: ctx.db, getSongScoreQuery },
+          { scope: ctx.organizationScope, songId: input.songId },
+        ),
+      ),
+
+    updateSongStructure: organizationProcedure
+      .input(z.object({ id: z.string(), structure: songStructureSchema }))
+      .mutation(({ ctx, input }) =>
+        updateSongStructure(
+          { db: ctx.db, getSongScoreQuery, updateSongScoreCommand },
+          {
+            scope: ctx.organizationScope,
+            id: input.id,
+            userId: ctx.session.user.id,
+            structure: input.structure,
           },
         ),
       ),

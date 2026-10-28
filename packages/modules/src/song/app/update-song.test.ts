@@ -39,6 +39,7 @@ describe("updateSong", () => {
         key: input.key,
         lyrics: null,
         type: input.type,
+        timeSignature: input.timeSignature,
         organization: { id: "org-1", name: "The Band", slug: "the-band" },
         createdAt: new Date("2026-01-01"),
         createdBy: "user-1",
@@ -62,7 +63,23 @@ describe("updateSong", () => {
         bpm: null,
         key: null,
         type: null,
+        timeSignature: null,
       },
     ]);
+  });
+
+  it("passes the time signature to the command", async () => {
+    const received: unknown[] = [];
+    const updateSongCommand: UpdateSongCommandPort = async (_db, _scope, input) => {
+      received.push(input);
+      return null;
+    };
+
+    await updateSong(
+      { db, updateSongCommand },
+      { id: "song-1", scope, userId: "user-1", title: "T", timeSignature: "3/4" },
+    ).catch(() => undefined);
+
+    expect(received).toMatchObject([{ timeSignature: "3/4" }]);
   });
 });

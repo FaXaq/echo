@@ -131,11 +131,19 @@ msgstr "<0>Retour à la connexion</0>"
 msgid "1 {0} = how many {organizationCurrency}?"
 msgstr "1 {0} = combien de {organizationCurrency} ?"
 
-#: apps/web/src/lib/dynamic-messages.ts:39
+#: apps/web/src/lib/dynamic-messages.ts:40
 msgid "A new code has been sent"
 msgstr "Un nouveau code a été envoyé"
 
-#: apps/web/src/lib/dynamic-messages.ts:67
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:29
+msgid "A section can have at most 256 bars"
+msgstr "Une section peut avoir 256 mesures au maximum"
+
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:27
+msgid "A section needs at least one bar"
+msgstr "Une section doit avoir au moins une mesure"
+
+#: apps/web/src/lib/dynamic-messages.ts:68
 #: apps/web/src/routes/accept-invitation.tsx:117
 msgid "Accept invitation"
 msgstr "Accepter l'invitation"
@@ -159,6 +167,10 @@ msgstr "Actions pour {0}"
 #: apps/web/src/components/ui/attachment-list.tsx:503
 msgid "Actions for selected files"
 msgstr "Actions pour les fichiers sélectionnés"
+
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:128
+msgid "Add a bar"
+msgstr "Ajouter une mesure"
 
 #: apps/web/src/components/features/outreach/outreach-contact-field.tsx:101
 msgid "Add a contact"
@@ -195,6 +207,10 @@ msgstr "Ajouter des fichiers"
 msgid "Add playlist"
 msgstr "Ajouter une playlist"
 
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:65
+msgid "Add section"
+msgstr "Ajouter une section"
+
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:158
 msgid "Add song"
 msgstr "Ajouter une chanson"
@@ -207,11 +223,11 @@ msgstr "Ajoutez des chansons avec le bouton +."
 msgid "Add the setlist you'll play with the + button."
 msgstr "Ajoutez la setlist que vous jouerez avec le bouton +."
 
-#: apps/web/src/components/ui/song/song-detail.tsx:60
+#: apps/web/src/components/ui/song/song-detail.tsx:64
 msgid "Added by"
 msgstr "Ajouté par"
 
-#: apps/web/src/lib/dynamic-messages.ts:71
+#: apps/web/src/lib/dynamic-messages.ts:72
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -268,8 +284,8 @@ msgstr "Voulez-vous vraiment annuler cette invitation ?"
 msgid "Are you sure you want to remove this member from the project?"
 msgstr "Voulez-vous vraiment retirer ce membre du projet ?"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:56
-#: apps/web/src/components/ui/song/song-dialog.tsx:117
+#: apps/web/src/components/ui/song/song-detail.tsx:59
+#: apps/web/src/components/ui/song/song-dialog.tsx:123
 msgid "Artist"
 msgstr "Artiste"
 
@@ -337,7 +353,7 @@ msgstr "Retour au démarchage"
 msgid "Back to playlists"
 msgstr "Retour aux playlists"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:158
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:167
 msgid "Back to songs"
 msgstr "Retour aux chansons"
 
@@ -349,6 +365,18 @@ msgstr "Retour aux chansons"
 msgid "Balances"
 msgstr "Soldes"
 
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:24
+msgid "Bar {bar} has more than 8 chords"
+msgstr "La mesure {bar} a plus de 8 accords"
+
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:25
+msgid "Bar {bar}: \"{token}\" isn't a chord"
+msgstr "Mesure {bar} : « {token} » n'est pas un accord"
+
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:97
+msgid "Bar {number}: {label}"
+msgstr "Mesure {number} : {label}"
+
 #: apps/web/src/components/ui/event-calendar/colors.ts:26
 msgid "Blue"
 msgstr "Bleu"
@@ -357,8 +385,8 @@ msgstr "Bleu"
 #~ msgid "Bold"
 #~ msgstr "Gras"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:57
-#: apps/web/src/components/ui/song/song-dialog.tsx:123
+#: apps/web/src/components/ui/song/song-detail.tsx:60
+#: apps/web/src/components/ui/song/song-dialog.tsx:129
 msgid "BPM"
 msgstr "BPM"
 
@@ -366,9 +394,17 @@ msgstr "BPM"
 msgid "BPM must be a whole number"
 msgstr "Le BPM doit être un nombre entier"
 
+#: apps/web/src/components/ui/song/structure/section-kind.ts:9
+msgid "Bridge"
+msgstr "Pont"
+
 #: apps/web/src/components/features/playlist/suspended-playlist-list.tsx:68
 msgid "Build a setlist for your next gig or rehearsal."
 msgstr "Préparez une setlist pour votre prochain concert ou votre prochaine répétition."
+
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:82
+msgid "Build the song from intros, verses and choruses."
+msgstr "Construisez la chanson avec des intros, des couplets et des refrains."
 
 #: apps/web/src/components/ui/lyrics-editor.tsx:90
 #~ msgid "Bullet list"
@@ -380,7 +416,7 @@ msgid "By exact amounts"
 msgstr "Par montants exacts"
 
 #: apps/web/src/hooks/use-navigation.ts:57
-#: apps/web/src/lib/dynamic-messages.ts:49
+#: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Calendar"
 msgstr "Agenda"
 
@@ -403,8 +439,9 @@ msgstr "Impossible de lire {filename}"
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
-#: apps/web/src/components/ui/song/song-detail.tsx:121
-#: apps/web/src/components/ui/song/song-dialog.tsx:164
+#: apps/web/src/components/ui/song/song-detail.tsx:142
+#: apps/web/src/components/ui/song/song-dialog.tsx:178
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:115
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Cancel"
 msgstr "Annuler"
@@ -434,13 +471,17 @@ msgstr "Carte introuvable"
 msgid "Category"
 msgstr "Catégorie"
 
-#: apps/web/src/lib/dynamic-messages.ts:32
+#: apps/web/src/lib/dynamic-messages.ts:33
 msgid "Check your email for a password reset link"
 msgstr "Vérifiez votre email pour le lien de réinitialisation"
 
-#: apps/web/src/lib/dynamic-messages.ts:33
+#: apps/web/src/lib/dynamic-messages.ts:34
 msgid "Check your email to verify your account"
 msgstr "Consultez votre e-mail pour vérifier votre compte"
+
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:99
+msgid "Choose a section type"
+msgstr "Choisir un type de section"
 
 #: apps/web/src/components/reset-password-form.tsx:63
 msgid "Choose a strong password for your account"
@@ -465,6 +506,22 @@ msgstr "Choisissez qui a payé"
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:132
 msgid "Choose who shares this expense"
 msgstr "Choisissez qui partage cette dépense"
+
+#: apps/web/src/components/ui/song/structure/chord-chart-text-editor.tsx:43
+msgid "Chord chart as text"
+msgstr "Grille d'accords en texte"
+
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:166
+msgid "Chords"
+msgstr "Accords"
+
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:81
+msgid "Chords for bar {number}"
+msgstr "Accords de la mesure {number}"
+
+#: apps/web/src/components/ui/song/structure/section-kind.ts:8
+msgid "Chorus"
+msgstr "Refrain"
 
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:14
 msgid "Class"
@@ -512,7 +569,7 @@ msgstr "Contacts"
 msgid "Copy link"
 msgstr "Copier le lien"
 
-#: apps/web/src/lib/dynamic-messages.ts:46
+#: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Could not generate a unique organization slug"
 msgstr "Impossible de générer un identifiant unique pour le projet"
 
@@ -663,8 +720,8 @@ msgstr "Impossible d'enregistrer le remboursement"
 msgid "Couldn't upload {0}"
 msgstr "Impossible d'importer {0}"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:53
-#: apps/web/src/components/ui/song/song-dialog.tsx:152
+#: apps/web/src/components/ui/song/song-detail.tsx:56
+#: apps/web/src/components/ui/song/song-dialog.tsx:166
 #: apps/web/src/components/ui/song/song-list-item.tsx:41
 msgid "Cover"
 msgstr "Reprise"
@@ -713,7 +770,7 @@ msgstr "Créer le projet"
 msgid "Create repayment"
 msgstr "Créer le remboursement"
 
-#: apps/web/src/components/ui/song/song-dialog.tsx:167
+#: apps/web/src/components/ui/song/song-dialog.tsx:181
 msgid "Create song"
 msgstr "Créer la chanson"
 
@@ -791,8 +848,9 @@ msgstr "Définir comme"
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:220
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:186
-#: apps/web/src/components/ui/song/song-detail.tsx:99
-#: apps/web/src/components/ui/song/song-detail.tsx:128
+#: apps/web/src/components/ui/song/song-detail.tsx:103
+#: apps/web/src/components/ui/song/song-detail.tsx:149
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:220
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -838,7 +896,15 @@ msgstr "Supprimer le projet"
 msgid "Delete repayment?"
 msgstr "Supprimer le remboursement ?"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:115
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:212
+msgid "Delete section"
+msgstr "Supprimer la section"
+
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:218
+msgid "Delete section?"
+msgstr "Supprimer la section ?"
+
+#: apps/web/src/components/ui/song/song-detail.tsx:136
 msgid "Delete song?"
 msgstr "Supprimer la chanson ?"
 
@@ -912,7 +978,7 @@ msgid "Drag to reorder"
 msgstr "Glisser pour réordonner"
 
 #: apps/web/src/hooks/use-navigation.ts:62
-#: apps/web/src/lib/dynamic-messages.ts:56
+#: apps/web/src/lib/dynamic-messages.ts:57
 msgid "Drive"
 msgstr "Drive"
 
@@ -921,7 +987,7 @@ msgid "Drop an audio file"
 msgstr "Déposez un fichier audio"
 
 #: apps/web/src/routes/projects/$projectSlug/calendar/$eventId.tsx:79
-#: apps/web/src/routes/projects/$projectSlug/songs/$songId.tsx:75
+#: apps/web/src/routes/projects/$projectSlug/songs/-song-drop-zone.tsx:46
 msgid "Drop files to upload"
 msgstr "Déposez des fichiers pour les envoyer"
 
@@ -958,8 +1024,8 @@ msgstr "Modifier la playlist"
 msgid "Edit repayment"
 msgstr "Modifier le remboursement"
 
-#: apps/web/src/components/ui/song/song-dialog.tsx:103
-#: apps/web/src/components/ui/song/song-dialog.tsx:105
+#: apps/web/src/components/ui/song/song-dialog.tsx:109
+#: apps/web/src/components/ui/song/song-dialog.tsx:111
 msgid "Edit song"
 msgstr "Modifier la chanson"
 
@@ -971,7 +1037,7 @@ msgstr "Modifier la chanson"
 msgid "Email"
 msgstr "Email"
 
-#: apps/web/src/lib/dynamic-messages.ts:35
+#: apps/web/src/lib/dynamic-messages.ts:36
 msgid "Email not verified"
 msgstr "E-mail non vérifié"
 
@@ -983,7 +1049,7 @@ msgstr "E-mail non vérifié"
 #~ msgid "Email or username is required"
 #~ msgstr "Email ou nom d'utilisateur requis"
 
-#: apps/web/src/lib/dynamic-messages.ts:36
+#: apps/web/src/lib/dynamic-messages.ts:37
 msgid "Email verification failed"
 msgstr "Échec de la vérification de l'e-mail"
 
@@ -995,7 +1061,7 @@ msgstr "E-mail vérifié"
 msgid "End"
 msgstr "Fin"
 
-#: apps/web/src/lib/dynamic-messages.ts:27
+#: apps/web/src/lib/dynamic-messages.ts:28
 msgid "End date must be after start date"
 msgstr "La date de fin doit être postérieure à la date de début"
 
@@ -1012,7 +1078,7 @@ msgstr "Saisissez un taux de change valide"
 msgid "Enter email address"
 msgstr "Entrez l'adresse email"
 
-#: apps/web/src/lib/dynamic-messages.ts:38
+#: apps/web/src/lib/dynamic-messages.ts:39
 msgid "Enter the 6-digit code"
 msgstr "Saisissez le code à 6 chiffres"
 
@@ -1048,7 +1114,7 @@ msgstr "Actions de l'événement"
 msgid "Event deleted"
 msgstr "Événement supprimé"
 
-#: apps/web/src/lib/dynamic-messages.ts:52
+#: apps/web/src/lib/dynamic-messages.ts:53
 msgid "Event details"
 msgstr "Détails de l'événement"
 
@@ -1085,7 +1151,7 @@ msgstr "Actions de la dépense"
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:73
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:94
 #: apps/web/src/hooks/use-navigation.ts:67
-#: apps/web/src/lib/dynamic-messages.ts:51
+#: apps/web/src/lib/dynamic-messages.ts:52
 msgid "Expenses"
 msgstr "Dépenses"
 
@@ -1093,7 +1159,7 @@ msgstr "Dépenses"
 msgid "Expenses you add will show up here."
 msgstr "Les dépenses que vous ajoutez apparaîtront ici."
 
-#: apps/web/src/lib/dynamic-messages.ts:44
+#: apps/web/src/lib/dynamic-messages.ts:45
 #: apps/web/src/routes/accept-invitation.tsx:92
 msgid "Failed to accept invitation"
 msgstr "Échec de l'acceptation de l'invitation"
@@ -1106,7 +1172,7 @@ msgstr "Échec de l'annulation de l'invitation"
 #~ msgid "Failed to create organization"
 #~ msgstr "Échec de la création du groupe"
 
-#: apps/web/src/lib/dynamic-messages.ts:45
+#: apps/web/src/lib/dynamic-messages.ts:46
 msgid "Failed to create project"
 msgstr "Échec de la création du projet"
 
@@ -1125,6 +1191,10 @@ msgstr "Échec de l'invitation"
 #: apps/web/src/components/ui/song/song-list-item.tsx:66
 #~ msgid "Failed to load audio"
 #~ msgstr "Échec du chargement de l'audio"
+
+#: apps/web/src/components/features/song/suspended-song-structure.tsx:68
+msgid "Failed to load structure"
+msgstr "Échec du chargement de la structure"
 
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:152
 msgid "Failed to remove role"
@@ -1148,15 +1218,19 @@ msgstr "Échec de la suppression du membre"
 msgid "Failed to save description"
 msgstr "Échec de l'enregistrement de la description"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:56
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:58
 msgid "Failed to save lyrics"
 msgstr "Échec de l'enregistrement des paroles"
 
-#: apps/web/src/lib/dynamic-messages.ts:31
+#: apps/web/src/components/features/song/suspended-song-structure.tsx:39
+msgid "Failed to save structure"
+msgstr "Échec de l'enregistrement de la structure"
+
+#: apps/web/src/lib/dynamic-messages.ts:32
 msgid "Failed to send reset email"
 msgstr "Échec de l'envoi de l'email de réinitialisation"
 
-#: apps/web/src/lib/dynamic-messages.ts:37
+#: apps/web/src/lib/dynamic-messages.ts:38
 msgid "Failed to send verification code"
 msgstr "Échec de l'envoi du code de vérification"
 
@@ -1179,6 +1253,10 @@ msgstr "Échec de la mise à jour du rôle"
 #: apps/web/src/routes/projects/$projectSlug/settings/-organization-name-form.tsx:48
 msgid "Failed to update project name"
 msgstr "Échec de la mise à jour du nom du projet"
+
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:140
+msgid "Fewer repeats"
+msgstr "Moins de répétitions"
 
 #: apps/web/src/components/features/drive/link-file-to-event-dialog.tsx:19
 msgid "File assigned to the event"
@@ -1219,7 +1297,7 @@ msgstr "Dossiers"
 msgid "Folders aren't supported yet — drop files only"
 msgstr "Les dossiers ne sont pas encore pris en charge — déposez uniquement des fichiers"
 
-#: apps/web/src/lib/dynamic-messages.ts:63
+#: apps/web/src/lib/dynamic-messages.ts:64
 msgid "Forgot password"
 msgstr "Mot de passe oublié"
 
@@ -1275,6 +1353,10 @@ msgstr "Aller à la page précédente"
 msgid "Green"
 msgstr "Vert"
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:170
+msgid "Grid"
+msgstr "Grille"
+
 #: apps/web/src/components/ui/lyrics-editor.tsx:73
 #~ msgid "Heading 1"
 #~ msgstr "Titre 1"
@@ -1287,11 +1369,23 @@ msgstr "Vert"
 msgid "Hide"
 msgstr "Masquer"
 
+#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:100
+msgid "Insert a section at the end"
+msgstr "Insérer une section à la fin"
+
+#: apps/web/src/components/ui/song/structure/structure-timeline.tsx:74
+msgid "Insert a section before {name}"
+msgstr "Insérer une section avant {name}"
+
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:129
 msgid "Interval between songs"
 msgstr "Intervalle entre les morceaux"
 
-#: apps/web/src/lib/dynamic-messages.ts:41
+#: apps/web/src/components/ui/song/structure/section-kind.ts:6
+msgid "Intro"
+msgstr "Intro"
+
+#: apps/web/src/lib/dynamic-messages.ts:42
 msgid "Invalid code"
 msgstr "Code invalide"
 
@@ -1341,8 +1435,8 @@ msgstr "C'est votre espace personnel."
 msgid "Keep editing"
 msgstr "Continuer l'édition"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:58
-#: apps/web/src/components/ui/song/song-dialog.tsx:128
+#: apps/web/src/components/ui/song/song-detail.tsx:61
+#: apps/web/src/components/ui/song/song-dialog.tsx:134
 msgid "Key"
 msgstr "Tonalité"
 
@@ -1382,7 +1476,7 @@ msgstr "Lier {0} à une chanson"
 
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:96
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:66
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:78
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:80
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:74
 msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
@@ -1401,16 +1495,16 @@ msgid "Location"
 msgstr "Lieu"
 
 #: apps/web/src/components/user-menu.tsx:109
-#: apps/web/src/lib/dynamic-messages.ts:61
+#: apps/web/src/lib/dynamic-messages.ts:62
 msgid "Log out"
 msgstr "Se déconnecter"
 
 #: apps/web/src/components/login-form.tsx:105
-#: apps/web/src/lib/dynamic-messages.ts:60
+#: apps/web/src/lib/dynamic-messages.ts:61
 msgid "Login"
 msgstr "Connexion"
 
-#: apps/web/src/lib/dynamic-messages.ts:29
+#: apps/web/src/lib/dynamic-messages.ts:30
 msgid "Login failed"
 msgstr "Échec de la connexion"
 
@@ -1423,6 +1517,7 @@ msgstr "Connexion à votre compte"
 #~ msgstr "Lettres minuscules, chiffres et tirets uniquement"
 
 #: apps/web/src/components/ui/lyrics-editor.tsx:15
+#: apps/web/src/components/ui/song/song-detail.tsx:116
 msgid "Lyrics"
 msgstr "Paroles"
 
@@ -1458,7 +1553,7 @@ msgstr "Taille maximale de fichier"
 msgid "Meeting"
 msgstr "Réunion"
 
-#: apps/web/src/lib/dynamic-messages.ts:70
+#: apps/web/src/lib/dynamic-messages.ts:71
 msgid "Member"
 msgstr "Membre"
 
@@ -1468,7 +1563,7 @@ msgstr "Membre supprimé"
 
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:129
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:51
-#: apps/web/src/lib/dynamic-messages.ts:65
+#: apps/web/src/lib/dynamic-messages.ts:66
 msgid "Members"
 msgstr "Membres"
 
@@ -1481,6 +1576,10 @@ msgstr "Divers ({0})"
 msgid "Month"
 msgstr "Mois"
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:153
+msgid "More repeats"
+msgstr "Plus de répétitions"
+
 #: apps/web/src/components/features/outreach/outreach-column.tsx:110
 msgid "Move or delete this column's cards first"
 msgstr "Déplacez ou supprimez d'abord les cartes de cette colonne"
@@ -1490,10 +1589,15 @@ msgid "My Project"
 msgstr "Mon projet"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:25
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:76
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:125
 #: apps/web/src/routes/projects/new.tsx:81
 msgid "Name"
 msgstr "Nom"
+
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:87
+msgid "Name is required"
+msgstr "Le nom est obligatoire"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:221
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:223
@@ -1533,7 +1637,7 @@ msgid "New playlist"
 msgstr "Nouvelle playlist"
 
 #: apps/web/src/components/version-switcher.tsx:86
-#: apps/web/src/lib/dynamic-messages.ts:66
+#: apps/web/src/lib/dynamic-messages.ts:67
 #: apps/web/src/routes/projects/new.tsx:70
 msgid "New project"
 msgstr "Nouveau projet"
@@ -1545,8 +1649,8 @@ msgstr "Nouveau remboursement"
 
 #: apps/web/src/components/features/song/suspended-song-list.tsx:55
 #: apps/web/src/components/features/song/suspended-song-list.tsx:67
-#: apps/web/src/components/ui/song/song-dialog.tsx:103
-#: apps/web/src/components/ui/song/song-dialog.tsx:105
+#: apps/web/src/components/ui/song/song-dialog.tsx:109
+#: apps/web/src/components/ui/song/song-dialog.tsx:111
 msgid "New song"
 msgstr "Nouvelle chanson"
 
@@ -1657,6 +1761,10 @@ msgstr "Aucun remboursement pour le moment"
 msgid "No results."
 msgstr "Aucun résultat."
 
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:81
+msgid "No sections yet"
+msgstr "Aucune section pour l'instant"
+
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:246
 #: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:29
 msgid "No songs in this playlist"
@@ -1695,6 +1803,10 @@ msgstr "Aucun pour le moment"
 #: apps/web/src/components/ui/expense/repayment-table.tsx:70
 msgid "Note"
 msgstr "Note"
+
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:195
+msgid "Notes"
+msgstr "Notes"
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:218
 msgid "Only a selection of files can be deleted together"
@@ -1752,27 +1864,35 @@ msgstr "Organiser"
 msgid "Organizer"
 msgstr "Organisateur"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:53
-#: apps/web/src/components/ui/song/song-dialog.tsx:145
+#: apps/web/src/components/ui/song/song-detail.tsx:56
+#: apps/web/src/components/ui/song/song-dialog.tsx:159
 #: apps/web/src/components/ui/song/song-list-item.tsx:41
 msgid "Original"
 msgstr "Original"
 
+#: apps/web/src/components/ui/song/structure/section-kind.ts:12
+msgid "Other"
+msgstr "Autre"
+
 #: apps/web/src/components/features/outreach/outreach-board.tsx:120
 #: apps/web/src/hooks/use-navigation.ts:92
-#: apps/web/src/lib/dynamic-messages.ts:57
+#: apps/web/src/lib/dynamic-messages.ts:58
 msgid "Outreach"
 msgstr "Démarchage"
 
-#: apps/web/src/lib/dynamic-messages.ts:58
+#: apps/web/src/lib/dynamic-messages.ts:59
 msgid "Outreach card"
 msgstr "Fiche de démarchage"
+
+#: apps/web/src/components/ui/song/structure/section-kind.ts:11
+msgid "Outro"
+msgstr "Outro"
 
 #: apps/web/src/components/ui/expense/balance-list.tsx:21
 #~ msgid "Owes {amount}"
 #~ msgstr "Doit {amount}"
 
-#: apps/web/src/lib/dynamic-messages.ts:72
+#: apps/web/src/lib/dynamic-messages.ts:73
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -1800,7 +1920,7 @@ msgstr "Mot de passe"
 msgid "Password is required"
 msgstr "Mot de passe requis"
 
-#: apps/web/src/lib/dynamic-messages.ts:34
+#: apps/web/src/lib/dynamic-messages.ts:35
 msgid "Password reset failed"
 msgstr "Échec de la réinitialisation du mot de passe"
 
@@ -1864,7 +1984,7 @@ msgstr "Actions de la playlist"
 msgid "Playlist deleted"
 msgstr "Playlist supprimée"
 
-#: apps/web/src/lib/dynamic-messages.ts:55
+#: apps/web/src/lib/dynamic-messages.ts:56
 msgid "Playlist details"
 msgstr "Détails de la playlist"
 
@@ -1874,7 +1994,7 @@ msgstr "Playlist introuvable"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:213
 #: apps/web/src/hooks/use-navigation.ts:82
-#: apps/web/src/lib/dynamic-messages.ts:54
+#: apps/web/src/lib/dynamic-messages.ts:55
 msgid "Playlists"
 msgstr "Playlists"
 
@@ -1959,6 +2079,10 @@ msgstr "Recharger"
 msgid "Remove {0}"
 msgstr "Retirer {0}"
 
+#: apps/web/src/components/ui/song/structure/chord-grid.tsx:110
+msgid "Remove bar {number}"
+msgstr "Supprimer la mesure {number}"
+
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:151
 msgid "Remove playlist"
 msgstr "Retirer la playlist"
@@ -2010,6 +2134,14 @@ msgstr "Remboursements"
 msgid "Repayments you record will show up here."
 msgstr "Les remboursements que vous enregistrez apparaîtront ici."
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:133
+msgid "Repeat"
+msgstr "Répétition"
+
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:135
+msgid "Repeat count"
+msgstr "Nombre de répétitions"
+
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:160
 msgid "Resend"
 msgstr "Renvoyer"
@@ -2019,7 +2151,7 @@ msgid "Resend code"
 msgstr "Renvoyer le code"
 
 #: apps/web/src/components/reset-password-form.tsx:103
-#: apps/web/src/lib/dynamic-messages.ts:68
+#: apps/web/src/lib/dynamic-messages.ts:69
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
@@ -2067,7 +2199,7 @@ msgstr "Enregistrer"
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:370
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:186
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:98
-#: apps/web/src/components/ui/song/song-dialog.tsx:167
+#: apps/web/src/components/ui/song/song-dialog.tsx:181
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
@@ -2112,6 +2244,10 @@ msgstr "Recherche…"
 msgid "seconds"
 msgstr "secondes"
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:69
+msgid "Section detail"
+msgstr "Détail de la section"
+
 #: apps/web/src/components/ui/attachment-list.tsx:239
 #: apps/web/src/components/ui/attachment-list.tsx:436
 msgid "Select"
@@ -2155,7 +2291,7 @@ msgstr "Défini comme dernière démo"
 msgid "Set as latest final"
 msgstr "Défini comme dernière version finale"
 
-#: apps/web/src/lib/dynamic-messages.ts:59
+#: apps/web/src/lib/dynamic-messages.ts:60
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -2169,15 +2305,15 @@ msgstr "Régler les comptes"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:167
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:160
-#: apps/web/src/components/ui/song/song-detail.tsx:78
+#: apps/web/src/components/ui/song/song-detail.tsx:82
 msgid "Share"
 msgstr "Partager"
 
-#: apps/web/src/lib/dynamic-messages.ts:62
+#: apps/web/src/lib/dynamic-messages.ts:63
 msgid "Sign up"
 msgstr "Inscription"
 
-#: apps/web/src/lib/dynamic-messages.ts:30
+#: apps/web/src/lib/dynamic-messages.ts:31
 msgid "Sign up failed"
 msgstr "Échec de l'inscription"
 
@@ -2191,34 +2327,38 @@ msgstr "Taille"
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 
+#: apps/web/src/components/ui/song/structure/section-kind.ts:10
+msgid "Solo"
+msgstr "Solo"
+
 #: apps/web/src/components/app-error-page.tsx:42
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:218
 #: apps/web/src/components/features/organization/suspended-organization-currency.tsx:72
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:233
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:135
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:309
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:152
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:161
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:90
+#: apps/web/src/components/ui/song/song-detail.tsx:94
 msgid "Song actions"
 msgstr "Actions de la chanson"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:62
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:64
 msgid "Song deleted"
 msgstr "Chanson supprimée"
 
-#: apps/web/src/lib/dynamic-messages.ts:53
+#: apps/web/src/lib/dynamic-messages.ts:54
 msgid "Song details"
 msgstr "Détails de la chanson"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:152
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:161
 msgid "Song not found"
 msgstr "Chanson introuvable"
 
 #: apps/web/src/hooks/use-navigation.ts:77
-#: apps/web/src/lib/dynamic-messages.ts:50
+#: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Songs"
 msgstr "Morceaux"
 
@@ -2234,6 +2374,11 @@ msgstr "Début"
 msgid "Storage"
 msgstr "Stockage"
 
+#: apps/web/src/components/ui/song/song-detail.tsx:119
+#: apps/web/src/components/ui/song/structure/song-structure-editor.tsx:73
+msgid "Structure"
+msgstr "Structure"
+
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:64
 #~ msgid "Suggested repayments"
 #~ msgstr "Remboursements suggérés"
@@ -2241,6 +2386,10 @@ msgstr "Stockage"
 #: apps/web/src/components/ui/expense/ledger-stats.tsx:51
 msgid "Summary"
 msgstr "Résumé"
+
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:173
+msgid "Text"
+msgstr "Texte"
 
 #: apps/web/src/components/features/organization/suspended-organization-currency.tsx:37
 msgid "The currency can't be changed once the project has expenses or repayments."
@@ -2258,7 +2407,7 @@ msgstr "Thème"
 msgid "This card doesn't exist or has been deleted."
 msgstr "Cette carte n'existe pas ou a été supprimée."
 
-#: apps/web/src/lib/dynamic-messages.ts:40
+#: apps/web/src/lib/dynamic-messages.ts:41
 msgid "This code has expired, request a new one"
 msgstr "Ce code a expiré, demandez-en un nouveau"
 
@@ -2279,7 +2428,7 @@ msgstr "Ce type de fichier ne peut pas être prévisualisé ici."
 msgid "This folder is empty"
 msgstr "Ce dossier est vide"
 
-#: apps/web/src/lib/dynamic-messages.ts:43
+#: apps/web/src/lib/dynamic-messages.ts:44
 msgid "This invitation is not yours"
 msgstr "Cette invitation ne vous est pas destinée"
 
@@ -2328,7 +2477,7 @@ msgstr "Cette playlist n'existe pas ou a été supprimée."
 msgid "This project has reached its plan limit. <0>View plan</0>"
 msgstr "Ce projet a atteint la limite de son forfait. <0>Voir le forfait</0>"
 
-#: apps/web/src/components/features/song/suspended-song-detail.tsx:155
+#: apps/web/src/components/features/song/suspended-song-detail.tsx:164
 msgid "This song doesn't exist or has been deleted."
 msgstr "Cette chanson n'existe pas ou a été supprimée."
 
@@ -2377,7 +2526,7 @@ msgstr "Cela supprimera définitivement cette playlist. Cette action est irréve
 msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
 msgstr "Ce remboursement sera définitivement supprimé et les soldes seront modifiés. Cette action est irréversible."
 
-#: apps/web/src/components/ui/song/song-detail.tsx:117
+#: apps/web/src/components/ui/song/song-detail.tsx:138
 msgid "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 msgstr "Cela supprimera définitivement cette chanson et la retirera de toutes les playlists. Cette action est irréversible."
 
@@ -2385,12 +2534,26 @@ msgstr "Cela supprimera définitivement cette chanson et la retirera de toutes l
 #~ msgid "This will permanently delete this song. This action cannot be undone."
 #~ msgstr "Cette action supprimera définitivement cette chanson. Cette action est irréversible."
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:219
+msgid "This will remove the section and its chords."
+msgstr "Cela supprimera la section et ses accords."
+
+#: apps/web/src/components/ui/song/song-detail.tsx:62
+#: apps/web/src/components/ui/song/song-dialog.tsx:140
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:116
+msgid "Time signature"
+msgstr "Signature rythmique"
+
+#: apps/web/src/lib/dynamic-messages.ts:27
+msgid "Time signature must look like 4/4"
+msgstr "La signature rythmique doit ressembler à 4/4"
+
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:230
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:216
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:161
 #: apps/web/src/components/ui/expense/expense-table.tsx:103
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:85
-#: apps/web/src/components/ui/song/song-dialog.tsx:111
+#: apps/web/src/components/ui/song/song-dialog.tsx:117
 msgid "Title"
 msgstr "Titre"
 
@@ -2412,7 +2575,7 @@ msgstr "Aujourd'hui"
 msgid "Toggle columns"
 msgstr "Basculer les colonnes"
 
-#: apps/web/src/lib/dynamic-messages.ts:42
+#: apps/web/src/lib/dynamic-messages.ts:43
 msgid "Too many attempts, request a new code"
 msgstr "Trop de tentatives, demandez un nouveau code"
 
@@ -2425,8 +2588,9 @@ msgid "Total spent"
 msgstr "Total dépensé"
 
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:326
-#: apps/web/src/components/ui/song/song-detail.tsx:59
-#: apps/web/src/components/ui/song/song-dialog.tsx:134
+#: apps/web/src/components/ui/song/song-detail.tsx:63
+#: apps/web/src/components/ui/song/song-dialog.tsx:148
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:93
 msgid "Type"
 msgstr "Type"
 
@@ -2477,7 +2641,7 @@ msgstr "À suivre : {0}"
 #: apps/web/src/components/ui/expense/repayment-table.tsx:113
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:103
-#: apps/web/src/components/ui/song/song-detail.tsx:97
+#: apps/web/src/components/ui/song/song-detail.tsx:101
 msgid "Update"
 msgstr "Modifier"
 
@@ -2486,7 +2650,7 @@ msgid "Upload"
 msgstr "Importer"
 
 #: apps/web/src/components/features/song/song-audio-drop-target.tsx:56
-#: apps/web/src/lib/dynamic-messages.ts:47
+#: apps/web/src/lib/dynamic-messages.ts:48
 msgid "Upload failed"
 msgstr "Échec de l'envoi"
 
@@ -2508,6 +2672,10 @@ msgstr "Ajouté par"
 msgid "Uploading…"
 msgstr "Importation…"
 
+#: apps/web/src/components/ui/song/structure/section-panel.tsx:127
+msgid "Use a time signature like 4/4"
+msgstr "Utilisez une signature rythmique comme 4/4"
+
 #: apps/web/src/components/signup-form.tsx:104
 msgid "Username"
 msgstr "Nom d'utilisateur"
@@ -2524,7 +2692,7 @@ msgstr "Le nom d'utilisateur doit contenir au moins 3 caractères"
 msgid "Verify"
 msgstr "Vérifier"
 
-#: apps/web/src/lib/dynamic-messages.ts:64
+#: apps/web/src/lib/dynamic-messages.ts:65
 msgid "Verify email"
 msgstr "Vérifier l'e-mail"
 
@@ -2535,6 +2703,10 @@ msgstr "Vérifiez votre e-mail"
 #: apps/web/src/routes/verify-email.tsx:56
 #~ msgid "Verifying your email..."
 #~ msgstr "Vérification de votre e-mail..."
+
+#: apps/web/src/components/ui/song/structure/section-kind.ts:7
+msgid "Verse"
+msgstr "Couplet"
 
 #: apps/web/src/components/ui/data-table-view-options.tsx:29
 msgid "View"

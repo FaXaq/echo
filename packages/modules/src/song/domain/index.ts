@@ -12,6 +12,7 @@ export type Song = {
   key: string | null;
   lyrics: string | null;
   type: SongType | null;
+  timeSignature: string | null;
   organization: {
     id: string;
     name: string;
@@ -31,3 +32,7 @@ export function selectDefaultSongFile(files: SongFileRecord[]): SongFileRecord |
     null
   );
 }
+
+export * from "./structure.js";
+export * from "./chord-symbol.js";
+export * from "./chord-chart-text.js";

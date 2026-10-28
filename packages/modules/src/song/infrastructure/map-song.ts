@@ -2,7 +2,7 @@ import type { DB } from "@echo/db";
 import type { Selectable } from "kysely";
 import { songTypeSchema, type Song, type SongType } from "../domain/index.js";
 
-export type SongRow = Selectable<DB["song"]> & {
+export type SongRow = Omit<Selectable<DB["song"]>, "score"> & {
   created_by_name: string;
   organization_name: string;
   organization_slug: string;
@@ -21,6 +21,7 @@ export function toSong(row: SongRow): Song {
     key: row.key,
     lyrics: row.lyrics,
     type: toSongType(row.type),
+    timeSignature: row.time_signature,
     organization: {
       id: row.organization_id,
       name: row.organization_name,

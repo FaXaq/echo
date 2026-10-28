@@ -3,6 +3,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useLingui } from "@lingui/react/macro";
+import { DEFAULT_TIME_SIGNATURE, parseTimeSignature } from "@echo/modules/song/domain";
 import { usePostHog } from "posthog-js/react";
 import { toast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import {
 } from "@/services/resources/song";
 import { useSyncPageMeta } from "@/contexts/page-meta";
 import { SuspendedSongAttachments } from "./suspended-song-attachments";
+import { SuspendedSongStructure } from "./suspended-song-structure";
 import { SuspendedSongAudioVersions } from "./suspended-song-audio-versions";
 
 const LYRICS_AUTOSAVE_DEBOUNCE_MS = 300;
@@ -112,6 +114,13 @@ function SongDetailContent({ songId, organizationId, pathname, onBack }: Suspend
         onShare={handleShare}
         onEdit={() => setDialogState({ mode: "edit", song })}
         onDelete={handleDelete}
+        structure={
+          <SuspendedSongStructure
+            songId={song.id}
+            organizationId={organizationId}
+            defaultTime={parseTimeSignature(song.timeSignature ?? "") ?? DEFAULT_TIME_SIGNATURE}
+          />
+        }
         attachments={
           <div className="flex flex-col gap-3.5">
             <SuspendedSongAudioVersions songId={song.id} organizationId={organizationId} />

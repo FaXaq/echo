@@ -14,6 +14,7 @@ export const insertSongCommandFactory: InsertSongCommandPortFactory =
           bpm: input.bpm,
           key: input.key,
           type: input.type,
+          time_signature: input.timeSignature,
           organization_id: scope.organizationId,
           created_by: input.userId,
           updated_by: input.userId,

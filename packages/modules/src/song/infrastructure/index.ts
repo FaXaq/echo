@@ -21,3 +21,12 @@ export { listSongsQueryFactory } from "./list-songs.query.kysely.js";
 
 export type { SearchSongsQueryInput, SearchSongsQueryPort } from "./search-songs.query.port.js";
 export { searchSongsQueryFactory } from "./search-songs.query.kysely.js";
+
+export type { GetSongScoreQueryInput, GetSongScoreQueryPort } from "./get-song-score.query.port.js";
+export { getSongScoreQueryFactory } from "./get-song-score.query.kysely.js";
+
+export type {
+  UpdateSongScoreInput,
+  UpdateSongScoreCommandPort,
+} from "./update-song-score.command.port.js";
+export { updateSongScoreCommandFactory } from "./update-song-score.command.kysely.js";

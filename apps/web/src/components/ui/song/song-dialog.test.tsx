@@ -18,6 +18,7 @@ function makeSong(overrides: Partial<Song> = {}): Song {
     createdAt: new Date().toISOString(),
     createdBy: "user-1",
     createdByName: "Mr Me",
+    timeSignature: null,
     updatedBy: null,
     updatedAt: null,
     ...overrides,
@@ -76,5 +77,32 @@ describe("SongDialog", () => {
 
     expect(await screen.findByText("BPM must be a whole number")).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  async function submitTimeSignature(value: string) {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(<SongDialog state={{ mode: "create" }} onOpenChange={vi.fn()} onSubmit={onSubmit} />);
+    await user.type(screen.getByLabelText("Title"), "New Song");
+    if (value) await user.type(screen.getByLabelText("Time signature"), value);
+    await user.click(screen.getByRole("button", { name: "Create song" }));
+    return onSubmit;
+  }
+
+  it("submits a valid time signature", async () => {
+    const onSubmit = await submitTimeSignature("3/4");
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ timeSignature: "3/4" }));
+  });
+
+  it("rejects an invalid time signature", async () => {
+    const onSubmit = await submitTimeSignature("4/3");
+    expect(await screen.findByText("Time signature must look like 4/4")).toBeInTheDocument();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("submits an undefined time signature when empty", async () => {
+    const onSubmit = await submitTimeSignature("");
+    expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ timeSignature: undefined }));
+    expect(onSubmit.mock.calls[0][0]).toHaveProperty("timeSignature", undefined);
   });
 });
