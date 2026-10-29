@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { PreviewImage } from "@/components/ui/preview-image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { match } from "ts-pattern";
@@ -102,8 +103,9 @@ export function AttachmentCarouselDialog({
                           />
                         ))
                         .otherwise(() => (
-                          <img
+                          <PreviewImage
                             src={file.downloadUrl}
+                            filename={file.filename}
                             alt={file.filename}
                             onLoad={() => markLoaded(file.id)}
                             className={cn(
