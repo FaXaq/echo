@@ -15,6 +15,7 @@ describe("kindForMimeType", () => {
 
   it("maps known image mime types to the image kind", () => {
     expect(kindForMimeType("image/png")).toBe("image");
+    expect(kindForMimeType("image/heic")).toBe("image");
   });
 
   it("maps known document mime types to the document kind", () => {

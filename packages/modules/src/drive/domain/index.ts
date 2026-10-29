@@ -15,7 +15,7 @@ export const MIME_TYPES_BY_KIND: Record<FileKind, readonly string[]> = {
     "audio/x-m4a",
   ],
   video: ["video/mp4", "video/webm", "video/quicktime"],
-  image: ["image/png", "image/jpeg", "image/webp", "image/gif"],
+  image: ["image/png", "image/jpeg", "image/webp", "image/gif", "image/heic", "image/heif"],
   document: [
     "application/pdf",
     "application/msword",
