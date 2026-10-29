@@ -1,4 +1,4 @@
-import { kindForMimeType } from "@echo/modules/drive/domain";
+import { kindForMimeType, RAW_IMAGE_MIME_TYPES } from "@echo/modules/drive/domain";
 import { match } from "ts-pattern";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -34,6 +34,7 @@ const NON_PREVIEWABLE_MIME_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.ms-powerpoint",
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ...RAW_IMAGE_MIME_TYPES,
 ]);
 
 export function canPreviewInline(mimeType: string): boolean {

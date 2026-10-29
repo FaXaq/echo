@@ -1,5 +1,6 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { RouterOutputs } from "@echo/api/router";
+import { mimeTypeForFile } from "@echo/modules/drive/domain";
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
 import { getMediaDuration } from "@/lib/file";
@@ -228,13 +229,14 @@ export function useUploadFileMutation({
     mutationKey: uploadFileMutationKey,
     mutationFn: async (input: UploadFileInput) => {
       const durationSeconds = await getMediaDuration(input.file);
+      const mimeType = mimeTypeForFile(input.file);
 
       const { fileId, uploadUrl } = await apiClient.drive.createUpload.mutate({
         eventId: input.eventId,
         songId: input.songId,
         folderId: input.folderId,
         organizationId: input.organizationId,
-        mimeType: input.file.type,
+        mimeType,
         sizeBytes: input.file.size,
         durationSeconds,
         filename: input.file.name,
@@ -243,7 +245,7 @@ export function useUploadFileMutation({
       const response = await fetch(uploadUrl, {
         method: "PUT",
         body: input.file,
-        headers: { "Content-Type": input.file.type },
+        headers: { "Content-Type": mimeType },
       });
       if (!response.ok) throw new Error("Upload failed");
 
