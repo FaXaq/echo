@@ -8,7 +8,7 @@ import { exceedsLimit } from "@echo/modules/plan/domain";
 import type { ResolveEntitlementsPort } from "@echo/modules/plan/app";
 import type { GetOrganizationStorageUsageQueryPort } from "@echo/modules/plan/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import { kindForMimeType } from "../domain/index.js";
+import { isRawImage, kindForMimeType, previewKeyFor } from "../domain/index.js";
 import type {
   FindFolderByIdQueryPort,
   InsertPendingFileCommandPort,
@@ -43,8 +43,9 @@ export async function createUpload(
     sizeBytes: number;
     durationSeconds?: number | null;
     filename: string;
+    previewSizeBytes?: number;
   },
-): Promise<{ fileId: string; uploadUrl: string }> {
+): Promise<{ fileId: string; uploadUrl: string; previewUploadUrl: string | null }> {
   const kind = kindForMimeType(input.mimeType);
   if (!kind) throw conflict("Unsupported file type");
 
@@ -76,8 +77,11 @@ export async function createUpload(
     });
   }
 
+  const previewSizeBytes = isRawImage(input.mimeType) ? input.previewSizeBytes : undefined;
+
   const usedBytes = await deps.getOrganizationStorageUsage(deps.db, input.scope);
-  if (exceedsLimit({ current: usedBytes, delta: input.sizeBytes, limit: limits.storageBytes })) {
+  const delta = input.sizeBytes + (previewSizeBytes ?? 0);
+  if (exceedsLimit({ current: usedBytes, delta, limit: limits.storageBytes })) {
     throw quotaExceeded({
       limitName: "storageBytes",
       limit: limits.storageBytes,
@@ -115,5 +119,14 @@ export async function createUpload(
     contentLength: input.sizeBytes,
   });
 
-  return { fileId: id, uploadUrl: url };
+  // ponytail: preview bytes count toward this check but not toward stored usage, they're ~1 MB next to a 25+ MB raw
+  const preview = previewSizeBytes
+    ? await deps.s3Storage.createUploadUrl({
+        key: previewKeyFor(s3Key),
+        contentType: "image/jpeg",
+        contentLength: previewSizeBytes,
+      })
+    : null;
+
+  return { fileId: id, uploadUrl: url, previewUploadUrl: preview?.url ?? null };
 }

@@ -1,9 +1,9 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { RouterOutputs } from "@echo/api/router";
-import { mimeTypeForFile } from "@echo/modules/drive/domain";
+import { isRawImage, mimeTypeForFile } from "@echo/modules/drive/domain";
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
-import { getMediaDuration } from "@/lib/file";
+import { extractRawPreview, getMediaDuration } from "@/lib/file";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
@@ -230,8 +230,9 @@ export function useUploadFileMutation({
     mutationFn: async (input: UploadFileInput) => {
       const durationSeconds = await getMediaDuration(input.file);
       const mimeType = mimeTypeForFile(input.file);
+      const preview = isRawImage(mimeType) ? await extractRawPreview(input.file) : null;
 
-      const { fileId, uploadUrl } = await apiClient.drive.createUpload.mutate({
+      const { fileId, uploadUrl, previewUploadUrl } = await apiClient.drive.createUpload.mutate({
         eventId: input.eventId,
         songId: input.songId,
         folderId: input.folderId,
@@ -240,6 +241,7 @@ export function useUploadFileMutation({
         sizeBytes: input.file.size,
         durationSeconds,
         filename: input.file.name,
+        previewSizeBytes: preview?.size,
       });
 
       const response = await fetch(uploadUrl, {
@@ -248,6 +250,15 @@ export function useUploadFileMutation({
         headers: { "Content-Type": mimeType },
       });
       if (!response.ok) throw new Error("Upload failed");
+
+      // best effort: without a preview the raw still uploads and shows as a failed thumbnail
+      if (preview && previewUploadUrl) {
+        await fetch(previewUploadUrl, {
+          method: "PUT",
+          body: preview,
+          headers: { "Content-Type": "image/jpeg" },
+        }).catch(() => undefined);
+      }
 
       return apiClient.drive.confirmUpload.mutate({
         id: fileId,

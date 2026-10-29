@@ -299,4 +299,35 @@ describe("createUpload", () => {
 
     expect(issued).toEqual([]);
   });
+
+  describe("raw previews", () => {
+    const deps = () => ({
+      db: makeFakeDb(),
+      findFolderByIdQuery: makeFakeFindFolderById(),
+      s3Storage: makeFakeS3Storage(),
+      insertPendingFileCommand: makeFakeInsertPendingFile(),
+      linkFileToSongCommand: makeFakeLinkFileToSong(),
+      songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
+      getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+      ...makeFakePermissionChecks(),
+      ...makeFakeQuotaPorts(),
+    });
+
+    it("issues a preview upload url next to a raw file", async () => {
+      const result = await createUpload(deps(), {
+        ...baseInput,
+        mimeType: "image/x-sony-arw",
+        filename: "photo.arw",
+        previewSizeBytes: 512,
+      });
+
+      expect(result.previewUploadUrl).toMatch(/photo\.arw\.preview\.jpg$/);
+    });
+
+    it("issues no preview upload url for other files", async () => {
+      const result = await createUpload(deps(), { ...baseInput, previewSizeBytes: 512 });
+
+      expect(result.previewUploadUrl).toBeNull();
+    });
+  });
 });

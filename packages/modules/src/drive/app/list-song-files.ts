@@ -4,6 +4,7 @@ import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { SongFileRecord } from "../domain/index.js";
 import type { ListFilesBySongQueryPort } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import { createPreviewUrl } from "./create-preview-url.js";
 import { forbidden } from "@echo/errors";
 
 export async function listSongFiles(
@@ -14,7 +15,7 @@ export async function listSongFiles(
     listFilesBySongQuery: ListFilesBySongQueryPort;
   },
   input: { songId: string; scope: OrganizationScope },
-): Promise<(SongFileRecord & { downloadUrl: string })[]> {
+): Promise<(SongFileRecord & { downloadUrl: string; previewUrl: string | null })[]> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { drive: ["read"] },
@@ -23,10 +24,14 @@ export async function listSongFiles(
 
   const files = await deps.listFilesBySongQuery(deps.db, input.scope, { songId: input.songId });
 
-  const readable: (SongFileRecord & { downloadUrl: string })[] = [];
+  const readable: (SongFileRecord & { downloadUrl: string; previewUrl: string | null })[] = [];
   for (const file of files) {
     const { url } = await deps.s3Storage.createDownloadUrl(file.s3Key);
-    readable.push({ ...file, downloadUrl: url });
+    readable.push({
+      ...file,
+      downloadUrl: url,
+      previewUrl: await createPreviewUrl(deps.s3Storage, file),
+    });
   }
   return readable;
 }

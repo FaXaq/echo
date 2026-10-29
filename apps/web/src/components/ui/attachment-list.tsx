@@ -61,6 +61,7 @@ export interface AttachmentFile {
   sizeBytes: number;
   durationSeconds?: number | null;
   downloadUrl: string;
+  previewUrl?: string | null;
   role?: Role | null;
   version?: number | null;
 }
@@ -401,7 +402,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                   ))
                   .otherwise(() => (
                     <PreviewImage
-                      src={file.downloadUrl}
+                      src={file.previewUrl ?? file.downloadUrl}
                       filename={file.filename}
                       alt={file.filename}
                       loading="lazy"

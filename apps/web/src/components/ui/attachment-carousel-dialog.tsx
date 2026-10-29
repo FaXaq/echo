@@ -21,6 +21,7 @@ export interface CarouselAttachment {
   filename: string;
   kind: FileKind;
   downloadUrl?: string;
+  previewUrl?: string | null;
 }
 
 export interface AttachmentCarouselDialogProps {
@@ -104,7 +105,7 @@ export function AttachmentCarouselDialog({
                         ))
                         .otherwise(() => (
                           <PreviewImage
-                            src={file.downloadUrl}
+                            src={file.previewUrl ?? file.downloadUrl}
                             filename={file.filename}
                             alt={file.filename}
                             onLoad={() => markLoaded(file.id)}

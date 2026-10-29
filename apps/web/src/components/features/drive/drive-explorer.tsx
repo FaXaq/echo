@@ -133,9 +133,13 @@ function DriveExplorerContent({
       ids: galleryFiles.map((file) => file.id),
       organizationId,
     }).then((urls) => {
-      const downloadUrlById = new Map(urls.map((entry) => [entry.id, entry.downloadUrl]));
+      const urlsById = new Map(urls.map((entry) => [entry.id, entry]));
       setCarouselFiles((current) =>
-        current.map((file) => ({ ...file, downloadUrl: downloadUrlById.get(file.id) })),
+        current.map((file) => ({
+          ...file,
+          downloadUrl: urlsById.get(file.id)?.downloadUrl,
+          previewUrl: urlsById.get(file.id)?.previewUrl,
+        })),
       );
     });
   };

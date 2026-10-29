@@ -39,13 +39,13 @@ export const MIME_TYPES_BY_KIND: Record<FileKind, readonly string[]> = {
     "image/avif",
     "image/bmp",
     "image/svg+xml",
+    /* previewed through the embedded jpeg stored at previewKeyFor(s3Key) */
+    ...RAW_IMAGE_MIME_TYPES,
   ],
   document: [
     "application/pdf",
     "application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    /* browsers can't render camera raw, so it's stored as a downloadable document */
-    ...RAW_IMAGE_MIME_TYPES,
   ],
 };
 
@@ -54,6 +54,18 @@ export function kindForMimeType(mimeType: string): FileKind | null {
     ([, mimeTypes]) => mimeTypes.includes(mimeType),
   );
   return entry ? entry[0] : null;
+}
+
+export function isRawImage(mimeType: string) {
+  return RAW_IMAGE_MIME_TYPES.includes(mimeType);
+}
+
+export function previewKeyFor(s3Key: string) {
+  return `${s3Key}.preview.jpg`;
+}
+
+export function fileObjectKeys(file: { s3Key: string; mimeType: string }) {
+  return isRawImage(file.mimeType) ? [file.s3Key, previewKeyFor(file.s3Key)] : [file.s3Key];
 }
 
 export function mimeTypeForFile(file: { name: string; type: string }) {

@@ -48,6 +48,7 @@ function makeSongFile(overrides: Partial<driveResource.SongFile> = {}): driveRes
     linkedAt: "2026-08-02T09:30:00.000Z",
     linkedBy: "user-1",
     downloadUrl: "https://example.com/demo.mp3",
+    previewUrl: null,
     ...overrides,
   };
 }

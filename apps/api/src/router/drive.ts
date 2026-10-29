@@ -92,6 +92,7 @@ export const makeDriveRouter = () =>
           sizeBytes: z.number().int().positive(),
           durationSeconds: z.number().int().nonnegative().nullish(),
           filename: z.string().min(1),
+          previewSizeBytes: z.number().int().positive().optional(),
         }),
       )
       .mutation(({ ctx, input }) =>

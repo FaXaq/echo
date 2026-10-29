@@ -6,6 +6,7 @@ import type {
 } from "@echo/modules/drive/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import { fileObjectKeys } from "@echo/modules/drive/domain";
 import type { DeleteSongCommandPort } from "../infrastructure/delete-song.command.port.js";
 
 export type DeleteSongFileFailure = { fileId: string; error: unknown };
@@ -25,7 +26,9 @@ export async function deleteSong(
   });
 
   const results = await Promise.allSettled(
-    orphanedFiles.map((file) => deps.s3Storage.deleteObject(file.s3Key)),
+    orphanedFiles.map((file) =>
+      Promise.all(fileObjectKeys(file).map((key) => deps.s3Storage.deleteObject(key))),
+    ),
   );
   const failures = results.flatMap((result, index) =>
     result.status === "rejected"

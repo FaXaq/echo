@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { kindForMimeType, mimeTypeForFile } from "./index.js";
+import { fileObjectKeys, kindForMimeType, mimeTypeForFile } from "./index.js";
 
 describe("kindForMimeType", () => {
   it("maps known audio mime types to the audio kind", () => {
@@ -19,8 +19,8 @@ describe("kindForMimeType", () => {
     expect(kindForMimeType("image/avif")).toBe("image");
   });
 
-  it("maps camera raw mime types to the document kind", () => {
-    expect(kindForMimeType("image/x-canon-cr2")).toBe("document");
+  it("maps camera raw mime types to the image kind", () => {
+    expect(kindForMimeType("image/x-canon-cr2")).toBe("image");
   });
 
   it("maps known document mime types to the document kind", () => {
@@ -50,5 +50,20 @@ describe("mimeTypeForFile", () => {
     expect(mimeTypeForFile({ name: "archive.zip", type: "application/zip" })).toBe(
       "application/zip",
     );
+  });
+});
+
+describe("fileObjectKeys", () => {
+  it("includes the extracted preview for camera raw files", () => {
+    expect(fileObjectKeys({ s3Key: "org/1/a/photo.arw", mimeType: "image/x-sony-arw" })).toEqual([
+      "org/1/a/photo.arw",
+      "org/1/a/photo.arw.preview.jpg",
+    ]);
+  });
+
+  it("only includes the original for other files", () => {
+    expect(fileObjectKeys({ s3Key: "org/1/a/photo.png", mimeType: "image/png" })).toEqual([
+      "org/1/a/photo.png",
+    ]);
   });
 });
