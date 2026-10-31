@@ -1,3 +1,9 @@
+## [0.23.1](https://github.com/FaXaq/echo/compare/v0.23.0...v0.23.1) (2026-10-31)
+
+### 🐛 Bug Fixes
+
+* **web:** download gallery videos after their thumbnail loaded ([#61](https://github.com/FaXaq/echo/issues/61)) ([06e92f5](https://github.com/FaXaq/echo/commit/06e92f549b526c81ff8d83733d1ca0b2154122b2))
+
 ## [0.23.0](https://github.com/FaXaq/echo/compare/v0.22.0...v0.23.0) (2026-10-31)
 
 ### ✨ Features
