@@ -1,3 +1,9 @@
+## [0.23.0](https://github.com/FaXaq/echo/compare/v0.22.0...v0.23.0) (2026-10-31)
+
+### ✨ Features
+
+* **drive:** accept heic/heif & raw images ([#60](https://github.com/FaXaq/echo/issues/60)) ([29ad3f0](https://github.com/FaXaq/echo/commit/29ad3f0fd53ff9e1177b9f421ac2ccec3ac5e171))
+
 ## [0.22.0](https://github.com/FaXaq/echo/compare/v0.21.0...v0.22.0) (2026-10-25)
 
 ### ✨ Features
