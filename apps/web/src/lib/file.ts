@@ -22,7 +22,8 @@ export function downloadBlob(blob: Blob, filename: string) {
 }
 
 export async function downloadFile(url: string, filename: string) {
-  const response = await fetch(url);
+  // A <video>/<img> may have cached this URL from a no-cors request, without CORS headers.
+  const response = await fetch(url, { cache: "no-store" });
   const blob = await response.blob();
   downloadBlob(blob, filename);
 }
