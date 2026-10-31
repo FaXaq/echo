@@ -4,6 +4,7 @@ import type { CheckOrganizationPermission } from "@echo/modules/user/infrastruct
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { FindFilesByIdsQueryPort } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import { createPreviewUrl } from "./create-preview-url.js";
 
 export async function getFilesDownloadUrls(
   deps: {
@@ -13,7 +14,7 @@ export async function getFilesDownloadUrls(
     findFilesByIdsQuery: FindFilesByIdsQueryPort;
   },
   input: { ids: string[]; scope: OrganizationScope },
-): Promise<{ id: string; downloadUrl: string }[]> {
+): Promise<{ id: string; downloadUrl: string; previewUrl: string | null }[]> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { drive: ["read"] },
@@ -25,7 +26,11 @@ export async function getFilesDownloadUrls(
   return Promise.all(
     files.map(async (file) => {
       const { url } = await deps.s3Storage.createDownloadUrl(file.s3Key);
-      return { id: file.id, downloadUrl: url };
+      return {
+        id: file.id,
+        downloadUrl: url,
+        previewUrl: await createPreviewUrl(deps.s3Storage, file),
+      };
     }),
   );
 }

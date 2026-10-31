@@ -6,7 +6,7 @@ export type DeleteFolderCascadeInput = {
 };
 
 export type DeleteFolderCascadeResult = {
-  deletedFiles: { id: string; s3Key: string }[];
+  deletedFiles: { id: string; s3Key: string; mimeType: string }[];
 };
 
 export type DeleteFolderCascadeCommandPort = (

@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { PreviewImage } from "@/components/ui/preview-image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { match } from "ts-pattern";
@@ -20,6 +21,7 @@ export interface CarouselAttachment {
   filename: string;
   kind: FileKind;
   downloadUrl?: string;
+  previewUrl?: string | null;
 }
 
 export interface AttachmentCarouselDialogProps {
@@ -102,8 +104,9 @@ export function AttachmentCarouselDialog({
                           />
                         ))
                         .otherwise(() => (
-                          <img
-                            src={file.downloadUrl}
+                          <PreviewImage
+                            src={file.previewUrl ?? file.downloadUrl}
+                            filename={file.filename}
                             alt={file.filename}
                             onLoad={() => markLoaded(file.id)}
                             className={cn(

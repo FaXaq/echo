@@ -9,7 +9,7 @@ export const deleteFolderCascadeCommandFactory: DeleteFolderCascadeCommandPortFa
 
       const files = await trx
         .selectFrom("file")
-        .select(["id", "s3_key", "event_id"])
+        .select(["id", "s3_key", "mime_type", "event_id"])
         .where("folder_id", "in", folderIds)
         .execute();
 
@@ -46,7 +46,11 @@ export const deleteFolderCascadeCommandFactory: DeleteFolderCascadeCommandPortFa
         .execute();
 
       return {
-        deletedFiles: toDelete.map((file) => ({ id: file.id, s3Key: file.s3_key })),
+        deletedFiles: toDelete.map((file) => ({
+          id: file.id,
+          s3Key: file.s3_key,
+          mimeType: file.mime_type,
+        })),
       };
     });
   };

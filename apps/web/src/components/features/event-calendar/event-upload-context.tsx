@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { useMutationState } from "@tanstack/react-query";
-import { kindForMimeType, type FileKind } from "@echo/modules/drive/domain";
+import { kindForMimeType, mimeTypeForFile, type FileKind } from "@echo/modules/drive/domain";
 import {
   uploadFileMutationKey,
   useUploadFileMutation,
@@ -48,7 +48,7 @@ export function useEventUploadingFiles(eventId: string) {
         key: mutation.mutationId,
         filename: mutation.state.variables.file.name,
         sizeBytes: mutation.state.variables.file.size,
-        kind: kindForMimeType(mutation.state.variables.file.type),
+        kind: kindForMimeType(mimeTypeForFile(mutation.state.variables.file)),
       };
     },
   }).filter((file): file is UploadingFile => file !== null);

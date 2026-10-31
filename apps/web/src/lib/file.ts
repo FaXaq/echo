@@ -40,6 +40,49 @@ export function canPreviewInline(mimeType: string): boolean {
   return !NON_PREVIEWABLE_MIME_TYPES.has(mimeType);
 }
 
+// Camera raw files embed the camera's own JPEG render, so we upload that as the preview.
+export async function extractRawPreview(file: Blob) {
+  const preview = pickRawPreview(findEmbeddedJpegs(new Uint8Array(await file.arrayBuffer())));
+  return preview ? new Blob([preview], { type: "image/jpeg" }) : null;
+}
+
+export function findEmbeddedJpegs(bytes: Uint8Array<ArrayBuffer>) {
+  const jpegs: Uint8Array<ArrayBuffer>[] = [];
+  for (let start = 0; start + 3 < bytes.length; start++) {
+    if (bytes[start] !== 0xff || bytes[start + 1] !== 0xd8 || bytes[start + 2] !== 0xff) continue;
+    const end = findJpegEnd(bytes, start);
+    if (end === null) continue;
+    jpegs.push(bytes.subarray(start, end));
+    start = end - 1;
+  }
+  return jpegs;
+}
+
+// Walks the header segments by length (skipping EXIF thumbnails) up to the scan,
+// then finds EOI: scan data byte-stuffs 0xff, so 0xffd9 only appears at the end.
+function findJpegEnd(bytes: Uint8Array, start: number) {
+  let offset = start + 2;
+  while (true) {
+    if (offset + 4 > bytes.length || bytes[offset] !== 0xff) return null;
+    const marker = bytes[offset + 1];
+    offset += 2 + ((bytes[offset + 2]! << 8) | bytes[offset + 3]!);
+    if (marker === 0xda) break;
+  }
+  for (; offset + 1 < bytes.length; offset++) {
+    if (bytes[offset] === 0xff && bytes[offset + 1] === 0xd9) return offset + 2;
+  }
+  return null;
+}
+
+const MAX_PREVIEW_BYTES = 3 * 1024 * 1024;
+
+// Largest preview that stays light enough for a gallery grid, else the smallest oversized one.
+function pickRawPreview(jpegs: Uint8Array<ArrayBuffer>[]) {
+  const bySize = [...jpegs].sort((a, b) => a.length - b.length);
+  const light = bySize.filter((jpeg) => jpeg.length <= MAX_PREVIEW_BYTES);
+  return light.at(-1) ?? bySize[0] ?? null;
+}
+
 export function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;

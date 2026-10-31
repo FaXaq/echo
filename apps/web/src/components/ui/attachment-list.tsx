@@ -40,6 +40,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PreviewImage } from "@/components/ui/preview-image";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatDuration, formatSize } from "@/lib/file";
@@ -60,6 +61,7 @@ export interface AttachmentFile {
   sizeBytes: number;
   durationSeconds?: number | null;
   downloadUrl: string;
+  previewUrl?: string | null;
   role?: Role | null;
   version?: number | null;
 }
@@ -399,8 +401,9 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                     />
                   ))
                   .otherwise(() => (
-                    <img
-                      src={file.downloadUrl}
+                    <PreviewImage
+                      src={file.previewUrl ?? file.downloadUrl}
+                      filename={file.filename}
                       alt={file.filename}
                       loading="lazy"
                       className="m-0 block"

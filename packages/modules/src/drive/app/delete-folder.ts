@@ -4,6 +4,7 @@ import type { CheckOrganizationPermission } from "@echo/modules/user/infrastruct
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { DeleteFolderCascadeCommandPort } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import { fileObjectKeys } from "../domain/index.js";
 
 export type DeleteFolderFailure = { fileId: string; error: unknown };
 
@@ -26,7 +27,9 @@ export async function deleteFolder(
   if (!result) throw notFound("Folder");
 
   const settled = await Promise.allSettled(
-    result.deletedFiles.map((file) => deps.s3Storage.deleteObject(file.s3Key)),
+    result.deletedFiles.map((file) =>
+      Promise.all(fileObjectKeys(file).map((key) => deps.s3Storage.deleteObject(key))),
+    ),
   );
 
   return settled.flatMap((outcome, index) =>

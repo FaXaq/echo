@@ -4,6 +4,7 @@ import type { CheckOrganizationPermission } from "@echo/modules/user/infrastruct
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { DeleteFileByIdCommandPort, FindFileByIdQueryPort } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
+import { fileObjectKeys } from "../domain/index.js";
 
 export async function deleteFile(
   deps: {
@@ -24,6 +25,6 @@ export async function deleteFile(
   const file = await deps.findFileByIdQuery(deps.db, input.scope, { id: input.id });
   if (!file) throw notFound("File");
 
-  await deps.s3Storage.deleteObject(file.s3Key);
+  await Promise.all(fileObjectKeys(file).map((key) => deps.s3Storage.deleteObject(key)));
   await deps.deleteFileByIdCommand(deps.db, input.scope, { id: input.id });
 }

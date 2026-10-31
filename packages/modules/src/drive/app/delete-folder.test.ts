@@ -52,8 +52,8 @@ describe("deleteFolder", () => {
     const s3Storage = makeFakeS3Storage(["org/org-1/file-1/a.mp3", "org/org-1/file-2/b.mp3"]);
     const deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort = async () => ({
       deletedFiles: [
-        { id: "file-1", s3Key: "org/org-1/file-1/a.mp3" },
-        { id: "file-2", s3Key: "org/org-1/file-2/b.mp3" },
+        { id: "file-1", s3Key: "org/org-1/file-1/a.mp3", mimeType: "audio/mpeg" },
+        { id: "file-2", s3Key: "org/org-1/file-2/b.mp3", mimeType: "audio/mpeg" },
       ],
     });
 
@@ -79,7 +79,7 @@ describe("deleteFolder", () => {
       },
     };
     const deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort = async () => ({
-      deletedFiles: [{ id: "file-1", s3Key: "org/org-1/file-1/a.mp3" }],
+      deletedFiles: [{ id: "file-1", s3Key: "org/org-1/file-1/a.mp3", mimeType: "audio/mpeg" }],
     });
 
     const failures = await deleteFolder(

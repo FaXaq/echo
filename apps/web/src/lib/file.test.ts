@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { formatDuration, getMediaDuration } from "./file.js";
+import { findEmbeddedJpegs, formatDuration, getMediaDuration } from "./file.js";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -93,5 +93,23 @@ describe("getMediaDuration", () => {
 
     await expect(promise).resolves.toBe(60);
     expect(videoEl.querySelector("source")?.getAttribute("type")).toBe("video/mp4");
+  });
+});
+
+describe("findEmbeddedJpegs", () => {
+  const scan = [0xff, 0xda, 0x00, 0x04, 0x01, 0x02, 0x11, 0xff, 0x00, 0x22, 0xff, 0xd9];
+  const thumbnail = [0xff, 0xd8, ...scan];
+  const preview = [0xff, 0xd8, 0xff, 0xe1, 0x00, thumbnail.length + 2, ...thumbnail, ...scan];
+
+  it("finds the outer jpeg without splitting on the exif thumbnail it embeds", () => {
+    const bytes = new Uint8Array([0x49, 0x49, 0xff, 0xd8, 0x00, ...preview, 0xff, 0xd9, 0x07]);
+
+    expect(findEmbeddedJpegs(bytes).map((jpeg) => [...jpeg])).toEqual([preview]);
+  });
+
+  it("falls back to the exif thumbnail when the outer jpeg is cut off", () => {
+    const bytes = new Uint8Array(preview.slice(0, -2));
+
+    expect(findEmbeddedJpegs(bytes).map((jpeg) => [...jpeg])).toEqual([thumbnail]);
   });
 });
