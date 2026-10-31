@@ -21,8 +21,8 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
-import { downloadFile } from "@/lib/file";
 import {
+  downloadOrganizationFile,
   getEventFilesQueryOptions,
   useDeleteFileMutation,
   useRenameFileMutation,
@@ -188,7 +188,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         onDelete={(file) => setDeletingFileId(file.id)}
         onRename={(file) => setRenamingFile(file)}
         onLinkToSong={(file) => setLinkingFile(file)}
-        onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
+        onDownload={(file) => downloadOrganizationFile({ id: file.id, organizationId })}
         onPlayAudio={(file) =>
           requestPlay({
             id: file.id,

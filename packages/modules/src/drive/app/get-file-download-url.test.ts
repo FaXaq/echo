@@ -59,4 +59,20 @@ describe("getFileDownloadUrl", () => {
 
     expect(result.downloadUrl).toBe("https://fake-s3.local/org/org-1/file-1/demo.mp3?download");
   });
+
+  it("signs the URL as an attachment named after the file when downloading", async () => {
+    const result = await getFileDownloadUrl(
+      {
+        db: makeFakeDb(),
+        s3Storage: makeFakeS3Storage(),
+        findFileByIdQuery: makeFakeFindFileById(),
+        ...makeFakePermissionChecks(),
+      },
+      { id: "file-1", scope, download: true },
+    );
+
+    expect(result.downloadUrl).toBe(
+      "https://fake-s3.local/org/org-1/file-1/demo.mp3?download&attachment=demo.mp3",
+    );
+  });
 });
