@@ -659,7 +659,7 @@ msgid "Couldn't save repayment"
 msgstr "Impossible d'enregistrer le remboursement"
 
 #. placeholder {0}: file.name
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:56
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:57
 msgid "Couldn't upload {0}"
 msgstr "Impossible d'importer {0}"
 
@@ -1215,7 +1215,7 @@ msgstr "Dossier supprimé"
 msgid "Folders"
 msgstr "Dossiers"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:70
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:71
 msgid "Folders aren't supported yet — drop files only"
 msgstr "Les dossiers ne sont pas encore pris en charge — déposez uniquement des fichiers"
 
@@ -1700,7 +1700,7 @@ msgstr "Note"
 msgid "Only a selection of files can be deleted together"
 msgstr "Seule une sélection de fichiers peut être supprimée en groupe"
 
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:46
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:47
 msgid "Only a selection of files can be downloaded together"
 msgstr "Seule une sélection de fichiers peut être téléchargée en groupe"
 
@@ -2133,7 +2133,7 @@ msgid "Selection actions"
 msgstr "Actions de la sélection"
 
 #. placeholder {0}: formatSize(DRIVE_BULK_DOWNLOAD_MAX_BYTES)
-#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:48
+#: apps/web/src/components/features/drive/use-drive-file-transfer.ts:49
 msgid "Selections are limited to {DRIVE_BULK_DOWNLOAD_MAX_FILES} files or {0} total"
 msgstr "Les sélections sont limitées à {DRIVE_BULK_DOWNLOAD_MAX_FILES} fichiers ou {0} au total"
 

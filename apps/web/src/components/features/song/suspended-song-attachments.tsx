@@ -21,8 +21,8 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/toast";
-import { downloadFile } from "@/lib/file";
 import {
+  downloadOrganizationFile,
   getSongFilesQueryOptions,
   useDeleteFileMutation,
   useRenameFileMutation,
@@ -199,7 +199,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
         onDeleteSelected={handleDeleteSelected}
         onDelete={(file) => setDeletingFileId(file.id)}
         onRename={(file) => setRenamingFile(file)}
-        onDownload={(file) => downloadFile(file.downloadUrl, file.filename)}
+        onDownload={(file) => downloadOrganizationFile({ id: file.id, organizationId })}
         onPlayAudio={(file) =>
           requestPlay({
             id: file.id,
