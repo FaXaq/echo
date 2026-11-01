@@ -1,5 +1,7 @@
 import { createContext, useContext, type ReactNode } from "react";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
+import { useLingui } from "@lingui/react/macro";
+import { getSongQueryOptions } from "@/services/resources/song";
 import { kindForMimeType, mimeTypeForFile, type FileKind } from "@echo/modules/drive/domain";
 import {
   uploadFileMutationKey,
@@ -16,6 +18,12 @@ const SongUploadContext = createContext<UploadMutation | null>(null);
 export function SongUploadProvider({ children }: { children: ReactNode }) {
   const mutation = useUploadFileMutation();
   return <SongUploadContext.Provider value={mutation}>{children}</SongUploadContext.Provider>;
+}
+
+export function useSongDestinationLabel(songId: string, organizationId: string) {
+  const { t } = useLingui();
+  const { data } = useQuery(getSongQueryOptions({ songId, organizationId }));
+  return [t`Songs`, data?.title].filter(Boolean).join(" / ");
 }
 
 export function useSongUploadMutation() {

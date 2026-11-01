@@ -6,6 +6,7 @@ import { UploadCloud } from "lucide-react";
 import { SuspendedSongDetail } from "@/components/features/song/suspended-song-detail";
 import {
   SongUploadProvider,
+  useSongDestinationLabel,
   useSongUploadMutation,
 } from "@/components/features/song/song-upload-context";
 
@@ -49,12 +50,13 @@ function SongDropZone({
   const { t } = useLingui();
   const [isDragging, setIsDragging] = useState(false);
   const uploadMutation = useSongUploadMutation();
+  const destinationLabel = useSongDestinationLabel(songId, organizationId);
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setIsDragging(false);
     Array.from(event.dataTransfer.files).forEach((file) => {
-      uploadMutation.mutate({ songId, organizationId, file });
+      uploadMutation.mutate({ songId, organizationId, file, destinationLabel });
     });
   };
 

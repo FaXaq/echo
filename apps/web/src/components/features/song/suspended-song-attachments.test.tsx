@@ -61,7 +61,7 @@ let uploadRejection: unknown;
 
 function useFailingUploadMutation() {
   return useMutation({
-    mutationFn: async (_input: { songId?: string; organizationId: string; file: File }) => {
+    mutationFn: async (_input: driveResource.UploadFileInput) => {
       throw uploadRejection;
     },
   });

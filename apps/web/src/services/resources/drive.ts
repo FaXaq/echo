@@ -1,9 +1,12 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLingui } from "@lingui/react/macro";
 import type { RouterOutputs } from "@echo/api/router";
 import { isRawImage, mimeTypeForFile } from "@echo/modules/drive/domain";
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
-import { downloadFile, extractRawPreview, getMediaDuration } from "@/lib/file";
+import { downloadFile, extractRawPreview, getMediaMetadata, putWithProgress } from "@/lib/file";
+import { setUploadProgress } from "@/lib/upload-progress";
+import { toast } from "@/components/ui/toast";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
@@ -216,6 +219,7 @@ export interface UploadFileInput {
   folderId?: string | null;
   organizationId: string;
   file: File;
+  destinationLabel: string;
 }
 
 export function useUploadFileMutation({
@@ -224,11 +228,12 @@ export function useUploadFileMutation({
   onSuccess?: (file: RouterOutputs["drive"]["confirmUpload"]) => void;
 } = {}) {
   const queryClient = useQueryClient();
+  const { t } = useLingui();
 
   return useMutation({
     mutationKey: uploadFileMutationKey,
     mutationFn: async (input: UploadFileInput) => {
-      const durationSeconds = await getMediaDuration(input.file);
+      const { durationSeconds, width, height } = await getMediaMetadata(input.file);
       const mimeType = mimeTypeForFile(input.file);
       const preview = isRawImage(mimeType) ? await extractRawPreview(input.file) : null;
 
@@ -240,16 +245,15 @@ export function useUploadFileMutation({
         mimeType,
         sizeBytes: input.file.size,
         durationSeconds,
+        width,
+        height,
         filename: input.file.name,
         previewSizeBytes: preview?.size,
       });
 
-      const response = await fetch(uploadUrl, {
-        method: "PUT",
-        body: input.file,
-        headers: { "Content-Type": mimeType },
-      });
-      if (!response.ok) throw new Error("Upload failed");
+      await putWithProgress(uploadUrl, input.file, mimeType, (ratio) =>
+        setUploadProgress(input.file, ratio),
+      );
 
       // best effort: without a preview the raw still uploads and shows as a failed thumbnail
       if (preview && previewUploadUrl) {
@@ -272,6 +276,11 @@ export function useUploadFileMutation({
           queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId }).queryKey,
         }),
       ]);
+      toast.add({
+        type: "success",
+        title: t`${input.file.name} uploaded`,
+        description: input.destinationLabel,
+      });
       onSuccess?.(result);
     },
   });

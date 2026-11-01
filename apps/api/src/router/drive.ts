@@ -91,6 +91,8 @@ export const makeDriveRouter = () =>
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
           durationSeconds: z.number().int().nonnegative().nullish(),
+          width: z.number().int().positive().nullish(),
+          height: z.number().int().positive().nullish(),
           filename: z.string().min(1),
           previewSizeBytes: z.number().int().positive().optional(),
         }),

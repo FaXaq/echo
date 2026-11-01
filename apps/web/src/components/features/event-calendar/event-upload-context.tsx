@@ -1,5 +1,7 @@
 import { createContext, useContext, type ReactNode } from "react";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQuery } from "@tanstack/react-query";
+import { useLingui } from "@lingui/react/macro";
+import { getEventQueryOptions } from "@/services/resources/calendar";
 import { kindForMimeType, mimeTypeForFile, type FileKind } from "@echo/modules/drive/domain";
 import {
   uploadFileMutationKey,
@@ -16,6 +18,12 @@ const EventUploadContext = createContext<UploadMutation | null>(null);
 export function EventUploadProvider({ children }: { children: ReactNode }) {
   const mutation = useUploadFileMutation();
   return <EventUploadContext.Provider value={mutation}>{children}</EventUploadContext.Provider>;
+}
+
+export function useEventDestinationLabel(eventId: string, organizationId: string) {
+  const { t } = useLingui();
+  const { data } = useQuery(getEventQueryOptions({ eventId, organizationId }));
+  return [t`Calendar`, data?.title].filter(Boolean).join(" / ");
 }
 
 export function useEventUploadMutation() {

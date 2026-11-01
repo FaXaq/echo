@@ -14,6 +14,8 @@ function makeRow(overrides: Partial<FileRow> = {}): FileRow {
     mime_type: "audio/mpeg",
     size_bytes: 100,
     duration_seconds: null,
+    width: null,
+    height: null,
     filename: "demo.mp3",
     original_filename: "demo.mp3",
     s3_key: "org/org-1/file-1/demo.mp3",

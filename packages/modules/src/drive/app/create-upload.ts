@@ -42,6 +42,8 @@ export async function createUpload(
     mimeType: string;
     sizeBytes: number;
     durationSeconds?: number | null;
+    width?: number | null;
+    height?: number | null;
     filename: string;
     previewSizeBytes?: number;
   },
@@ -101,6 +103,8 @@ export async function createUpload(
     mimeType: input.mimeType,
     sizeBytes: input.sizeBytes,
     durationSeconds: input.durationSeconds ?? null,
+    width: input.width ?? null,
+    height: input.height ?? null,
     originalFilename: input.filename,
     s3Key,
   });

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { findEmbeddedJpegs, formatDuration, getMediaDuration } from "./file.js";
+import { findEmbeddedJpegs, formatDuration, getMediaMetadata } from "./file.js";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -35,13 +35,13 @@ function findCreatedElement<T extends Element>(
   return element;
 }
 
-describe("getMediaDuration", () => {
+describe("getMediaMetadata", () => {
   it("resolves null for a file whose kind isn't audio or video, without touching the DOM", async () => {
     const createObjectURL = vi.spyOn(URL, "createObjectURL");
 
-    const result = await getMediaDuration(makeFile("setlist.pdf", "application/pdf"));
+    const result = await getMediaMetadata(makeFile("setlist.pdf", "application/pdf"));
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ durationSeconds: null, width: null, height: null });
     expect(createObjectURL).not.toHaveBeenCalled();
   });
 
@@ -50,7 +50,7 @@ describe("getMediaDuration", () => {
     const revokeObjectURL = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
     const createElement = vi.spyOn(document, "createElement");
 
-    const promise = getMediaDuration(makeFile("song.mp3", "audio/mpeg"));
+    const promise = getMediaMetadata(makeFile("song.mp3", "audio/mpeg"));
     const audioEl = findCreatedElement(
       createElement,
       (v): v is HTMLAudioElement => v instanceof HTMLAudioElement,
@@ -58,7 +58,7 @@ describe("getMediaDuration", () => {
     Object.defineProperty(audioEl, "duration", { value: 182.6, configurable: true });
     audioEl.dispatchEvent(new Event("loadedmetadata"));
 
-    await expect(promise).resolves.toBe(183);
+    await expect(promise).resolves.toEqual({ durationSeconds: 183, width: null, height: null });
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:fake-url");
   });
 
@@ -67,14 +67,14 @@ describe("getMediaDuration", () => {
     const revokeObjectURL = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
     const createElement = vi.spyOn(document, "createElement");
 
-    const promise = getMediaDuration(makeFile("broken.mp3", "audio/mpeg"));
+    const promise = getMediaMetadata(makeFile("broken.mp3", "audio/mpeg"));
     const audioEl = findCreatedElement(
       createElement,
       (v): v is HTMLAudioElement => v instanceof HTMLAudioElement,
     );
     audioEl.dispatchEvent(new Event("error"));
 
-    await expect(promise).resolves.toBeNull();
+    await expect(promise).resolves.toEqual({ durationSeconds: null, width: null, height: null });
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:fake-url");
   });
 
@@ -83,15 +83,17 @@ describe("getMediaDuration", () => {
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
     const createElement = vi.spyOn(document, "createElement");
 
-    const promise = getMediaDuration(makeFile("clip.mp4", "video/mp4"));
+    const promise = getMediaMetadata(makeFile("clip.mp4", "video/mp4"));
     const videoEl = findCreatedElement(
       createElement,
       (v): v is HTMLVideoElement => v instanceof HTMLVideoElement,
     );
     Object.defineProperty(videoEl, "duration", { value: 60, configurable: true });
+    Object.defineProperty(videoEl, "videoWidth", { value: 1920, configurable: true });
+    Object.defineProperty(videoEl, "videoHeight", { value: 1080, configurable: true });
     videoEl.dispatchEvent(new Event("loadedmetadata"));
 
-    await expect(promise).resolves.toBe(60);
+    await expect(promise).resolves.toEqual({ durationSeconds: 60, width: 1920, height: 1080 });
     expect(videoEl.querySelector("source")?.getAttribute("type")).toBe("video/mp4");
   });
 });

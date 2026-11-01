@@ -17,6 +17,7 @@ import { TooltipProvider } from "@/ui/tooltip";
 import type { ClientSession } from "@echo/auth";
 import { isTheme, ThemeProvider } from "@/contexts/theme";
 import { Toaster } from "@/components/ui/toast";
+import { UploadProgressDialog } from "@/components/features/drive/upload-progress-dialog";
 import { DynamicTitle } from "./-dynamic-title";
 import { PageMetaProvider } from "@/contexts/page-meta";
 import { AppErrorPage } from "@/components/app-error-page";
@@ -87,6 +88,7 @@ function RootLayout() {
                 <PageMetaProvider>
                   <DynamicTitle />
                   <RootContent session={session} />
+                  <UploadProgressDialog />
                   <Toaster />
                 </PageMetaProvider>
               </ThemeProvider>

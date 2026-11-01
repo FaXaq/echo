@@ -50,8 +50,9 @@ export function useDriveFileTransfer({
         : null;
 
   const uploadFile = (file: File, targetFolderId: string | null) => {
+    const destinationLabel = [t`Drive`, ...path.map((folder) => folder.name)].join(" / ");
     uploadMutation.mutate(
-      { organizationId, folderId: targetFolderId, file },
+      { organizationId, folderId: targetFolderId, file, destinationLabel },
       {
         onSuccess: () => posthog.capture("drive_file_uploaded", { file_type: file.type }),
         onError: () => toast.add({ title: t`Couldn't upload ${file.name}`, type: "error" }),

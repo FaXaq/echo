@@ -99,9 +99,17 @@ export function formatDuration(seconds: number): string {
   return d.hours() > 0 ? d.format("H:mm:ss") : d.format("m:ss");
 }
 
-export function getMediaDuration(file: File): Promise<number | null> {
+export interface MediaMetadata {
+  durationSeconds: number | null;
+  width: number | null;
+  height: number | null;
+}
+
+const emptyMediaMetadata: MediaMetadata = { durationSeconds: null, width: null, height: null };
+
+export function getMediaMetadata(file: File): Promise<MediaMetadata> {
   const kind = kindForMimeType(file.type);
-  if (kind !== "audio" && kind !== "video") return Promise.resolve(null);
+  if (kind !== "audio" && kind !== "video") return Promise.resolve(emptyMediaMetadata);
 
   const url = URL.createObjectURL(file);
 
@@ -125,12 +133,39 @@ export function getMediaDuration(file: File): Promise<number | null> {
   return new Promise((resolve) => {
     mediaElement.addEventListener("loadedmetadata", () => {
       URL.revokeObjectURL(url);
-      resolve(Number.isFinite(mediaElement.duration) ? Math.round(mediaElement.duration) : null);
+      resolve({
+        durationSeconds: Number.isFinite(mediaElement.duration)
+          ? Math.round(mediaElement.duration)
+          : null,
+        width: mediaElement instanceof HTMLVideoElement ? mediaElement.videoWidth || null : null,
+        height: mediaElement instanceof HTMLVideoElement ? mediaElement.videoHeight || null : null,
+      });
     });
 
     mediaElement.addEventListener("error", () => {
       URL.revokeObjectURL(url);
-      resolve(null);
+      resolve(emptyMediaMetadata);
     });
+  });
+}
+
+export function putWithProgress(
+  url: string,
+  body: Blob,
+  contentType: string,
+  onProgress: (ratio: number) => void,
+) {
+  return new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", url);
+    xhr.setRequestHeader("Content-Type", contentType);
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) onProgress(event.loaded / event.total);
+    });
+    xhr.addEventListener("load", () =>
+      xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error("Upload failed")),
+    );
+    xhr.addEventListener("error", () => reject(new Error("Upload failed")));
+    xhr.send(body);
   });
 }

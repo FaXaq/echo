@@ -94,6 +94,7 @@ export interface File {
   event_id: string | null;
   filename: string;
   folder_id: string | null;
+  height: number | null;
   id: string;
   kind: string;
   mime_type: string;
@@ -104,6 +105,7 @@ export interface File {
   status: Generated<string>;
   updated_at: Generated<Timestamp | null>;
   uploaded_by: string;
+  width: number | null;
 }
 
 export interface Folder {

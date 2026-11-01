@@ -5,6 +5,7 @@ import { kindForMimeType } from "@echo/modules/drive/domain";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/toast";
 import { useUploadFileMutation } from "@/services/resources/drive";
+import { useSongDestinationLabel } from "./song-upload-context";
 import {
   getSongDefaultAudioQueryOptions,
   useSetSongAudioVersionMutation,
@@ -30,6 +31,7 @@ export function SongAudioDropTarget({
   const queryClient = useQueryClient();
   const [isDragOver, setIsDragOver] = useState(false);
   const uploadMutation = useUploadFileMutation();
+  const destinationLabel = useSongDestinationLabel(songId, organizationId);
   const setAudioVersionMutation = useSetSongAudioVersionMutation({ songId, organizationId });
 
   const handleDrop = async (event: React.DragEvent) => {
@@ -45,7 +47,12 @@ export function SongAudioDropTarget({
       const currentDefault = await queryClient.fetchQuery(
         getSongDefaultAudioQueryOptions({ songId, organizationId }),
       );
-      const uploaded = await uploadMutation.mutateAsync({ songId, organizationId, file });
+      const uploaded = await uploadMutation.mutateAsync({
+        songId,
+        organizationId,
+        file,
+        destinationLabel,
+      });
       const role = roleForDroppedAudio(currentDefault);
       await setAudioVersionMutation.mutateAsync({ fileId: uploaded.id, role });
       toast.add({

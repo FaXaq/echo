@@ -11,6 +11,8 @@ export type InsertPendingFileInput = {
   mimeType: string;
   sizeBytes: number;
   durationSeconds: number | null;
+  width: number | null;
+  height: number | null;
   originalFilename: string;
   s3Key: string;
 };
