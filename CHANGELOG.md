@@ -1,3 +1,9 @@
+## [0.23.2](https://github.com/FaXaq/echo/compare/v0.23.1...v0.23.2) (2026-11-01)
+
+### 🐛 Bug Fixes
+
+* **drive:** stream file downloads natively instead of buffering them ([#62](https://github.com/FaXaq/echo/issues/62)) ([3d60045](https://github.com/FaXaq/echo/commit/3d60045d2c8a31289466d14a9c89170adf41e110))
+
 ## [0.23.1](https://github.com/FaXaq/echo/compare/v0.23.0...v0.23.1) (2026-10-31)
 
 ### 🐛 Bug Fixes
