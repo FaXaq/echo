@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react/macro";
 import { usePostHog } from "posthog-js/react";
 import { toast } from "@/components/ui/toast";
 import { evaluateOsFileDrop, resolveDropTargetFolderId } from "@/lib/drive-drop";
-import { downloadBlob, downloadFile, formatSize } from "@/lib/file";
+import { downloadBlob, formatSize } from "@/lib/file";
 import {
   DRIVE_BULK_DOWNLOAD_MAX_BYTES,
   DRIVE_BULK_DOWNLOAD_MAX_FILES,
@@ -13,6 +13,7 @@ import {
   type DriveZipEntry,
 } from "@/lib/drive-zip";
 import {
+  downloadOrganizationFile,
   getFileDownloadUrl,
   useUploadFileMutation,
   type Folder,
@@ -81,8 +82,7 @@ export function useDriveFileTransfer({
 
   const handleDownloadFile = async (file: OrganizationFile) => {
     try {
-      const { downloadUrl } = await getFileDownloadUrl({ id: file.id, organizationId });
-      await downloadFile(downloadUrl, file.filename);
+      await downloadOrganizationFile({ id: file.id, organizationId });
     } catch {
       toast.add({ title: t`Couldn't download file`, type: "error" });
     }

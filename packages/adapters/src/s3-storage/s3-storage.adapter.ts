@@ -38,8 +38,14 @@ export function makeS3Storage(config: {
       return { url };
     },
 
-    createDownloadUrl: async (key: string) => {
-      const command = new GetObjectCommand({ Bucket: config.bucket, Key: key });
+    createDownloadUrl: async (key, options) => {
+      const command = new GetObjectCommand({
+        Bucket: config.bucket,
+        Key: key,
+        ResponseContentDisposition: options?.attachmentFilename
+          ? attachmentDisposition(options.attachmentFilename)
+          : undefined,
+      });
       const url = await getSignedUrl(client, command, { expiresIn: 3600 });
       return { url };
     },
@@ -62,4 +68,12 @@ export function makeS3Storage(config: {
       await client.send(new DeleteObjectCommand({ Bucket: config.bucket, Key: key }));
     },
   };
+}
+
+export function attachmentDisposition(filename: string) {
+  const encoded = encodeURIComponent(filename).replace(
+    /['()*]/g,
+    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
+  return `attachment; filename*=UTF-8''${encoded}`;
 }

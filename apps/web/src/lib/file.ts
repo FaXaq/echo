@@ -21,11 +21,14 @@ export function downloadBlob(blob: Blob, filename: string) {
   setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
 
-export async function downloadFile(url: string, filename: string) {
-  // A <video>/<img> may have cached this URL from a no-cors request, without CORS headers.
-  const response = await fetch(url, { cache: "no-store" });
-  const blob = await response.blob();
-  downloadBlob(blob, filename);
+// The URL must be signed with an attachment Content-Disposition so the browser
+// streams it to disk natively instead of buffering it or navigating to it.
+export function downloadFile(url: string) {
+  const link = document.createElement("a");
+  link.href = url;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
 const NON_PREVIEWABLE_MIME_TYPES = new Set([

@@ -12,7 +12,7 @@ export async function getFileDownloadUrl(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     findFileByIdQuery: FindFileByIdQueryPort;
   },
-  input: { id: string; scope: OrganizationScope },
+  input: { id: string; scope: OrganizationScope; download?: boolean },
 ): Promise<{ downloadUrl: string }> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
@@ -23,6 +23,8 @@ export async function getFileDownloadUrl(
   const file = await deps.findFileByIdQuery(deps.db, input.scope, { id: input.id });
   if (!file) throw notFound("File");
 
-  const { url } = await deps.s3Storage.createDownloadUrl(file.s3Key);
+  const { url } = await deps.s3Storage.createDownloadUrl(file.s3Key, {
+    attachmentFilename: input.download ? file.filename : undefined,
+  });
   return { downloadUrl: url };
 }

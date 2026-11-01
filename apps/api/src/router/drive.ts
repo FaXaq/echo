@@ -211,7 +211,7 @@ export const makeDriveRouter = () =>
       ),
 
     getFileDownloadUrl: organizationProcedure
-      .input(z.object({ id: z.string() }))
+      .input(z.object({ id: z.string(), download: z.boolean().optional() }))
       .query(({ ctx, input }) =>
         getFileDownloadUrl(
           {
@@ -220,7 +220,7 @@ export const makeDriveRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             findFileByIdQuery,
           },
-          { id: input.id, scope: ctx.organizationScope },
+          { id: input.id, scope: ctx.organizationScope, download: input.download },
         ),
       ),
 

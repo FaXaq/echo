@@ -5,7 +5,10 @@ export interface S3StoragePort {
     contentLength: number;
   }) => Promise<{ url: string }>;
 
-  createDownloadUrl: (key: string) => Promise<{ url: string }>;
+  createDownloadUrl: (
+    key: string,
+    options?: { attachmentFilename?: string },
+  ) => Promise<{ url: string }>;
 
   headObject: (key: string) => Promise<{ exists: boolean; sizeBytes: number | null }>;
 

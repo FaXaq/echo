@@ -3,7 +3,7 @@ import type { RouterOutputs } from "@echo/api/router";
 import { isRawImage, mimeTypeForFile } from "@echo/modules/drive/domain";
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
-import { extractRawPreview, getMediaDuration } from "@/lib/file";
+import { downloadFile, extractRawPreview, getMediaDuration } from "@/lib/file";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
@@ -308,8 +308,17 @@ export function useRenameFileMutation({ onSuccess }: { onSuccess?: () => void } 
   });
 }
 
-export function getFileDownloadUrl(input: { id: string; organizationId: string }) {
+export function getFileDownloadUrl(input: {
+  id: string;
+  organizationId: string;
+  download?: boolean;
+}) {
   return apiClient.drive.getFileDownloadUrl.query(input);
+}
+
+export async function downloadOrganizationFile(input: { id: string; organizationId: string }) {
+  const { downloadUrl } = await getFileDownloadUrl({ ...input, download: true });
+  downloadFile(downloadUrl);
 }
 
 export function getFilesDownloadUrls(input: { ids: string[]; organizationId: string }) {
