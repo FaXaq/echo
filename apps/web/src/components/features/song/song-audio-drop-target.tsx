@@ -8,7 +8,7 @@ import { useSongDestinationLabel } from "./song-upload-context";
 import { useUploadFile } from "@/components/features/drive/use-upload-file";
 import { getSongDefaultAudioQueryOptions, type SongAudioVersion } from "@/services/resources/song";
 
-function roleForDroppedAudio(currentDefault: SongAudioVersion | null): "demo" | "final" {
+function roleForDroppedAudio(currentDefault: SongAudioVersion | null) {
   return currentDefault?.role ?? "demo";
 }
 
@@ -38,20 +38,16 @@ export function SongAudioDropTarget({
       return;
     }
 
-    try {
-      const currentDefault = await queryClient.fetchQuery(
-        getSongDefaultAudioQueryOptions({ songId, organizationId }),
-      );
-      uploadMutation.mutate({
-        songId,
-        organizationId,
-        file,
-        destinationLabel: getDestinationLabel(),
-        songAudioRole: roleForDroppedAudio(currentDefault),
-      });
-    } catch {
-      toast.add({ type: "error", title: t`Upload failed` });
-    }
+    const currentDefault = await queryClient
+      .fetchQuery(getSongDefaultAudioQueryOptions({ songId, organizationId }))
+      .catch(() => null);
+    uploadMutation.mutate({
+      songId,
+      organizationId,
+      file,
+      destinationLabel: getDestinationLabel(),
+      songAudioRole: roleForDroppedAudio(currentDefault),
+    });
   };
 
   return (

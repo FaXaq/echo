@@ -15,6 +15,11 @@ export function setUploadProgress(file: File, ratio: number) {
   notify();
 }
 
+export function resetUploadProgress(file: File) {
+  ratios.delete(file);
+  notify();
+}
+
 export function setUploadDuration(file: File, durationSeconds: number | null) {
   durations.set(file, durationSeconds);
   notify();

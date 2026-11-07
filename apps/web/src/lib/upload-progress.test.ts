@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   getUploadDuration,
   getUploadProgress,
+  resetUploadProgress,
   setUploadDuration,
   setUploadProgress,
   totalUploadRatio,
@@ -14,6 +15,14 @@ describe("upload progress", () => {
     expect(getUploadProgress(file)).toBeUndefined();
     setUploadProgress(file, 0.4);
     expect(getUploadProgress(file)).toBe(0.4);
+  });
+
+  it("forgets progress on reset so a retry starts as not started", () => {
+    const file = new File(["a"], "a.wav");
+
+    setUploadProgress(file, 1);
+    resetUploadProgress(file);
+    expect(getUploadProgress(file)).toBeUndefined();
   });
 
   it("remembers the duration read before the upload, defaulting to null", () => {

@@ -4,7 +4,7 @@ import { isRawImage, mimeTypeForFile, type Role } from "@echo/modules/drive/doma
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
 import { downloadFile, extractRawPreview, getMediaMetadata, putWithProgress } from "@/lib/file";
-import { setUploadDuration, setUploadProgress } from "@/lib/upload-progress";
+import { resetUploadProgress, setUploadDuration, setUploadProgress } from "@/lib/upload-progress";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
@@ -231,6 +231,7 @@ export function useUploadFileMutation({
   return useMutation({
     mutationKey: uploadFileMutationKey,
     mutationFn: async (input: UploadFileInput) => {
+      resetUploadProgress(input.file);
       const metadata = await getMediaMetadata(input.file);
       setUploadDuration(input.file, metadata.durationSeconds);
       const mimeType = mimeTypeForFile(input.file);
