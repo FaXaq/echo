@@ -78,7 +78,19 @@ describe("getMediaMetadata", () => {
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:fake-url");
   });
 
-  it("creates a <video> element with a typed <source> for a video file", async () => {
+  it("gives up with empty metadata when the browser never reports any", async () => {
+    vi.useFakeTimers();
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:fake-url");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+
+    const promise = getMediaMetadata(makeFile("clip.mov", "video/quicktime"));
+    await vi.advanceTimersByTimeAsync(15_000);
+
+    await expect(promise).resolves.toEqual({ durationSeconds: null, width: null, height: null });
+    vi.useRealTimers();
+  });
+
+  it("lets the browser sniff a video's bytes instead of declaring its type", async () => {
     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:fake-url");
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
     const createElement = vi.spyOn(document, "createElement");
@@ -94,7 +106,7 @@ describe("getMediaMetadata", () => {
     videoEl.dispatchEvent(new Event("loadedmetadata"));
 
     await expect(promise).resolves.toEqual({ durationSeconds: 60, width: 1920, height: 1080 });
-    expect(videoEl.querySelector("source")?.getAttribute("type")).toBe("video/mp4");
+    expect(videoEl.querySelector("source")).toBeNull();
   });
 });
 

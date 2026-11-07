@@ -46,6 +46,7 @@ import { SuspendedDriveQuotaBar } from "./suspended-drive-quota-bar";
 import { DriveBreadcrumbs } from "./drive-breadcrumbs";
 import { DriveExplorerDialogs } from "./drive-explorer-dialogs";
 import { FileRow } from "./drive-file-row";
+import { FileDetailsDialog } from "./file-details-dialog";
 import { LinkFileToEventDialog } from "./link-file-to-event-dialog";
 import { FolderRow } from "./drive-folder-row";
 import {
@@ -93,6 +94,7 @@ function DriveExplorerContent({
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
   const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
   const [assigningFiles, setAssigningFiles] = useState<OrganizationFile[]>([]);
+  const [detailsFile, setDetailsFile] = useState<OrganizationFile | null>(null);
   const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
   const [carouselFiles, setCarouselFiles] = useState<CarouselAttachment[]>([]);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
@@ -406,6 +408,7 @@ function DriveExplorerContent({
                   }}
                   onRename={() => setRenamingFile(original.data)}
                   onAssignToEvent={() => setAssigningFiles([original.data])}
+                  onShowDetails={() => setDetailsFile(original.data)}
                   onDelete={() => setDeletingFile(original.data)}
                   onDownload={() => handleDownloadFile(original.data)}
                   onPlay={async () => {
@@ -514,6 +517,12 @@ function DriveExplorerContent({
         bulkDeleteCount={confirmingBulkDelete ? selectedFiles.length : 0}
         onBulkDeleteCountChange={(open) => !open && setConfirmingBulkDelete(false)}
         onConfirmBulkDeleteFiles={handleBulkDeleteFiles}
+      />
+
+      <FileDetailsDialog
+        file={detailsFile}
+        organizationId={organizationId}
+        onOpenChange={(open) => !open && setDetailsFile(null)}
       />
 
       <LinkFileToEventDialog
