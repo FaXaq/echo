@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type ReactElement, useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useLingui } from "@lingui/react/macro";
 import dayjs from "dayjs";
@@ -44,15 +44,16 @@ export interface ExpenseDialogParticipant {
   isMember: boolean;
 }
 
-export interface ExpenseDialogEvent {
+export interface ExpenseDialogEventField {
   id: string;
-  title: string;
+  value: string;
+  onChange: (eventId: string) => void;
 }
 
 export interface ExpenseDialogProps {
   state: ExpenseDialogState;
   participants: ExpenseDialogParticipant[];
-  events: ExpenseDialogEvent[];
+  renderEventPicker: (field: ExpenseDialogEventField) => ReactElement;
   organizationCurrency: string;
   currentUserId: string;
   onOpenChange: (open: boolean) => void;
@@ -79,7 +80,7 @@ function getDefaults(
 export function ExpenseDialog({
   state,
   participants,
-  events,
+  renderEventPicker,
   organizationCurrency,
   currentUserId,
   onOpenChange,
@@ -327,28 +328,13 @@ export function ExpenseDialog({
                 <Controller
                   name="eventId"
                   control={control}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value === "" ? "none" : field.value}
-                      onValueChange={(next) => field.onChange(next === "none" ? "" : (next ?? ""))}
-                    >
-                      <SelectTrigger id="expense-event" className="w-full">
-                        <SelectValue>
-                          {() =>
-                            events.find((event) => event.id === field.value)?.title ?? t`No event`
-                          }
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">{t`No event`}</SelectItem>
-                        {events.map((event) => (
-                          <SelectItem key={event.id} value={event.id}>
-                            {event.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+                  render={({ field }) =>
+                    renderEventPicker({
+                      id: "expense-event",
+                      value: field.value,
+                      onChange: field.onChange,
+                    })
+                  }
                 />
               </Field>
 

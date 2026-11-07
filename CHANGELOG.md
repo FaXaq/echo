@@ -1,3 +1,14 @@
+## [0.25.0](https://github.com/FaXaq/echo/compare/v0.24.0...v0.25.0) (2026-11-07)
+
+### ✨ Features
+
+* **drive:** assign several selected files to an event at once ([#66](https://github.com/FaXaq/echo/issues/66)) ([ef256bf](https://github.com/FaXaq/echo/commit/ef256bf3eb9df4cd4e53513b0a9639754c96d936))
+* **expense:** async event combobox showing date and time ([#65](https://github.com/FaXaq/echo/issues/65)) ([7e576f4](https://github.com/FaXaq/echo/commit/7e576f489d1e1453c60f1ceefbcff19bbec4a44e))
+
+### 🔧 Chores
+
+* **ci:** bump pnpm/action-setup to v6 for Node 24 runtime ([#64](https://github.com/FaXaq/echo/issues/64)) ([5c30320](https://github.com/FaXaq/echo/commit/5c303203576f6b957e85a0abe6dd082aa653961a))
+
 ## [0.24.0](https://github.com/FaXaq/echo/compare/v0.23.2...v0.24.0) (2026-11-07)
 
 ### ✨ Features
