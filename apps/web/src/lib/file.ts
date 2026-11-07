@@ -1,4 +1,4 @@
-import { kindForMimeType } from "@echo/modules/drive/domain";
+import { kindForMimeType, type MediaMetadata } from "@echo/modules/drive/domain";
 import { match } from "ts-pattern";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -97,12 +97,6 @@ export function formatDuration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const d = dayjs.duration(seconds * 1000);
   return d.hours() > 0 ? d.format("H:mm:ss") : d.format("m:ss");
-}
-
-export interface MediaMetadata {
-  durationSeconds: number | null;
-  width: number | null;
-  height: number | null;
 }
 
 const emptyMediaMetadata: MediaMetadata = { durationSeconds: null, width: null, height: null };

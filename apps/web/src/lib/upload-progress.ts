@@ -1,18 +1,31 @@
 import { useSyncExternalStore } from "react";
 
-// Keyed by the File itself: the same object sits in the upload mutation's variables.
 const ratios = new WeakMap<File, number>();
+const durations = new WeakMap<File, number | null>();
 const listeners = new Set<() => void>();
 let version = 0;
 
-export function setUploadProgress(file: File, ratio: number) {
-  ratios.set(file, ratio);
+function notify() {
   version++;
   listeners.forEach((listener) => listener());
 }
 
+export function setUploadProgress(file: File, ratio: number) {
+  ratios.set(file, ratio);
+  notify();
+}
+
+export function setUploadDuration(file: File, durationSeconds: number | null) {
+  durations.set(file, durationSeconds);
+  notify();
+}
+
+export function getUploadDuration(file: File) {
+  return durations.get(file) ?? null;
+}
+
 export function getUploadProgress(file: File) {
-  return ratios.get(file) ?? 0;
+  return ratios.get(file);
 }
 
 function subscribe(listener: () => void) {
@@ -22,8 +35,8 @@ function subscribe(listener: () => void) {
   };
 }
 
-export function useUploadProgressVersion() {
-  return useSyncExternalStore(subscribe, () => version);
+export function useRerenderOnUploadProgress() {
+  useSyncExternalStore(subscribe, () => version);
 }
 
 export function totalUploadRatio(uploads: { sizeBytes: number; ratio: number }[]) {

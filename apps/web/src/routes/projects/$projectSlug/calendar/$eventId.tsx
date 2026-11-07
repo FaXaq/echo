@@ -54,13 +54,18 @@ function EventDropZone({
   const { t } = useLingui();
   const [isDragging, setIsDragging] = useState(false);
   const uploadMutation = useEventUploadMutation();
-  const destinationLabel = useEventDestinationLabel(eventId, organizationId);
+  const getDestinationLabel = useEventDestinationLabel(eventId, organizationId);
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setIsDragging(false);
     Array.from(event.dataTransfer.files).forEach((file) => {
-      uploadMutation.mutate({ eventId, organizationId, file, destinationLabel });
+      uploadMutation.mutate({
+        eventId,
+        organizationId,
+        file,
+        destinationLabel: getDestinationLabel(),
+      });
     });
   };
 

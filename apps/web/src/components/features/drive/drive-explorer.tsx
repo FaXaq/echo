@@ -284,7 +284,7 @@ function DriveExplorerContent({
                 aria-label={t`Upload files`}
                 onChange={(event) => {
                   const files = Array.from(event.target.files ?? []);
-                  files.forEach((file) => uploadFile(file, folderId));
+                  files.forEach((file) => uploadFile(file));
                   event.target.value = "";
                 }}
               />
@@ -383,7 +383,7 @@ function DriveExplorerContent({
                   bulkDownloadDisabledReason={downloadDisabledReason}
                   onBulkDownload={handleBulkDownload}
                   isBulkDownloading={isDownloading}
-                  onOsFilesDropped={(dataTransfer) => handleOsDrop(dataTransfer, original.data.id)}
+                  onOsFilesDropped={(dataTransfer) => handleOsDrop(dataTransfer, original.data)}
                 />
               ) : (
                 <FileRow

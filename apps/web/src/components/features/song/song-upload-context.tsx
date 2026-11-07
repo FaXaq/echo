@@ -1,33 +1,38 @@
 import { createContext, useContext, type ReactNode } from "react";
-import { useMutationState, useQuery } from "@tanstack/react-query";
+import { useMutationState, useQueryClient } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
 import { getSongQueryOptions } from "@/services/resources/song";
 import { kindForMimeType, mimeTypeForFile, type FileKind } from "@echo/modules/drive/domain";
+import { uploadFileMutationKey, type UploadFileInput } from "@/services/resources/drive";
 import {
-  uploadFileMutationKey,
-  useUploadFileMutation,
-  type UploadFileInput,
-} from "@/services/resources/drive";
+  formatUploadDestination,
+  useUploadFile,
+} from "@/components/features/drive/use-upload-file";
 
-type UploadMutation = ReturnType<typeof useUploadFileMutation>;
+type UploadMutation = ReturnType<typeof useUploadFile>;
 
 // Falls back to a local mutation outside SongUploadProvider (e.g. component
 // tests rendered in isolation) rather than requiring every consumer to be wrapped.
 const SongUploadContext = createContext<UploadMutation | null>(null);
 
 export function SongUploadProvider({ children }: { children: ReactNode }) {
-  const mutation = useUploadFileMutation();
+  const mutation = useUploadFile();
   return <SongUploadContext.Provider value={mutation}>{children}</SongUploadContext.Provider>;
 }
 
 export function useSongDestinationLabel(songId: string, organizationId: string) {
   const { t } = useLingui();
-  const { data } = useQuery(getSongQueryOptions({ songId, organizationId }));
-  return [t`Songs`, data?.title].filter(Boolean).join(" / ");
+  const queryClient = useQueryClient();
+  return () => {
+    const title = queryClient.getQueryData(
+      getSongQueryOptions({ songId, organizationId }).queryKey,
+    )?.title;
+    return formatUploadDestination([t`Songs`, title]);
+  };
 }
 
 export function useSongUploadMutation() {
-  const localMutation = useUploadFileMutation();
+  const localMutation = useUploadFile();
   const sharedMutation = useContext(SongUploadContext);
   return sharedMutation ?? localMutation;
 }

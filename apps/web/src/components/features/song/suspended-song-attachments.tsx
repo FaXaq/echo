@@ -142,7 +142,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: files } = useSuspenseQuery(getSongFilesQueryOptions({ songId, organizationId }));
   const uploadMutation = useSongUploadMutation();
-  const destinationLabel = useSongDestinationLabel(songId, organizationId);
+  const getDestinationLabel = useSongDestinationLabel(songId, organizationId);
   const pendingFiles = useSongUploadingFiles(songId);
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
@@ -163,7 +163,12 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
-      uploadMutation.mutate({ songId, organizationId, file, destinationLabel });
+      uploadMutation.mutate({
+        songId,
+        organizationId,
+        file,
+        destinationLabel: getDestinationLabel(),
+      });
     });
   };
 

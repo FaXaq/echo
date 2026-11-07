@@ -139,7 +139,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId, organizationId }));
   const uploadMutation = useEventUploadMutation();
-  const destinationLabel = useEventDestinationLabel(eventId, organizationId);
+  const getDestinationLabel = useEventDestinationLabel(eventId, organizationId);
   const pendingFiles = useEventUploadingFiles(eventId);
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
@@ -151,7 +151,12 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
-      uploadMutation.mutate({ eventId, organizationId, file, destinationLabel });
+      uploadMutation.mutate({
+        eventId,
+        organizationId,
+        file,
+        destinationLabel: getDestinationLabel(),
+      });
     });
   };
 

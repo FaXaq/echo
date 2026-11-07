@@ -74,6 +74,12 @@ export function mimeTypeForFile(file: { name: string; type: string }) {
   return RAW_IMAGE_MIME_TYPES_BY_EXTENSION[extension] ?? file.type;
 }
 
+export type MediaMetadata = {
+  durationSeconds: number | null;
+  width: number | null;
+  height: number | null;
+};
+
 export type FileRecord = {
   id: string;
   eventId: string | null;

@@ -1,8 +1,8 @@
 import type { KyselyDB } from "@echo/db";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { FileKind, FileRecord } from "../domain/index.js";
+import type { FileKind, FileRecord, MediaMetadata } from "../domain/index.js";
 
-export type InsertPendingFileInput = {
+export type InsertPendingFileInput = MediaMetadata & {
   id: string;
   eventId: string | null;
   folderId: string | null;
@@ -10,9 +10,6 @@ export type InsertPendingFileInput = {
   kind: FileKind;
   mimeType: string;
   sizeBytes: number;
-  durationSeconds: number | null;
-  width: number | null;
-  height: number | null;
   originalFilename: string;
   s3Key: string;
 };

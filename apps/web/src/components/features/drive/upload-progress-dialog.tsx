@@ -16,42 +16,29 @@ import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatDuration, formatSize } from "@/lib/file";
 import {
+  getUploadDuration,
   getUploadProgress,
   totalUploadRatio,
-  useUploadProgressVersion,
+  useRerenderOnUploadProgress,
 } from "@/lib/upload-progress";
-import {
-  uploadFileMutationKey,
-  useUploadFileMutation,
-  type UploadFileInput,
-} from "@/services/resources/drive";
+import { uploadFileMutationKey, type UploadFileInput } from "@/services/resources/drive";
+import { useUploadFile } from "./use-upload-file";
 
 interface UploadRow {
   id: number;
   status: "idle" | "pending" | "success" | "error";
   input: UploadFileInput;
-  durationSeconds: number | null;
 }
 
 function isUploadFileInput(value: unknown): value is UploadFileInput {
   return typeof value === "object" && value !== null && "file" in value;
 }
 
-function durationOf(uploaded: unknown) {
-  return typeof uploaded === "object" &&
-    uploaded !== null &&
-    "durationSeconds" in uploaded &&
-    typeof uploaded.durationSeconds === "number"
-    ? uploaded.durationSeconds
-    : null;
-}
-
 export function UploadProgressDialog() {
   const queryClient = useQueryClient();
-  const uploadMutation = useUploadFileMutation();
-  useUploadProgressVersion();
-  const [hiddenUpTo, setHiddenUpTo] = useState(0);
-  const [clearedUpTo, setClearedUpTo] = useState(0);
+  const uploadMutation = useUploadFile();
+  useRerenderOnUploadProgress();
+  const [lastHiddenUploadId, setLastHiddenUploadId] = useState(0);
 
   const rows = useMutationState({
     filters: { mutationKey: uploadFileMutationKey },
@@ -61,29 +48,26 @@ export function UploadProgressDialog() {
             id: mutation.mutationId,
             status: mutation.state.status,
             input: mutation.state.variables,
-            durationSeconds: durationOf(mutation.state.data),
           }
         : null,
-  }).filter((row): row is UploadRow => row !== null && row.id > clearedUpTo);
+  }).filter(
+    (row): row is UploadRow =>
+      row !== null && (row.id > lastHiddenUploadId || row.status === "pending"),
+  );
 
-  const lastId = Math.max(0, ...rows.map((row) => row.id));
+  const total = rows.length;
+  const lastUploadId = Math.max(0, ...rows.map((row) => row.id));
   const hasPending = rows.some((row) => row.status === "pending");
   const doneCount = rows.filter((row) => row.status === "success").length;
   const failedCount = rows.filter((row) => row.status === "error").length;
   const ratioOf = (row: UploadRow) =>
-    row.status === "success" ? 1 : getUploadProgress(row.input.file);
+    row.status === "success" ? 1 : (getUploadProgress(row.input.file) ?? 0);
   const totalPercent = Math.round(
-    totalUploadRatio(
-      rows
-        .filter((row) => row.status !== "error")
-        .map((row) => ({ sizeBytes: row.input.file.size, ratio: ratioOf(row) })),
-    ) * 100,
+    totalUploadRatio(rows.map((row) => ({ sizeBytes: row.input.file.size, ratio: ratioOf(row) }))) *
+      100,
   );
 
-  const dismiss = () => {
-    setHiddenUpTo(lastId);
-    if (!hasPending) setClearedUpTo(lastId);
-  };
+  const dismiss = () => setLastHiddenUploadId(lastUploadId);
 
   const retry = (row: UploadRow) => {
     const failed = queryClient
@@ -94,22 +78,22 @@ export function UploadProgressDialog() {
   };
 
   return (
-    <Dialog open={lastId > hiddenUpTo} onOpenChange={(open) => !open && dismiss()}>
+    <Dialog open={lastUploadId > lastHiddenUploadId} onOpenChange={(open) => !open && dismiss()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
             {hasPending ? (
-              <Plural value={rows.length} one="Uploading # file" other="Uploading # files" />
+              <Plural value={total} one="Uploading # file" other="Uploading # files" />
             ) : (
               <Trans>
-                {doneCount} of {rows.length} files uploaded
+                {doneCount} of {total} files uploaded
               </Trans>
             )}
           </DialogTitle>
           <DialogDescription>
             {hasPending ? (
               <Trans>
-                {doneCount} of {rows.length} done · {totalPercent}%
+                {doneCount} of {total} done · {totalPercent}%
               </Trans>
             ) : failedCount > 0 ? (
               <Plural
@@ -125,12 +109,7 @@ export function UploadProgressDialog() {
         <Progress value={totalPercent} />
         <ul className="flex max-h-80 flex-col overflow-y-auto rounded-lg border">
           {rows.map((row) => (
-            <UploadRowItem
-              key={row.id}
-              row={row}
-              percent={Math.round(ratioOf(row) * 100)}
-              onRetry={() => retry(row)}
-            />
+            <UploadRowItem key={row.id} row={row} onRetry={() => retry(row)} />
           ))}
         </ul>
         <DialogFooter>
@@ -143,20 +122,16 @@ export function UploadProgressDialog() {
   );
 }
 
-function UploadRowItem({
-  row,
-  percent,
-  onRetry,
-}: {
-  row: UploadRow;
-  percent: number;
-  onRetry: () => void;
-}) {
+function UploadRowItem({ row, onRetry }: { row: UploadRow; onRetry: () => void }) {
   const { t } = useLingui();
   const { file } = row.input;
+  const durationSeconds = getUploadDuration(file);
+  const ratio = getUploadProgress(file);
+  const percent = Math.round((ratio ?? 0) * 100);
+  const phase = ratio === undefined ? "preparing" : ratio >= 1 ? "finishing" : "transferring";
   const details = [
     formatSize(file.size),
-    row.durationSeconds !== null && formatDuration(row.durationSeconds),
+    durationSeconds !== null && formatDuration(durationSeconds),
   ]
     .filter(Boolean)
     .join(" · ");
@@ -179,10 +154,20 @@ function UploadRowItem({
             <span className="shrink-0 text-muted-foreground">{details}</span>
           )}
         </div>
-        {row.status === "pending" && <Progress value={percent} aria-label={file.name} />}
+        {row.status === "pending" && (
+          <Progress value={phase === "transferring" ? percent : null} aria-label={file.name} />
+        )}
       </div>
       {row.status === "pending" && (
-        <span className="w-10 shrink-0 text-end font-medium tabular-nums">{percent}%</span>
+        <span className="w-20 shrink-0 text-end font-medium tabular-nums">
+          {phase === "preparing" ? (
+            <Trans>Preparing…</Trans>
+          ) : phase === "finishing" ? (
+            <Trans>Finishing…</Trans>
+          ) : (
+            `${percent}%`
+          )}
+        </span>
       )}
       {row.status === "success" && (
         <Check className="size-4 shrink-0 text-green-600" aria-label={t`Uploaded`} />

@@ -50,13 +50,18 @@ function SongDropZone({
   const { t } = useLingui();
   const [isDragging, setIsDragging] = useState(false);
   const uploadMutation = useSongUploadMutation();
-  const destinationLabel = useSongDestinationLabel(songId, organizationId);
+  const getDestinationLabel = useSongDestinationLabel(songId, organizationId);
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setIsDragging(false);
     Array.from(event.dataTransfer.files).forEach((file) => {
-      uploadMutation.mutate({ songId, organizationId, file, destinationLabel });
+      uploadMutation.mutate({
+        songId,
+        organizationId,
+        file,
+        destinationLabel: getDestinationLabel(),
+      });
     });
   };
 
