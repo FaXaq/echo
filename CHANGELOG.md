@@ -1,3 +1,9 @@
+## [0.24.0](https://github.com/FaXaq/echo/compare/v0.23.2...v0.24.0) (2026-11-07)
+
+### ✨ Features
+
+* **drive:** upload progress dialog and success toasts ([#63](https://github.com/FaXaq/echo/issues/63)) ([cf44bf8](https://github.com/FaXaq/echo/commit/cf44bf846698d2a907ae21d1681c8abb8d7f9854))
+
 ## [0.23.2](https://github.com/FaXaq/echo/compare/v0.23.1...v0.23.2) (2026-11-01)
 
 ### 🐛 Bug Fixes
