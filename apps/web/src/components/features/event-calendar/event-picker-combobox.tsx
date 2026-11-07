@@ -1,25 +1,14 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
-import dayjs from "dayjs";
 import { EntityPickerCombobox } from "@/components/features/playlist/entity-picker-combobox";
+import { formatEventWhen } from "@/lib/event-format";
 import { type CalendarEvent, getEventSearchQueryOptions } from "@/services/resources/calendar";
 
 const MIN_QUERY_LENGTH = 2;
 const SEARCH_DEBOUNCE_MS = 300;
 
-function eventLabel(event: CalendarEvent) {
-  return `${event.title} — ${dayjs(event.startDate).format("MMM D, YYYY")}`;
-}
-
-export function EventPickerCombobox({
-  organizationId,
-  onSelect,
-}: {
-  organizationId: string;
-  onSelect: (eventId: string) => void;
-}) {
-  const { t } = useLingui();
+export function useEventSearch(organizationId: string) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
@@ -34,17 +23,36 @@ export function EventPickerCombobox({
     enabled: isSearchReady,
   });
 
+  return { setQuery, isSearchReady, results: isSearchReady ? (results ?? []) : [] };
+}
+
+export function useEventLabel() {
+  const { i18n } = useLingui();
+  return (event: CalendarEvent) => `${event.title} — ${formatEventWhen(event, i18n.locale)}`;
+}
+
+export function EventPickerCombobox({
+  organizationId,
+  onSelect,
+}: {
+  organizationId: string;
+  onSelect: (eventId: string) => void;
+}) {
+  const { t } = useLingui();
+  const search = useEventSearch(organizationId);
+  const eventLabel = useEventLabel();
+
   return (
     <EntityPickerCombobox
-      options={isSearchReady ? (results ?? []) : []}
+      options={search.results}
       getId={(event) => event.id}
       getLabel={eventLabel}
-      onQueryChange={setQuery}
+      onQueryChange={search.setQuery}
       onSelect={(event) => onSelect(event.id)}
       placeholder={t`Search events…`}
       emptyLabel={t`No matching events`}
       promptLabel={t`Type to search events`}
-      isSearchReady={isSearchReady}
+      isSearchReady={search.isSearchReady}
     />
   );
 }
