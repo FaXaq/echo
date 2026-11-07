@@ -87,9 +87,13 @@ describe("buildExpenseSubmission", () => {
     expect(result.ok && result.value.exchangeRate).toBeUndefined();
   });
 
-  it("builds an exact split, ignoring blank entries", () => {
+  it("builds an exact split, ignoring blank and zero entries", () => {
     const result = buildExpenseSubmission(
-      { ...base, splitMode: "exact", exactAmounts: { marie: "25", paul: "15", lea: "" } },
+      {
+        ...base,
+        splitMode: "exact",
+        exactAmounts: { marie: "25", paul: "15", lea: "", jo: "0", max: "0,00" },
+      },
       "EUR",
     );
     expect(result.ok && result.value.split).toEqual({
@@ -108,6 +112,12 @@ describe("buildExpenseSubmission", () => {
         "EUR",
       ),
     ).toEqual({ ok: false, error: "splitSum" });
+    expect(
+      buildExpenseSubmission(
+        { ...base, splitMode: "exact", exactAmounts: { marie: "40", paul: "1." } },
+        "EUR",
+      ),
+    ).toEqual({ ok: false, error: "splitAmount" });
     expect(
       buildExpenseSubmission({ ...base, splitMode: "exact", exactAmounts: {} }, "EUR"),
     ).toEqual({ ok: false, error: "split" });

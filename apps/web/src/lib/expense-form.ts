@@ -45,6 +45,7 @@ export type ExpenseFormError =
   | "exchangeRate"
   | "payer"
   | "split"
+  | "splitAmount"
   | "splitSum";
 
 export function emptyExpenseFormValues(input: {
@@ -128,7 +129,8 @@ export function buildExpenseSubmission(
     for (const [userId, amount] of Object.entries(values.exactAmounts)) {
       if (amount.trim() === "") continue;
       const shareMinor = parseMajorAmount(amount, exponent);
-      if (shareMinor === null || shareMinor <= 0) return { ok: false, error: "split" };
+      if (shareMinor === null) return { ok: false, error: "splitAmount" };
+      if (shareMinor === 0) continue;
       shares.push({ userId, amountMinor: shareMinor });
     }
     if (shares.length === 0) return { ok: false, error: "split" };
