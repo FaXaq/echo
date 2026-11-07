@@ -93,6 +93,10 @@ type AttachmentTab = "audio" | "gallery" | "misc";
 const TAB_ORDER: AttachmentTab[] = ["audio", "gallery", "misc"];
 const EMPTY_SELECTION: Set<string> = new Set();
 
+// macOS turns Ctrl+click into a contextmenu event; a real right-click reports button 2.
+const isMacCtrlClick = (event: { ctrlKey: boolean; button: number }) =>
+  event.ctrlKey && event.button === 0;
+
 function tabForKind(kind: FileKind | null | undefined): AttachmentTab {
   if (kind === "audio") return "audio";
   if (kind === "image" || kind === "video") return "gallery";
@@ -181,13 +185,14 @@ function AttachmentListItems<F extends AttachmentFile>({
               size="sm"
               onContextMenu={(event) => {
                 event.preventDefault();
-                setContextMenuId(file.id);
+                if (isMacCtrlClick(event)) onToggleSelect(file);
+                else setContextMenuId(file.id);
               }}
             >
               <AttachmentTrigger
                 aria-label={t`Open ${file.filename}`}
                 onClick={(event) => {
-                  if (event.ctrlKey || event.metaKey) {
+                  if (event.ctrlKey || event.metaKey || selectedIds.size > 0) {
                     event.preventDefault();
                     onToggleSelect(file);
                     return;
@@ -374,13 +379,14 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
               size="default"
               onContextMenu={(event) => {
                 event.preventDefault();
-                setContextMenuId(file.id);
+                if (isMacCtrlClick(event)) onToggleSelect(file);
+                else setContextMenuId(file.id);
               }}
             >
               <AttachmentTrigger
                 aria-label={t`Open ${file.filename}`}
                 onClick={(event) => {
-                  if (event.ctrlKey || event.metaKey) {
+                  if (event.ctrlKey || event.metaKey || selectedIds.size > 0) {
                     event.preventDefault();
                     onToggleSelect(file);
                     return;
