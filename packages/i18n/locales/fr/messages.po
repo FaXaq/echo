@@ -167,7 +167,7 @@ msgid "<0>Back to login</0>"
 msgstr "<0>Retour à la connexion</0>"
 
 #. placeholder {0}: values.currency
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:203
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:204
 msgid "1 {0} = how many {organizationCurrency}?"
 msgstr "1 {0} = combien de {organizationCurrency} ?"
 
@@ -281,7 +281,7 @@ msgstr "Tous les fichiers ont été envoyés."
 msgid "Already have an account? <0>Sign in</0>"
 msgstr "Déjà un compte ? <0>Se connecter</0>"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:168
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:169
 #: apps/web/src/components/ui/expense/expense-table.tsx:106
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:160
 #: apps/web/src/components/ui/expense/repayment-table.tsx:71
@@ -418,8 +418,8 @@ msgstr "Préparez une setlist pour votre prochain concert ou votre prochaine ré
 #~ msgid "Bullet list"
 #~ msgstr "Liste à puces"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:255
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:260
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:256
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:261
 msgid "By exact amounts"
 msgstr "Par montants exacts"
 
@@ -443,7 +443,7 @@ msgstr "Impossible de lire {filename}"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:247
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:363
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:349
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:179
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
@@ -503,11 +503,11 @@ msgstr "Choisissez qui est remboursé"
 msgid "Choose who is paying"
 msgstr "Choisissez qui rembourse"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:131
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:132
 msgid "Choose who paid"
 msgstr "Choisissez qui a payé"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:132
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:133
 msgid "Choose who shares this expense"
 msgstr "Choisissez qui partage cette dépense"
 
@@ -696,7 +696,7 @@ msgstr "Impossible de réorganiser la colonne"
 msgid "Couldn't save card"
 msgstr "Impossible d'enregistrer la carte"
 
-#: apps/web/src/components/features/expense/suspended-expense-dialog.tsx:50
+#: apps/web/src/components/features/expense/suspended-expense-dialog.tsx:51
 msgid "Couldn't save expense"
 msgstr "Impossible d'enregistrer la dépense"
 
@@ -739,7 +739,7 @@ msgstr "Créer un compte"
 msgid "Create an account"
 msgstr "Créer un compte"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:370
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:356
 msgid "Create expense"
 msgstr "Créer la dépense"
 
@@ -769,7 +769,7 @@ msgstr "Créée par"
 
 #: apps/web/src/components/features/organization/suspended-organization-currency.tsx:46
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:122
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:173
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:174
 msgid "Currency"
 msgstr "Devise"
 
@@ -782,7 +782,7 @@ msgid "Danger zone"
 msgstr "Zone de danger"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:96
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:212
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:213
 #: apps/web/src/components/ui/expense/expense-table.tsx:102
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:165
 #: apps/web/src/components/ui/expense/repayment-table.tsx:67
@@ -793,7 +793,7 @@ msgstr "Date"
 #~ msgid "Date added"
 #~ msgstr "Date d'ajout"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:128
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:129
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:102
 msgid "Date is required"
 msgstr "La date est requise"
@@ -908,7 +908,7 @@ msgid "Desc"
 msgstr "Décroissant"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:199
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:353
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:339
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:192
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
 msgid "Description"
@@ -990,8 +990,8 @@ msgstr "Modifier la carte"
 msgid "Edit event"
 msgstr "Modifier l'événement"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:152
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:154
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:153
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:155
 msgid "Edit expense"
 msgstr "Modifier la dépense"
 
@@ -1046,12 +1046,12 @@ msgstr "Fin"
 msgid "End date must be after start date"
 msgstr "La date de fin doit être postérieure à la date de début"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:129
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:130
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:101
 msgid "Enter a valid amount"
 msgstr "Saisissez un montant valide"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:130
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:131
 msgid "Enter a valid exchange rate"
 msgstr "Saisissez un taux de change valide"
 
@@ -1075,14 +1075,14 @@ msgstr "Entrez votre email pour vous connecter"
 msgid "Enter your email to receive a reset link"
 msgstr "Entrez votre email pour recevoir un lien de réinitialisation"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:255
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:259
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:256
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:260
 msgid "Equally"
 msgstr "À parts égales"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:37
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:9
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:323
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:324
 #: apps/web/src/components/ui/expense/expense-table.tsx:104
 msgid "Event"
 msgstr "Événement"
@@ -1116,11 +1116,11 @@ msgstr "Chaque action ici est destructive. Veuillez procéder avec prudence."
 msgid "Everyone is settled up."
 msgstr "Tout le monde est à jour."
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:133
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:134
 msgid "Exact amounts must add up to the total"
 msgstr "Les montants exacts doivent totaliser le montant de la dépense"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:200
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:201
 msgid "Exchange rate"
 msgstr "Taux de change"
 
@@ -1564,8 +1564,8 @@ msgid "New event"
 msgstr "Nouvel événement"
 
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:82
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:152
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:154
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:153
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:155
 msgid "New expense"
 msgstr "Nouvelle dépense"
 
@@ -1623,8 +1623,7 @@ msgstr "Pas de connexion"
 msgid "No contacts"
 msgstr "Aucun contact"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:335
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:340
+#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:49
 msgid "No event"
 msgstr "Aucun événement"
 
@@ -1664,7 +1663,8 @@ msgstr "Aucun fichier pour l'instant"
 msgid "No matches"
 msgstr "Aucun résultat"
 
-#: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:45
+#: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:53
+#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:53
 msgid "No matching events"
 msgstr "Aucun événement correspondant"
 
@@ -1838,7 +1838,7 @@ msgstr "Propriétaire"
 msgid "Page {0} of {1}"
 msgstr "Page {0} sur {1}"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:218
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:219
 #: apps/web/src/components/ui/expense/expense-table.tsx:105
 msgid "Paid by"
 msgstr "Payé par"
@@ -2129,7 +2129,7 @@ msgstr "Enregistrer"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:338
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:370
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:356
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:186
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:98
 #: apps/web/src/components/ui/song/song-dialog.tsx:167
@@ -2152,7 +2152,7 @@ msgstr "Enregistrement…"
 msgid "Search Drive"
 msgstr "Rechercher dans le Drive"
 
-#: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:44
+#: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:52
 msgid "Search events…"
 msgstr "Rechercher des événements…"
 
@@ -2288,7 +2288,7 @@ msgstr "Chanson introuvable"
 msgid "Songs"
 msgstr "Morceaux"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:244
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:245
 msgid "Split"
 msgstr "Répartition"
 
@@ -2453,14 +2453,14 @@ msgstr "Cela supprimera définitivement cette chanson et la retirera de toutes l
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:230
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:216
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:161
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:162
 #: apps/web/src/components/ui/expense/expense-table.tsx:103
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:85
 #: apps/web/src/components/ui/song/song-dialog.tsx:111
 msgid "Title"
 msgstr "Titre"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:127
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:128
 #: apps/web/src/lib/dynamic-messages.ts:25
 msgid "Title is required"
 msgstr "Le titre est requis"
@@ -2500,7 +2500,8 @@ msgstr "Total dépensé"
 msgid "Type"
 msgstr "Type"
 
-#: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:46
+#: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:54
+#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:53
 msgid "Type to search events"
 msgstr "Tapez pour rechercher des événements"
 

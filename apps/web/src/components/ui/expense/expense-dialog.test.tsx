@@ -38,7 +38,7 @@ function renderDialog(state: Parameters<typeof ExpenseDialog>[0]["state"], onSub
     <ExpenseDialog
       state={state}
       participants={participants}
-      events={[]}
+      renderEventPicker={() => <span />}
       organizationCurrency="EUR"
       currentUserId="marie"
       onOpenChange={vi.fn()}
@@ -89,7 +89,7 @@ describe("ExpenseDialog", () => {
     const state: ExpenseDialogState = { mode: "create" };
     const props = {
       state,
-      events: [],
+      renderEventPicker: () => <span />,
       organizationCurrency: "EUR",
       currentUserId: "marie",
       onOpenChange: vi.fn(),
