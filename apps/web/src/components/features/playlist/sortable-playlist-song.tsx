@@ -14,12 +14,14 @@ export function SortablePlaylistSong({
   index,
   organizationId,
   projectSlug,
+  onPlay,
   onRemove,
 }: {
   song: { songId: string; title: string; artist: string | null };
   index: number;
   organizationId: string;
   projectSlug: string;
+  onPlay: () => void;
   onRemove: () => void;
 }) {
   const { t } = useLingui();
@@ -58,6 +60,7 @@ export function SortablePlaylistSong({
               songId={song.songId}
               organizationId={organizationId}
               title={song.title}
+              onPlay={onPlay}
             />
           }
           duration={<SuspendedSongDuration songId={song.songId} organizationId={organizationId} />}
