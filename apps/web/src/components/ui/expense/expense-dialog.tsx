@@ -130,6 +130,7 @@ export function ExpenseDialog({
     exchangeRate: t`Enter a valid exchange rate`,
     payer: t`Choose who paid`,
     split: t`Choose who shares this expense`,
+    splitAmount: t`Enter a valid amount for each person`,
     splitSum: t`Exact amounts must add up to the total`,
   };
   const errorFor = (field: ExpenseFormError) =>
@@ -316,7 +317,9 @@ export function ExpenseDialog({
                     )}
                   />
                 )}
-                <FieldError>{errorFor("split") ?? errorFor("splitSum")}</FieldError>
+                <FieldError>
+                  {errorFor("split") ?? errorFor("splitAmount") ?? errorFor("splitSum")}
+                </FieldError>
               </Field>
 
               <Field>
