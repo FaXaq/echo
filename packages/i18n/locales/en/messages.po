@@ -300,7 +300,7 @@ msgstr "An unexpected error occurred. An error report has been sent to the techn
 #~ msgid "An unexpected error occurred. Reloading the page usually fixes it."
 #~ msgstr "An unexpected error occurred. Reloading the page usually fixes it."
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:84
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:87
 msgid "Aperture"
 msgstr "Aperture"
 
@@ -433,7 +433,7 @@ msgstr "By exact amounts"
 msgid "Calendar"
 msgstr "Calendar"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:82
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:85
 msgid "Camera"
 msgstr "Camera"
 
@@ -684,7 +684,7 @@ msgstr "Couldn't move card"
 msgid "Couldn't move song"
 msgstr "Couldn't move song"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:118
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:127
 msgid "Couldn't read more details from this file."
 msgstr "Couldn't read more details from this file."
 
@@ -991,7 +991,7 @@ msgstr "Drop an audio file"
 msgid "Drop files to upload"
 msgstr "Drop files to upload"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:77
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:80
 msgid "Duration"
 msgstr "Duration"
 
@@ -1282,7 +1282,7 @@ msgstr "Final"
 msgid "Finishing…"
 msgstr "Finishing…"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:91
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:94
 msgid "Focal length"
 msgstr "Focal length"
 
@@ -1308,7 +1308,7 @@ msgstr "Forgot password"
 msgid "Forgot your password?"
 msgstr "Forgot your password?"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:74
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:77
 msgid "Format"
 msgstr "Format"
 
@@ -1483,7 +1483,7 @@ msgstr "Link to a song"
 #~ msgid "Linked files"
 #~ msgstr "Linked files"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:95
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:98
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:111
 msgid "Location"
 msgstr "Location"
@@ -2030,7 +2030,7 @@ msgstr "Purple"
 msgid "Reach"
 msgstr "Reach"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:114
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:117
 msgid "Reading file details…"
 msgstr "Reading file details…"
 
@@ -2123,7 +2123,7 @@ msgstr "Resend code"
 msgid "Reset password"
 msgstr "Reset password"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:80
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:83
 msgid "Resolution"
 msgstr "Resolution"
 
@@ -2278,7 +2278,7 @@ msgstr "Settle up"
 msgid "Share"
 msgstr "Share"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:87
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:90
 msgid "Shutter speed"
 msgstr "Shutter speed"
 
@@ -2291,7 +2291,7 @@ msgid "Sign up failed"
 msgstr "Sign up failed"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:62
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:75
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:78
 msgid "Size"
 msgstr "Size"
 
@@ -2353,7 +2353,7 @@ msgstr "Storage"
 msgid "Summary"
 msgstr "Summary"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:93
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:96
 msgid "Taken on"
 msgstr "Taken on"
 
@@ -2380,6 +2380,10 @@ msgstr "This code has expired, request a new one"
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:221
 msgid "This event doesn't exist or has been deleted."
 msgstr "This event doesn't exist or has been deleted."
+
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:123
+msgid "This file couldn't be loaded. It may be missing from storage."
+msgstr "This file couldn't be loaded. It may be missing from storage."
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:110
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:113
@@ -2623,11 +2627,11 @@ msgid "Uploaded"
 msgstr "Uploaded"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:45
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:106
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:109
 msgid "Uploaded by"
 msgstr "Uploaded by"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:108
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:111
 msgid "Uploaded on"
 msgstr "Uploaded on"
 

@@ -1,5 +1,20 @@
-import { describe, expect, it } from "vitest";
-import { toPhotoDetails } from "./file-details";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { FileUnavailableError, readFileDetails, toPhotoDetails } from "./file-details";
+
+describe("readFileDetails", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it.each(["image", "document"])("reports a missing %s as unavailable", async (kind) => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("<Error/>", { status: 404 })),
+    );
+
+    await expect(readFileDetails({ kind, url: "https://s3/missing" })).rejects.toBeInstanceOf(
+      FileUnavailableError,
+    );
+  });
+});
 
 const tag = (value: unknown, description = String(value)) => ({ value, description });
 

@@ -89,7 +89,7 @@ function readBlobImageSize(blob: Blob) {
 async function readImageDetails(url: string): Promise<FileDetails> {
   const [ExifReader, blob] = await Promise.all([
     import("exifreader"),
-    fetch(url).then((response) => response.blob()),
+    fetchAvailable(url).then((response) => response.blob()),
   ]);
   let tags: MetadataTags = {};
   try {
@@ -103,11 +103,28 @@ async function readImageDetails(url: string): Promise<FileDetails> {
   return { ...size, durationSeconds: null, photo: toPhotoDetails(tags) };
 }
 
+export class FileUnavailableError extends Error {
+  constructor(status: number | null) {
+    super(status === null ? "File couldn't be reached" : `File couldn't be loaded (${status})`);
+    this.name = "FileUnavailableError";
+  }
+}
+
+async function fetchAvailable(url: string, init?: RequestInit) {
+  const response = await fetch(url, init).catch(() => {
+    throw new FileUnavailableError(null);
+  });
+  if (!response.ok) throw new FileUnavailableError(response.status);
+  return response;
+}
+
 export async function readFileDetails(file: {
   kind: string | null;
   url: string;
 }): Promise<FileDetails> {
   if (file.kind === "image") return readImageDetails(file.url);
+  const probe = await fetchAvailable(file.url, { headers: { Range: "bytes=0-0" } });
+  await probe.body?.cancel();
   if (file.kind === "audio" || file.kind === "video") {
     return { ...(await readMediaMetadata(file.url, file.kind)), photo: null };
   }

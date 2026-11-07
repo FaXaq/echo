@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
+import { FileWarning } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
 import { formatDuration, formatSize } from "@/lib/file";
-import { readFileDetails } from "@/lib/file-details";
+import { FileUnavailableError, readFileDetails } from "@/lib/file-details";
 import { getFileDownloadUrl } from "@/services/resources/drive";
 
 export type FileDetailsTarget = {
@@ -57,7 +58,7 @@ function FileDetailsContent({
   const {
     data: details,
     isPending,
-    isError,
+    error,
   } = useQuery({
     queryKey: ["fileDetails", file.id],
     queryFn: async () => {
@@ -65,6 +66,8 @@ function FileDetailsContent({
       return readFileDetails({ kind: file.kind, url: downloadUrl });
     },
     staleTime: Infinity,
+    retry: (failureCount, queryError) =>
+      !(queryError instanceof FileUnavailableError) && failureCount < 2,
   });
   const photo = details?.photo;
 
@@ -114,8 +117,15 @@ function FileDetailsContent({
           {t`Reading file details…`}
         </p>
       )}
-      {isError && (
-        <p className="m-0 text-xs text-muted-foreground">{t`Couldn't read more details from this file.`}</p>
+      {error instanceof FileUnavailableError ? (
+        <p role="alert" className="m-0 flex items-center gap-2 text-xs text-destructive">
+          <FileWarning className="size-3.5 shrink-0" />
+          {t`This file couldn't be loaded. It may be missing from storage.`}
+        </p>
+      ) : (
+        error && (
+          <p className="m-0 text-xs text-muted-foreground">{t`Couldn't read more details from this file.`}</p>
+        )
       )}
     </div>
   );

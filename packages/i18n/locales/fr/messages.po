@@ -300,7 +300,7 @@ msgstr "Une erreur inattendue s'est produite. Nous avons été notifié avec le 
 #~ msgid "An unexpected error occurred. Reloading the page usually fixes it."
 #~ msgstr "Une erreur inattendue s'est produite. Recharger la page résout généralement le problème."
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:84
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:87
 msgid "Aperture"
 msgstr "Ouverture"
 
@@ -433,7 +433,7 @@ msgstr "Par montants exacts"
 msgid "Calendar"
 msgstr "Agenda"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:82
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:85
 msgid "Camera"
 msgstr "Appareil"
 
@@ -684,7 +684,7 @@ msgstr "Impossible de déplacer la carte"
 msgid "Couldn't move song"
 msgstr "Impossible de déplacer la chanson"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:118
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:127
 msgid "Couldn't read more details from this file."
 msgstr "Impossible de lire plus d'informations sur ce fichier."
 
@@ -991,7 +991,7 @@ msgstr "Déposez un fichier audio"
 msgid "Drop files to upload"
 msgstr "Déposez des fichiers pour les envoyer"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:77
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:80
 msgid "Duration"
 msgstr "Durée"
 
@@ -1282,7 +1282,7 @@ msgstr "Final"
 msgid "Finishing…"
 msgstr "Finalisation…"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:91
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:94
 msgid "Focal length"
 msgstr "Focale"
 
@@ -1308,7 +1308,7 @@ msgstr "Mot de passe oublié"
 msgid "Forgot your password?"
 msgstr "Mot de passe oublié ?"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:74
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:77
 msgid "Format"
 msgstr "Format"
 
@@ -1483,7 +1483,7 @@ msgstr "Lier à une chanson"
 #~ msgid "Linked files"
 #~ msgstr "Fichiers liés"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:95
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:98
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:111
 msgid "Location"
 msgstr "Lieu"
@@ -2030,7 +2030,7 @@ msgstr "Violet"
 msgid "Reach"
 msgstr "Diffuser"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:114
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:117
 msgid "Reading file details…"
 msgstr "Lecture des informations du fichier…"
 
@@ -2123,7 +2123,7 @@ msgstr "Renvoyer le code"
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:80
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:83
 msgid "Resolution"
 msgstr "Résolution"
 
@@ -2278,7 +2278,7 @@ msgstr "Régler les comptes"
 msgid "Share"
 msgstr "Partager"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:87
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:90
 msgid "Shutter speed"
 msgstr "Vitesse d'obturation"
 
@@ -2291,7 +2291,7 @@ msgid "Sign up failed"
 msgstr "Échec de l'inscription"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:62
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:75
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:78
 msgid "Size"
 msgstr "Taille"
 
@@ -2353,7 +2353,7 @@ msgstr "Stockage"
 msgid "Summary"
 msgstr "Résumé"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:93
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:96
 msgid "Taken on"
 msgstr "Pris le"
 
@@ -2380,6 +2380,10 @@ msgstr "Ce code a expiré, demandez-en un nouveau"
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:221
 msgid "This event doesn't exist or has been deleted."
 msgstr "Cet événement n'existe pas ou a été supprimé."
+
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:123
+msgid "This file couldn't be loaded. It may be missing from storage."
+msgstr "Impossible de charger ce fichier. Il est peut-être absent du stockage."
 
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:110
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:113
@@ -2623,11 +2627,11 @@ msgid "Uploaded"
 msgstr "Envoyé"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:45
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:106
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:109
 msgid "Uploaded by"
 msgstr "Ajouté par"
 
-#: apps/web/src/components/features/drive/file-details-dialog.tsx:108
+#: apps/web/src/components/features/drive/file-details-dialog.tsx:111
 msgid "Uploaded on"
 msgstr "Ajouté le"
 
