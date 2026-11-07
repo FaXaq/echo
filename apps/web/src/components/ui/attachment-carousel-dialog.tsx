@@ -1,4 +1,6 @@
 import type { FileKind } from "@echo/modules/drive/domain";
+import { useLingui } from "@lingui/react/macro";
+import { FileWarning } from "lucide-react";
 import {
   type CarouselApi,
   Carousel,
@@ -37,11 +39,15 @@ export function AttachmentCarouselDialog({
 }: AttachmentCarouselDialogProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [activeIndex, setActiveIndex] = useState(openIndex ?? 0);
+  const { t } = useLingui();
   const [loadedIds, setLoadedIds] = useState<Set<string>>(new Set());
+  const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
   const videoRefs = useRef(new Map<string, HTMLVideoElement>());
 
   const markLoaded = (id: string) =>
     setLoadedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+  const markFailed = (id: string) =>
+    setFailedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
 
   // Reset to the newly opened file each time the dialog is reopened on a different item.
   useEffect(() => {
@@ -79,13 +85,26 @@ export function AttachmentCarouselDialog({
               {files.map((file, index) => {
                 const isNearActive = Math.abs(index - activeIndex) <= PRELOAD_RADIUS;
                 const isLoaded = loadedIds.has(file.id);
+                const isFailed = failedIds.has(file.id);
                 return (
                   <CarouselItem
                     key={file.id}
                     className="relative flex h-[70vh] items-center justify-center"
                   >
-                    {(!isNearActive || !isLoaded) && <Skeleton className="absolute inset-0" />}
+                    {(!isNearActive || (!isLoaded && !isFailed)) && (
+                      <Skeleton className="absolute inset-0" />
+                    )}
+                    {isNearActive && isFailed && (
+                      <div
+                        role="alert"
+                        className="flex flex-col items-center gap-2 text-sm text-muted-foreground"
+                      >
+                        <FileWarning className="size-8" />
+                        {t`Couldn't load this file`}
+                      </div>
+                    )}
                     {isNearActive &&
+                      !isFailed &&
                       file.downloadUrl &&
                       match(file.kind)
                         .with("video", () => (
@@ -97,6 +116,7 @@ export function AttachmentCarouselDialog({
                             src={file.downloadUrl}
                             controls
                             onLoadedData={() => markLoaded(file.id)}
+                            onError={() => markFailed(file.id)}
                             className={cn(
                               "max-h-[70vh] w-full rounded-md",
                               !isLoaded && "invisible",
@@ -109,6 +129,7 @@ export function AttachmentCarouselDialog({
                             filename={file.filename}
                             alt={file.filename}
                             onLoad={() => markLoaded(file.id)}
+                            onError={() => markFailed(file.id)}
                             className={cn(
                               "max-h-[70vh] w-full rounded-md object-contain",
                               !isLoaded && "invisible",

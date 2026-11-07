@@ -118,13 +118,18 @@ async function fetchAvailable(url: string, init?: RequestInit) {
   return response;
 }
 
+// Downloads one byte: enough to learn whether storage still has the file.
+export async function assertFileAvailable(url: string) {
+  const response = await fetchAvailable(url, { headers: { Range: "bytes=0-0" } });
+  await response.body?.cancel();
+}
+
 export async function readFileDetails(file: {
   kind: string | null;
   url: string;
 }): Promise<FileDetails> {
   if (file.kind === "image") return readImageDetails(file.url);
-  const probe = await fetchAvailable(file.url, { headers: { Range: "bytes=0-0" } });
-  await probe.body?.cancel();
+  await assertFileAvailable(file.url);
   if (file.kind === "audio" || file.kind === "video") {
     return { ...(await readMediaMetadata(file.url, file.kind)), photo: null };
   }

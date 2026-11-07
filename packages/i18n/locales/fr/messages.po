@@ -42,7 +42,7 @@ msgid "{0, plural, one {# song} other {# songs}}"
 msgstr "{0, plural, one {# morceau} other {# morceaux}}"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/ui/attachment-list.tsx:543
+#: apps/web/src/components/ui/attachment-list.tsx:547
 msgid "{0, plural, one {Delete # file?} other {Delete # files?}}"
 msgstr "{0, plural, one {Supprimer # fichier ?} other {Supprimer # fichiers ?}}"
 
@@ -192,11 +192,11 @@ msgstr "Actions"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:159
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:169
 #: apps/web/src/components/ui/attachment-list.tsx:236
-#: apps/web/src/components/ui/attachment-list.tsx:443
+#: apps/web/src/components/ui/attachment-list.tsx:447
 msgid "Actions for {0}"
 msgstr "Actions pour {0}"
 
-#: apps/web/src/components/ui/attachment-list.tsx:525
+#: apps/web/src/components/ui/attachment-list.tsx:529
 msgid "Actions for selected files"
 msgstr "Actions pour les fichiers sélectionnés"
 
@@ -361,7 +361,7 @@ msgid "At least one uppercase letter"
 msgstr "Au moins une lettre majuscule"
 
 #. placeholder {0}: audioFiles.length + audioPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:618
+#: apps/web/src/components/ui/attachment-list.tsx:622
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
@@ -670,9 +670,10 @@ msgstr "Impossible de charger le tableau de démarchage"
 msgid "Couldn't load the summary"
 msgstr "Impossible de charger le résumé"
 
+#: apps/web/src/components/ui/attachment-carousel-dialog.tsx:103
 #: apps/web/src/components/ui/attachment-list.tsx:222
-#: apps/web/src/components/ui/attachment-list.tsx:429
-#: apps/web/src/components/ui/file-preview-dialog.tsx:44
+#: apps/web/src/components/ui/attachment-list.tsx:433
+#: apps/web/src/components/ui/file-preview-dialog.tsx:55
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
@@ -836,9 +837,9 @@ msgstr "Définir comme"
 #: apps/web/src/components/features/outreach/outreach-column.tsx:144
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:256
 #: apps/web/src/components/ui/attachment-list.tsx:311
-#: apps/web/src/components/ui/attachment-list.tsx:492
-#: apps/web/src/components/ui/attachment-list.tsx:534
-#: apps/web/src/components/ui/attachment-list.tsx:545
+#: apps/web/src/components/ui/attachment-list.tsx:496
+#: apps/web/src/components/ui/attachment-list.tsx:538
+#: apps/web/src/components/ui/attachment-list.tsx:549
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:188
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:254
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
@@ -927,14 +928,14 @@ msgid "Description"
 msgstr "Description"
 
 #: apps/web/src/components/ui/attachment-list.tsx:245
-#: apps/web/src/components/ui/attachment-list.tsx:452
+#: apps/web/src/components/ui/attachment-list.tsx:456
 msgid "Deselect"
 msgstr "Désélectionner"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:201
 #: apps/web/src/components/features/drive/drive-file-row.tsx:251
 #: apps/web/src/components/ui/attachment-list.tsx:283
-#: apps/web/src/components/ui/attachment-list.tsx:486
+#: apps/web/src/components/ui/attachment-list.tsx:490
 msgid "Details"
 msgstr "Détails"
 
@@ -963,8 +964,8 @@ msgstr "Ignorer"
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:52
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:59
 #: apps/web/src/components/ui/attachment-list.tsx:277
-#: apps/web/src/components/ui/attachment-list.tsx:480
-#: apps/web/src/components/ui/file-preview-dialog.tsx:58
+#: apps/web/src/components/ui/attachment-list.tsx:484
+#: apps/web/src/components/ui/file-preview-dialog.tsx:69
 msgid "Download"
 msgstr "Télécharger"
 
@@ -1330,7 +1331,7 @@ msgid "Full name is required"
 msgstr "Le nom complet est requis"
 
 #. placeholder {0}: galleryFiles.length + galleryPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:621
+#: apps/web/src/components/ui/attachment-list.tsx:625
 msgid "Gallery ({0})"
 msgstr "Galerie ({0})"
 
@@ -1475,7 +1476,7 @@ msgid "Link copied to clipboard"
 msgstr "Lien copié dans le presse-papiers"
 
 #: apps/web/src/components/ui/attachment-list.tsx:267
-#: apps/web/src/components/ui/attachment-list.tsx:470
+#: apps/web/src/components/ui/attachment-list.tsx:474
 msgid "Link to a song"
 msgstr "Lier à une chanson"
 
@@ -1561,7 +1562,7 @@ msgid "Members"
 msgstr "Membres"
 
 #. placeholder {0}: miscFiles.length + miscPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:624
+#: apps/web/src/components/ui/attachment-list.tsx:628
 msgid "Misc ({0})"
 msgstr "Divers ({0})"
 
@@ -1688,7 +1689,7 @@ msgstr "Aucune dépense pour le moment"
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:436
 #: apps/web/src/components/ui/attachment-list.tsx:155
-#: apps/web/src/components/ui/attachment-list.tsx:357
+#: apps/web/src/components/ui/attachment-list.tsx:359
 msgid "No files yet"
 msgstr "Aucun fichier pour l'instant"
 
@@ -1733,7 +1734,7 @@ msgstr "Aucune playlist pour le moment"
 #~ msgid "No playlists yet."
 #~ msgstr "Pas encore de playlist."
 
-#: apps/web/src/components/ui/file-preview-dialog.tsx:52
+#: apps/web/src/components/ui/file-preview-dialog.tsx:63
 msgid "No preview available"
 msgstr "Aucun aperçu disponible"
 
@@ -1794,7 +1795,7 @@ msgstr "Seule une sélection de fichiers peut être téléchargée en groupe"
 
 #. placeholder {0}: file.filename
 #: apps/web/src/components/ui/attachment-list.tsx:192
-#: apps/web/src/components/ui/attachment-list.tsx:394
+#: apps/web/src/components/ui/attachment-list.tsx:396
 msgid "Open {0}"
 msgstr "Ouvrir {0}"
 
@@ -2076,7 +2077,7 @@ msgstr "Retirer la chanson"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:184
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
 #: apps/web/src/components/ui/attachment-list.tsx:261
-#: apps/web/src/components/ui/attachment-list.tsx:464
+#: apps/web/src/components/ui/attachment-list.tsx:468
 msgid "Rename"
 msgstr "Renommer"
 
@@ -2218,7 +2219,7 @@ msgid "seconds"
 msgstr "secondes"
 
 #: apps/web/src/components/ui/attachment-list.tsx:245
-#: apps/web/src/components/ui/attachment-list.tsx:452
+#: apps/web/src/components/ui/attachment-list.tsx:456
 msgid "Select"
 msgstr "Sélectionner"
 
@@ -2390,7 +2391,7 @@ msgstr "Impossible de charger ce fichier. Il est peut-être absent du stockage."
 msgid "This file is too large for your plan."
 msgstr "Ce fichier est trop volumineux pour votre forfait."
 
-#: apps/web/src/components/ui/file-preview-dialog.tsx:53
+#: apps/web/src/components/ui/file-preview-dialog.tsx:64
 msgid "This file type can't be previewed here."
 msgstr "Ce type de fichier ne peut pas être prévisualisé ici."
 
@@ -2470,7 +2471,7 @@ msgstr "Cette action supprimera définitivement <0>{0}</0> et toutes ses donnée
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "Cette action supprimera définitivement le fichier. Cette action est irréversible."
 
-#: apps/web/src/components/ui/attachment-list.tsx:544
+#: apps/web/src/components/ui/attachment-list.tsx:548
 msgid "This will permanently delete the selected files. This action cannot be undone."
 msgstr "Cette action supprimera définitivement les fichiers sélectionnés. Cette action est irréversible."
 
@@ -2618,7 +2619,7 @@ msgid "Upload files"
 msgstr "Importer des fichiers"
 
 #: apps/web/src/components/ui/attachment-list.tsx:156
-#: apps/web/src/components/ui/attachment-list.tsx:358
+#: apps/web/src/components/ui/attachment-list.tsx:360
 msgid "Upload files with the button above."
 msgstr "Importez des fichiers avec le bouton ci-dessus."
 
@@ -2636,7 +2637,7 @@ msgid "Uploaded on"
 msgstr "Ajouté le"
 
 #: apps/web/src/components/ui/attachment-list.tsx:171
-#: apps/web/src/components/ui/attachment-list.tsx:373
+#: apps/web/src/components/ui/attachment-list.tsx:375
 msgid "Uploading…"
 msgstr "Importation…"
 

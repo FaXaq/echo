@@ -326,6 +326,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   files,
   pendingFiles,
   failedIds,
+  onMediaError,
   selectedIds,
   onToggleSelect,
   onOpen,
@@ -338,6 +339,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   files: F[];
   pendingFiles: PendingAttachment[];
   failedIds: Set<string>;
+  onMediaError: (id: string) => void;
   selectedIds: Set<string>;
   onToggleSelect: (file: F) => void;
   onOpen: (id: string) => void;
@@ -410,6 +412,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                       muted
                       playsInline
                       preload="metadata"
+                      onError={() => onMediaError(file.id)}
                       className="aspect-square h-full w-full object-cover m-0"
                     />
                   ))
@@ -419,6 +422,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                       filename={file.filename}
                       alt={file.filename}
                       loading="lazy"
+                      onError={() => onMediaError(file.id)}
                       className="m-0 block"
                     />
                   ))}
@@ -639,6 +643,7 @@ export function AttachmentList<F extends AttachmentFile>({
             files={galleryFiles}
             pendingFiles={galleryPending}
             failedIds={failedIds}
+            onMediaError={markFailed}
             selectedIds={selectedIds}
             onToggleSelect={onToggleSelect}
             onOpen={openGalleryPreview}
