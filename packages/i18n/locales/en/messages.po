@@ -443,7 +443,7 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:247
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:364
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:366
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:179
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
@@ -739,7 +739,7 @@ msgstr "Create account"
 msgid "Create an account"
 msgstr "Create an account"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:371
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:373
 msgid "Create expense"
 msgstr "Create expense"
 
@@ -908,7 +908,7 @@ msgid "Desc"
 msgstr "Desc"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:199
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:354
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:356
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:192
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
 msgid "Description"
@@ -1086,7 +1086,7 @@ msgstr "Equally"
 
 #: apps/web/src/components/features/drive/drive-table-columns.tsx:37
 #: apps/web/src/components/ui/event-calendar/event-types.tsx:9
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:324
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:326
 #: apps/web/src/components/ui/expense/expense-table.tsx:104
 msgid "Event"
 msgstr "Event"
@@ -1627,8 +1627,8 @@ msgstr "No connection"
 msgid "No contacts"
 msgstr "No contacts"
 
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:336
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:341
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:338
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:343
 msgid "No event"
 msgstr "No event"
 
@@ -2133,7 +2133,7 @@ msgstr "Save"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:338
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:406
-#: apps/web/src/components/ui/expense/expense-dialog.tsx:371
+#: apps/web/src/components/ui/expense/expense-dialog.tsx:373
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:186
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:98
 #: apps/web/src/components/ui/song/song-dialog.tsx:167
