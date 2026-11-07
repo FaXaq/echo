@@ -93,7 +93,7 @@ function DriveExplorerContent({
   const [deletingFolder, setDeletingFolder] = useState<Folder | null>(null);
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
   const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
-  const [assigningFile, setAssigningFile] = useState<OrganizationFile | null>(null);
+  const [assigningFiles, setAssigningFiles] = useState<OrganizationFile[]>([]);
   const [detailsFile, setDetailsFile] = useState<OrganizationFile | null>(null);
   const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
   const [carouselFiles, setCarouselFiles] = useState<CarouselAttachment[]>([]);
@@ -222,6 +222,8 @@ function DriveExplorerContent({
 
   const deleteDisabledReason =
     selectedFolderCount > 0 ? t`Only a selection of files can be deleted together` : null;
+  const assignDisabledReason =
+    selectedFolderCount > 0 ? t`Only files can be assigned to an event` : null;
 
   const handleBulkDeleteFiles = async () => {
     const results = await Promise.allSettled(
@@ -297,6 +299,8 @@ function DriveExplorerContent({
                   onDownload={handleBulkDownload}
                   deleteDisabledReason={deleteDisabledReason}
                   onDelete={() => setConfirmingBulkDelete(true)}
+                  assignDisabledReason={assignDisabledReason}
+                  onAssignToEvent={() => setAssigningFiles(selectedFiles)}
                   onClear={clearSelection}
                 />
               )}
@@ -403,7 +407,7 @@ function DriveExplorerContent({
                     }
                   }}
                   onRename={() => setRenamingFile(original.data)}
-                  onAssignToEvent={() => setAssigningFile(original.data)}
+                  onAssignToEvent={() => setAssigningFiles([original.data])}
                   onShowDetails={() => setDetailsFile(original.data)}
                   onDelete={() => setDeletingFile(original.data)}
                   onDownload={() => handleDownloadFile(original.data)}
@@ -522,9 +526,10 @@ function DriveExplorerContent({
       />
 
       <LinkFileToEventDialog
-        file={assigningFile}
+        files={assigningFiles}
         organizationId={organizationId}
-        onOpenChange={(open) => !open && setAssigningFile(null)}
+        onOpenChange={(open) => !open && setAssigningFiles([])}
+        onLinked={() => assigningFiles.length > 1 && clearSelection()}
       />
 
       <AttachmentCarouselDialog

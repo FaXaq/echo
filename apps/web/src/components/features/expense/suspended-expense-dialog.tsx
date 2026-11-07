@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
 import { ExpenseDialog, type ExpenseDialogState } from "@/components/ui/expense/expense-dialog";
 import { toast } from "@/components/ui/toast";
-import { getEventsQueryOptions } from "@/services/resources/calendar";
+import { EventSelectCombobox } from "@/components/features/event-calendar/event-select-combobox";
 import {
   getLedgerSummaryQueryOptions,
   useCreateExpenseMutation,
@@ -26,7 +26,6 @@ function ExpenseDialogContent({
 }: SuspendedExpenseDialogProps) {
   const { t } = useLingui();
   const { data: summary } = useSuspenseQuery(getLedgerSummaryQueryOptions({ organizationId }));
-  const { data: events } = useSuspenseQuery(getEventsQueryOptions({ organizationId }));
   const createExpense = useCreateExpenseMutation({ organizationId });
   const updateExpense = useUpdateExpenseMutation({ organizationId });
 
@@ -34,7 +33,9 @@ function ExpenseDialogContent({
     <ExpenseDialog
       state={state}
       participants={summary.participants}
-      events={events.map((event) => ({ id: event.id, title: event.title }))}
+      renderEventPicker={(field) => (
+        <EventSelectCombobox organizationId={organizationId} {...field} />
+      )}
       organizationCurrency={summary.currency}
       currentUserId={currentUserId}
       onOpenChange={(open) => !open && onClose()}
