@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react/macro";
-import { Download, MoreVertical, Trash } from "lucide-react";
+import { CalendarPlus, Download, MoreVertical, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,6 +17,8 @@ export function SelectionActionsMenu({
   onDownload,
   deleteDisabledReason,
   onDelete,
+  assignDisabledReason,
+  onAssignToEvent,
   onClear,
 }: {
   downloadDisabledReason: string | null;
@@ -24,6 +26,8 @@ export function SelectionActionsMenu({
   onDownload: () => void;
   deleteDisabledReason: string | null;
   onDelete: () => void;
+  assignDisabledReason: string | null;
+  onAssignToEvent: () => void;
   onClear: () => void;
 }) {
   const { t } = useLingui();
@@ -57,6 +61,22 @@ export function SelectionActionsMenu({
           <DropdownMenuItem onClick={onDownload} disabled={isDownloading}>
             {isDownloading ? <Spinner className="size-4" /> : <Download />}
             {t`Download`}
+          </DropdownMenuItem>
+        )}
+        {assignDisabledReason ? (
+          <Tooltip>
+            <TooltipTrigger
+              render={<DropdownMenuItem aria-disabled className="cursor-not-allowed opacity-50" />}
+            >
+              <CalendarPlus />
+              {t`Assign to event`}
+            </TooltipTrigger>
+            <TooltipContent>{assignDisabledReason}</TooltipContent>
+          </Tooltip>
+        ) : (
+          <DropdownMenuItem onClick={onAssignToEvent}>
+            <CalendarPlus />
+            {t`Assign to event`}
           </DropdownMenuItem>
         )}
         {deleteDisabledReason ? (
