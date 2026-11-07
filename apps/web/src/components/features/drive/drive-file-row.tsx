@@ -5,6 +5,7 @@ import {
   Calendar as CalendarIcon,
   CalendarPlus,
   Download,
+  Info,
   MoreVertical,
   Pen,
   Trash,
@@ -41,6 +42,7 @@ export function FileRow({
   onContextMenuTrigger,
   onRename,
   onAssignToEvent,
+  onShowDetails,
   onDelete,
   onDownload,
   onPlay,
@@ -57,6 +59,7 @@ export function FileRow({
   onContextMenuTrigger: () => void;
   onRename: () => void;
   onAssignToEvent: () => void;
+  onShowDetails: () => void;
   onDelete: () => void;
   onDownload: () => void;
   onPlay?: () => void;
@@ -189,6 +192,15 @@ export function FileRow({
                 {t`Assign to event`}
               </DropdownMenuItem>
               <DropdownMenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onShowDetails();
+                }}
+              >
+                <Info />
+                {t`Details`}
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 variant="destructive"
                 onClick={(event) => {
                   event.stopPropagation();
@@ -233,6 +245,10 @@ export function FileRow({
             <ContextMenuItem onClick={onAssignToEvent}>
               <CalendarPlus />
               {t`Assign to event`}
+            </ContextMenuItem>
+            <ContextMenuItem onClick={onShowDetails}>
+              <Info />
+              {t`Details`}
             </ContextMenuItem>
             <ContextMenuItem variant="destructive" onClick={onDelete}>
               <Trash />

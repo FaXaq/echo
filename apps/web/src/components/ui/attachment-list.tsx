@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import {
   DownloadIcon,
+  Info,
   FileText,
   FileWarning,
   ListChecks,
@@ -83,6 +84,7 @@ export interface AttachmentListProps<F extends AttachmentFile> {
   onRename?: (file: F) => void;
   onLinkToSong?: (file: F) => void;
   onDownload?: (file: F) => void;
+  onShowDetails?: (file: F) => void;
   onPlayAudio?: (file: F) => void;
   onSetAudioRole?: (file: F, role: Role) => void;
   onClearAudioRole?: (file: F) => void;
@@ -123,6 +125,7 @@ function AttachmentListItems<F extends AttachmentFile>({
   onRename,
   onLinkToSong,
   onDownload,
+  onShowDetails,
   onDelete,
   onSetAudioRole,
   onClearAudioRole,
@@ -137,6 +140,7 @@ function AttachmentListItems<F extends AttachmentFile>({
   onRename?: (file: F) => void;
   onLinkToSong?: (file: F) => void;
   onDownload?: (file: F) => void;
+  onShowDetails?: (file: F) => void;
   onDelete?: (file: F) => void;
   onSetAudioRole?: (file: F, role: Role) => void;
   onClearAudioRole?: (file: F) => void;
@@ -243,6 +247,7 @@ function AttachmentListItems<F extends AttachmentFile>({
                     {(onRename ||
                       onLinkToSong ||
                       onDownload ||
+                      onShowDetails ||
                       onDelete ||
                       onSetAudioRole ||
                       onClearAudioRole) && <DropdownMenuSeparator />}
@@ -270,6 +275,12 @@ function AttachmentListItems<F extends AttachmentFile>({
                       >
                         <DownloadIcon />
                         {t`Download`}
+                      </DropdownMenuItem>
+                    )}
+                    {onShowDetails && (
+                      <DropdownMenuItem onClick={() => onShowDetails(file)}>
+                        <Info />
+                        {t`Details`}
                       </DropdownMenuItem>
                     )}
                     {file.kind === "audio" && file.role && onClearAudioRole && (
@@ -321,6 +332,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   onRename,
   onLinkToSong,
   onDownload,
+  onShowDetails,
   onDelete,
 }: {
   files: F[];
@@ -332,6 +344,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   onRename?: (file: F) => void;
   onLinkToSong?: (file: F) => void;
   onDownload?: (file: F) => void;
+  onShowDetails?: (file: F) => void;
   onDelete?: (file: F) => void;
 }) {
   const { t } = useLingui();
@@ -438,7 +451,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                       {selected ? <SquareCheck /> : <Square />}
                       {selected ? t`Deselect` : t`Select`}
                     </DropdownMenuItem>
-                    {(onRename || onLinkToSong || onDownload || onDelete) && (
+                    {(onRename || onLinkToSong || onDownload || onShowDetails || onDelete) && (
                       <DropdownMenuSeparator />
                     )}
                     {onRename && (
@@ -465,6 +478,12 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                       >
                         <DownloadIcon />
                         {t`Download`}
+                      </DropdownMenuItem>
+                    )}
+                    {onShowDetails && (
+                      <DropdownMenuItem onClick={() => onShowDetails(file)}>
+                        <Info />
+                        {t`Details`}
                       </DropdownMenuItem>
                     )}
                     {onDelete && (
@@ -542,6 +561,7 @@ export function AttachmentList<F extends AttachmentFile>({
   onRename,
   onLinkToSong,
   onDownload,
+  onShowDetails,
   onPlayAudio,
   onSetAudioRole,
   onClearAudioRole,
@@ -583,6 +603,7 @@ export function AttachmentList<F extends AttachmentFile>({
     onRename,
     onLinkToSong,
     onDownload,
+    onShowDetails,
     onDelete,
     onSetAudioRole,
     onClearAudioRole,
@@ -624,6 +645,7 @@ export function AttachmentList<F extends AttachmentFile>({
             onRename={onRename}
             onLinkToSong={onLinkToSong}
             onDownload={onDownload}
+            onShowDetails={onShowDetails}
             onDelete={onDelete}
           />
         </TabsContent>

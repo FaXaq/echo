@@ -1,3 +1,4 @@
+import { FileDetailsDialog } from "@/components/features/drive/file-details-dialog";
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -157,6 +158,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
     onError: () => toast.add({ type: "error", title: t`Failed to remove role` }),
   });
   const [renamingFile, setRenamingFile] = useState<SongFile | null>(null);
+  const [detailsFile, setDetailsFile] = useState<SongFile | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
@@ -210,6 +212,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
         onDelete={(file) => setDeletingFileId(file.id)}
         onRename={(file) => setRenamingFile(file)}
         onDownload={(file) => downloadOrganizationFile({ id: file.id, organizationId })}
+        onShowDetails={setDetailsFile}
         onPlayAudio={(file) =>
           requestPlay({
             id: file.id,
@@ -236,6 +239,12 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
             { onSuccess: () => toast.add({ title: t`Role removed`, type: "success" }) },
           );
         }}
+      />
+
+      <FileDetailsDialog
+        file={detailsFile}
+        organizationId={organizationId}
+        onOpenChange={(open) => !open && setDetailsFile(null)}
       />
 
       <ConfirmDialog

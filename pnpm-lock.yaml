@@ -388,6 +388,9 @@ importers:
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.8)
+      exifreader:
+        specifier: 4.51.0
+        version: 4.51.0
       fflate:
         specifier: ^0.8.3
         version: 0.8.3
@@ -3881,6 +3884,10 @@ packages:
   '@webcontainer/env@1.1.1':
     resolution: {integrity: sha512-6aN99yL695Hi9SuIk1oC88l9o0gmxL1nGWWQ/kNy81HigJ0FoaoTXpytCj6ItzgyCEwA9kF1wixsTuv5cjsgng==}
 
+  '@xmldom/xmldom@0.9.12':
+    resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
+    engines: {node: '>=14.6'}
+
   abbrev@2.0.0:
     resolution: {integrity: sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -5043,6 +5050,10 @@ packages:
   execa@9.6.1:
     resolution: {integrity: sha512-9Be3ZoN4LmYR90tUoVu2te2BsbzHfhJyfEiAVfz7N5/zv+jduIfLrV2xdQXOHbaD6KgpGdO9PRPM1Y4Q9QkPkA==}
     engines: {node: ^18.19.0 || >=20.5.0}
+
+  exifreader@4.51.0:
+    resolution: {integrity: sha512-fHmQHgHSsAGI7PkGgDKBVqi9UDMk+qzL7fUE5YopjC7yS1FJ1jsW6PRnbDlVj5v5zRZckJUhP4gJSzSD1wM1KQ==}
+    hasBin: true
 
   expand-template@2.0.3:
     resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
@@ -11019,6 +11030,9 @@ snapshots:
 
   '@webcontainer/env@1.1.1': {}
 
+  '@xmldom/xmldom@0.9.12':
+    optional: true
+
   abbrev@2.0.0: {}
 
   abstract-logging@2.0.1: {}
@@ -12064,6 +12078,10 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 4.0.0
       yoctocolors: 2.1.2
+
+  exifreader@4.51.0:
+    optionalDependencies:
+      '@xmldom/xmldom': 0.9.12
 
   expand-template@2.0.3: {}
 
