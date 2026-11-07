@@ -1,25 +1,38 @@
 import { createContext, useContext, type ReactNode } from "react";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState, useQueryClient } from "@tanstack/react-query";
+import { useLingui } from "@lingui/react/macro";
+import { getEventQueryOptions } from "@/services/resources/calendar";
 import { kindForMimeType, mimeTypeForFile, type FileKind } from "@echo/modules/drive/domain";
+import { uploadFileMutationKey, type UploadFileInput } from "@/services/resources/drive";
 import {
-  uploadFileMutationKey,
-  useUploadFileMutation,
-  type UploadFileInput,
-} from "@/services/resources/drive";
+  formatUploadDestination,
+  useUploadFile,
+} from "@/components/features/drive/use-upload-file";
 
-type UploadMutation = ReturnType<typeof useUploadFileMutation>;
+type UploadMutation = ReturnType<typeof useUploadFile>;
 
 // Falls back to a local mutation outside EventUploadProvider (e.g. component
 // tests rendered in isolation) rather than requiring every consumer to be wrapped.
 const EventUploadContext = createContext<UploadMutation | null>(null);
 
 export function EventUploadProvider({ children }: { children: ReactNode }) {
-  const mutation = useUploadFileMutation();
+  const mutation = useUploadFile();
   return <EventUploadContext.Provider value={mutation}>{children}</EventUploadContext.Provider>;
 }
 
+export function useEventDestinationLabel(eventId: string, organizationId: string) {
+  const { t } = useLingui();
+  const queryClient = useQueryClient();
+  return () => {
+    const title = queryClient.getQueryData(
+      getEventQueryOptions({ eventId, organizationId }).queryKey,
+    )?.title;
+    return formatUploadDestination([t`Calendar`, title]);
+  };
+}
+
 export function useEventUploadMutation() {
-  const localMutation = useUploadFileMutation();
+  const localMutation = useUploadFile();
   const sharedMutation = useContext(EventUploadContext);
   return sharedMutation ?? localMutation;
 }

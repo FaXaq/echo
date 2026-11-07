@@ -6,6 +6,7 @@ import { UploadCloud } from "lucide-react";
 import { SuspendedEventDetail } from "@/components/features/event-calendar/suspended-event-detail";
 import {
   EventUploadProvider,
+  useEventDestinationLabel,
   useEventUploadMutation,
 } from "@/components/features/event-calendar/event-upload-context";
 
@@ -53,12 +54,18 @@ function EventDropZone({
   const { t } = useLingui();
   const [isDragging, setIsDragging] = useState(false);
   const uploadMutation = useEventUploadMutation();
+  const getDestinationLabel = useEventDestinationLabel(eventId, organizationId);
 
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setIsDragging(false);
     Array.from(event.dataTransfer.files).forEach((file) => {
-      uploadMutation.mutate({ eventId, organizationId, file });
+      uploadMutation.mutate({
+        eventId,
+        organizationId,
+        file,
+        destinationLabel: getDestinationLabel(),
+      });
     });
   };
 

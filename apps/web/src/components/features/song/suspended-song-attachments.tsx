@@ -32,7 +32,11 @@ import {
   useClearSongAudioVersionMutation,
   useSetSongAudioVersionMutation,
 } from "@/services/resources/song";
-import { useSongUploadingFiles, useSongUploadMutation } from "./song-upload-context";
+import {
+  useSongDestinationLabel,
+  useSongUploadingFiles,
+  useSongUploadMutation,
+} from "./song-upload-context";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 
 export interface SuspendedSongAttachmentsProps {
@@ -138,6 +142,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: files } = useSuspenseQuery(getSongFilesQueryOptions({ songId, organizationId }));
   const uploadMutation = useSongUploadMutation();
+  const getDestinationLabel = useSongDestinationLabel(songId, organizationId);
   const pendingFiles = useSongUploadingFiles(songId);
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
@@ -158,7 +163,12 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
-      uploadMutation.mutate({ songId, organizationId, file });
+      uploadMutation.mutate({
+        songId,
+        organizationId,
+        file,
+        destinationLabel: getDestinationLabel(),
+      });
     });
   };
 

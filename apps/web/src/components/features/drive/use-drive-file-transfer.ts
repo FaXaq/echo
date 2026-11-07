@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLingui } from "@lingui/react/macro";
-import { usePostHog } from "posthog-js/react";
 import { toast } from "@/components/ui/toast";
+import { formatUploadDestination, useUploadFile } from "./use-upload-file";
 import { evaluateOsFileDrop, resolveDropTargetFolderId } from "@/lib/drive-drop";
 import { downloadBlob, formatSize } from "@/lib/file";
 import {
@@ -15,7 +15,6 @@ import {
 import {
   downloadOrganizationFile,
   getFileDownloadUrl,
-  useUploadFileMutation,
   type Folder,
   type OrganizationFile,
 } from "@/services/resources/drive";
@@ -38,8 +37,7 @@ export function useDriveFileTransfer({
   clearSelection: () => void;
 }) {
   const { t } = useLingui();
-  const posthog = usePostHog();
-  const uploadMutation = useUploadFileMutation();
+  const uploadMutation = useUploadFile();
   const [isDownloading, setIsDownloading] = useState(false);
 
   const downloadDisabledReason =
@@ -49,17 +47,23 @@ export function useDriveFileTransfer({
         ? t`Selections are limited to ${DRIVE_BULK_DOWNLOAD_MAX_FILES} files or ${formatSize(DRIVE_BULK_DOWNLOAD_MAX_BYTES)} total`
         : null;
 
-  const uploadFile = (file: File, targetFolderId: string | null) => {
-    uploadMutation.mutate(
-      { organizationId, folderId: targetFolderId, file },
-      {
-        onSuccess: () => posthog.capture("drive_file_uploaded", { file_type: file.type }),
-        onError: () => toast.add({ title: t`Couldn't upload ${file.name}`, type: "error" }),
-      },
-    );
+  const uploadFile = (file: File, targetFolder: { id: string; name: string } | null = null) => {
+    const destinationLabel = formatUploadDestination([
+      t`Drive`,
+      ...path.map((folder) => folder.name),
+      targetFolder?.name,
+    ]);
+    const targetFolderId = resolveDropTargetFolderId({
+      hoveredFolderId: targetFolder?.id ?? null,
+      currentFolderId: folderId,
+    });
+    uploadMutation.mutate({ organizationId, folderId: targetFolderId, file, destinationLabel });
   };
 
-  const handleOsDrop = (dataTransfer: DataTransfer, hoveredFolderId: string | null) => {
+  const handleOsDrop = (
+    dataTransfer: DataTransfer,
+    hoveredFolder: { id: string; name: string } | null,
+  ) => {
     const entries = Array.from(dataTransfer.items)
       .map((item) => item.webkitGetAsEntry())
       .filter((entry): entry is FileSystemEntry => entry !== null)
@@ -73,11 +77,7 @@ export function useDriveFileTransfer({
       return;
     }
 
-    const targetFolderId = resolveDropTargetFolderId({
-      hoveredFolderId,
-      currentFolderId: folderId,
-    });
-    Array.from(dataTransfer.files).forEach((file) => uploadFile(file, targetFolderId));
+    Array.from(dataTransfer.files).forEach((file) => uploadFile(file, hoveredFolder));
   };
 
   const handleDownloadFile = async (file: OrganizationFile) => {

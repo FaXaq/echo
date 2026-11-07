@@ -4,14 +4,11 @@ import { useLingui } from "@lingui/react/macro";
 import { kindForMimeType } from "@echo/modules/drive/domain";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/toast";
-import { useUploadFileMutation } from "@/services/resources/drive";
-import {
-  getSongDefaultAudioQueryOptions,
-  useSetSongAudioVersionMutation,
-  type SongAudioVersion,
-} from "@/services/resources/song";
+import { useSongDestinationLabel } from "./song-upload-context";
+import { useUploadFile } from "@/components/features/drive/use-upload-file";
+import { getSongDefaultAudioQueryOptions, type SongAudioVersion } from "@/services/resources/song";
 
-function roleForDroppedAudio(currentDefault: SongAudioVersion | null): "demo" | "final" {
+function roleForDroppedAudio(currentDefault: SongAudioVersion | null) {
   return currentDefault?.role ?? "demo";
 }
 
@@ -29,8 +26,8 @@ export function SongAudioDropTarget({
   const { t } = useLingui();
   const queryClient = useQueryClient();
   const [isDragOver, setIsDragOver] = useState(false);
-  const uploadMutation = useUploadFileMutation();
-  const setAudioVersionMutation = useSetSongAudioVersionMutation({ songId, organizationId });
+  const uploadMutation = useUploadFile();
+  const getDestinationLabel = useSongDestinationLabel(songId, organizationId);
 
   const handleDrop = async (event: React.DragEvent) => {
     event.preventDefault();
@@ -41,20 +38,16 @@ export function SongAudioDropTarget({
       return;
     }
 
-    try {
-      const currentDefault = await queryClient.fetchQuery(
-        getSongDefaultAudioQueryOptions({ songId, organizationId }),
-      );
-      const uploaded = await uploadMutation.mutateAsync({ songId, organizationId, file });
-      const role = roleForDroppedAudio(currentDefault);
-      await setAudioVersionMutation.mutateAsync({ fileId: uploaded.id, role });
-      toast.add({
-        type: "success",
-        title: role === "demo" ? t`Set as latest demo` : t`Set as latest final`,
-      });
-    } catch {
-      toast.add({ type: "error", title: t`Upload failed` });
-    }
+    const currentDefault = await queryClient
+      .fetchQuery(getSongDefaultAudioQueryOptions({ songId, organizationId }))
+      .catch(() => null);
+    uploadMutation.mutate({
+      songId,
+      organizationId,
+      file,
+      destinationLabel: getDestinationLabel(),
+      songAudioRole: roleForDroppedAudio(currentDefault),
+    });
   };
 
   return (

@@ -1,7 +1,8 @@
-import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import type { RouterInputs, RouterOutputs } from "@echo/api/router";
 import { apiClient } from "@/services/api-client";
 import { initResourceKey } from "./init-resource-key";
+import type { Role } from "@echo/modules/drive/domain";
 import { getSongFilesQueryOptions } from "./drive";
 
 const { key, getResourceKey } = initResourceKey("song");
@@ -64,6 +65,25 @@ export function getSongDefaultAudioQueryOptions(opts: { songId: string; organiza
   });
 }
 
+export async function setSongAudioVersion(
+  queryClient: QueryClient,
+  input: { songId: string; organizationId: string; fileId: string; role: Role },
+) {
+  await apiClient.song.setAudioVersion.mutate(input);
+  const { songId, organizationId } = input;
+  await Promise.all([
+    queryClient.invalidateQueries({
+      queryKey: getSongAudioVersionsQueryOptions({ songId, organizationId }).queryKey,
+    }),
+    queryClient.invalidateQueries({
+      queryKey: getSongDefaultAudioQueryOptions({ songId, organizationId }).queryKey,
+    }),
+    queryClient.invalidateQueries({
+      queryKey: getSongFilesQueryOptions({ songId, organizationId }).queryKey,
+    }),
+  ]);
+}
+
 export function useSetSongAudioVersionMutation({
   songId,
   organizationId,
@@ -78,22 +98,9 @@ export function useSetSongAudioVersionMutation({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { fileId: string; role: "demo" | "final" }) =>
-      apiClient.song.setAudioVersion.mutate({ songId, organizationId, ...input }),
-    onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: getSongAudioVersionsQueryOptions({ songId, organizationId }).queryKey,
-        }),
-        queryClient.invalidateQueries({
-          queryKey: getSongDefaultAudioQueryOptions({ songId, organizationId }).queryKey,
-        }),
-        queryClient.invalidateQueries({
-          queryKey: getSongFilesQueryOptions({ songId, organizationId }).queryKey,
-        }),
-      ]);
-      onSuccess?.();
-    },
+    mutationFn: (input: { fileId: string; role: Role }) =>
+      setSongAudioVersion(queryClient, { songId, organizationId, ...input }),
+    onSuccess,
     onError,
   });
 }

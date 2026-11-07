@@ -9,6 +9,7 @@ import type { ResolveEntitlementsPort } from "@echo/modules/plan/app";
 import type { GetOrganizationStorageUsageQueryPort } from "@echo/modules/plan/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import { isRawImage, kindForMimeType, previewKeyFor } from "../domain/index.js";
+import type { MediaMetadata } from "../domain/index.js";
 import type {
   FindFolderByIdQueryPort,
   InsertPendingFileCommandPort,
@@ -33,7 +34,7 @@ export async function createUpload(
     resolveOrganizationEntitlements: ResolveEntitlementsPort;
     getOrganizationStorageUsage: GetOrganizationStorageUsageQueryPort;
   },
-  input: {
+  input: Partial<MediaMetadata> & {
     userId: string;
     eventId?: string;
     songId?: string;
@@ -41,7 +42,6 @@ export async function createUpload(
     scope: OrganizationScope;
     mimeType: string;
     sizeBytes: number;
-    durationSeconds?: number | null;
     filename: string;
     previewSizeBytes?: number;
   },
@@ -101,6 +101,8 @@ export async function createUpload(
     mimeType: input.mimeType,
     sizeBytes: input.sizeBytes,
     durationSeconds: input.durationSeconds ?? null,
+    width: input.width ?? null,
+    height: input.height ?? null,
     originalFilename: input.filename,
     s3Key,
   });

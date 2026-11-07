@@ -1,9 +1,10 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { RouterOutputs } from "@echo/api/router";
-import { isRawImage, mimeTypeForFile } from "@echo/modules/drive/domain";
+import { isRawImage, mimeTypeForFile, type Role } from "@echo/modules/drive/domain";
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
-import { downloadFile, extractRawPreview, getMediaDuration } from "@/lib/file";
+import { downloadFile, extractRawPreview, getMediaMetadata, putWithProgress } from "@/lib/file";
+import { resetUploadProgress, setUploadDuration, setUploadProgress } from "@/lib/upload-progress";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
@@ -216,19 +217,23 @@ export interface UploadFileInput {
   folderId?: string | null;
   organizationId: string;
   file: File;
+  destinationLabel: string;
+  songAudioRole?: Role;
 }
 
 export function useUploadFileMutation({
   onSuccess,
 }: {
-  onSuccess?: (file: RouterOutputs["drive"]["confirmUpload"]) => void;
+  onSuccess?: (file: RouterOutputs["drive"]["confirmUpload"], input: UploadFileInput) => void;
 } = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: uploadFileMutationKey,
     mutationFn: async (input: UploadFileInput) => {
-      const durationSeconds = await getMediaDuration(input.file);
+      resetUploadProgress(input.file);
+      const metadata = await getMediaMetadata(input.file);
+      setUploadDuration(input.file, metadata.durationSeconds);
       const mimeType = mimeTypeForFile(input.file);
       const preview = isRawImage(mimeType) ? await extractRawPreview(input.file) : null;
 
@@ -239,17 +244,15 @@ export function useUploadFileMutation({
         organizationId: input.organizationId,
         mimeType,
         sizeBytes: input.file.size,
-        durationSeconds,
+        ...metadata,
         filename: input.file.name,
         previewSizeBytes: preview?.size,
       });
 
-      const response = await fetch(uploadUrl, {
-        method: "PUT",
-        body: input.file,
-        headers: { "Content-Type": mimeType },
-      });
-      if (!response.ok) throw new Error("Upload failed");
+      setUploadProgress(input.file, 0);
+      await putWithProgress(uploadUrl, input.file, mimeType, (ratio) =>
+        setUploadProgress(input.file, ratio),
+      );
 
       // best effort: without a preview the raw still uploads and shows as a failed thumbnail
       if (preview && previewUploadUrl) {
@@ -272,7 +275,7 @@ export function useUploadFileMutation({
           queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId }).queryKey,
         }),
       ]);
-      onSuccess?.(result);
+      onSuccess?.(result, input);
     },
   });
 }

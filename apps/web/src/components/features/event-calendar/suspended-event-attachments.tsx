@@ -29,7 +29,11 @@ import {
   type EventFile,
 } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
-import { useEventUploadingFiles, useEventUploadMutation } from "./event-upload-context";
+import {
+  useEventDestinationLabel,
+  useEventUploadingFiles,
+  useEventUploadMutation,
+} from "./event-upload-context";
 import { LinkFileToSongDialog } from "@/components/features/song/link-file-to-song-dialog";
 
 export interface SuspendedEventAttachmentsProps {
@@ -135,6 +139,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const { projectSlug } = useParams({ from: "/projects/$projectSlug" });
   const { data: files } = useSuspenseQuery(getEventFilesQueryOptions({ eventId, organizationId }));
   const uploadMutation = useEventUploadMutation();
+  const getDestinationLabel = useEventDestinationLabel(eventId, organizationId);
   const pendingFiles = useEventUploadingFiles(eventId);
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
@@ -146,7 +151,12 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
-      uploadMutation.mutate({ eventId, organizationId, file });
+      uploadMutation.mutate({
+        eventId,
+        organizationId,
+        file,
+        destinationLabel: getDestinationLabel(),
+      });
     });
   };
 
