@@ -1623,7 +1623,7 @@ msgstr "No connection"
 msgid "No contacts"
 msgstr "No contacts"
 
-#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:49
+#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:52
 msgid "No event"
 msgstr "No event"
 
@@ -1664,7 +1664,7 @@ msgid "No matches"
 msgstr "No matches"
 
 #: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:53
-#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:53
+#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:58
 msgid "No matching events"
 msgstr "No matching events"
 
@@ -2501,7 +2501,7 @@ msgid "Type"
 msgstr "Type"
 
 #: apps/web/src/components/features/event-calendar/event-picker-combobox.tsx:54
-#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:53
+#: apps/web/src/components/features/event-calendar/event-select-combobox.tsx:58
 msgid "Type to search events"
 msgstr "Type to search events"
 
