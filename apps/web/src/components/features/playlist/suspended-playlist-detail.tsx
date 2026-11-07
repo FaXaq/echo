@@ -149,11 +149,12 @@ function PlaylistDetailContent({
     setDescription(markdown);
   };
 
-  const handlePlayPlaylist = () => {
+  const playFrom = (startSongId?: string) => {
     const audioBySongId = new Map(
       songs.map((song, index) => [song.songId, fileQueries[index]?.data ?? null]),
     );
     const items: QueueItem[] = order
+      .slice(startSongId ? Math.max(order.indexOf(startSongId), 0) : 0)
       .map((songId) => {
         const song = songsById.get(songId);
         const audioFile = audioBySongId.get(songId);
@@ -218,7 +219,7 @@ function PlaylistDetailContent({
         onIntervalBlur={saveIntervalSeconds}
         onEdit={() => setDialogState({ mode: "edit", playlist })}
         onDelete={handleDelete}
-        onPlayPlaylist={handlePlayPlaylist}
+        onPlayPlaylist={() => playFrom()}
         durationInSeconds={playlistDurationInSeconds}
         songsList={
           <DragDropProvider
@@ -257,6 +258,7 @@ function PlaylistDetailContent({
                     index={index}
                     organizationId={organizationId}
                     projectSlug={projectSlug}
+                    onPlay={() => playFrom(songId)}
                     onRemove={() => removeSongMutation.mutate({ playlistId: playlist.id, songId })}
                   />
                 );
