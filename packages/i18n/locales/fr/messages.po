@@ -249,7 +249,7 @@ msgstr "Ajouter une playlist"
 msgid "Add song"
 msgstr "Ajouter une chanson"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:247
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:248
 msgid "Add songs with the + button."
 msgstr "Ajoutez des chansons avec le bouton +."
 
@@ -393,7 +393,7 @@ msgstr "Retour à l'accueil"
 msgid "Back to Outreach"
 msgstr "Retour au démarchage"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:315
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:317
 msgid "Back to playlists"
 msgstr "Retour aux playlists"
 
@@ -688,7 +688,7 @@ msgstr "Impossible de charger ce fichier"
 msgid "Couldn't move card"
 msgstr "Impossible de déplacer la carte"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:204
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:205
 msgid "Couldn't move song"
 msgstr "Impossible de déplacer la chanson"
 
@@ -969,7 +969,7 @@ msgstr "Télécharger"
 msgid "Drag and drop files here, or click to select"
 msgstr "Glissez-déposez des fichiers ici, ou cliquez pour en sélectionner"
 
-#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:43
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:45
 msgid "Drag to reorder"
 msgstr "Glisser pour réordonner"
 
@@ -1733,7 +1733,7 @@ msgstr "Aucun remboursement pour le moment"
 msgid "No results."
 msgstr "Aucun résultat."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:246
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:247
 #: apps/web/src/components/features/playlist/suspended-playlist-songs.tsx:29
 msgid "No songs in this playlist"
 msgstr "Aucune chanson dans cette playlist"
@@ -1888,7 +1888,7 @@ msgstr "Échec de la réinitialisation du mot de passe"
 msgid "Passwords do not match"
 msgstr "Les mots de passe ne correspondent pas"
 
-#: apps/web/src/components/features/song/suspended-song-play-button.tsx:64
+#: apps/web/src/components/features/song/suspended-song-play-button.tsx:71
 #: apps/web/src/components/ui/audio-player-dock.tsx:101
 msgid "Pause"
 msgstr "Pause"
@@ -1926,7 +1926,7 @@ msgstr "Forfait et utilisation"
 msgid "Plan limit reached"
 msgstr "Limite du forfait atteinte"
 
-#: apps/web/src/components/features/song/suspended-song-play-button.tsx:64
+#: apps/web/src/components/features/song/suspended-song-play-button.tsx:71
 #: apps/web/src/components/ui/audio-player-dock.tsx:101
 msgid "Play"
 msgstr "Lire"
@@ -1952,7 +1952,7 @@ msgstr "Playlist supprimée"
 msgid "Playlist details"
 msgstr "Détails de la playlist"
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:309
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:311
 msgid "Playlist not found"
 msgstr "Playlist introuvable"
 
@@ -2055,7 +2055,7 @@ msgstr "Retirer la playlist"
 msgid "Remove role"
 msgstr "Supprimer le rôle"
 
-#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:69
+#: apps/web/src/components/features/playlist/sortable-playlist-song.tsx:72
 msgid "Remove song"
 msgstr "Retirer la chanson"
 
@@ -2285,7 +2285,7 @@ msgstr "{0} fichier(s) ignoré(s) car impossible à télécharger : {1}"
 #: apps/web/src/components/features/organization/suspended-organization-currency.tsx:72
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:233
 #: apps/web/src/components/features/outreach/suspended-outreach-card-detail.tsx:135
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:309
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:311
 #: apps/web/src/components/features/song/suspended-song-detail.tsx:152
 msgid "Something went wrong"
 msgstr "Une erreur est survenue"
@@ -2409,7 +2409,7 @@ msgstr "Cette action supprime définitivement le dossier ainsi que les fichiers 
 msgid "This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone."
 msgstr "Cette action supprime définitivement les fichiers sélectionnés, y compris de tout événement ou morceau auquel ils sont rattachés. Cette action est irréversible."
 
-#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:312
+#: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:314
 msgid "This playlist doesn't exist or has been deleted."
 msgstr "Cette playlist n'existe pas ou a été supprimée."
 

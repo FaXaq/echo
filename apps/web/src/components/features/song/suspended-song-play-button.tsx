@@ -11,10 +11,12 @@ function SongPlayButtonContent({
   songId,
   organizationId,
   title,
+  onPlay,
 }: {
   songId: string;
   organizationId: string;
   title: string;
+  onPlay?: () => void;
 }) {
   const { t } = useLingui();
   const { data: file } = useSuspenseQuery(
@@ -45,6 +47,11 @@ function SongPlayButtonContent({
       return;
     }
 
+    if (onPlay) {
+      onPlay();
+      return;
+    }
+
     requestPlay({
       id: file.id,
       filename: file.filename,
@@ -72,6 +79,7 @@ export function SuspendedSongPlayButton(props: {
   songId: string;
   organizationId: string;
   title: string;
+  onPlay?: () => void;
 }) {
   return (
     <ErrorBoundary fallbackRender={() => <div className="size-7" />}>
