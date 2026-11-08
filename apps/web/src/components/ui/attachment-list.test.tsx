@@ -378,6 +378,22 @@ describe("AttachmentList", () => {
 });
 
 describe("AttachmentList gallery errors", () => {
+  it("retries a failed thumbnail when a freshly signed URL arrives", async () => {
+    const file = (thumbnailUrl: string) =>
+      makeFile({ id: "image-1", kind: "image", filename: "gone.png", thumbnailUrl });
+    const { rerender } = render(<AttachmentList files={[file("https://example.com/old.jpg")]} />);
+
+    fireEvent.error(await screen.findByRole("img", { name: "gone.png" }));
+    expect(await screen.findByText("No thumbnail")).toBeInTheDocument();
+
+    rerender(<AttachmentList files={[file("https://example.com/new.jpg")]} />);
+
+    expect(await screen.findByRole("img", { name: "gone.png" })).toHaveAttribute(
+      "src",
+      "https://example.com/new.jpg",
+    );
+  });
+
   it("shows no thumbnail and still opens the carousel when the thumbnail fails", async () => {
     const user = userEvent.setup();
     render(

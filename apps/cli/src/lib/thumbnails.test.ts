@@ -1,7 +1,7 @@
 import sharp from "sharp";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fetchBytes } from "./fetch-bytes";
-import { captureVideoFrame, putBytes, resizeImage } from "./thumbnails";
+import { captureVideoFrame, frameArgs, putBytes, resizeImage } from "./thumbnails";
 
 const signedUrl = "http://127.0.0.1:9/v.mp4?X-Amz-Signature=secret";
 
@@ -66,6 +66,15 @@ describe("resizeImage", () => {
     const { data } = await sharp(output).raw().toBuffer({ resolveWithObject: true });
     expect(data[0]).toBeGreaterThan(200);
     expect(data[2]).toBeLessThan(80);
+  });
+});
+
+describe("frameArgs", () => {
+  it("only lets ffmpeg read known media containers", () => {
+    const args = frameArgs(signedUrl, 1);
+
+    expect(args[args.indexOf("-format_whitelist") + 1]).toBe("mov,matroska");
+    expect(args.indexOf("-format_whitelist")).toBeLessThan(args.indexOf("-i"));
   });
 });
 

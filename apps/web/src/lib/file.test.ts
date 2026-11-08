@@ -87,6 +87,72 @@ describe("createThumbnail", () => {
     await expect(promise).resolves.toBeNull();
   });
 
+  describe("under load", () => {
+    const png = new File(["x"], "a.png", { type: "image/png" });
+
+    function trackImages() {
+      vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:fake-url");
+      vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+      const createElement = vi.spyOn(document, "createElement");
+      return () =>
+        createElement.mock.results
+          .map((result: { value: unknown }) => result.value)
+          .filter((value): value is HTMLImageElement => value instanceof HTMLImageElement);
+    }
+
+    it("generates at most two thumbnails at once", async () => {
+      const images = trackImages();
+      const jobs = [1, 2, 3].map(() => createThumbnail(png, "image/png", null));
+
+      await vi.waitFor(() => expect(images()).toHaveLength(2));
+      images()[0].dispatchEvent(new Event("error"));
+      await vi.waitFor(() => expect(images()).toHaveLength(3));
+
+      images()[1].dispatchEvent(new Event("error"));
+      images()[2].dispatchEvent(new Event("error"));
+      await expect(Promise.all(jobs)).resolves.toEqual([null, null, null]);
+    });
+
+    it("gives a queued file its full timeout", async () => {
+      vi.useFakeTimers();
+      trackImages();
+      const settled: number[] = [];
+      [0, 1, 2].forEach((index) => {
+        void createThumbnail(png, "image/png", null).then(() => settled.push(index));
+      });
+
+      await vi.advanceTimersByTimeAsync(15_000);
+      expect(settled).toEqual([0, 1]);
+
+      await vi.advanceTimersByTimeAsync(14_000);
+      expect(settled).toEqual([0, 1]);
+
+      await vi.advanceTimersByTimeAsync(1_000);
+      expect(settled).toEqual([0, 1, 2]);
+    });
+
+    it("releases the video and object URL when decoding times out", async () => {
+      vi.useFakeTimers();
+      vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:fake-url");
+      const revokeObjectURL = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+      const createElement = vi.spyOn(document, "createElement");
+      const load = vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
+      const file = new File(["x"], "a.mp4", { type: "video/mp4" });
+
+      const promise = createThumbnail(file, "video/mp4", null);
+      await vi.advanceTimersByTimeAsync(15_000);
+
+      await expect(promise).resolves.toBeNull();
+      const video = findCreatedElement(
+        createElement,
+        (v): v is HTMLVideoElement => v instanceof HTMLVideoElement,
+      );
+      expect(video.hasAttribute("src")).toBe(false);
+      expect(load).toHaveBeenCalled();
+      expect(revokeObjectURL).toHaveBeenCalledWith("blob:fake-url");
+    });
+  });
+
   it("returns null when decoding hangs past the timeout", async () => {
     vi.useFakeTimers();
     const { promise } = startImageThumbnail();

@@ -111,50 +111,50 @@ export function formatDuration(seconds: number): string {
 
 const THUMBNAIL_SHORTEST_SIDE = 480;
 const THUMBNAIL_TIMEOUT_MS = 15_000;
+const MAX_CONCURRENT_THUMBNAILS = 2;
 
 export function thumbnailDimensions(width: number, height: number) {
   const scale = Math.min(1, THUMBNAIL_SHORTEST_SIDE / Math.min(width, height));
   return { width: Math.round(width * scale), height: Math.round(height * scale) };
 }
 
-function decodeImage(url: string) {
-  return new Promise<{ element: HTMLImageElement; width: number; height: number }>(
-    (resolve, reject) => {
-      const element = document.createElement("img");
-      element.addEventListener("load", () =>
-        resolve({ element, width: element.naturalWidth, height: element.naturalHeight }),
-      );
-      element.addEventListener("error", () => reject(new Error("Image could not be decoded")));
-      element.src = url;
-    },
-  );
+function decodeImage(element: HTMLImageElement, url: string, signal: AbortSignal) {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    signal.addEventListener("abort", () => reject(new Error("Thumbnail timed out")));
+    element.addEventListener("load", () =>
+      resolve({ width: element.naturalWidth, height: element.naturalHeight }),
+    );
+    element.addEventListener("error", () => reject(new Error("Image could not be decoded")));
+    element.src = url;
+  });
 }
 
-function decodeVideoFrame(url: string) {
-  return new Promise<{ element: HTMLVideoElement; width: number; height: number }>(
-    (resolve, reject) => {
-      const element = document.createElement("video");
-      const done = () =>
-        resolve({ element, width: element.videoWidth, height: element.videoHeight });
-      element.muted = true;
-      element.playsInline = true;
-      element.preload = "auto";
-      element.addEventListener("error", () => reject(new Error("Video could not be decoded")));
-      element.addEventListener("seeked", done);
-      // "seeked" isn't guaranteed at time 0, so short clips draw as soon as a frame is ready.
-      element.addEventListener("loadeddata", () => {
-        if (element.duration > 1) element.currentTime = 1;
-        else done();
-      });
-      element.src = url;
-    },
-  );
+function decodeVideoFrame(element: HTMLVideoElement, url: string, signal: AbortSignal) {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    const done = () => resolve({ width: element.videoWidth, height: element.videoHeight });
+    signal.addEventListener("abort", () => reject(new Error("Thumbnail timed out")));
+    element.muted = true;
+    element.playsInline = true;
+    element.preload = "auto";
+    element.addEventListener("error", () => reject(new Error("Video could not be decoded")));
+    element.addEventListener("seeked", done);
+    // "seeked" isn't guaranteed at time 0, so short clips draw as soon as a frame is ready.
+    element.addEventListener("loadeddata", () => {
+      if (element.duration > 1) element.currentTime = 1;
+      else done();
+    });
+    element.src = url;
+  });
 }
 
-async function renderThumbnail(source: Blob, isVideo: boolean) {
+async function renderThumbnail(source: Blob, isVideo: boolean, signal: AbortSignal) {
+  signal.throwIfAborted();
   const url = URL.createObjectURL(source);
+  const element = isVideo ? document.createElement("video") : document.createElement("img");
   try {
-    const { element, width, height } = await (isVideo ? decodeVideoFrame(url) : decodeImage(url));
+    const { width, height } = await (element instanceof HTMLVideoElement
+      ? decodeVideoFrame(element, url, signal)
+      : decodeImage(element, url, signal));
     if (!width || !height) return null;
 
     const canvas = document.createElement("canvas");
@@ -167,6 +167,8 @@ async function renderThumbnail(source: Blob, isVideo: boolean) {
     context.drawImage(element, 0, 0, canvas.width, canvas.height);
     return await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.8));
   } finally {
+    element.removeAttribute("src");
+    if (element instanceof HTMLVideoElement) element.load();
     URL.revokeObjectURL(url);
   }
 }
@@ -180,25 +182,50 @@ async function thumbnailSource(file: File, mimeType: string, rawPreview: Blob | 
   return file;
 }
 
+let activeThumbnails = 0;
+const waitingThumbnails: (() => void)[] = [];
+
+// Decoding and drawing full-size files blocks the main thread, so bulk uploads take turns.
+async function withThumbnailSlot<T>(run: () => Promise<T>) {
+  if (activeThumbnails >= MAX_CONCURRENT_THUMBNAILS) {
+    await new Promise<void>((resolve) => waitingThumbnails.push(resolve));
+  } else {
+    activeThumbnails++;
+  }
+  try {
+    return await run();
+  } finally {
+    const next = waitingThumbnails.shift();
+    if (next) next();
+    else activeThumbnails--;
+  }
+}
+
 export async function createThumbnail(file: File, mimeType: string, rawPreview: Blob | null) {
   const kind = kindForMimeType(mimeType);
   if (kind !== "image" && kind !== "video") return null;
 
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-  try {
-    return await Promise.race([
-      thumbnailSource(file, mimeType, rawPreview).then((source) =>
-        source ? renderThumbnail(source, kind === "video") : null,
-      ),
-      new Promise<null>((resolve) => {
-        timeout = setTimeout(() => resolve(null), THUMBNAIL_TIMEOUT_MS);
-      }),
-    ]);
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timeout);
-  }
+  return withThumbnailSlot(async () => {
+    const controller = new AbortController();
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      return await Promise.race([
+        thumbnailSource(file, mimeType, rawPreview).then((source) =>
+          source ? renderThumbnail(source, kind === "video", controller.signal) : null,
+        ),
+        new Promise<null>((resolve) => {
+          timeout = setTimeout(() => {
+            controller.abort();
+            resolve(null);
+          }, THUMBNAIL_TIMEOUT_MS);
+        }),
+      ]);
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timeout);
+    }
+  });
 }
 
 const emptyMediaMetadata: MediaMetadata = { durationSeconds: null, width: null, height: null };

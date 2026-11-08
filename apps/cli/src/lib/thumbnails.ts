@@ -18,8 +18,12 @@ export const resizeImage: ResizeImagePort = (bytes) =>
     .jpeg({ quality: 80 })
     .toBuffer();
 
-function grabFrame(url: string, seconds: number) {
-  const args = [
+// Uploaded bytes are untrusted: without this, a file posing as a video could be an HLS playlist
+// that makes ffmpeg fetch arbitrary URLs. "mov" also covers MP4 and HEIC, "matroska" WebM.
+export function frameArgs(url: string, seconds: number) {
+  return [
+    "-format_whitelist",
+    "mov,matroska",
     "-ss",
     String(seconds),
     "-i",
@@ -34,10 +38,13 @@ function grabFrame(url: string, seconds: number) {
     "2",
     "pipe:1",
   ];
+}
+
+function grabFrame(url: string, seconds: number) {
   return new Promise<Buffer>((resolve) => {
     execFile(
       "ffmpeg",
-      args,
+      frameArgs(url, seconds),
       { encoding: "buffer", timeout: FFMPEG_TIMEOUT_MS, maxBuffer: 64 * 1024 * 1024 },
       (error, stdout) => resolve(error ? Buffer.alloc(0) : stdout),
     );

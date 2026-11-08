@@ -381,8 +381,8 @@ function AttachmentListItems<F extends AttachmentFile>({
 function AttachmentGalleryGrid<F extends AttachmentFile>({
   files,
   pendingFiles,
-  failedIds,
-  onMediaError,
+  failedThumbnailUrls,
+  onThumbnailError,
   selectedIds,
   onToggleSelect,
   onOpen,
@@ -394,8 +394,8 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
 }: {
   files: F[];
   pendingFiles: PendingAttachment[];
-  failedIds: Set<string>;
-  onMediaError: (id: string) => void;
+  failedThumbnailUrls: Set<string>;
+  onThumbnailError: (url: string) => void;
   selectedIds: Set<string>;
   onToggleSelect: (file: F) => void;
   onOpen: (id: string) => void;
@@ -433,7 +433,10 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
         </li>
       ))}
       {files.map((file) => {
-        const thumbnailUrl = failedIds.has(file.id) ? null : file.thumbnailUrl;
+        const thumbnailUrl =
+          file.thumbnailUrl && !failedThumbnailUrls.has(file.thumbnailUrl)
+            ? file.thumbnailUrl
+            : null;
         const selected = selectedIds.has(file.id);
         return (
           <li key={file.id} className="m-0 min-w-0 list-none p-0">
@@ -465,7 +468,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                     src={thumbnailUrl}
                     alt={file.filename}
                     loading="lazy"
-                    onError={() => onMediaError(file.id)}
+                    onError={() => onThumbnailError(thumbnailUrl)}
                     className="m-0 block"
                   />
                 ) : (
@@ -635,12 +638,16 @@ export function AttachmentList<F extends AttachmentFile>({
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
+  const [failedThumbnailUrls, setFailedThumbnailUrls] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<AttachmentTab>(() =>
     firstNonEmptyTab(files, pendingFiles),
   );
 
   const markFailed = (id: string) =>
     setFailedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+  // Keyed by URL so a re-signed thumbnail gets another try after a refetch.
+  const markThumbnailFailed = (url: string) =>
+    setFailedThumbnailUrls((prev) => new Set(prev).add(url));
 
   const onToggleSelect = (file: F) =>
     selectedIds.has(file.id) ? onUnselect?.(file) : onSelect?.(file);
@@ -705,8 +712,8 @@ export function AttachmentList<F extends AttachmentFile>({
           <AttachmentGalleryGrid
             files={galleryFiles}
             pendingFiles={galleryPending}
-            failedIds={failedIds}
-            onMediaError={markFailed}
+            failedThumbnailUrls={failedThumbnailUrls}
+            onThumbnailError={markThumbnailFailed}
             selectedIds={selectedIds}
             onToggleSelect={onToggleSelect}
             onOpen={openGalleryPreview}
