@@ -1,3 +1,9 @@
+## [0.27.0](https://github.com/FaXaq/echo/compare/v0.26.0...v0.27.0) (2026-11-08)
+
+### ✨ Features
+
+* **drive:** denser attachment lists on song and event pages ([#73](https://github.com/FaXaq/echo/issues/73)) ([c8063a4](https://github.com/FaXaq/echo/commit/c8063a416d4f69f1f02eeac8137c3eee693a79f1))
+
 ## [0.26.0](https://github.com/FaXaq/echo/compare/v0.25.0...v0.26.0) (2026-11-08)
 
 ### ✨ Features
