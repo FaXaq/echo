@@ -10,7 +10,13 @@ Range.prototype.getBoundingClientRect = () => document.createElement("div").getB
 
 describe("LyricsEditor", () => {
   it("renders the initial markdown content", async () => {
-    render(<LyricsEditor markdown="**Hold on**, hold on to me" onChange={vi.fn()} />);
+    render(
+      <LyricsEditor
+        songTitle="Empty Road"
+        markdown="**Hold on**, hold on to me"
+        onChange={vi.fn()}
+      />,
+    );
 
     // "**Hold on**" renders as a nested <strong>, so the text is split across
     // elements; getByText only matches an element's own direct text nodes by
@@ -30,12 +36,16 @@ describe("LyricsEditor", () => {
 
   it("shows full-screen edits in the inline editor once closed", async () => {
     const user = userEvent.setup();
-    const { rerender } = render(<LyricsEditor markdown="First draft" onChange={vi.fn()} />);
+    const { rerender } = render(
+      <LyricsEditor songTitle="Empty Road" markdown="First draft" onChange={vi.fn()} />,
+    );
 
     await user.click(screen.getByRole("button", { name: "Full screen" }));
-    expect(await screen.findByRole("heading", { name: "Lyrics" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Lyrics · Empty Road" })).toBeInTheDocument();
 
-    rerender(<LyricsEditor markdown="Edited in full screen" onChange={vi.fn()} />);
+    rerender(
+      <LyricsEditor songTitle="Empty Road" markdown="Edited in full screen" onChange={vi.fn()} />,
+    );
     await user.click(screen.getByRole("button", { name: "Close" }));
 
     expect(await screen.findByText("Edited in full screen")).toBeInTheDocument();

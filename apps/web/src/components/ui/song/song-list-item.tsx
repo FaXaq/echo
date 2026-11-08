@@ -43,9 +43,9 @@ export function SongListItem({
         )}
       </span>
       {song.bpm != null && (
-        <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+        <Badge variant="secondary" className="tabular-nums">
           {song.bpm} <Trans>BPM</Trans>
-        </span>
+        </Badge>
       )}
       {duration && (
         <span className="min-w-[5ch] shrink-0 text-end font-mono text-muted-foreground">

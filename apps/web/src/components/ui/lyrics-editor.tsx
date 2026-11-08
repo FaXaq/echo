@@ -6,12 +6,13 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { MarkdownEditor, type MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 
 export interface LyricsEditorProps {
+  songTitle: string;
   markdown: string;
   onChange: (markdown: string) => void;
   saveStatus?: MarkdownSaveStatus;
 }
 
-export function LyricsEditor({ markdown, onChange, saveStatus }: LyricsEditorProps) {
+export function LyricsEditor({ songTitle, markdown, onChange, saveStatus }: LyricsEditorProps) {
   const { t } = useLingui();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const editorProps = { markdown, onChange, saveStatus, placeholder: t`Write the lyrics…` };
@@ -38,7 +39,9 @@ export function LyricsEditor({ markdown, onChange, saveStatus }: LyricsEditorPro
       />
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
         <DialogContent className="top-0 start-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 content-start rounded-none p-6 ring-0 sm:max-w-none rtl:translate-x-0">
-          <DialogTitle>{t`Lyrics`}</DialogTitle>
+          <DialogTitle className="truncate pe-8">
+            {t`Lyrics`} <span className="font-normal text-muted-foreground">· {songTitle}</span>
+          </DialogTitle>
           <MarkdownEditor
             {...editorProps}
             className="typeset typeset-notes h-[calc(100dvh-6rem)] text-lg leading-relaxed [&_.ProseMirror]:mx-auto [&_.ProseMirror]:min-h-[calc(100dvh-6.5rem)] [&_.ProseMirror]:max-w-3xl [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"

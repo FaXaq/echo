@@ -106,7 +106,12 @@ export function SongDetail({
         attachments={attachments}
         className={className}
       >
-        <LyricsEditor markdown={lyrics} onChange={onLyricsChange} saveStatus={lyricsSaveStatus} />
+        <LyricsEditor
+          songTitle={song.title}
+          markdown={lyrics}
+          onChange={onLyricsChange}
+          saveStatus={lyricsSaveStatus}
+        />
       </EntityDetailLayout>
 
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
