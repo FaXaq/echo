@@ -4,7 +4,7 @@ import type {
   FindFilesMissingThumbnailQueryPort,
   MarkFileHasThumbnailCommandPort,
 } from "../infrastructure/index.js";
-import { isRawImage, previewKeyFor, thumbnailKeyFor } from "../domain/index.js";
+import { isHeicImage, isRawImage, previewKeyFor, thumbnailKeyFor } from "../domain/index.js";
 import type { FileRecord } from "../domain/index.js";
 import type { FetchBytesPort } from "./backfill-file-durations.js";
 
@@ -25,7 +25,7 @@ type BackfillThumbnailsDeps = {
 };
 
 async function generateThumbnail(deps: BackfillThumbnailsDeps, file: FileRecord) {
-  if (file.kind === "video") {
+  if (file.kind === "video" || isHeicImage(file.mimeType)) {
     const { url } = await deps.s3Storage.createDownloadUrl(file.s3Key);
     return deps.captureVideoFrame(url);
   }

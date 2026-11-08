@@ -34,6 +34,7 @@ function makeFakeFile(overrides: Partial<FileRecord> = {}): FileRecord {
     mimeType: "audio/mpeg",
     sizeBytes: 100,
     durationSeconds: null,
+    hasThumbnail: false,
     filename: "demo.mp3",
     originalFilename: "demo.mp3",
     s3Key: "org/org-1/file-1/demo.mp3",

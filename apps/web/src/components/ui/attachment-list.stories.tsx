@@ -18,6 +18,8 @@ function makeFile(overrides: Partial<EventFile>): EventFile {
     mimeType: "application/pdf",
     sizeBytes: 86_000,
     durationSeconds: null,
+    hasThumbnail: false,
+    thumbnailUrl: null,
     filename: "setlist.pdf",
     originalFilename: "setlist.pdf",
     s3Key: "s3-key",

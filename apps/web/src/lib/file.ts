@@ -1,4 +1,9 @@
-import { isRawImage, kindForMimeType, type MediaMetadata } from "@echo/modules/drive/domain";
+import {
+  isHeicImage,
+  isRawImage,
+  kindForMimeType,
+  type MediaMetadata,
+} from "@echo/modules/drive/domain";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -168,7 +173,7 @@ async function renderThumbnail(source: Blob, isVideo: boolean) {
 
 async function thumbnailSource(file: File, mimeType: string, rawPreview: Blob | null) {
   if (isRawImage(mimeType)) return rawPreview;
-  if (mimeType === "image/heic" || mimeType === "image/heif") {
+  if (isHeicImage(mimeType)) {
     const { heicTo } = await import("heic-to");
     return heicTo({ blob: file, type: "image/jpeg", quality: 0.8 });
   }

@@ -37,6 +37,8 @@ function makeSongFile(overrides: Partial<driveResource.SongFile> = {}): driveRes
     mimeType: "audio/mpeg",
     sizeBytes: 10,
     durationSeconds: null,
+    hasThumbnail: false,
+    thumbnailUrl: null,
     filename: "demo.mp3",
     originalFilename: "demo.mp3",
     s3Key: "songs/song-1/demo.mp3",

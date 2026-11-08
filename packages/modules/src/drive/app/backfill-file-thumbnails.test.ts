@@ -71,6 +71,25 @@ describe("backfillFileThumbnails", () => {
     expect(marked).toEqual(["video-1"]);
   });
 
+  it("captures a frame for HEIC files", async () => {
+    const heic = makeFakeFileRecord({
+      id: "heic-1",
+      kind: "image",
+      mimeType: "image/heic",
+      s3Key: "o/a/shot.heic",
+      status: "uploaded",
+    });
+    const { deps, marked } = setup([heic]);
+
+    await backfillFileThumbnails(deps);
+
+    expect(deps.fetchBytes).not.toHaveBeenCalled();
+    expect(deps.captureVideoFrame).toHaveBeenCalledWith(
+      "https://fake-s3.local/o/a/shot.heic?download",
+    );
+    expect(marked).toEqual(["heic-1"]);
+  });
+
   it("reads the extracted preview for camera raw files", async () => {
     const { deps } = setup([raw]);
 

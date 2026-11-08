@@ -60,6 +60,10 @@ export function isRawImage(mimeType: string) {
   return RAW_IMAGE_MIME_TYPES.includes(mimeType);
 }
 
+export function isHeicImage(mimeType: string) {
+  return mimeType === "image/heic" || mimeType === "image/heif";
+}
+
 export function previewKeyFor(s3Key: string) {
   return `${s3Key}.preview.jpg`;
 }

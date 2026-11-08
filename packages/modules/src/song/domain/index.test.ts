@@ -15,6 +15,7 @@ function makeFile(overrides: Partial<SongFileRecord> = {}): SongFileRecord {
     mimeType: "audio/mpeg",
     sizeBytes: 100,
     durationSeconds: null,
+    hasThumbnail: false,
     filename: "take.mp3",
     originalFilename: "take.mp3",
     s3Key: "org/org-1/file-1/take.mp3",
