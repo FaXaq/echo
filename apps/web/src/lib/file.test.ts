@@ -1,8 +1,100 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fileTypeLabel, findEmbeddedJpegs, formatDuration, getMediaMetadata } from "./file.js";
+import {
+  createThumbnail,
+  fileTypeLabel,
+  findEmbeddedJpegs,
+  formatDuration,
+  getMediaMetadata,
+  thumbnailDimensions,
+} from "./file.js";
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
+});
+
+describe("thumbnailDimensions", () => {
+  it("scales the shortest side to 480", () => {
+    expect(thumbnailDimensions(4000, 3000)).toEqual({ width: 640, height: 480 });
+    expect(thumbnailDimensions(1080, 1920)).toEqual({ width: 480, height: 853 });
+  });
+
+  it("never enlarges", () => {
+    expect(thumbnailDimensions(300, 200)).toEqual({ width: 300, height: 200 });
+  });
+});
+
+describe("createThumbnail", () => {
+  function startImageThumbnail() {
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:fake-url");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    const createElement = vi.spyOn(document, "createElement");
+    const file = new File(["x"], "a.png", { type: "image/png" });
+    const promise = createThumbnail(file, "image/png", null);
+    const image = () =>
+      findCreatedElement(
+        createElement,
+        (v): v is HTMLImageElement => v instanceof HTMLImageElement,
+      );
+    return { promise, image };
+  }
+
+  it("returns null for audio", async () => {
+    const file = new File(["x"], "a.mp3", { type: "audio/mpeg" });
+
+    await expect(createThumbnail(file, "audio/mpeg", null)).resolves.toBeNull();
+  });
+
+  it("returns null for a raw file with no extracted preview", async () => {
+    const file = new File(["x"], "a.arw", { type: "image/x-sony-arw" });
+
+    await expect(createThumbnail(file, "image/x-sony-arw", null)).resolves.toBeNull();
+  });
+
+  it("returns null when the image can't be decoded", async () => {
+    const { promise, image } = startImageThumbnail();
+    const element = await vi.waitFor(image);
+
+    element.dispatchEvent(new Event("error"));
+
+    await expect(promise).resolves.toBeNull();
+  });
+
+  it("returns null when an image reports no size", async () => {
+    const { promise, image } = startImageThumbnail();
+    const element = await vi.waitFor(image);
+
+    element.dispatchEvent(new Event("load"));
+
+    await expect(promise).resolves.toBeNull();
+  });
+
+  it("returns null when a video can't be decoded", async () => {
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:fake-url");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    const createElement = vi.spyOn(document, "createElement");
+    const file = new File(["x"], "a.mov", { type: "video/quicktime" });
+    const promise = createThumbnail(file, "video/quicktime", null);
+    const video = await vi.waitFor(() =>
+      findCreatedElement(
+        createElement,
+        (v): v is HTMLVideoElement => v instanceof HTMLVideoElement,
+      ),
+    );
+
+    video.dispatchEvent(new Event("error"));
+
+    await expect(promise).resolves.toBeNull();
+  });
+
+  it("returns null when decoding hangs past the timeout", async () => {
+    vi.useFakeTimers();
+    const { promise } = startImageThumbnail();
+
+    await vi.advanceTimersByTimeAsync(15_000);
+
+    await expect(promise).resolves.toBeNull();
+  });
 });
 
 describe("fileTypeLabel", () => {

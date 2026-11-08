@@ -1,4 +1,4 @@
-import { kindForMimeType, type MediaMetadata } from "@echo/modules/drive/domain";
+import { isRawImage, kindForMimeType, type MediaMetadata } from "@echo/modules/drive/domain";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -102,6 +102,98 @@ export function formatDuration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const d = dayjs.duration(seconds * 1000);
   return d.hours() > 0 ? d.format("H:mm:ss") : d.format("m:ss");
+}
+
+const THUMBNAIL_SHORTEST_SIDE = 480;
+const THUMBNAIL_TIMEOUT_MS = 15_000;
+
+export function thumbnailDimensions(width: number, height: number) {
+  const scale = Math.min(1, THUMBNAIL_SHORTEST_SIDE / Math.min(width, height));
+  return { width: Math.round(width * scale), height: Math.round(height * scale) };
+}
+
+function decodeImage(url: string) {
+  return new Promise<{ element: HTMLImageElement; width: number; height: number }>(
+    (resolve, reject) => {
+      const element = document.createElement("img");
+      element.addEventListener("load", () =>
+        resolve({ element, width: element.naturalWidth, height: element.naturalHeight }),
+      );
+      element.addEventListener("error", () => reject(new Error("Image could not be decoded")));
+      element.src = url;
+    },
+  );
+}
+
+function decodeVideoFrame(url: string) {
+  return new Promise<{ element: HTMLVideoElement; width: number; height: number }>(
+    (resolve, reject) => {
+      const element = document.createElement("video");
+      const done = () =>
+        resolve({ element, width: element.videoWidth, height: element.videoHeight });
+      element.muted = true;
+      element.playsInline = true;
+      element.preload = "auto";
+      element.addEventListener("error", () => reject(new Error("Video could not be decoded")));
+      element.addEventListener("seeked", done);
+      // "seeked" isn't guaranteed at time 0, so short clips draw as soon as a frame is ready.
+      element.addEventListener("loadeddata", () => {
+        if (element.duration > 1) element.currentTime = 1;
+        else done();
+      });
+      element.src = url;
+    },
+  );
+}
+
+async function renderThumbnail(source: Blob, isVideo: boolean) {
+  const url = URL.createObjectURL(source);
+  try {
+    const { element, width, height } = await (isVideo ? decodeVideoFrame(url) : decodeImage(url));
+    if (!width || !height) return null;
+
+    const canvas = document.createElement("canvas");
+    Object.assign(canvas, thumbnailDimensions(width, height));
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(element, 0, 0, canvas.width, canvas.height);
+    return await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.8));
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function thumbnailSource(file: File, mimeType: string, rawPreview: Blob | null) {
+  if (isRawImage(mimeType)) return rawPreview;
+  if (mimeType === "image/heic" || mimeType === "image/heif") {
+    const { heicTo } = await import("heic-to");
+    return heicTo({ blob: file, type: "image/jpeg", quality: 0.8 });
+  }
+  return file;
+}
+
+export async function createThumbnail(file: File, mimeType: string, rawPreview: Blob | null) {
+  const kind = kindForMimeType(mimeType);
+  if (kind !== "image" && kind !== "video") return null;
+
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      thumbnailSource(file, mimeType, rawPreview).then((source) =>
+        source ? renderThumbnail(source, kind === "video") : null,
+      ),
+      new Promise<null>((resolve) => {
+        timeout = setTimeout(() => resolve(null), THUMBNAIL_TIMEOUT_MS);
+      }),
+    ]);
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 const emptyMediaMetadata: MediaMetadata = { durationSeconds: null, width: null, height: null };

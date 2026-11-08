@@ -1,9 +1,20 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { RouterOutputs } from "@echo/api/router";
-import { isRawImage, mimeTypeForFile, type Role } from "@echo/modules/drive/domain";
+import {
+  isRawImage,
+  MAX_THUMBNAIL_BYTES,
+  mimeTypeForFile,
+  type Role,
+} from "@echo/modules/drive/domain";
 import { z } from "zod";
 import { apiClient } from "@/services/api-client";
-import { downloadFile, extractRawPreview, getMediaMetadata, putWithProgress } from "@/lib/file";
+import {
+  createThumbnail,
+  downloadFile,
+  extractRawPreview,
+  getMediaMetadata,
+  putWithProgress,
+} from "@/lib/file";
 import { resetUploadProgress, setUploadDuration, setUploadProgress } from "@/lib/upload-progress";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
@@ -221,6 +232,16 @@ export interface UploadFileInput {
   songAudioRole?: Role;
 }
 
+// Best effort: the original still uploads without its derived images.
+async function putDerivedJpeg(url: string | null, blob: Blob | null) {
+  if (!url || !blob) return;
+  await fetch(url, {
+    method: "PUT",
+    body: blob,
+    headers: { "Content-Type": "image/jpeg" },
+  }).catch(() => undefined);
+}
+
 export function useUploadFileMutation({
   onSuccess,
 }: {
@@ -236,32 +257,32 @@ export function useUploadFileMutation({
       setUploadDuration(input.file, metadata.durationSeconds);
       const mimeType = mimeTypeForFile(input.file);
       const preview = isRawImage(mimeType) ? await extractRawPreview(input.file) : null;
+      const generated = await createThumbnail(input.file, mimeType, preview);
+      const thumbnail = generated && generated.size <= MAX_THUMBNAIL_BYTES ? generated : null;
 
-      const { fileId, uploadUrl, previewUploadUrl } = await apiClient.drive.createUpload.mutate({
-        eventId: input.eventId,
-        songId: input.songId,
-        folderId: input.folderId,
-        organizationId: input.organizationId,
-        mimeType,
-        sizeBytes: input.file.size,
-        ...metadata,
-        filename: input.file.name,
-        previewSizeBytes: preview?.size,
-      });
+      const { fileId, uploadUrl, previewUploadUrl, thumbnailUploadUrl } =
+        await apiClient.drive.createUpload.mutate({
+          eventId: input.eventId,
+          songId: input.songId,
+          folderId: input.folderId,
+          organizationId: input.organizationId,
+          mimeType,
+          sizeBytes: input.file.size,
+          ...metadata,
+          filename: input.file.name,
+          previewSizeBytes: preview?.size,
+          thumbnailSizeBytes: thumbnail?.size,
+        });
 
       setUploadProgress(input.file, 0);
       await putWithProgress(uploadUrl, input.file, mimeType, (ratio) =>
         setUploadProgress(input.file, ratio),
       );
 
-      // best effort: without a preview the raw still uploads and shows as a failed thumbnail
-      if (preview && previewUploadUrl) {
-        await fetch(previewUploadUrl, {
-          method: "PUT",
-          body: preview,
-          headers: { "Content-Type": "image/jpeg" },
-        }).catch(() => undefined);
-      }
+      await Promise.all([
+        putDerivedJpeg(previewUploadUrl, preview),
+        putDerivedJpeg(thumbnailUploadUrl, thumbnail),
+      ]);
 
       return apiClient.drive.confirmUpload.mutate({
         id: fileId,
