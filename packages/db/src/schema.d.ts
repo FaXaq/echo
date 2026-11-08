@@ -94,6 +94,7 @@ export interface File {
   event_id: string | null;
   filename: string;
   folder_id: string | null;
+  has_thumbnail: Generated<boolean>;
   height: number | null;
   id: string;
   kind: string;

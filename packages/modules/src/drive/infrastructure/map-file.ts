@@ -44,6 +44,7 @@ export function toFileRecord(row: FileRow): FileRecord {
     mimeType: row.mime_type,
     sizeBytes: row.size_bytes,
     durationSeconds: row.duration_seconds,
+    hasThumbnail: row.has_thumbnail,
     filename: row.filename,
     originalFilename: row.original_filename,
     s3Key: row.s3_key,

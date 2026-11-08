@@ -16,6 +16,7 @@ function makeRow(overrides: Partial<FileRow> = {}): FileRow {
     duration_seconds: null,
     width: null,
     height: null,
+    has_thumbnail: false,
     filename: "demo.mp3",
     original_filename: "demo.mp3",
     s3_key: "org/org-1/file-1/demo.mp3",
@@ -52,6 +53,10 @@ describe("toFileRecord", () => {
 
   it("maps a null duration_seconds through", () => {
     expect(toFileRecord(makeRow({ duration_seconds: null })).durationSeconds).toBeNull();
+  });
+
+  it("maps has_thumbnail through", () => {
+    expect(toFileRecord(makeRow({ has_thumbnail: true })).hasThumbnail).toBe(true);
   });
 });
 
