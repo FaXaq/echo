@@ -16,9 +16,9 @@ function SongDurationContent({
     getSongDefaultAudioQueryOptions({ songId, organizationId }),
   );
 
-  if (!file || file.durationSeconds == null) return null;
-
-  return <span>{formatDuration(file.durationSeconds)}</span>;
+  return (
+    <span>{file?.durationSeconds == null ? "--:--" : formatDuration(file.durationSeconds)}</span>
+  );
 }
 
 export function SuspendedSongDuration(props: { songId: string; organizationId: string }) {

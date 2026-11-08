@@ -1,5 +1,5 @@
 import { Music } from "lucide-react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
 
@@ -8,6 +8,7 @@ export interface SongListItemSong {
   title: string;
   artist?: string | null;
   type?: "original" | "cover" | null;
+  bpm?: number | null;
 }
 
 export function SongListItem({
@@ -33,12 +34,23 @@ export function SongListItem({
       className="rounded-xs hover:bg-muted/50 flex items-center gap-2.5 p-1 no-underline opacity-70 hover:opacity-100"
     >
       {leading ?? <Music className="size-4 text-muted-foreground" />}
-      <span className="flex-1 text-sm font-medium">
-        {song.title} {song.type !== "original" && song.artist ? `- ${song.artist}` : ""}
+      <span className="flex min-w-0 flex-1 items-center gap-2.5">
+        <span className="truncate text-sm font-medium">
+          {song.title} {song.type !== "original" && song.artist ? `- ${song.artist}` : ""}
+        </span>
+        {song.type && (
+          <Badge variant="secondary">{song.type === "original" ? t`Original` : t`Cover`}</Badge>
+        )}
       </span>
-      <span className="text-muted-foreground">{duration}</span>
-      {song.type && (
-        <Badge variant="secondary">{song.type === "original" ? t`Original` : t`Cover`}</Badge>
+      {song.bpm != null && (
+        <Badge variant="secondary" className="tabular-nums">
+          {song.bpm} <Trans>BPM</Trans>
+        </Badge>
+      )}
+      {duration && (
+        <span className="min-w-[5ch] shrink-0 text-end font-mono text-muted-foreground">
+          {duration}
+        </span>
       )}
       {trailing}
     </Link>

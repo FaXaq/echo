@@ -423,6 +423,7 @@ msgstr "Blue"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:57
 #: apps/web/src/components/ui/song/song-dialog.tsx:123
+#: apps/web/src/components/ui/song/song-list-item.tsx:47
 msgid "BPM"
 msgstr "BPM"
 
@@ -472,7 +473,7 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
-#: apps/web/src/components/ui/song/song-detail.tsx:121
+#: apps/web/src/components/ui/song/song-detail.tsx:126
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Cancel"
@@ -741,7 +742,7 @@ msgstr "Couldn't save repayment"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
-#: apps/web/src/components/ui/song/song-list-item.tsx:41
+#: apps/web/src/components/ui/song/song-list-item.tsx:42
 msgid "Cover"
 msgstr "Cover"
 
@@ -868,7 +869,7 @@ msgstr "Define as"
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
 #: apps/web/src/components/ui/playlist/playlist-detail.tsx:186
 #: apps/web/src/components/ui/song/song-detail.tsx:99
-#: apps/web/src/components/ui/song/song-detail.tsx:128
+#: apps/web/src/components/ui/song/song-detail.tsx:133
 msgid "Delete"
 msgstr "Delete"
 
@@ -914,7 +915,7 @@ msgstr "Delete project"
 msgid "Delete repayment?"
 msgstr "Delete repayment?"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:115
+#: apps/web/src/components/ui/song/song-detail.tsx:120
 msgid "Delete song?"
 msgstr "Delete song?"
 
@@ -1351,6 +1352,10 @@ msgstr "Full name"
 msgid "Full name is required"
 msgstr "Full name is required"
 
+#: apps/web/src/components/ui/lyrics-editor.tsx:28
+msgid "Full screen"
+msgstr "Full screen"
+
 #. placeholder {0}: galleryFiles.length + galleryPending.length
 #: apps/web/src/components/ui/attachment-list.tsx:700
 msgid "Gallery ({0})"
@@ -1532,7 +1537,8 @@ msgstr "Login to your account"
 #~ msgid "Lowercase letters, numbers and hyphens only"
 #~ msgstr "Lowercase letters, numbers and hyphens only"
 
-#: apps/web/src/components/ui/lyrics-editor.tsx:15
+#: apps/web/src/components/ui/lyrics-editor.tsx:23
+#: apps/web/src/components/ui/lyrics-editor.tsx:43
 msgid "Lyrics"
 msgstr "Lyrics"
 
@@ -1868,7 +1874,7 @@ msgstr "Organizer"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
-#: apps/web/src/components/ui/song/song-list-item.tsx:41
+#: apps/web/src/components/ui/song/song-list-item.tsx:42
 msgid "Original"
 msgstr "Original"
 
@@ -2522,7 +2528,7 @@ msgstr "This will permanently delete this playlist. This action cannot be undone
 msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
 msgstr "This will permanently delete this repayment and change the balances. This action cannot be undone."
 
-#: apps/web/src/components/ui/song/song-detail.tsx:117
+#: apps/web/src/components/ui/song/song-detail.tsx:122
 msgid "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 msgstr "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 
@@ -2715,7 +2721,7 @@ msgstr "We've sent a one-time code to {email}"
 msgid "Week"
 msgstr "Week"
 
-#: apps/web/src/components/ui/lyrics-editor.tsx:19
+#: apps/web/src/components/ui/lyrics-editor.tsx:18
 msgid "Write the lyrics…"
 msgstr "Write the lyrics…"
 

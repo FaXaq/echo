@@ -1,3 +1,5 @@
+import type { SongType } from "@echo/modules/song/domain";
+
 export type Playlist = {
   id: string;
   title: string;
@@ -24,6 +26,8 @@ export type PlaylistSongEntry = {
   songId: string;
   title: string;
   artist: string | null;
+  type: SongType | null;
+  bpm: number | null;
   position: number;
 };
 
