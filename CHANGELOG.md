@@ -1,3 +1,9 @@
+## [0.28.0](https://github.com/FaXaq/echo/compare/v0.27.0...v0.28.0) (2026-11-08)
+
+### ✨ Features
+
+* **songs:** rework song rows and add full-screen lyrics ([#74](https://github.com/FaXaq/echo/issues/74)) ([244aec3](https://github.com/FaXaq/echo/commit/244aec395e7b5ff90a00afee5e14b9448822a68b))
+
 ## [0.27.0](https://github.com/FaXaq/echo/compare/v0.26.0...v0.27.0) (2026-11-08)
 
 ### ✨ Features
