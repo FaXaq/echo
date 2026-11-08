@@ -59,17 +59,36 @@ describe("AttachmentList", () => {
     expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
   });
 
-  it("shows a music icon for audio files and a document icon otherwise", () => {
+  it("marks selected files with a check", () => {
     const { container } = render(
       <AttachmentList
         files={[
-          makeFile({ id: "doc-1", kind: "document", filename: "setlist.pdf" }),
           makeFile({ id: "audio-1", kind: "audio", filename: "demo.mp3" }),
+          makeFile({ id: "audio-2", kind: "audio", filename: "final.wav" }),
         ]}
+        selectedIds={new Set(["audio-1"])}
       />,
     );
 
-    expect(container.querySelector("svg.lucide-music")).toBeTruthy();
+    expect(container.querySelectorAll("svg.lucide-check")).toHaveLength(1);
+    expect(container.querySelectorAll('[data-state="selected"]')).toHaveLength(1);
+  });
+
+  it("shows a music icon for audio files and a playing icon for the current one", () => {
+    const files = [
+      makeFile({ id: "audio-1", kind: "audio", filename: "demo.mp3" }),
+      makeFile({ id: "audio-2", kind: "audio", filename: "final.wav" }),
+    ];
+    const { container } = render(<AttachmentList files={files} playingFileId="audio-2" />);
+
+    expect(container.querySelectorAll("svg.lucide-music")).toHaveLength(1);
+    expect(container.querySelectorAll("svg.lucide-audio-lines")).toHaveLength(1);
+  });
+
+  it("shows the file extension in place of an icon for documents", async () => {
+    render(<AttachmentList files={[makeFile({ filename: "setlist.pdf" })]} />);
+
+    expect(await screen.findByText("PDF")).toBeInTheDocument();
   });
 
   it("opens the actions menu when right-clicking an attachment", async () => {

@@ -173,6 +173,15 @@ function WithSelectionDemo() {
       originalFilename: "demo.mp3",
       sizeBytes: 6_400_000,
     }),
+    makeFile({
+      id: "file-3",
+      kind: "image",
+      mimeType: "image/png",
+      filename: "cover.png",
+      originalFilename: "cover.png",
+      downloadUrl: "https://picsum.photos/seed/1/300/300",
+      sizeBytes: 240_000,
+    }),
   ];
 
   return (

@@ -42,7 +42,7 @@ msgid "{0, plural, one {# song} other {# songs}}"
 msgstr "{0, plural, one {# song} other {# songs}}"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/ui/attachment-list.tsx:553
+#: apps/web/src/components/ui/attachment-list.tsx:620
 msgid "{0, plural, one {Delete # file?} other {Delete # files?}}"
 msgstr "{0, plural, one {Delete # file?} other {Delete # files?}}"
 
@@ -54,8 +54,8 @@ msgstr "{0, plural, one {Delete # file?} other {Delete # files?}}"
 #. placeholder {0}: filesToDelete.length
 #. placeholder {0}: selectedFiles.length
 #: apps/web/src/components/features/drive/drive-explorer.tsx:238
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:170
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:182
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:173
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:185
 msgid "{0} files deleted"
 msgstr "{0} files deleted"
 
@@ -201,12 +201,12 @@ msgstr "Actions"
 #. placeholder {0}: folder.name
 #: apps/web/src/components/features/drive/drive-file-row.tsx:159
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:169
-#: apps/web/src/components/ui/attachment-list.tsx:241
-#: apps/web/src/components/ui/attachment-list.tsx:453
+#: apps/web/src/components/ui/attachment-list.tsx:291
+#: apps/web/src/components/ui/attachment-list.tsx:520
 msgid "Actions for {0}"
 msgstr "Actions for {0}"
 
-#: apps/web/src/components/ui/attachment-list.tsx:535
+#: apps/web/src/components/ui/attachment-list.tsx:602
 msgid "Actions for selected files"
 msgstr "Actions for selected files"
 
@@ -377,7 +377,7 @@ msgid "At least one uppercase letter"
 msgstr "At least one uppercase letter"
 
 #. placeholder {0}: audioFiles.length + audioPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:628
+#: apps/web/src/components/ui/attachment-list.tsx:697
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
@@ -639,8 +639,8 @@ msgstr "Couldn't download the selected files"
 msgid "Couldn't link the file"
 msgstr "Couldn't link the file"
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:255
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:278
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:259
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:282
 msgid "Couldn't load attachments"
 msgstr "Couldn't load attachments"
 
@@ -687,8 +687,9 @@ msgid "Couldn't load the summary"
 msgstr "Couldn't load the summary"
 
 #: apps/web/src/components/ui/attachment-carousel-dialog.tsx:103
-#: apps/web/src/components/ui/attachment-list.tsx:227
-#: apps/web/src/components/ui/attachment-list.tsx:439
+#: apps/web/src/components/ui/attachment-list.tsx:271
+#: apps/web/src/components/ui/attachment-list.tsx:277
+#: apps/web/src/components/ui/attachment-list.tsx:505
 #: apps/web/src/components/ui/file-preview-dialog.tsx:55
 msgid "Couldn't load this file"
 msgstr "Couldn't load this file"
@@ -831,7 +832,7 @@ msgstr "Date is required"
 msgid "Day"
 msgstr "Day"
 
-#: apps/web/src/components/ui/attachment-list.tsx:301
+#: apps/web/src/components/ui/attachment-list.tsx:351
 msgid "Define as"
 msgstr "Define as"
 
@@ -844,18 +845,18 @@ msgstr "Define as"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:226
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:88
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:95
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:227
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:231
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:169
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:186
 #: apps/web/src/components/features/organization/suspended-organization-settings.tsx:208
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:311
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:323
 #: apps/web/src/components/features/outreach/outreach-column.tsx:144
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:256
-#: apps/web/src/components/ui/attachment-list.tsx:316
-#: apps/web/src/components/ui/attachment-list.tsx:502
-#: apps/web/src/components/ui/attachment-list.tsx:544
-#: apps/web/src/components/ui/attachment-list.tsx:555
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:260
+#: apps/web/src/components/ui/attachment-list.tsx:366
+#: apps/web/src/components/ui/attachment-list.tsx:569
+#: apps/web/src/components/ui/attachment-list.tsx:611
+#: apps/web/src/components/ui/attachment-list.tsx:622
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:188
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:254
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
@@ -918,8 +919,8 @@ msgid "Delete song?"
 msgstr "Delete song?"
 
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:86
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:225
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:254
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:229
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:258
 msgid "Delete this file?"
 msgstr "Delete this file?"
 
@@ -928,7 +929,7 @@ msgid "Delete this folder?"
 msgstr "Delete this folder?"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:78
-#: apps/web/src/components/ui/attachment-list.tsx:221
+#: apps/web/src/components/ui/attachment-list.tsx:264
 msgid "Demo"
 msgstr "Demo"
 
@@ -943,15 +944,15 @@ msgstr "Desc"
 msgid "Description"
 msgstr "Description"
 
-#: apps/web/src/components/ui/attachment-list.tsx:250
-#: apps/web/src/components/ui/attachment-list.tsx:462
+#: apps/web/src/components/ui/attachment-list.tsx:300
+#: apps/web/src/components/ui/attachment-list.tsx:529
 msgid "Deselect"
 msgstr "Deselect"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:201
 #: apps/web/src/components/features/drive/drive-file-row.tsx:251
-#: apps/web/src/components/ui/attachment-list.tsx:288
-#: apps/web/src/components/ui/attachment-list.tsx:496
+#: apps/web/src/components/ui/attachment-list.tsx:338
+#: apps/web/src/components/ui/attachment-list.tsx:563
 msgid "Details"
 msgstr "Details"
 
@@ -979,8 +980,8 @@ msgstr "Dismiss"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:215
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:56
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:63
-#: apps/web/src/components/ui/attachment-list.tsx:282
-#: apps/web/src/components/ui/attachment-list.tsx:490
+#: apps/web/src/components/ui/attachment-list.tsx:332
+#: apps/web/src/components/ui/attachment-list.tsx:557
 #: apps/web/src/components/ui/file-preview-dialog.tsx:69
 msgid "Download"
 msgstr "Download"
@@ -1277,8 +1278,8 @@ msgid "File assigned to the event"
 msgstr "File assigned to the event"
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:512
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:231
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:260
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:235
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:264
 msgid "File deleted"
 msgstr "File deleted"
 
@@ -1295,7 +1296,7 @@ msgid "Fill in the details below to get started"
 msgstr "Fill in the details below to get started"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:79
-#: apps/web/src/components/ui/attachment-list.tsx:221
+#: apps/web/src/components/ui/attachment-list.tsx:264
 msgid "Final"
 msgstr "Final"
 
@@ -1351,7 +1352,7 @@ msgid "Full name is required"
 msgstr "Full name is required"
 
 #. placeholder {0}: galleryFiles.length + galleryPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:631
+#: apps/web/src/components/ui/attachment-list.tsx:700
 msgid "Gallery ({0})"
 msgstr "Gallery ({0})"
 
@@ -1462,11 +1463,11 @@ msgstr "Language"
 msgid "Last modified"
 msgstr "Last modified"
 
-#: apps/web/src/components/ui/attachment-list.tsx:305
+#: apps/web/src/components/ui/attachment-list.tsx:355
 msgid "Latest demo"
 msgstr "Latest demo"
 
-#: apps/web/src/components/ui/attachment-list.tsx:308
+#: apps/web/src/components/ui/attachment-list.tsx:358
 msgid "Latest final"
 msgstr "Latest final"
 
@@ -1495,8 +1496,8 @@ msgstr "Link {0} to a song"
 msgid "Link copied to clipboard"
 msgstr "Link copied to clipboard"
 
-#: apps/web/src/components/ui/attachment-list.tsx:272
-#: apps/web/src/components/ui/attachment-list.tsx:480
+#: apps/web/src/components/ui/attachment-list.tsx:322
+#: apps/web/src/components/ui/attachment-list.tsx:547
 msgid "Link to a song"
 msgstr "Link to a song"
 
@@ -1582,7 +1583,7 @@ msgid "Members"
 msgstr "Members"
 
 #. placeholder {0}: miscFiles.length + miscPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:634
+#: apps/web/src/components/ui/attachment-list.tsx:703
 msgid "Misc ({0})"
 msgstr "Misc ({0})"
 
@@ -1707,8 +1708,8 @@ msgstr "No expenses yet"
 #~ msgstr "No files linked yet."
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:440
-#: apps/web/src/components/ui/attachment-list.tsx:159
-#: apps/web/src/components/ui/attachment-list.tsx:364
+#: apps/web/src/components/ui/attachment-list.tsx:188
+#: apps/web/src/components/ui/attachment-list.tsx:414
 msgid "No files yet"
 msgstr "No files yet"
 
@@ -1818,8 +1819,8 @@ msgid "Only files can be assigned to an event"
 msgstr "Only files can be assigned to an event"
 
 #. placeholder {0}: file.filename
-#: apps/web/src/components/ui/attachment-list.tsx:197
-#: apps/web/src/components/ui/attachment-list.tsx:402
+#: apps/web/src/components/ui/attachment-list.tsx:235
+#: apps/web/src/components/ui/attachment-list.tsx:451
 msgid "Open {0}"
 msgstr "Open {0}"
 
@@ -2088,7 +2089,7 @@ msgstr "Remove {0}"
 msgid "Remove playlist"
 msgstr "Remove playlist"
 
-#: apps/web/src/components/ui/attachment-list.tsx:294
+#: apps/web/src/components/ui/attachment-list.tsx:344
 msgid "Remove role"
 msgstr "Remove role"
 
@@ -2100,8 +2101,8 @@ msgstr "Remove song"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:243
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:184
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
-#: apps/web/src/components/ui/attachment-list.tsx:266
-#: apps/web/src/components/ui/attachment-list.tsx:474
+#: apps/web/src/components/ui/attachment-list.tsx:316
+#: apps/web/src/components/ui/attachment-list.tsx:541
 msgid "Rename"
 msgstr "Rename"
 
@@ -2170,7 +2171,7 @@ msgstr "Revoke membership"
 msgid "Role"
 msgstr "Role"
 
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:239
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:243
 msgid "Role removed"
 msgstr "Role removed"
 
@@ -2242,8 +2243,8 @@ msgstr "Searching…"
 msgid "seconds"
 msgstr "seconds"
 
-#: apps/web/src/components/ui/attachment-list.tsx:250
-#: apps/web/src/components/ui/attachment-list.tsx:462
+#: apps/web/src/components/ui/attachment-list.tsx:300
+#: apps/web/src/components/ui/attachment-list.tsx:529
 msgid "Select"
 msgstr "Select"
 
@@ -2276,12 +2277,12 @@ msgid "Set a new password"
 msgstr "Set a new password"
 
 #: apps/web/src/components/features/drive/use-upload-file.ts:37
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:230
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:234
 msgid "Set as latest demo"
 msgstr "Set as latest demo"
 
 #: apps/web/src/components/features/drive/use-upload-file.ts:37
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:230
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:234
 msgid "Set as latest final"
 msgstr "Set as latest final"
 
@@ -2490,12 +2491,12 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 #~ msgid "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 #~ msgstr "This will permanently delete <0>{selectedVersion}</0> and all of its data. This action cannot be undone."
 
-#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:226
-#: apps/web/src/components/features/song/suspended-song-attachments.tsx:255
+#: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:230
+#: apps/web/src/components/features/song/suspended-song-attachments.tsx:259
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 
-#: apps/web/src/components/ui/attachment-list.tsx:554
+#: apps/web/src/components/ui/attachment-list.tsx:621
 msgid "This will permanently delete the selected files. This action cannot be undone."
 msgstr "This will permanently delete the selected files. This action cannot be undone."
 
@@ -2643,8 +2644,8 @@ msgstr "Upload failed"
 msgid "Upload files"
 msgstr "Upload files"
 
-#: apps/web/src/components/ui/attachment-list.tsx:160
-#: apps/web/src/components/ui/attachment-list.tsx:365
+#: apps/web/src/components/ui/attachment-list.tsx:189
+#: apps/web/src/components/ui/attachment-list.tsx:415
 msgid "Upload files with the button above."
 msgstr "Upload files with the button above."
 
@@ -2661,8 +2662,8 @@ msgstr "Uploaded by"
 msgid "Uploaded on"
 msgstr "Uploaded on"
 
-#: apps/web/src/components/ui/attachment-list.tsx:175
-#: apps/web/src/components/ui/attachment-list.tsx:380
+#: apps/web/src/components/ui/attachment-list.tsx:209
+#: apps/web/src/components/ui/attachment-list.tsx:212
 msgid "Uploading…"
 msgstr "Uploading…"
 
