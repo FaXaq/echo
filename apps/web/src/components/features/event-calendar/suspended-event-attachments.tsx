@@ -1,3 +1,4 @@
+import { FileDetailsDialog } from "@/components/features/drive/file-details-dialog";
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -144,6 +145,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const deleteMutation = useDeleteFileMutation();
   const renameMutation = useRenameFileMutation();
   const [renamingFile, setRenamingFile] = useState<EventFile | null>(null);
+  const [detailsFile, setDetailsFile] = useState<EventFile | null>(null);
   const [linkingFile, setLinkingFile] = useState<EventFile | null>(null);
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -199,6 +201,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         onRename={(file) => setRenamingFile(file)}
         onLinkToSong={(file) => setLinkingFile(file)}
         onDownload={(file) => downloadOrganizationFile({ id: file.id, organizationId })}
+        onShowDetails={setDetailsFile}
         onPlayAudio={(file) =>
           requestPlay({
             id: file.id,
@@ -207,6 +210,12 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
             contextLabel: file.eventTitle ?? undefined,
           })
         }
+      />
+
+      <FileDetailsDialog
+        file={detailsFile}
+        organizationId={organizationId}
+        onOpenChange={(open) => !open && setDetailsFile(null)}
       />
 
       <ConfirmDialog

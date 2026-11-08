@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@/lib/test-utils";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AttachmentList } from "./attachment-list";
 import type { EventFile } from "@/services/resources/drive";
 
@@ -17,6 +17,14 @@ function makeFile(overrides: Partial<EventFile> = {}): EventFile {
     ...overrides,
   } as EventFile;
 }
+
+beforeEach(() => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("x", { status: 206 })),
+  );
+});
+afterEach(() => vi.unstubAllGlobals());
 
 describe("AttachmentList", () => {
   it("renders the filename and opens a preview dialog when clicked", async () => {
@@ -182,6 +190,40 @@ describe("AttachmentList", () => {
     expect(onUnselect).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
   });
 
+  it("selects on macOS ctrl+click, which fires contextmenu, without opening the menu", async () => {
+    const onSelect = vi.fn();
+    render(<AttachmentList files={[makeFile()]} onSelect={onSelect} />);
+
+    fireEvent.contextMenu(screen.getByText("setlist.pdf"), { ctrlKey: true, button: 0 });
+
+    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
+    expect(screen.queryByText("Rename")).not.toBeInTheDocument();
+  });
+
+  it("selects on plain click instead of opening once something is selected", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const onUnselect = vi.fn();
+    render(
+      <AttachmentList
+        files={[
+          makeFile({ id: "image-1", kind: "image", filename: "cover.png" }),
+          makeFile({ id: "image-2", kind: "image", filename: "stage.png" }),
+        ]}
+        selectedIds={new Set(["image-1"])}
+        onSelect={onSelect}
+        onUnselect={onUnselect}
+      />,
+    );
+
+    await user.click(await screen.findByRole("button", { name: "Open stage.png" }));
+    expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "image-2" }));
+
+    await user.click(screen.getByRole("button", { name: "Open cover.png" }));
+    expect(onUnselect).toHaveBeenCalledWith(expect.objectContaining({ id: "image-1" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it("toggles selection via the Select entry in the actions menu", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
@@ -252,15 +294,29 @@ describe("AttachmentList", () => {
     expect(screen.getByText("2 KB · 1:05")).toBeInTheDocument();
   });
 
-  it("shows an error state in the row and preview dialog when the file fails to load", async () => {
+  it("shows an error state in the row and preview dialog when the file is missing", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("<Error/>", { status: 404 })),
+    );
     const user = userEvent.setup();
     render(<AttachmentList files={[makeFile()]} />);
 
     await user.click(screen.getByRole("button", { name: "Open setlist.pdf" }));
-    const iframe = await screen.findByTitle("setlist.pdf");
-    fireEvent.error(iframe);
 
     expect(await screen.findAllByText("Couldn't load this file")).not.toHaveLength(0);
     expect(screen.queryByTitle("setlist.pdf")).not.toBeInTheDocument();
+  });
+});
+
+describe("AttachmentList gallery errors", () => {
+  it("shows a load error on a gallery tile whose image is missing", async () => {
+    render(
+      <AttachmentList files={[makeFile({ id: "image-1", kind: "image", filename: "gone.png" })]} />,
+    );
+
+    fireEvent.error(await screen.findByRole("img", { name: "gone.png" }));
+
+    expect(await screen.findByText("Couldn't load this file")).toBeInTheDocument();
   });
 });
