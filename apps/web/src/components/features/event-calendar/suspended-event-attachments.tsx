@@ -150,6 +150,9 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
+  const playingFileId = useAudioPlayerStore((s) =>
+    s.status === "playing" ? s.file?.id : undefined,
+  );
 
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
@@ -188,6 +191,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         files={files}
         pendingFiles={pendingFiles}
         selectedIds={selectedIds}
+        playingFileId={playingFileId}
         onSelect={(file) => setSelectedIds((prev) => new Set(prev).add(file.id))}
         onUnselect={(file) =>
           setSelectedIds((prev) => {

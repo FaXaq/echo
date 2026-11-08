@@ -92,6 +92,12 @@ export function formatSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+export function fileTypeLabel(filename: string) {
+  const dot = filename.lastIndexOf(".");
+  const extension = dot > 0 ? filename.slice(dot + 1, dot + 5) : "";
+  return extension.toUpperCase() || "FILE";
+}
+
 export function formatDuration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const d = dayjs.duration(seconds * 1000);

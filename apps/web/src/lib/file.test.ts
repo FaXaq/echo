@@ -1,8 +1,21 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { findEmbeddedJpegs, formatDuration, getMediaMetadata } from "./file.js";
+import { fileTypeLabel, findEmbeddedJpegs, formatDuration, getMediaMetadata } from "./file.js";
 
 afterEach(() => {
   vi.restoreAllMocks();
+});
+
+describe("fileTypeLabel", () => {
+  it.each([
+    ["setlist.pdf", "PDF"],
+    ["paroles.v4.docx", "DOCX"],
+    ["project.torrent", "TORR"],
+    ["README", "FILE"],
+    [".env", "FILE"],
+    ["trailing.", "FILE"],
+  ])("labels %s as %s", (filename, label) => {
+    expect(fileTypeLabel(filename)).toBe(label);
+  });
 });
 
 function makeFile(name: string, type: string): File {

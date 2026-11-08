@@ -1,15 +1,17 @@
 import { useState, type ReactNode } from "react";
 import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import {
+  AudioLines,
+  Check,
   DownloadIcon,
   Info,
-  FileText,
   FileWarning,
   ListChecks,
   MoreVertical,
   Paperclip,
   Music,
   Pen,
+  Play,
   Square,
   SquareCheck,
   Tag,
@@ -44,7 +46,8 @@ import {
 import { PreviewImage } from "@/components/ui/preview-image";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatDuration, formatSize } from "@/lib/file";
+import { cn } from "@/lib/utils";
+import { fileTypeLabel, formatDuration, formatSize } from "@/lib/file";
 import { match } from "ts-pattern";
 
 export interface PendingAttachment {
@@ -68,15 +71,38 @@ export interface AttachmentFile {
 }
 
 function formatFileMeta(file: Pick<AttachmentFile, "sizeBytes" | "durationSeconds">): string {
-  const size = formatSize(file.sizeBytes);
-  return file.durationSeconds != null ? `${size} · ${formatDuration(file.durationSeconds)}` : size;
+  return file.durationSeconds != null
+    ? formatDuration(file.durationSeconds)
+    : formatSize(file.sizeBytes);
 }
+
+const AUDIO_GRID = "grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))]";
+const MISC_GRID = "grid-cols-[repeat(auto-fill,minmax(min(100%,15rem),1fr))]";
+const ROW = "h-11 w-full min-w-0 flex-nowrap gap-2.5 rounded-none border-0 border-b";
+const ROW_TITLE = "flex items-center gap-1.5 text-[13px]";
+const ROW_META = "mt-0 max-w-none shrink-0 tabular-nums";
+const INVERTED_MEDIA = "bg-primary text-primary-foreground";
+const FILE_TYPE_MEDIA = "font-mono text-[9px] font-semibold";
+const TILE =
+  "w-full gap-0 overflow-hidden rounded-md border-0 has-data-[slot=attachment-content]:w-full has-data-[slot=attachment-content]:p-0 has-data-[slot=attachment-media]:p-0 data-[state=selected]:outline-2 data-[state=selected]:-outline-offset-2 data-[state=selected]:outline-primary";
+const TILE_CAPTION =
+  "pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-primary py-0.5 text-xs text-primary-foreground opacity-0 transition-opacity group-hover/attachment:opacity-100 group-data-[state=error]/attachment:opacity-100 group-data-[state=uploading]/attachment:opacity-100 group-data-[orientation=vertical]/attachment:px-1.5";
+const TILE_CHIP =
+  "pointer-events-none absolute start-1 bottom-1 z-20 flex items-center gap-0.5 rounded-sm bg-primary px-1 text-[11px] text-primary-foreground tabular-nums transition-opacity group-hover/attachment:opacity-0";
+// Row meta and tile captions give way to the actions on hover; touch screens always show them.
+const FADE_OUT_FOR_ACTIONS =
+  "transition-opacity pointer-fine:group-hover/attachment:opacity-0 pointer-fine:group-focus-within/attachment:opacity-0 pointer-fine:group-has-data-popup-open/attachment:opacity-0";
+const REVEAL_ACTIONS =
+  "transition-opacity pointer-fine:opacity-0 pointer-fine:group-hover/attachment:opacity-100 pointer-fine:group-focus-within/attachment:opacity-100 pointer-fine:group-has-data-popup-open/attachment:opacity-100";
+const ROW_ACTIONS = `static pointer-fine:absolute pointer-fine:end-1 pointer-fine:top-1/2 pointer-fine:-translate-y-1/2 ${REVEAL_ACTIONS}`;
+const TILE_ACTIONS = `group-data-[orientation=vertical]/attachment:top-1 group-data-[orientation=vertical]/attachment:end-1 ${REVEAL_ACTIONS}`;
 
 export interface AttachmentListProps<F extends AttachmentFile> {
   files: F[];
   pendingFiles?: PendingAttachment[];
   actions?: ReactNode;
   selectedIds?: Set<string>;
+  playingFileId?: string;
   onSelect?: (file: F) => void;
   onUnselect?: (file: F) => void;
   onDeleteSelected?: (files: F[]) => Promise<void>;
@@ -121,8 +147,10 @@ function firstNonEmptyTab<F extends AttachmentFile>(
 function AttachmentListItems<F extends AttachmentFile>({
   files,
   pendingFiles,
+  gridClassName,
   failedIds,
   selectedIds,
+  playingFileId,
   onToggleSelect,
   onOpen,
   onPlayAudio,
@@ -136,8 +164,10 @@ function AttachmentListItems<F extends AttachmentFile>({
 }: {
   files: F[];
   pendingFiles: PendingAttachment[];
+  gridClassName: string;
   failedIds: Set<string>;
   selectedIds: Set<string>;
+  playingFileId?: string;
   onToggleSelect: (file: F) => void;
   onOpen: (id: string) => void;
   onPlayAudio?: (file: F) => void;
@@ -163,30 +193,31 @@ function AttachmentListItems<F extends AttachmentFile>({
   }
 
   return (
-    <ul className="flex flex-col gap-2.5 m-0 p-0">
+    <ul className={cn("m-0 grid gap-x-6 p-0", gridClassName)}>
       {pendingFiles.map((file) => (
-        <li key={file.key} className="m-0 p-0 list-none">
-          <Attachment orientation="horizontal" className="w-full" state="uploading" size="sm">
+        <li key={file.key} className="m-0 min-w-0 list-none p-0">
+          <Attachment orientation="horizontal" className={ROW} state="uploading" size="xs">
             <AttachmentMedia>
               <Spinner />
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle>{file.filename}</AttachmentTitle>
-              <AttachmentDescription>{t`Uploading…`}</AttachmentDescription>
+              <AttachmentTitle className={ROW_TITLE}>{file.filename}</AttachmentTitle>
             </AttachmentContent>
+            <AttachmentDescription className={ROW_META}>{t`Uploading…`}</AttachmentDescription>
           </Attachment>
         </li>
       ))}
       {files.map((file) => {
         const failed = failedIds.has(file.id);
         const selected = selectedIds.has(file.id);
+        const playing = file.id === playingFileId;
         return (
-          <li key={file.id} className="m-0 p-0 list-none">
+          <li key={file.id} className="m-0 min-w-0 list-none p-0">
             <Attachment
               orientation="horizontal"
-              className="w-full"
+              className={ROW}
               state={failed ? "error" : selected ? "selected" : "done"}
-              size="sm"
+              size="xs"
               onContextMenu={(event) => {
                 event.preventDefault();
                 if (isMacCtrlClick(event)) onToggleSelect(file);
@@ -205,29 +236,34 @@ function AttachmentListItems<F extends AttachmentFile>({
                   else onOpen(file.id);
                 }}
               />
-              <AttachmentMedia>
-                {match({ failed, kind: file.kind })
+              <AttachmentMedia
+                className={cn(
+                  file.kind !== "audio" && FILE_TYPE_MEDIA,
+                  !failed && (selected || playing) && INVERTED_MEDIA,
+                )}
+              >
+                {match({ failed, selected, playing, kind: file.kind })
                   .with({ failed: true }, () => <FileWarning />)
-                  .with({ kind: "audio" }, () => <Music />)
-                  .otherwise(() => (
-                    <FileText />
-                  ))}
+                  .with({ selected: true }, () => <Check />)
+                  .with({ playing: true }, () => <AudioLines />)
+                  .with({ kind: "audio" }, () => <Play className="size-3 fill-current" />)
+                  .otherwise(() => fileTypeLabel(file.filename))}
               </AttachmentMedia>
               <AttachmentContent>
-                <AttachmentTitle className="flex items-center gap-1.5">
-                  {file.filename}
+                <AttachmentTitle className={ROW_TITLE}>
+                  <span className="truncate">{file.filename}</span>
                   {file.role && (
-                    <Badge variant="secondary">
+                    <Badge variant="secondary" className="shrink-0">
                       {file.role === "demo" ? t`Demo` : t`Final`}
                       {file.version != null && ` v${file.version}`}
                     </Badge>
                   )}
                 </AttachmentTitle>
-                <AttachmentDescription>
-                  {failed ? t`Couldn't load this file` : formatFileMeta(file)}
-                </AttachmentDescription>
               </AttachmentContent>
-              <AttachmentActions>
+              <AttachmentDescription className={cn(ROW_META, FADE_OUT_FOR_ACTIONS)}>
+                {failed ? t`Couldn't load this file` : formatFileMeta(file)}
+              </AttachmentDescription>
+              <AttachmentActions className={ROW_ACTIONS}>
                 <DropdownMenu
                   open={contextMenuId === file.id}
                   onOpenChange={(open) => setContextMenuId(open ? file.id : null)}
@@ -368,16 +404,15 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   }
 
   return (
-    <ul className="m-0 p-0 flex flex-row flex-wrap gap-2">
+    <ul className="m-0 grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-1 p-0">
       {pendingFiles.map((file) => (
-        <li key={file.key} className="m-0 p-0 list-none">
-          <Attachment orientation="vertical" className="w-full" state="uploading" size="sm">
-            <AttachmentMedia>
+        <li key={file.key} className="m-0 min-w-0 list-none p-0">
+          <Attachment orientation="vertical" className={TILE} state="uploading">
+            <AttachmentMedia className="rounded-md">
               <Spinner />
             </AttachmentMedia>
-            <AttachmentContent>
+            <AttachmentContent className={TILE_CAPTION}>
               <AttachmentTitle>{file.filename}</AttachmentTitle>
-              <AttachmentDescription>{t`Uploading…`}</AttachmentDescription>
             </AttachmentContent>
           </Attachment>
         </li>
@@ -386,10 +421,10 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
         const failed = failedIds.has(file.id);
         const selected = selectedIds.has(file.id);
         return (
-          <li key={file.id} className="m-0 p-0 list-none">
+          <li key={file.id} className="m-0 min-w-0 list-none p-0">
             <Attachment
               orientation="vertical"
-              className="w-full"
+              className={TILE}
               state={failed ? "error" : selected ? "selected" : "done"}
               size="default"
               onContextMenu={(event) => {
@@ -409,7 +444,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                   onOpen(file.id);
                 }}
               />
-              <AttachmentMedia variant={failed ? "icon" : "image"}>
+              <AttachmentMedia variant={failed ? "icon" : "image"} className="rounded-md">
                 {match({ failed, kind: file.kind })
                   .with({ failed: true }, () => <FileWarning />)
                   .with({ kind: "video" }, () => (
@@ -433,13 +468,29 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                     />
                   ))}
               </AttachmentMedia>
-              <AttachmentContent>
+              {selected && !failed && (
+                <span className="pointer-events-none absolute start-1 top-1 z-20 grid size-4.5 place-items-center rounded-full bg-primary text-primary-foreground">
+                  <Check className="size-3" />
+                </span>
+              )}
+              {!failed && file.kind === "video" && (
+                <span className={TILE_CHIP}>
+                  <Play className="size-2 fill-current" />
+                  {file.durationSeconds != null && formatDuration(file.durationSeconds)}
+                </span>
+              )}
+              {!failed && file.previewUrl && (
+                <span className={TILE_CHIP}>{fileTypeLabel(file.filename)}</span>
+              )}
+              <AttachmentContent className={TILE_CAPTION}>
                 <AttachmentTitle>{file.filename}</AttachmentTitle>
-                <AttachmentDescription>
-                  {failed ? t`Couldn't load this file` : formatFileMeta(file)}
-                </AttachmentDescription>
+                {failed && (
+                  <AttachmentDescription className="group-data-[state=error]/attachment:text-primary-foreground">
+                    {t`Couldn't load this file`}
+                  </AttachmentDescription>
+                )}
               </AttachmentContent>
-              <AttachmentActions>
+              <AttachmentActions className={TILE_ACTIONS}>
                 <DropdownMenu
                   open={contextMenuId === file.id}
                   onOpenChange={(open) => setContextMenuId(open ? file.id : null)}
@@ -448,7 +499,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                     render={
                       <Button
                         type="button"
-                        variant="ghost"
+                        variant="secondary"
                         size="icon-xs"
                         aria-label={t`Actions for ${file.filename}`}
                       />
@@ -564,6 +615,7 @@ export function AttachmentList<F extends AttachmentFile>({
   pendingFiles = [],
   actions,
   selectedIds = EMPTY_SELECTION,
+  playingFileId,
   onSelect,
   onUnselect,
   onDeleteSelected,
@@ -607,6 +659,7 @@ export function AttachmentList<F extends AttachmentFile>({
   const sharedProps = {
     failedIds,
     selectedIds,
+    playingFileId,
     onToggleSelect,
     onOpen: setPreviewId,
     onPlayAudio,
@@ -642,7 +695,12 @@ export function AttachmentList<F extends AttachmentFile>({
           </div>
         </div>
         <TabsContent value="audio">
-          <AttachmentListItems files={audioFiles} pendingFiles={audioPending} {...sharedProps} />
+          <AttachmentListItems
+            files={audioFiles}
+            pendingFiles={audioPending}
+            gridClassName={AUDIO_GRID}
+            {...sharedProps}
+          />
         </TabsContent>
         <TabsContent value="gallery">
           <AttachmentGalleryGrid
@@ -661,7 +719,12 @@ export function AttachmentList<F extends AttachmentFile>({
           />
         </TabsContent>
         <TabsContent value="misc">
-          <AttachmentListItems files={miscFiles} pendingFiles={miscPending} {...sharedProps} />
+          <AttachmentListItems
+            files={miscFiles}
+            pendingFiles={miscPending}
+            gridClassName={MISC_GRID}
+            {...sharedProps}
+          />
         </TabsContent>
       </Tabs>
 
