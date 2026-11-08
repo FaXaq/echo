@@ -6,6 +6,7 @@ import {
   DownloadIcon,
   Info,
   FileWarning,
+  ImageOff,
   ListChecks,
   MoreVertical,
   Paperclip,
@@ -43,7 +44,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PreviewImage } from "@/components/ui/preview-image";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -66,6 +66,7 @@ export interface AttachmentFile {
   durationSeconds?: number | null;
   downloadUrl: string;
   previewUrl?: string | null;
+  thumbnailUrl?: string | null;
   role?: Role | null;
   version?: number | null;
 }
@@ -432,14 +433,14 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
         </li>
       ))}
       {files.map((file) => {
-        const failed = failedIds.has(file.id);
+        const thumbnailUrl = failedIds.has(file.id) ? null : file.thumbnailUrl;
         const selected = selectedIds.has(file.id);
         return (
           <li key={file.id} className="m-0 min-w-0 list-none p-0">
             <Attachment
               orientation="vertical"
               className={TILE}
-              state={failed ? "error" : selected ? "selected" : "done"}
+              state={selected ? "selected" : "done"}
               size="default"
               onContextMenu={(event) => {
                 event.preventDefault();
@@ -458,29 +459,21 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                   onOpen(file.id);
                 }}
               />
-              <AttachmentMedia variant={failed ? "icon" : "image"} className="rounded-md">
-                {match({ failed, kind: file.kind })
-                  .with({ failed: true }, () => <FileWarning />)
-                  .with({ kind: "video" }, () => (
-                    <video
-                      src={file.downloadUrl}
-                      muted
-                      playsInline
-                      preload="metadata"
-                      onError={() => onMediaError(file.id)}
-                      className="aspect-square h-full w-full object-cover m-0"
-                    />
-                  ))
-                  .otherwise(() => (
-                    <PreviewImage
-                      src={file.previewUrl ?? file.downloadUrl}
-                      filename={file.filename}
-                      alt={file.filename}
-                      loading="lazy"
-                      onError={() => onMediaError(file.id)}
-                      className="m-0 block"
-                    />
-                  ))}
+              <AttachmentMedia variant={thumbnailUrl ? "image" : "icon"} className="rounded-md">
+                {thumbnailUrl ? (
+                  <img
+                    src={thumbnailUrl}
+                    alt={file.filename}
+                    loading="lazy"
+                    onError={() => onMediaError(file.id)}
+                    className="m-0 block"
+                  />
+                ) : (
+                  <span className="flex flex-col items-center gap-1 px-1 text-center text-[11px] text-muted-foreground">
+                    <ImageOff className="size-5" />
+                    <Trans>No thumbnail</Trans>
+                  </span>
+                )}
               </AttachmentMedia>
               {selected && (
                 <span className="pointer-events-none absolute inset-0 z-20 rounded-md bg-primary/30 p-1.5 ring-3 ring-primary ring-inset">
@@ -489,22 +482,17 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                   </span>
                 </span>
               )}
-              {!failed && file.kind === "video" && (
+              {file.kind === "video" && (
                 <span className={TILE_CHIP}>
                   <Play className="size-2 fill-current" />
                   {file.durationSeconds != null && formatDuration(file.durationSeconds)}
                 </span>
               )}
-              {!failed && file.previewUrl && (
+              {(file.previewUrl || file.mimeType === "image/gif") && (
                 <span className={TILE_CHIP}>{fileTypeLabel(file.filename)}</span>
               )}
               <AttachmentContent className={TILE_CAPTION}>
                 <AttachmentTitle>{file.filename}</AttachmentTitle>
-                {failed && (
-                  <AttachmentDescription className="group-data-[state=error]/attachment:text-primary-foreground">
-                    {t`Couldn't load this file`}
-                  </AttachmentDescription>
-                )}
               </AttachmentContent>
               <AttachmentActions className={TILE_ACTIONS}>
                 <DropdownMenu

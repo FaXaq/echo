@@ -125,6 +125,7 @@ export const Gallery: Story = {
         filename: `photo-${index + 1}.png`,
         originalFilename: `photo-${index + 1}.png`,
         downloadUrl: `https://picsum.photos/seed/${index}/300/300`,
+        thumbnailUrl: `https://picsum.photos/seed/${index}/300/300`,
         sizeBytes: 240_000,
       }),
     ),
@@ -180,6 +181,7 @@ function WithSelectionDemo() {
       filename: "cover.png",
       originalFilename: "cover.png",
       downloadUrl: "https://picsum.photos/seed/1/300/300",
+      thumbnailUrl: "https://picsum.photos/seed/1/300/300",
       sizeBytes: 240_000,
     }),
   ];
