@@ -102,6 +102,7 @@ export function makeFakeInsertPendingFile(
       mimeType: input.mimeType,
       sizeBytes: input.sizeBytes,
       durationSeconds: input.durationSeconds,
+      hasThumbnail: false,
       filename: input.originalFilename,
       originalFilename: input.originalFilename,
       s3Key: input.s3Key,
@@ -166,10 +167,10 @@ export function makeFakeHeadObjectS3(result: {
 }
 
 export function makeFakeMarkFileUploaded(
-  onCall?: (id: string, sizeBytes: number | null) => void,
+  onCall?: (id: string, sizeBytes: number | null, hasThumbnail: boolean) => void,
 ): MarkFileUploadedCommandPort {
   return async (_db, _scope, input) => {
-    onCall?.(input.id, input.sizeBytes);
+    onCall?.(input.id, input.sizeBytes, input.hasThumbnail);
     return makeFakeFileRecord({
       id: input.id,
       status: "uploaded",

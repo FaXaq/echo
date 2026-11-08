@@ -330,4 +330,56 @@ describe("createUpload", () => {
       expect(result.previewUploadUrl).toBeNull();
     });
   });
+
+  describe("thumbnails", () => {
+    const deps = (overrides: Parameters<typeof makeFakeQuotaPorts>[0] = {}) => ({
+      db: makeFakeDb(),
+      findFolderByIdQuery: makeFakeFindFolderById(),
+      s3Storage: makeFakeS3Storage(),
+      insertPendingFileCommand: makeFakeInsertPendingFile(),
+      linkFileToSongCommand: makeFakeLinkFileToSong(),
+      songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
+      getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+      ...makeFakePermissionChecks(),
+      ...makeFakeQuotaPorts(overrides),
+    });
+    const image = { ...baseInput, mimeType: "image/png", filename: "photo.png" };
+
+    it("issues a thumbnail upload URL for images and videos", async () => {
+      const photo = await createUpload(deps(), { ...image, thumbnailSizeBytes: 2048 });
+      const video = await createUpload(deps(), {
+        ...baseInput,
+        mimeType: "video/mp4",
+        filename: "clip.mp4",
+        thumbnailSizeBytes: 2048,
+      });
+
+      expect(photo.thumbnailUploadUrl).toMatch(/photo\.png\.thumbnail\.jpg$/);
+      expect(video.thumbnailUploadUrl).toMatch(/clip\.mp4\.thumbnail\.jpg$/);
+    });
+
+    it("issues no thumbnail URL without a thumbnail size", async () => {
+      const result = await createUpload(deps(), image);
+
+      expect(result.thumbnailUploadUrl).toBeNull();
+    });
+
+    it("issues no thumbnail URL for audio", async () => {
+      const result = await createUpload(deps(), { ...baseInput, thumbnailSizeBytes: 2048 });
+
+      expect(result.thumbnailUploadUrl).toBeNull();
+    });
+
+    it("leaves the thumbnail out of the quota check", async () => {
+      const result = await createUpload(
+        deps({
+          getOrganizationStorageUsage: async () =>
+            planCatalog.free.limits.storageBytes - image.sizeBytes,
+        }),
+        { ...image, thumbnailSizeBytes: 2048 },
+      );
+
+      expect(result.thumbnailUploadUrl).not.toBeNull();
+    });
+  });
 });

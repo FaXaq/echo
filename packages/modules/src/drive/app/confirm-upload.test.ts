@@ -4,10 +4,12 @@ import { createOrganizationScope } from "@echo/modules/shared/domain";
 import { confirmUpload } from "./confirm-upload.js";
 import {
   makeFakeDb,
+  makeFakeFileRecord,
   makeFakeFindFileById,
   makeFakeHeadObjectS3,
   makeFakeMarkFileUploaded,
 } from "./test-fixtures.js";
+import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
 const scope = createOrganizationScope("org-1");
 
@@ -74,5 +76,60 @@ describe("confirmUpload", () => {
         { id: "missing", scope },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
+  });
+
+  describe("thumbnails", () => {
+    const originalKey = "org/org-1/file-1/photo.png";
+    const thumbnailKey = `${originalKey}.thumbnail.jpg`;
+    const image = makeFakeFileRecord({ kind: "image", mimeType: "image/png", s3Key: originalKey });
+
+    async function confirmWith(headObject: S3StoragePort["headObject"], file = image) {
+      const recorded: boolean[] = [];
+      await confirmUpload(
+        {
+          db: makeFakeDb(),
+          s3Storage: { ...makeFakeHeadObjectS3({ exists: true, sizeBytes: 1 }), headObject },
+          findFileByIdQuery: makeFakeFindFileById(file),
+          markFileUploadedCommand: makeFakeMarkFileUploaded((_id, _size, hasThumbnail) =>
+            recorded.push(hasThumbnail),
+          ),
+        },
+        { id: file.id, scope },
+      );
+      return recorded;
+    }
+
+    it("records a thumbnail when the object exists", async () => {
+      expect(await confirmWith(async () => ({ exists: true, sizeBytes: 1 }))).toEqual([true]);
+    });
+
+    it("records no thumbnail when the object is missing", async () => {
+      const recorded = await confirmWith(async (key) => ({
+        exists: key === originalKey,
+        sizeBytes: 1,
+      }));
+
+      expect(recorded).toEqual([false]);
+    });
+
+    it("confirms the upload when the thumbnail check throws", async () => {
+      const recorded = await confirmWith(async (key) => {
+        if (key === thumbnailKey) throw new Error("Forbidden");
+        return { exists: true, sizeBytes: 1 };
+      });
+
+      expect(recorded).toEqual([false]);
+    });
+
+    it("does not check for a thumbnail on audio", async () => {
+      const checked: string[] = [];
+      const recorded = await confirmWith(async (key) => {
+        checked.push(key);
+        return { exists: true, sizeBytes: 1 };
+      }, makeFakeFileRecord());
+
+      expect(checked).toEqual(["org/org-1/file-1/demo.mp3"]);
+      expect(recorded).toEqual([false]);
+    });
   });
 });

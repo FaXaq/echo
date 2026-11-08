@@ -8,7 +8,13 @@ import { exceedsLimit } from "@echo/modules/plan/domain";
 import type { ResolveEntitlementsPort } from "@echo/modules/plan/app";
 import type { GetOrganizationStorageUsageQueryPort } from "@echo/modules/plan/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import { isRawImage, kindForMimeType, previewKeyFor } from "../domain/index.js";
+import {
+  hasThumbnailKind,
+  isRawImage,
+  kindForMimeType,
+  previewKeyFor,
+  thumbnailKeyFor,
+} from "../domain/index.js";
 import type { MediaMetadata } from "../domain/index.js";
 import type {
   FindFolderByIdQueryPort,
@@ -44,8 +50,14 @@ export async function createUpload(
     sizeBytes: number;
     filename: string;
     previewSizeBytes?: number;
+    thumbnailSizeBytes?: number;
   },
-): Promise<{ fileId: string; uploadUrl: string; previewUploadUrl: string | null }> {
+): Promise<{
+  fileId: string;
+  uploadUrl: string;
+  previewUploadUrl: string | null;
+  thumbnailUploadUrl: string | null;
+}> {
   const kind = kindForMimeType(input.mimeType);
   if (!kind) throw conflict("Unsupported file type");
 
@@ -121,14 +133,18 @@ export async function createUpload(
     contentLength: input.sizeBytes,
   });
 
-  // ponytail: preview bytes count toward this check but not toward stored usage, they're ~1 MB next to a 25+ MB raw
-  const preview = previewSizeBytes
-    ? await deps.s3Storage.createUploadUrl({
-        key: previewKeyFor(s3Key),
-        contentType: "image/jpeg",
-        contentLength: previewSizeBytes,
-      })
-    : null;
+  const signJpegUpload = async (key: string, contentLength: number | undefined) =>
+    contentLength
+      ? (await deps.s3Storage.createUploadUrl({ key, contentType: "image/jpeg", contentLength }))
+          .url
+      : null;
 
-  return { fileId: id, uploadUrl: url, previewUploadUrl: preview?.url ?? null };
+  // ponytail: preview bytes count toward this check but not toward stored usage, they're ~1 MB next to a 25+ MB raw
+  const previewUploadUrl = await signJpegUpload(previewKeyFor(s3Key), previewSizeBytes);
+  const thumbnailUploadUrl = await signJpegUpload(
+    thumbnailKeyFor(s3Key),
+    hasThumbnailKind(input.mimeType) ? input.thumbnailSizeBytes : undefined,
+  );
+
+  return { fileId: id, uploadUrl: url, previewUploadUrl, thumbnailUploadUrl };
 }
