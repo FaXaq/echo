@@ -1,3 +1,4 @@
+import { songTypeSchema } from "@echo/modules/song/domain";
 import type { ListPlaylistSongsQueryPortFactory } from "./list-playlist-songs.query.port.js";
 
 export const listPlaylistSongsQueryFactory: ListPlaylistSongsQueryPortFactory =
@@ -10,6 +11,8 @@ export const listPlaylistSongsQueryFactory: ListPlaylistSongsQueryPortFactory =
         "song.id as song_id",
         "song.title as title",
         "song.artist as artist",
+        "song.type as type",
+        "song.bpm as bpm",
         "playlist_song.position as position",
       ])
       .where("playlist_song.playlist_id", "=", input.playlistId)
@@ -21,6 +24,8 @@ export const listPlaylistSongsQueryFactory: ListPlaylistSongsQueryPortFactory =
       songId: row.song_id,
       title: row.title,
       artist: row.artist,
+      type: songTypeSchema.nullable().parse(row.type),
+      bpm: row.bpm,
       position: row.position,
     }));
   };

@@ -10,9 +10,9 @@ import { makeFakeDb, makeFakePermissionChecks } from "./test-fixtures.js";
 const scope = createOrganizationScope("org-1");
 
 const songs: PlaylistSongEntry[] = [
-  { songId: "song-a", title: "A", artist: null, position: 0 },
-  { songId: "song-b", title: "B", artist: null, position: 1 },
-  { songId: "song-c", title: "C", artist: null, position: 2 },
+  { songId: "song-a", title: "A", artist: null, type: null, bpm: null, position: 0 },
+  { songId: "song-b", title: "B", artist: null, type: null, bpm: null, position: 1 },
+  { songId: "song-c", title: "C", artist: null, type: null, bpm: null, position: 2 },
 ];
 
 describe("moveSongInPlaylist", () => {

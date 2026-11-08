@@ -59,6 +59,20 @@ describe("SuspendedSongList", () => {
     expect(screen.getByText("Second Song")).toBeInTheDocument();
   });
 
+  it("shows the artist on covers only, with the type tag and BPM", async () => {
+    renderWithSongs([
+      makeSong(),
+      makeSong({ id: "song-2", title: "Second Song", type: "cover", bpm: null }),
+    ]);
+
+    expect(await screen.findByText("Empty Road")).toBeInTheDocument();
+    expect(screen.getByText("Second Song - The Wayfinders")).toBeInTheDocument();
+    expect(screen.getByText("Original")).toBeInTheDocument();
+    expect(screen.getByText("Cover")).toBeInTheDocument();
+    expect(screen.getAllByText(/BPM/)).toHaveLength(1);
+    expect(screen.getByText("96 BPM")).toBeInTheDocument();
+  });
+
   it("opens the create dialog from the New song button", async () => {
     const user = userEvent.setup();
     renderWithSongs([makeSong()]);

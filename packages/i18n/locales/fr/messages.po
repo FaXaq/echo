@@ -423,6 +423,7 @@ msgstr "Bleu"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:57
 #: apps/web/src/components/ui/song/song-dialog.tsx:123
+#: apps/web/src/components/ui/song/song-list-item.tsx:47
 msgid "BPM"
 msgstr "BPM"
 
@@ -741,7 +742,7 @@ msgstr "Impossible d'enregistrer le remboursement"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:152
-#: apps/web/src/components/ui/song/song-list-item.tsx:41
+#: apps/web/src/components/ui/song/song-list-item.tsx:42
 msgid "Cover"
 msgstr "Reprise"
 
@@ -1351,6 +1352,10 @@ msgstr "Nom complet"
 msgid "Full name is required"
 msgstr "Le nom complet est requis"
 
+#: apps/web/src/components/ui/lyrics-editor.tsx:27
+msgid "Full screen"
+msgstr "Plein écran"
+
 #. placeholder {0}: galleryFiles.length + galleryPending.length
 #: apps/web/src/components/ui/attachment-list.tsx:700
 msgid "Gallery ({0})"
@@ -1532,7 +1537,8 @@ msgstr "Connexion à votre compte"
 #~ msgid "Lowercase letters, numbers and hyphens only"
 #~ msgstr "Lettres minuscules, chiffres et tirets uniquement"
 
-#: apps/web/src/components/ui/lyrics-editor.tsx:15
+#: apps/web/src/components/ui/lyrics-editor.tsx:22
+#: apps/web/src/components/ui/lyrics-editor.tsx:41
 msgid "Lyrics"
 msgstr "Paroles"
 
@@ -1868,7 +1874,7 @@ msgstr "Organisateur"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:53
 #: apps/web/src/components/ui/song/song-dialog.tsx:145
-#: apps/web/src/components/ui/song/song-list-item.tsx:41
+#: apps/web/src/components/ui/song/song-list-item.tsx:42
 msgid "Original"
 msgstr "Original"
 
@@ -2715,7 +2721,7 @@ msgstr "Nous avons envoyé un code à usage unique à {email}"
 msgid "Week"
 msgstr "Semaine"
 
-#: apps/web/src/components/ui/lyrics-editor.tsx:19
+#: apps/web/src/components/ui/lyrics-editor.tsx:17
 msgid "Write the lyrics…"
 msgstr "Écrivez les paroles…"
 
