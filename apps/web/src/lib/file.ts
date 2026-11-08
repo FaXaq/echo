@@ -1,5 +1,4 @@
 import { kindForMimeType, type MediaMetadata } from "@echo/modules/drive/domain";
-import { match } from "ts-pattern";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -101,32 +100,30 @@ export function formatDuration(seconds: number): string {
 
 const emptyMediaMetadata: MediaMetadata = { durationSeconds: null, width: null, height: null };
 
-export function getMediaMetadata(file: File): Promise<MediaMetadata> {
+export async function getMediaMetadata(file: File): Promise<MediaMetadata> {
   const kind = kindForMimeType(file.type);
-  if (kind !== "audio" && kind !== "video") return Promise.resolve(emptyMediaMetadata);
+  if (kind !== "audio" && kind !== "video") return emptyMediaMetadata;
 
   const url = URL.createObjectURL(file);
+  try {
+    return await readMediaMetadata(url, kind);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
 
-  const mediaElement = match(kind)
-    .with("audio", () => {
-      const audio = document.createElement("audio");
-      audio.setAttribute("src", url);
-      return audio;
-    })
-    .with("video", () => {
-      const video = document.createElement("video");
-      const source = document.createElement("source");
-      source.setAttribute("src", url);
-      source.setAttribute("type", file.type);
+const MEDIA_METADATA_TIMEOUT_MS = 15_000;
 
-      video.appendChild(source);
-      return video;
-    })
-    .exhaustive();
+// Sets src directly (no <source type>) so the browser sniffs the bytes: a declared type it
+// doesn't claim to support (e.g. video/quicktime in Chrome) would otherwise skip the file silently.
+export function readMediaMetadata(url: string, kind: "audio" | "video"): Promise<MediaMetadata> {
+  const mediaElement = document.createElement(kind);
+  mediaElement.preload = "metadata";
 
-  return new Promise((resolve) => {
+  return new Promise<MediaMetadata>((resolve) => {
+    const timeout = setTimeout(() => resolve(emptyMediaMetadata), MEDIA_METADATA_TIMEOUT_MS);
     mediaElement.addEventListener("loadedmetadata", () => {
-      URL.revokeObjectURL(url);
+      clearTimeout(timeout);
       resolve({
         durationSeconds: Number.isFinite(mediaElement.duration)
           ? Math.round(mediaElement.duration)
@@ -135,12 +132,12 @@ export function getMediaMetadata(file: File): Promise<MediaMetadata> {
         height: mediaElement instanceof HTMLVideoElement ? mediaElement.videoHeight || null : null,
       });
     });
-
     mediaElement.addEventListener("error", () => {
-      URL.revokeObjectURL(url);
+      clearTimeout(timeout);
       resolve(emptyMediaMetadata);
     });
-  });
+    mediaElement.src = url;
+  }).finally(() => mediaElement.removeAttribute("src"));
 }
 
 export function putWithProgress(

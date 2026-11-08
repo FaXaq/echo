@@ -10,7 +10,9 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useEffect, useRef } from "react";
 import { canPreviewInline } from "@/lib/file";
+import { assertFileAvailable } from "@/lib/file-details";
 
 export interface PreviewableFile {
   filename: string;
@@ -32,6 +34,15 @@ export function FilePreviewDialog({
   onDownload: () => void;
 }) {
   const { t } = useLingui();
+  const previewUrl = file && canPreviewInline(file.mimeType) ? file.downloadUrl : null;
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
+
+  // An <iframe> never reports a 404: it renders storage's error page instead.
+  useEffect(() => {
+    if (!previewUrl) return;
+    assertFileAvailable(previewUrl).catch(() => onErrorRef.current());
+  }, [previewUrl]);
 
   return (
     <Dialog open={file !== null} onOpenChange={onOpenChange}>
