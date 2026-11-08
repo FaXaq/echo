@@ -159,6 +159,12 @@ export { searchDriveQueryFactory } from "./search-drive.query.kysely.js";
 export type { FindFilesMissingDurationQueryPort } from "./find-files-missing-duration.query.port.js";
 export { findFilesMissingDurationQueryFactory } from "./find-files-missing-duration.query.kysely.js";
 
+export type { FindFilesMissingThumbnailQueryPort } from "./find-files-missing-thumbnail.query.port.js";
+export { findFilesMissingThumbnailQueryFactory } from "./find-files-missing-thumbnail.query.kysely.js";
+
+export type { MarkFileHasThumbnailCommandPort } from "./mark-file-has-thumbnail.command.port.js";
+export { markFileHasThumbnailCommandFactory } from "./mark-file-has-thumbnail.command.kysely.js";
+
 export type {
   UpdateFileDurationByIdInput,
   UpdateFileDurationByIdCommandPort,
