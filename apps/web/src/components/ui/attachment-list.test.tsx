@@ -59,14 +59,29 @@ describe("AttachmentList", () => {
     expect(onDelete).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
   });
 
-  it("shows a play icon for audio files and a playing icon for the current one", () => {
+  it("marks selected files with a check", () => {
+    const { container } = render(
+      <AttachmentList
+        files={[
+          makeFile({ id: "audio-1", kind: "audio", filename: "demo.mp3" }),
+          makeFile({ id: "audio-2", kind: "audio", filename: "final.wav" }),
+        ]}
+        selectedIds={new Set(["audio-1"])}
+      />,
+    );
+
+    expect(container.querySelectorAll("svg.lucide-check")).toHaveLength(1);
+    expect(container.querySelectorAll('[data-state="selected"]')).toHaveLength(1);
+  });
+
+  it("shows a music icon for audio files and a playing icon for the current one", () => {
     const files = [
       makeFile({ id: "audio-1", kind: "audio", filename: "demo.mp3" }),
       makeFile({ id: "audio-2", kind: "audio", filename: "final.wav" }),
     ];
     const { container } = render(<AttachmentList files={files} playingFileId="audio-2" />);
 
-    expect(container.querySelectorAll("svg.lucide-play")).toHaveLength(1);
+    expect(container.querySelectorAll("svg.lucide-music")).toHaveLength(1);
     expect(container.querySelectorAll("svg.lucide-audio-lines")).toHaveLength(1);
   });
 
@@ -273,7 +288,7 @@ describe("AttachmentList", () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
-  it("shows the duration when known, and the size when it isn't", () => {
+  it("shows duration next to file size when known, and just the size when it isn't", () => {
     render(
       <AttachmentList
         files={[
@@ -295,7 +310,7 @@ describe("AttachmentList", () => {
     );
 
     expect(screen.getByText("2 KB")).toBeInTheDocument();
-    expect(screen.getByText("1:05")).toBeInTheDocument();
+    expect(screen.getByText("2 KB · 1:05")).toBeInTheDocument();
   });
 
   it("shows an error state in the row and preview dialog when the file is missing", async () => {

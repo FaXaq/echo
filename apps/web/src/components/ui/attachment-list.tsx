@@ -71,20 +71,19 @@ export interface AttachmentFile {
 }
 
 function formatFileMeta(file: Pick<AttachmentFile, "sizeBytes" | "durationSeconds">): string {
-  return file.durationSeconds != null
-    ? formatDuration(file.durationSeconds)
-    : formatSize(file.sizeBytes);
+  const size = formatSize(file.sizeBytes);
+  return file.durationSeconds != null ? `${size} · ${formatDuration(file.durationSeconds)}` : size;
 }
 
-const AUDIO_GRID = "grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))]";
-const MISC_GRID = "grid-cols-[repeat(auto-fill,minmax(min(100%,15rem),1fr))]";
+const AUDIO_GRID = "gap-2.5 grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))]";
+const MISC_GRID = "gap-x-6 grid-cols-[repeat(auto-fill,minmax(min(100%,15rem),1fr))]";
 const ROW = "h-11 w-full min-w-0 flex-nowrap gap-2.5 rounded-none border-0 border-b";
-const ROW_TITLE = "flex items-center gap-1.5 text-[13px]";
+const ROW_TITLE = "text-[13px]";
 const ROW_META = "mt-0 max-w-none shrink-0 tabular-nums";
 const INVERTED_MEDIA = "bg-primary text-primary-foreground";
 const FILE_TYPE_MEDIA = "font-mono text-[9px] font-semibold";
 const TILE =
-  "w-full gap-0 overflow-hidden rounded-md border-0 has-data-[slot=attachment-content]:w-full has-data-[slot=attachment-content]:p-0 has-data-[slot=attachment-media]:p-0 data-[state=selected]:outline-2 data-[state=selected]:-outline-offset-2 data-[state=selected]:outline-primary";
+  "w-full gap-0 overflow-hidden rounded-md border-0 has-data-[slot=attachment-content]:w-full has-data-[slot=attachment-content]:p-0 has-data-[slot=attachment-media]:p-0";
 const TILE_CAPTION =
   "pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-primary py-0.5 text-xs text-primary-foreground opacity-0 transition-opacity group-hover/attachment:opacity-100 group-data-[state=error]/attachment:opacity-100 group-data-[state=uploading]/attachment:opacity-100 group-data-[orientation=vertical]/attachment:px-1.5";
 const TILE_CHIP =
@@ -147,7 +146,7 @@ function firstNonEmptyTab<F extends AttachmentFile>(
 function AttachmentListItems<F extends AttachmentFile>({
   files,
   pendingFiles,
-  gridClassName,
+  dense = false,
   failedIds,
   selectedIds,
   playingFileId,
@@ -164,7 +163,7 @@ function AttachmentListItems<F extends AttachmentFile>({
 }: {
   files: F[];
   pendingFiles: PendingAttachment[];
-  gridClassName: string;
+  dense?: boolean;
   failedIds: Set<string>;
   selectedIds: Set<string>;
   playingFileId?: string;
@@ -193,17 +192,25 @@ function AttachmentListItems<F extends AttachmentFile>({
   }
 
   return (
-    <ul className={cn("m-0 grid gap-x-6 p-0", gridClassName)}>
+    <ul className={cn("m-0 grid p-0", dense ? MISC_GRID : AUDIO_GRID)}>
       {pendingFiles.map((file) => (
         <li key={file.key} className="m-0 min-w-0 list-none p-0">
-          <Attachment orientation="horizontal" className={ROW} state="uploading" size="xs">
+          <Attachment
+            orientation="horizontal"
+            className={dense ? ROW : "w-full"}
+            state="uploading"
+            size={dense ? "xs" : "sm"}
+          >
             <AttachmentMedia>
               <Spinner />
             </AttachmentMedia>
             <AttachmentContent>
-              <AttachmentTitle className={ROW_TITLE}>{file.filename}</AttachmentTitle>
+              <AttachmentTitle className={cn(dense && ROW_TITLE)}>{file.filename}</AttachmentTitle>
+              {!dense && <AttachmentDescription>{t`Uploading…`}</AttachmentDescription>}
             </AttachmentContent>
-            <AttachmentDescription className={ROW_META}>{t`Uploading…`}</AttachmentDescription>
+            {dense && (
+              <AttachmentDescription className={ROW_META}>{t`Uploading…`}</AttachmentDescription>
+            )}
           </Attachment>
         </li>
       ))}
@@ -215,9 +222,9 @@ function AttachmentListItems<F extends AttachmentFile>({
           <li key={file.id} className="m-0 min-w-0 list-none p-0">
             <Attachment
               orientation="horizontal"
-              className={ROW}
+              className={dense ? ROW : "w-full"}
               state={failed ? "error" : selected ? "selected" : "done"}
-              size="xs"
+              size={dense ? "xs" : "sm"}
               onContextMenu={(event) => {
                 event.preventDefault();
                 if (isMacCtrlClick(event)) onToggleSelect(file);
@@ -239,18 +246,18 @@ function AttachmentListItems<F extends AttachmentFile>({
               <AttachmentMedia
                 className={cn(
                   file.kind !== "audio" && FILE_TYPE_MEDIA,
-                  !failed && (selected || playing) && INVERTED_MEDIA,
+                  (selected || playing) && INVERTED_MEDIA,
                 )}
               >
                 {match({ failed, selected, playing, kind: file.kind })
-                  .with({ failed: true }, () => <FileWarning />)
                   .with({ selected: true }, () => <Check />)
+                  .with({ failed: true }, () => <FileWarning />)
                   .with({ playing: true }, () => <AudioLines />)
-                  .with({ kind: "audio" }, () => <Play className="size-3 fill-current" />)
+                  .with({ kind: "audio" }, () => <Music />)
                   .otherwise(() => fileTypeLabel(file.filename))}
               </AttachmentMedia>
               <AttachmentContent>
-                <AttachmentTitle className={ROW_TITLE}>
+                <AttachmentTitle className={cn("flex items-center gap-1.5", dense && ROW_TITLE)}>
                   <span className="truncate">{file.filename}</span>
                   {file.role && (
                     <Badge variant="secondary" className="shrink-0">
@@ -259,11 +266,18 @@ function AttachmentListItems<F extends AttachmentFile>({
                     </Badge>
                   )}
                 </AttachmentTitle>
+                {!dense && (
+                  <AttachmentDescription>
+                    {failed ? t`Couldn't load this file` : formatFileMeta(file)}
+                  </AttachmentDescription>
+                )}
               </AttachmentContent>
-              <AttachmentDescription className={cn(ROW_META, FADE_OUT_FOR_ACTIONS)}>
-                {failed ? t`Couldn't load this file` : formatFileMeta(file)}
-              </AttachmentDescription>
-              <AttachmentActions className={ROW_ACTIONS}>
+              {dense && (
+                <AttachmentDescription className={cn(ROW_META, FADE_OUT_FOR_ACTIONS)}>
+                  {failed ? t`Couldn't load this file` : formatFileMeta(file)}
+                </AttachmentDescription>
+              )}
+              <AttachmentActions className={cn(dense && ROW_ACTIONS)}>
                 <DropdownMenu
                   open={contextMenuId === file.id}
                   onOpenChange={(open) => setContextMenuId(open ? file.id : null)}
@@ -468,9 +482,11 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                     />
                   ))}
               </AttachmentMedia>
-              {selected && !failed && (
-                <span className="pointer-events-none absolute start-1 top-1 z-20 grid size-4.5 place-items-center rounded-full bg-primary text-primary-foreground">
-                  <Check className="size-3" />
+              {selected && (
+                <span className="pointer-events-none absolute inset-0 z-20 rounded-md bg-primary/30 p-1.5 ring-3 ring-primary ring-inset">
+                  <span className="grid size-5 place-items-center rounded-full bg-primary text-primary-foreground">
+                    <Check className="size-3.5" />
+                  </span>
                 </span>
               )}
               {!failed && file.kind === "video" && (
@@ -695,12 +711,7 @@ export function AttachmentList<F extends AttachmentFile>({
           </div>
         </div>
         <TabsContent value="audio">
-          <AttachmentListItems
-            files={audioFiles}
-            pendingFiles={audioPending}
-            gridClassName={AUDIO_GRID}
-            {...sharedProps}
-          />
+          <AttachmentListItems files={audioFiles} pendingFiles={audioPending} {...sharedProps} />
         </TabsContent>
         <TabsContent value="gallery">
           <AttachmentGalleryGrid
@@ -722,7 +733,7 @@ export function AttachmentList<F extends AttachmentFile>({
           <AttachmentListItems
             files={miscFiles}
             pendingFiles={miscPending}
-            gridClassName={MISC_GRID}
+            dense
             {...sharedProps}
           />
         </TabsContent>
