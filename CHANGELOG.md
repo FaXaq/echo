@@ -1,3 +1,9 @@
+## [0.26.0](https://github.com/FaXaq/echo/compare/v0.25.0...v0.26.0) (2026-11-08)
+
+### ✨ Features
+
+* polish & improvements ([#72](https://github.com/FaXaq/echo/issues/72)) ([cba79fa](https://github.com/FaXaq/echo/commit/cba79faa1e84d05542cb8a43f740fc8765c1e268))
+
 ## [0.25.0](https://github.com/FaXaq/echo/compare/v0.24.0...v0.25.0) (2026-11-07)
 
 ### ✨ Features
