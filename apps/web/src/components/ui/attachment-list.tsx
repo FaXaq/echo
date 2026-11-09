@@ -6,6 +6,7 @@ import {
   DownloadIcon,
   Info,
   FileWarning,
+  ImageOff,
   ListChecks,
   MoreVertical,
   Paperclip,
@@ -43,7 +44,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PreviewImage } from "@/components/ui/preview-image";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -64,8 +64,11 @@ export interface AttachmentFile {
   mimeType: string;
   sizeBytes: number;
   durationSeconds?: number | null;
+  width?: number | null;
+  height?: number | null;
   downloadUrl: string;
   previewUrl?: string | null;
+  thumbnailUrl?: string | null;
   role?: Role | null;
   version?: number | null;
 }
@@ -82,8 +85,9 @@ const ROW_TITLE = "text-[13px]";
 const ROW_META = "mt-0 max-w-none shrink-0 tabular-nums";
 const INVERTED_MEDIA = "bg-primary text-primary-foreground";
 const FILE_TYPE_MEDIA = "font-mono text-[9px] font-semibold";
+const TILE_MEDIA = "aspect-auto h-full rounded-md *:[img]:aspect-auto *:[img]:h-full";
 const TILE =
-  "w-full gap-0 overflow-hidden rounded-md border-0 has-data-[slot=attachment-content]:w-full has-data-[slot=attachment-content]:p-0 has-data-[slot=attachment-media]:p-0";
+  "size-full gap-0 overflow-hidden rounded-md border-0 has-data-[slot=attachment-content]:w-full has-data-[slot=attachment-content]:p-0 has-data-[slot=attachment-media]:p-0";
 const TILE_CAPTION =
   "pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-primary py-0.5 text-xs text-primary-foreground opacity-0 transition-opacity group-hover/attachment:opacity-100 group-data-[state=error]/attachment:opacity-100 group-data-[state=uploading]/attachment:opacity-100 group-data-[orientation=vertical]/attachment:px-1.5";
 const TILE_CHIP =
@@ -377,11 +381,25 @@ function AttachmentListItems<F extends AttachmentFile>({
   );
 }
 
+function gallerySpan({ width, height }: Pick<AttachmentFile, "width" | "height">) {
+  if (!width || !height) return { columns: 1, rows: 1 };
+  return match(width / height)
+    .when(
+      (ratio) => ratio >= 1.4,
+      () => ({ columns: 2, rows: 1 }),
+    )
+    .when(
+      (ratio) => ratio <= 0.75,
+      () => ({ columns: 1, rows: 2 }),
+    )
+    .otherwise(() => ({ columns: 1, rows: 1 }));
+}
+
 function AttachmentGalleryGrid<F extends AttachmentFile>({
   files,
   pendingFiles,
-  failedIds,
-  onMediaError,
+  failedThumbnailUrls,
+  onThumbnailError,
   selectedIds,
   onToggleSelect,
   onOpen,
@@ -393,8 +411,8 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
 }: {
   files: F[];
   pendingFiles: PendingAttachment[];
-  failedIds: Set<string>;
-  onMediaError: (id: string) => void;
+  failedThumbnailUrls: Set<string>;
+  onThumbnailError: (url: string) => void;
   selectedIds: Set<string>;
   onToggleSelect: (file: F) => void;
   onOpen: (id: string) => void;
@@ -418,11 +436,11 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   }
 
   return (
-    <ul className="m-0 grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-1 p-0">
+    <ul className="m-0 grid grid-flow-row-dense auto-rows-[6.5rem] grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-1 p-0">
       {pendingFiles.map((file) => (
         <li key={file.key} className="m-0 min-w-0 list-none p-0">
           <Attachment orientation="vertical" className={TILE} state="uploading">
-            <AttachmentMedia className="rounded-md">
+            <AttachmentMedia className={TILE_MEDIA}>
               <Spinner />
             </AttachmentMedia>
             <AttachmentContent className={TILE_CAPTION}>
@@ -432,14 +450,22 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
         </li>
       ))}
       {files.map((file) => {
-        const failed = failedIds.has(file.id);
+        const thumbnailUrl =
+          file.thumbnailUrl && !failedThumbnailUrls.has(file.thumbnailUrl)
+            ? file.thumbnailUrl
+            : null;
         const selected = selectedIds.has(file.id);
+        const span = gallerySpan(file);
         return (
-          <li key={file.id} className="m-0 min-w-0 list-none p-0">
+          <li
+            key={file.id}
+            className="m-0 min-w-0 list-none p-0"
+            style={{ gridColumn: `span ${span.columns}`, gridRow: `span ${span.rows}` }}
+          >
             <Attachment
               orientation="vertical"
               className={TILE}
-              state={failed ? "error" : selected ? "selected" : "done"}
+              state={selected ? "selected" : "done"}
               size="default"
               onContextMenu={(event) => {
                 event.preventDefault();
@@ -458,29 +484,21 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                   onOpen(file.id);
                 }}
               />
-              <AttachmentMedia variant={failed ? "icon" : "image"} className="rounded-md">
-                {match({ failed, kind: file.kind })
-                  .with({ failed: true }, () => <FileWarning />)
-                  .with({ kind: "video" }, () => (
-                    <video
-                      src={file.downloadUrl}
-                      muted
-                      playsInline
-                      preload="metadata"
-                      onError={() => onMediaError(file.id)}
-                      className="aspect-square h-full w-full object-cover m-0"
-                    />
-                  ))
-                  .otherwise(() => (
-                    <PreviewImage
-                      src={file.previewUrl ?? file.downloadUrl}
-                      filename={file.filename}
-                      alt={file.filename}
-                      loading="lazy"
-                      onError={() => onMediaError(file.id)}
-                      className="m-0 block"
-                    />
-                  ))}
+              <AttachmentMedia variant={thumbnailUrl ? "image" : "icon"} className={TILE_MEDIA}>
+                {thumbnailUrl ? (
+                  <img
+                    src={thumbnailUrl}
+                    alt={file.filename}
+                    loading="lazy"
+                    onError={() => onThumbnailError(thumbnailUrl)}
+                    className="m-0 block"
+                  />
+                ) : (
+                  <span className="flex flex-col items-center gap-1 px-1 text-center text-[11px] text-muted-foreground">
+                    <ImageOff className="size-5" />
+                    <Trans>No thumbnail</Trans>
+                  </span>
+                )}
               </AttachmentMedia>
               {selected && (
                 <span className="pointer-events-none absolute inset-0 z-20 rounded-md bg-primary/30 p-1.5 ring-3 ring-primary ring-inset">
@@ -489,22 +507,17 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                   </span>
                 </span>
               )}
-              {!failed && file.kind === "video" && (
+              {file.kind === "video" && (
                 <span className={TILE_CHIP}>
                   <Play className="size-2 fill-current" />
                   {file.durationSeconds != null && formatDuration(file.durationSeconds)}
                 </span>
               )}
-              {!failed && file.previewUrl && (
+              {(file.previewUrl || file.mimeType === "image/gif") && (
                 <span className={TILE_CHIP}>{fileTypeLabel(file.filename)}</span>
               )}
               <AttachmentContent className={TILE_CAPTION}>
                 <AttachmentTitle>{file.filename}</AttachmentTitle>
-                {failed && (
-                  <AttachmentDescription className="group-data-[state=error]/attachment:text-primary-foreground">
-                    {t`Couldn't load this file`}
-                  </AttachmentDescription>
-                )}
               </AttachmentContent>
               <AttachmentActions className={TILE_ACTIONS}>
                 <DropdownMenu
@@ -647,12 +660,16 @@ export function AttachmentList<F extends AttachmentFile>({
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
+  const [failedThumbnailUrls, setFailedThumbnailUrls] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<AttachmentTab>(() =>
     firstNonEmptyTab(files, pendingFiles),
   );
 
   const markFailed = (id: string) =>
     setFailedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+  // Keyed by URL so a re-signed thumbnail gets another try after a refetch.
+  const markThumbnailFailed = (url: string) =>
+    setFailedThumbnailUrls((prev) => new Set(prev).add(url));
 
   const onToggleSelect = (file: F) =>
     selectedIds.has(file.id) ? onUnselect?.(file) : onSelect?.(file);
@@ -717,8 +734,8 @@ export function AttachmentList<F extends AttachmentFile>({
           <AttachmentGalleryGrid
             files={galleryFiles}
             pendingFiles={galleryPending}
-            failedIds={failedIds}
-            onMediaError={markFailed}
+            failedThumbnailUrls={failedThumbnailUrls}
+            onThumbnailError={markThumbnailFailed}
             selectedIds={selectedIds}
             onToggleSelect={onToggleSelect}
             onOpen={openGalleryPreview}

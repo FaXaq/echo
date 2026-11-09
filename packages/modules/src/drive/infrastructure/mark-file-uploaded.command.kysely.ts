@@ -9,6 +9,7 @@ export const markFileUploadedCommandFactory: MarkFileUploadedCommandPortFactory 
         .updateTable("file")
         .set({
           status: "uploaded",
+          has_thumbnail: input.hasThumbnail,
           updated_at: new Date(),
           ...(input.sizeBytes === null ? {} : { size_bytes: input.sizeBytes }),
         })

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ForbiddenError, ConflictError, NotFoundError, QuotaExceededError } from "@echo/errors";
 import { planCatalog } from "@echo/modules/plan/domain";
 import { createOrganizationScope, type OrganizationScope } from "@echo/modules/shared/domain";
+import { MAX_PREVIEW_BYTES } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import { createUpload } from "./create-upload.js";
 import {
@@ -328,6 +329,91 @@ describe("createUpload", () => {
       const result = await createUpload(deps(), { ...baseInput, previewSizeBytes: 512 });
 
       expect(result.previewUploadUrl).toBeNull();
+    });
+
+    const raw = { ...baseInput, mimeType: "image/x-sony-arw", filename: "photo.arw" };
+
+    it("leaves the preview out of the storage quota check", async () => {
+      const result = await createUpload(
+        {
+          ...deps(),
+          ...makeFakeQuotaPorts({
+            getOrganizationStorageUsage: async () =>
+              planCatalog.free.limits.storageBytes - raw.sizeBytes,
+          }),
+        },
+        { ...raw, previewSizeBytes: 512 },
+      );
+
+      expect(result.previewUploadUrl).toMatch(/photo\.arw\.preview\.jpg$/);
+    });
+
+    it("accepts a preview at the size cap", async () => {
+      const result = await createUpload(deps(), { ...raw, previewSizeBytes: MAX_PREVIEW_BYTES });
+
+      expect(result.previewUploadUrl).toMatch(/photo\.arw\.preview\.jpg$/);
+    });
+
+    it("still uploads the raw file without a preview over the size cap", async () => {
+      const result = await createUpload(deps(), {
+        ...raw,
+        previewSizeBytes: MAX_PREVIEW_BYTES + 1,
+      });
+
+      expect(result.uploadUrl).toContain("https://fake-s3.local/");
+      expect(result.previewUploadUrl).toBeNull();
+    });
+  });
+
+  describe("thumbnails", () => {
+    const deps = (overrides: Parameters<typeof makeFakeQuotaPorts>[0] = {}) => ({
+      db: makeFakeDb(),
+      findFolderByIdQuery: makeFakeFindFolderById(),
+      s3Storage: makeFakeS3Storage(),
+      insertPendingFileCommand: makeFakeInsertPendingFile(),
+      linkFileToSongCommand: makeFakeLinkFileToSong(),
+      songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
+      getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+      ...makeFakePermissionChecks(),
+      ...makeFakeQuotaPorts(overrides),
+    });
+    const image = { ...baseInput, mimeType: "image/png", filename: "photo.png" };
+
+    it("issues a thumbnail upload URL for images and videos", async () => {
+      const photo = await createUpload(deps(), { ...image, thumbnailSizeBytes: 2048 });
+      const video = await createUpload(deps(), {
+        ...baseInput,
+        mimeType: "video/mp4",
+        filename: "clip.mp4",
+        thumbnailSizeBytes: 2048,
+      });
+
+      expect(photo.thumbnailUploadUrl).toMatch(/photo\.png\.thumbnail\.jpg$/);
+      expect(video.thumbnailUploadUrl).toMatch(/clip\.mp4\.thumbnail\.jpg$/);
+    });
+
+    it("issues no thumbnail URL without a thumbnail size", async () => {
+      const result = await createUpload(deps(), image);
+
+      expect(result.thumbnailUploadUrl).toBeNull();
+    });
+
+    it("issues no thumbnail URL for audio", async () => {
+      const result = await createUpload(deps(), { ...baseInput, thumbnailSizeBytes: 2048 });
+
+      expect(result.thumbnailUploadUrl).toBeNull();
+    });
+
+    it("leaves the thumbnail out of the quota check", async () => {
+      const result = await createUpload(
+        deps({
+          getOrganizationStorageUsage: async () =>
+            planCatalog.free.limits.storageBytes - image.sizeBytes,
+        }),
+        { ...image, thumbnailSizeBytes: 2048 },
+      );
+
+      expect(result.thumbnailUploadUrl).not.toBeNull();
     });
   });
 });

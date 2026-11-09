@@ -5,6 +5,7 @@ import type { FileRecord } from "../domain/index.js";
 export type MarkFileUploadedInput = {
   id: string;
   sizeBytes: number | null;
+  hasThumbnail: boolean;
 };
 
 export type MarkFileUploadedCommandPort = (

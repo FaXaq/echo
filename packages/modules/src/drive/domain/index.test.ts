@@ -54,16 +54,26 @@ describe("mimeTypeForFile", () => {
 });
 
 describe("fileObjectKeys", () => {
-  it("includes the extracted preview for camera raw files", () => {
-    expect(fileObjectKeys({ s3Key: "org/1/a/photo.arw", mimeType: "image/x-sony-arw" })).toEqual([
-      "org/1/a/photo.arw",
-      "org/1/a/photo.arw.preview.jpg",
+  it("includes the thumbnail for images and videos", () => {
+    expect(fileObjectKeys({ s3Key: "o/a/p.png", mimeType: "image/png" })).toEqual([
+      "o/a/p.png",
+      "o/a/p.png.thumbnail.jpg",
+    ]);
+    expect(fileObjectKeys({ s3Key: "o/a/v.mp4", mimeType: "video/mp4" })).toEqual([
+      "o/a/v.mp4",
+      "o/a/v.mp4.thumbnail.jpg",
     ]);
   });
 
-  it("only includes the original for other files", () => {
-    expect(fileObjectKeys({ s3Key: "org/1/a/photo.png", mimeType: "image/png" })).toEqual([
-      "org/1/a/photo.png",
+  it("includes preview and thumbnail for camera raw files", () => {
+    expect(fileObjectKeys({ s3Key: "o/a/p.arw", mimeType: "image/x-sony-arw" })).toEqual([
+      "o/a/p.arw",
+      "o/a/p.arw.preview.jpg",
+      "o/a/p.arw.thumbnail.jpg",
     ]);
+  });
+
+  it("only includes the original for audio and documents", () => {
+    expect(fileObjectKeys({ s3Key: "o/a/s.mp3", mimeType: "audio/mpeg" })).toEqual(["o/a/s.mp3"]);
   });
 });

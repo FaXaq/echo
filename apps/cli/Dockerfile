@@ -15,6 +15,7 @@ COPY --from=pruner /app/out/full/ .
 RUN pnpm turbo build --filter=@echo/cli
 
 FROM base AS runner
+RUN apk add --no-cache 'ffmpeg>=8.1'
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 cli
 USER cli
 COPY --from=builder --chown=cli:nodejs /app .

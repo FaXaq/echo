@@ -1,4 +1,10 @@
-import { kindForMimeType, type MediaMetadata } from "@echo/modules/drive/domain";
+import {
+  isHeicImage,
+  isRawImage,
+  kindForMimeType,
+  MAX_PREVIEW_BYTES,
+  type MediaMetadata,
+} from "@echo/modules/drive/domain";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -77,8 +83,6 @@ function findJpegEnd(bytes: Uint8Array, start: number) {
   return null;
 }
 
-const MAX_PREVIEW_BYTES = 3 * 1024 * 1024;
-
 // Largest preview that stays light enough for a gallery grid, else the smallest oversized one.
 function pickRawPreview(jpegs: Uint8Array<ArrayBuffer>[]) {
   const bySize = [...jpegs].sort((a, b) => a.length - b.length);
@@ -102,6 +106,128 @@ export function formatDuration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
   const d = dayjs.duration(seconds * 1000);
   return d.hours() > 0 ? d.format("H:mm:ss") : d.format("m:ss");
+}
+
+const THUMBNAIL_SHORTEST_SIDE = 480;
+const THUMBNAIL_TIMEOUT_MS = 15_000;
+const MAX_CONCURRENT_THUMBNAILS = 2;
+
+export function thumbnailDimensions(width: number, height: number) {
+  const scale = Math.min(1, THUMBNAIL_SHORTEST_SIDE / Math.min(width, height));
+  return { width: Math.round(width * scale), height: Math.round(height * scale) };
+}
+
+function decodeImage(element: HTMLImageElement, url: string, signal: AbortSignal) {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    signal.addEventListener("abort", () => reject(new Error("Thumbnail timed out")));
+    element.addEventListener("load", () =>
+      resolve({ width: element.naturalWidth, height: element.naturalHeight }),
+    );
+    element.addEventListener("error", () => reject(new Error("Image could not be decoded")));
+    element.src = url;
+  });
+}
+
+function decodeVideoFrame(element: HTMLVideoElement, url: string, signal: AbortSignal) {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    const done = () => resolve({ width: element.videoWidth, height: element.videoHeight });
+    signal.addEventListener("abort", () => reject(new Error("Thumbnail timed out")));
+    element.muted = true;
+    element.playsInline = true;
+    element.preload = "auto";
+    element.addEventListener("error", () => reject(new Error("Video could not be decoded")));
+    element.addEventListener("seeked", done);
+    // "seeked" isn't guaranteed at time 0, so short clips draw as soon as a frame is ready.
+    element.addEventListener("loadeddata", () => {
+      if (element.duration > 1) element.currentTime = 1;
+      else done();
+    });
+    element.src = url;
+  });
+}
+
+async function renderThumbnail(source: Blob, isVideo: boolean, signal: AbortSignal) {
+  signal.throwIfAborted();
+  const url = URL.createObjectURL(source);
+  const element = isVideo ? document.createElement("video") : document.createElement("img");
+  try {
+    const { width, height } = await (element instanceof HTMLVideoElement
+      ? decodeVideoFrame(element, url, signal)
+      : decodeImage(element, url, signal));
+    if (!width || !height) return null;
+
+    const canvas = document.createElement("canvas");
+    Object.assign(canvas, thumbnailDimensions(width, height));
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(element, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.8),
+    );
+    return blob && { blob, width, height };
+  } finally {
+    element.removeAttribute("src");
+    if (element instanceof HTMLVideoElement) element.load();
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function thumbnailSource(file: File, mimeType: string, rawPreview: Blob | null) {
+  if (isRawImage(mimeType)) return rawPreview;
+  if (isHeicImage(mimeType)) {
+    const { heicTo } = await import("heic-to");
+    return heicTo({ blob: file, type: "image/jpeg", quality: 0.8 });
+  }
+  return file;
+}
+
+let activeThumbnails = 0;
+const waitingThumbnails: (() => void)[] = [];
+
+// Decoding and drawing full-size files blocks the main thread, so bulk uploads take turns.
+async function withThumbnailSlot<T>(run: () => Promise<T>) {
+  if (activeThumbnails >= MAX_CONCURRENT_THUMBNAILS) {
+    await new Promise<void>((resolve) => waitingThumbnails.push(resolve));
+  } else {
+    activeThumbnails++;
+  }
+  try {
+    return await run();
+  } finally {
+    const next = waitingThumbnails.shift();
+    if (next) next();
+    else activeThumbnails--;
+  }
+}
+
+export async function createThumbnail(file: File, mimeType: string, rawPreview: Blob | null) {
+  const kind = kindForMimeType(mimeType);
+  if (kind !== "image" && kind !== "video") return null;
+
+  return withThumbnailSlot(async () => {
+    const controller = new AbortController();
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      return await Promise.race([
+        thumbnailSource(file, mimeType, rawPreview).then((source) =>
+          source ? renderThumbnail(source, kind === "video", controller.signal) : null,
+        ),
+        new Promise<null>((resolve) => {
+          timeout = setTimeout(() => {
+            controller.abort();
+            resolve(null);
+          }, THUMBNAIL_TIMEOUT_MS);
+        }),
+      ]);
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timeout);
+    }
+  });
 }
 
 const emptyMediaMetadata: MediaMetadata = { durationSeconds: null, width: null, height: null };

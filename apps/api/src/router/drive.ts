@@ -20,6 +20,7 @@ import {
   renameFolder,
   searchDrive,
 } from "@echo/modules/drive/app";
+import { MAX_THUMBNAIL_BYTES } from "@echo/modules/drive/domain";
 import {
   deleteFileByIdCommandFactory,
   deleteFolderCascadeCommandFactory,
@@ -95,6 +96,7 @@ export const makeDriveRouter = () =>
           height: z.number().int().positive().nullish(),
           filename: z.string().min(1),
           previewSizeBytes: z.number().int().positive().optional(),
+          thumbnailSizeBytes: z.number().int().positive().max(MAX_THUMBNAIL_BYTES).optional(),
         }),
       )
       .mutation(({ ctx, input }) =>

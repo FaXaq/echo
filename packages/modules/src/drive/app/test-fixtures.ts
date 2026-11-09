@@ -102,6 +102,9 @@ export function makeFakeInsertPendingFile(
       mimeType: input.mimeType,
       sizeBytes: input.sizeBytes,
       durationSeconds: input.durationSeconds,
+      width: null,
+      height: null,
+      hasThumbnail: false,
       filename: input.originalFilename,
       originalFilename: input.originalFilename,
       s3Key: input.s3Key,
@@ -142,6 +145,9 @@ export function makeFakeFileRecord(overrides: Partial<FileRecord> = {}): FileRec
     mimeType: "audio/mpeg",
     sizeBytes: 1024,
     durationSeconds: null,
+    width: null,
+    height: null,
+    hasThumbnail: false,
     filename: "demo.mp3",
     originalFilename: "demo.mp3",
     s3Key: "org/org-1/file-1/demo.mp3",
@@ -165,10 +171,10 @@ export function makeFakeHeadObjectS3(result: {
 }
 
 export function makeFakeMarkFileUploaded(
-  onCall?: (id: string, sizeBytes: number | null) => void,
+  onCall?: (id: string, sizeBytes: number | null, hasThumbnail: boolean) => void,
 ): MarkFileUploadedCommandPort {
   return async (_db, _scope, input) => {
-    onCall?.(input.id, input.sizeBytes);
+    onCall?.(input.id, input.sizeBytes, input.hasThumbnail);
     return makeFakeFileRecord({
       id: input.id,
       status: "uploaded",

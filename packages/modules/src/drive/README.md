@@ -25,11 +25,11 @@ flowchart TD
     subgraph API ["API: createUpload"]
         E --> F{"kindForMimeType(mime)"}
         F -- null --> X[ConflictError: Unsupported file type]
-        F -- image --> G["Permission + file size + storage quota<br/>(size + preview size)"]
+        F -- image --> G["Permission + file size + storage quota<br/>(original's size only)"]
         G --> H["Insert pending file row<br/>s3Key = org/&lt;org&gt;/&lt;id&gt;/&lt;filename&gt;"]
         H --> I["Signed upload URL for s3Key"]
         I --> J{"RAW and previewSizeBytes?"}
-        J -- yes --> K["Signed upload URL for<br/>s3Key.preview.jpg (image/jpeg)"]
+        J -- "yes, up to 3 MB" --> K["Signed upload URL for<br/>s3Key.preview.jpg (image/jpeg)"]
         J -- no --> L
         K --> L["Return fileId, uploadUrl, previewUploadUrl"]
     end
@@ -43,9 +43,21 @@ flowchart TD
 
 - Browsers often report an empty or vendor-specific type for RAW files, so `mimeTypeForFile` falls back to the file extension.
 - RAW extraction runs in the browser (`apps/web/src/lib/file.ts`) because the file is already in memory there. The preview upload is best effort: if it fails, the RAW file still uploads and its tile shows the failed-load icon.
-- The preview's size counts toward the quota check, but not toward stored usage, which comes from the original's size in S3.
+- Previews are capped at 3 MB and don't count toward quota or stored usage, which comes from the original's size in S3. Over the cap, the RAW file uploads without a preview.
+
+### Thumbnails
+
+Every image and video can also have a JPEG thumbnail at `<s3Key>.thumbnail.jpg`, with its shortest side at 480px. The grid only ever loads this file.
+
+- `createThumbnail` (`apps/web/src/lib/file.ts`) generates it in the browser before `createUpload`: a resized image, a GIF's first frame, or a video frame at 1s. RAW files use the extracted preview, and HEIC goes through `heic-to`.
+- If generation fails or takes over 15s, the upload continues without one. Thumbnails are capped at 1 MB and don't count toward quota or stored usage.
+- `confirmUpload` checks S3 for the thumbnail and records the result in `file.has_thumbnail`. Any error from that check counts as no thumbnail.
+
+For files without one, run `drive backfill-thumbnails` in the CLI. It uses sharp for images and ffmpeg for videos and HEIC, logs anything it skips, and is safe to re-run.
 
 ## Display (gallery grid and carousel)
+
+The grid renders `thumbnailUrl` as a lazy `<img>` for images and videos. With no thumbnail, or if it fails to load, the tile shows "No thumbnail" and still opens the carousel. Tile spans come from `file.width` and `file.height`, which the browser records at upload (from `createThumbnail` for images); without them a tile takes one cell. For older files, run `drive backfill-thumbnails` and then `drive backfill-dimensions`; the second records the thumbnail's size, which keeps the original's proportions. The diagram below is the carousel's path.
 
 ```mermaid
 flowchart TD
@@ -74,9 +86,7 @@ flowchart TD
 ```mermaid
 flowchart LR
     A["deleteFile / deleteFolder / deleteOrganizationFiles<br/>deleteEvent / deleteSong"] --> B["fileObjectKeys(file)"]
-    B --> C{"RAW?"}
-    C -- yes --> D["delete s3Key<br/>+ s3Key.preview.jpg"]
-    C -- no --> E["delete s3Key"]
+    B --> C["delete s3Key<br/>+ s3Key.preview.jpg for RAW<br/>+ s3Key.thumbnail.jpg for images and videos"]
 ```
 
-The preview's location is computed from `s3Key` and the mime type, never stored in the database. Any code that deletes S3 objects must go through `fileObjectKeys` so previews aren't left behind.
+The locations of previews and thumbnails are computed from `s3Key` and the mime type. `file.has_thumbnail` only records whether a thumbnail exists, so the grid doesn't request missing objects. Any code that deletes S3 objects must go through `fileObjectKeys` so these files aren't left behind.

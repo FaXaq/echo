@@ -60,12 +60,33 @@ export function isRawImage(mimeType: string) {
   return RAW_IMAGE_MIME_TYPES.includes(mimeType);
 }
 
+export function isHeicImage(mimeType: string) {
+  return mimeType === "image/heic" || mimeType === "image/heif";
+}
+
 export function previewKeyFor(s3Key: string) {
   return `${s3Key}.preview.jpg`;
 }
 
+export const MAX_PREVIEW_BYTES = 3_145_728;
+
+export const MAX_THUMBNAIL_BYTES = 1_048_576;
+
+export function thumbnailKeyFor(s3Key: string) {
+  return `${s3Key}.thumbnail.jpg`;
+}
+
+export function hasThumbnailKind(mimeType: string) {
+  const kind = kindForMimeType(mimeType);
+  return kind === "image" || kind === "video";
+}
+
 export function fileObjectKeys(file: { s3Key: string; mimeType: string }) {
-  return isRawImage(file.mimeType) ? [file.s3Key, previewKeyFor(file.s3Key)] : [file.s3Key];
+  return [
+    file.s3Key,
+    ...(isRawImage(file.mimeType) ? [previewKeyFor(file.s3Key)] : []),
+    ...(hasThumbnailKind(file.mimeType) ? [thumbnailKeyFor(file.s3Key)] : []),
+  ];
 }
 
 export function mimeTypeForFile(file: { name: string; type: string }) {
@@ -92,9 +113,12 @@ export type FileRecord = {
   mimeType: string;
   sizeBytes: number;
   durationSeconds: number | null;
+  width: number | null;
+  height: number | null;
   filename: string;
   originalFilename: string;
   s3Key: string;
+  hasThumbnail: boolean;
   status: FileStatus;
   createdAt: Date | null;
   updatedAt: Date | null;

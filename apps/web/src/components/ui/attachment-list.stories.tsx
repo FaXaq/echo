@@ -18,6 +18,10 @@ function makeFile(overrides: Partial<EventFile>): EventFile {
     mimeType: "application/pdf",
     sizeBytes: 86_000,
     durationSeconds: null,
+    width: null,
+    height: null,
+    hasThumbnail: false,
+    thumbnailUrl: null,
     filename: "setlist.pdf",
     originalFilename: "setlist.pdf",
     s3Key: "s3-key",
@@ -117,14 +121,25 @@ export const Tabs: Story = {
 
 export const Gallery: Story = {
   args: {
-    files: Array.from({ length: 7 }, (_, index) =>
+    files: [
+      [480, 320],
+      [320, 480],
+      [480, 270],
+      [400, 500],
+      [400, 400],
+      [270, 480],
+      [480, 320],
+    ].map(([width, height], index) =>
       makeFile({
         id: `image-${index}`,
         kind: "image",
         mimeType: "image/png",
         filename: `photo-${index + 1}.png`,
         originalFilename: `photo-${index + 1}.png`,
-        downloadUrl: `https://picsum.photos/seed/${index}/300/300`,
+        downloadUrl: `https://picsum.photos/seed/${index}/${width}/${height}`,
+        thumbnailUrl: `https://picsum.photos/seed/${index}/${width}/${height}`,
+        width,
+        height,
         sizeBytes: 240_000,
       }),
     ),
@@ -180,6 +195,7 @@ function WithSelectionDemo() {
       filename: "cover.png",
       originalFilename: "cover.png",
       downloadUrl: "https://picsum.photos/seed/1/300/300",
+      thumbnailUrl: "https://picsum.photos/seed/1/300/300",
       sizeBytes: 240_000,
     }),
   ];

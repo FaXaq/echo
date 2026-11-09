@@ -148,12 +148,14 @@ describe("AttachmentList", () => {
             kind: "image",
             filename: "cover.png",
             downloadUrl: "https://example.com/cover.png",
+            thumbnailUrl: "https://example.com/cover.png.thumbnail.jpg",
           }),
           makeFile({
             id: "video-1",
             kind: "video",
             filename: "rehearsal.mp4",
             downloadUrl: "https://example.com/rehearsal.mp4",
+            thumbnailUrl: "https://example.com/rehearsal.mp4.thumbnail.jpg",
           }),
         ]}
       />,
@@ -161,13 +163,86 @@ describe("AttachmentList", () => {
 
     expect(await screen.findByRole("img", { name: "cover.png" })).toHaveAttribute(
       "src",
-      "https://example.com/cover.png",
+      "https://example.com/cover.png.thumbnail.jpg",
     );
-    const video = document.querySelector("video");
-    expect(video).toHaveAttribute("src", "https://example.com/rehearsal.mp4");
+    const videoTile = screen.getByRole("img", { name: "rehearsal.mp4" });
+    expect(videoTile).toHaveAttribute("src", "https://example.com/rehearsal.mp4.thumbnail.jpg");
+    expect(videoTile).toHaveAttribute("loading", "lazy");
+    expect(document.querySelector("video")).toBeNull();
 
     await user.click(screen.getByRole("button", { name: "Open cover.png" }));
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
+  });
+
+  it.each([
+    { name: "landscape", width: 480, height: 320, column: "span 2", row: "span 1" },
+    { name: "portrait", width: 320, height: 480, column: "span 1", row: "span 2" },
+    { name: "near-square", width: 400, height: 500, column: "span 1", row: "span 1" },
+    { name: "unmeasured", width: null, height: null, column: "span 1", row: "span 1" },
+  ])("sizes a $name tile from its dimensions", async ({ name, width, height, column, row }) => {
+    render(
+      <AttachmentList
+        files={[
+          makeFile({
+            id: name,
+            kind: "image",
+            filename: name,
+            thumbnailUrl: `https://example.com/${name}.jpg`,
+            width,
+            height,
+          }),
+        ]}
+      />,
+    );
+
+    const tile = (await screen.findByRole("img", { name })).closest("li");
+    expect(tile?.style.gridColumn).toBe(column);
+    expect(tile?.style.gridRow).toBe(row);
+  });
+
+  it("shows no thumbnail without requesting the original", async () => {
+    render(
+      <AttachmentList
+        files={[
+          makeFile({
+            id: "image-1",
+            kind: "image",
+            filename: "cover.png",
+            downloadUrl: "https://example.com/cover.png",
+            thumbnailUrl: null,
+          }),
+        ]}
+      />,
+    );
+
+    expect(await screen.findByText("No thumbnail")).toBeInTheDocument();
+    expect(document.querySelector("img")).toBeNull();
+  });
+
+  it("keeps the video duration chip and adds a GIF chip without a thumbnail", async () => {
+    render(
+      <AttachmentList
+        files={[
+          makeFile({
+            id: "video-1",
+            kind: "video",
+            filename: "rehearsal.mp4",
+            durationSeconds: 32,
+            thumbnailUrl: null,
+          }),
+          makeFile({
+            id: "gif-1",
+            kind: "image",
+            filename: "loop.gif",
+            mimeType: "image/gif",
+            thumbnailUrl: null,
+          }),
+        ]}
+      />,
+    );
+
+    expect(await screen.findByText("0:32")).toBeInTheDocument();
+    expect(screen.getByText("GIF")).toBeInTheDocument();
   });
 
   it("opens the actions menu when right-clicking a gallery tile", async () => {
@@ -329,13 +404,41 @@ describe("AttachmentList", () => {
 });
 
 describe("AttachmentList gallery errors", () => {
-  it("shows a load error on a gallery tile whose image is missing", async () => {
+  it("retries a failed thumbnail when a freshly signed URL arrives", async () => {
+    const file = (thumbnailUrl: string) =>
+      makeFile({ id: "image-1", kind: "image", filename: "gone.png", thumbnailUrl });
+    const { rerender } = render(<AttachmentList files={[file("https://example.com/old.jpg")]} />);
+
+    fireEvent.error(await screen.findByRole("img", { name: "gone.png" }));
+    expect(await screen.findByText("No thumbnail")).toBeInTheDocument();
+
+    rerender(<AttachmentList files={[file("https://example.com/new.jpg")]} />);
+
+    expect(await screen.findByRole("img", { name: "gone.png" })).toHaveAttribute(
+      "src",
+      "https://example.com/new.jpg",
+    );
+  });
+
+  it("shows no thumbnail and still opens the carousel when the thumbnail fails", async () => {
+    const user = userEvent.setup();
     render(
-      <AttachmentList files={[makeFile({ id: "image-1", kind: "image", filename: "gone.png" })]} />,
+      <AttachmentList
+        files={[
+          makeFile({
+            id: "image-1",
+            kind: "image",
+            filename: "gone.png",
+            thumbnailUrl: "https://example.com/gone.png.thumbnail.jpg",
+          }),
+        ]}
+      />,
     );
 
     fireEvent.error(await screen.findByRole("img", { name: "gone.png" }));
 
-    expect(await screen.findByText("Couldn't load this file")).toBeInTheDocument();
+    expect(await screen.findByText("No thumbnail")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Open gone.png" }));
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });
 });
