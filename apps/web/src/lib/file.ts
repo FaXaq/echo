@@ -2,6 +2,7 @@ import {
   isHeicImage,
   isRawImage,
   kindForMimeType,
+  MAX_PREVIEW_BYTES,
   type MediaMetadata,
 } from "@echo/modules/drive/domain";
 import dayjs from "dayjs";
@@ -81,8 +82,6 @@ function findJpegEnd(bytes: Uint8Array, start: number) {
   }
   return null;
 }
-
-const MAX_PREVIEW_BYTES = 3 * 1024 * 1024;
 
 // Largest preview that stays light enough for a gallery grid, else the smallest oversized one.
 function pickRawPreview(jpegs: Uint8Array<ArrayBuffer>[]) {

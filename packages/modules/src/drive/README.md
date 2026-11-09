@@ -29,7 +29,7 @@ flowchart TD
         G --> H["Insert pending file row<br/>s3Key = org/&lt;org&gt;/&lt;id&gt;/&lt;filename&gt;"]
         H --> I["Signed upload URL for s3Key"]
         I --> J{"RAW and previewSizeBytes?"}
-        J -- "yes, up to 25 MB" --> K["Signed upload URL for<br/>s3Key.preview.jpg (image/jpeg)"]
+        J -- "yes, up to 3 MB" --> K["Signed upload URL for<br/>s3Key.preview.jpg (image/jpeg)"]
         J -- no --> L
         K --> L["Return fileId, uploadUrl, previewUploadUrl"]
     end
@@ -43,7 +43,7 @@ flowchart TD
 
 - Browsers often report an empty or vendor-specific type for RAW files, so `mimeTypeForFile` falls back to the file extension.
 - RAW extraction runs in the browser (`apps/web/src/lib/file.ts`) because the file is already in memory there. The preview upload is best effort: if it fails, the RAW file still uploads and its tile shows the failed-load icon.
-- Previews are capped at 25 MB and don't count toward quota or stored usage, which comes from the original's size in S3. Over the cap, the RAW file uploads without a preview.
+- Previews are capped at 3 MB and don't count toward quota or stored usage, which comes from the original's size in S3. Over the cap, the RAW file uploads without a preview.
 
 ### Thumbnails
 
