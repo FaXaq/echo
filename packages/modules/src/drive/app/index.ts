@@ -22,6 +22,8 @@ export { getFolder } from "./get-folder.js";
 export { searchDrive } from "./search-drive.js";
 export { backfillFileDurations } from "./backfill-file-durations.js";
 export type { FetchBytesPort, ParseDurationPort } from "./backfill-file-durations.js";
+export { backfillFileDimensions } from "./backfill-file-dimensions.js";
+export type { ReadImageSizePort } from "./backfill-file-dimensions.js";
 export { backfillFileThumbnails } from "./backfill-file-thumbnails.js";
 export type {
   CaptureVideoFramePort,

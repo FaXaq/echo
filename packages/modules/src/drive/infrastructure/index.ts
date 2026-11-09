@@ -162,6 +162,12 @@ export { findFilesMissingDurationQueryFactory } from "./find-files-missing-durat
 export type { FindFilesMissingThumbnailQueryPort } from "./find-files-missing-thumbnail.query.port.js";
 export { findFilesMissingThumbnailQueryFactory } from "./find-files-missing-thumbnail.query.kysely.js";
 
+export type { FindFilesMissingDimensionsQueryPort } from "./find-files-missing-dimensions.query.port.js";
+export { findFilesMissingDimensionsQueryFactory } from "./find-files-missing-dimensions.query.kysely.js";
+
+export type { UpdateFileDimensionsByIdCommandPort } from "./update-file-dimensions-by-id.command.port.js";
+export { updateFileDimensionsByIdCommandFactory } from "./update-file-dimensions-by-id.command.kysely.js";
+
 export type { MarkFileHasThumbnailCommandPort } from "./mark-file-has-thumbnail.command.port.js";
 export { markFileHasThumbnailCommandFactory } from "./mark-file-has-thumbnail.command.kysely.js";
 

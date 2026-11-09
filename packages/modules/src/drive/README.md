@@ -57,7 +57,7 @@ For files without one, run `drive backfill-thumbnails` in the CLI. It uses sharp
 
 ## Display (gallery grid and carousel)
 
-The grid renders `thumbnailUrl` as a lazy `<img>` for images and videos. With no thumbnail, or if it fails to load, the tile shows "No thumbnail" and still opens the carousel. The diagram below is the carousel's path.
+The grid renders `thumbnailUrl` as a lazy `<img>` for images and videos. With no thumbnail, or if it fails to load, the tile shows "No thumbnail" and still opens the carousel. Tile spans come from `file.width` and `file.height`, which the browser records at upload (from `createThumbnail` for images); without them a tile takes one cell. For older files, run `drive backfill-thumbnails` and then `drive backfill-dimensions`; the second records the thumbnail's size, which keeps the original's proportions. The diagram below is the carousel's path.
 
 ```mermaid
 flowchart TD

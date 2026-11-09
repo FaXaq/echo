@@ -64,6 +64,8 @@ export interface AttachmentFile {
   mimeType: string;
   sizeBytes: number;
   durationSeconds?: number | null;
+  width?: number | null;
+  height?: number | null;
   downloadUrl: string;
   previewUrl?: string | null;
   thumbnailUrl?: string | null;
@@ -83,8 +85,9 @@ const ROW_TITLE = "text-[13px]";
 const ROW_META = "mt-0 max-w-none shrink-0 tabular-nums";
 const INVERTED_MEDIA = "bg-primary text-primary-foreground";
 const FILE_TYPE_MEDIA = "font-mono text-[9px] font-semibold";
+const TILE_MEDIA = "aspect-auto h-full rounded-md *:[img]:aspect-auto *:[img]:h-full";
 const TILE =
-  "w-full gap-0 overflow-hidden rounded-md border-0 has-data-[slot=attachment-content]:w-full has-data-[slot=attachment-content]:p-0 has-data-[slot=attachment-media]:p-0";
+  "size-full gap-0 overflow-hidden rounded-md border-0 has-data-[slot=attachment-content]:w-full has-data-[slot=attachment-content]:p-0 has-data-[slot=attachment-media]:p-0";
 const TILE_CAPTION =
   "pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-primary py-0.5 text-xs text-primary-foreground opacity-0 transition-opacity group-hover/attachment:opacity-100 group-data-[state=error]/attachment:opacity-100 group-data-[state=uploading]/attachment:opacity-100 group-data-[orientation=vertical]/attachment:px-1.5";
 const TILE_CHIP =
@@ -378,6 +381,20 @@ function AttachmentListItems<F extends AttachmentFile>({
   );
 }
 
+function gallerySpan({ width, height }: Pick<AttachmentFile, "width" | "height">) {
+  if (!width || !height) return { columns: 1, rows: 1 };
+  return match(width / height)
+    .when(
+      (ratio) => ratio >= 1.4,
+      () => ({ columns: 2, rows: 1 }),
+    )
+    .when(
+      (ratio) => ratio <= 0.75,
+      () => ({ columns: 1, rows: 2 }),
+    )
+    .otherwise(() => ({ columns: 1, rows: 1 }));
+}
+
 function AttachmentGalleryGrid<F extends AttachmentFile>({
   files,
   pendingFiles,
@@ -419,11 +436,11 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
   }
 
   return (
-    <ul className="m-0 grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-1 p-0">
+    <ul className="m-0 grid grid-flow-row-dense auto-rows-[6.5rem] grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-1 p-0">
       {pendingFiles.map((file) => (
         <li key={file.key} className="m-0 min-w-0 list-none p-0">
           <Attachment orientation="vertical" className={TILE} state="uploading">
-            <AttachmentMedia className="rounded-md">
+            <AttachmentMedia className={TILE_MEDIA}>
               <Spinner />
             </AttachmentMedia>
             <AttachmentContent className={TILE_CAPTION}>
@@ -438,8 +455,13 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
             ? file.thumbnailUrl
             : null;
         const selected = selectedIds.has(file.id);
+        const span = gallerySpan(file);
         return (
-          <li key={file.id} className="m-0 min-w-0 list-none p-0">
+          <li
+            key={file.id}
+            className="m-0 min-w-0 list-none p-0"
+            style={{ gridColumn: `span ${span.columns}`, gridRow: `span ${span.rows}` }}
+          >
             <Attachment
               orientation="vertical"
               className={TILE}
@@ -462,7 +484,7 @@ function AttachmentGalleryGrid<F extends AttachmentFile>({
                   onOpen(file.id);
                 }}
               />
-              <AttachmentMedia variant={thumbnailUrl ? "image" : "icon"} className="rounded-md">
+              <AttachmentMedia variant={thumbnailUrl ? "image" : "icon"} className={TILE_MEDIA}>
                 {thumbnailUrl ? (
                   <img
                     src={thumbnailUrl}

@@ -45,6 +45,8 @@ function makeFile(overrides: Partial<OrganizationFile>): OrganizationFile {
     mimeType: "application/pdf",
     sizeBytes: 86_000,
     durationSeconds: null,
+    width: null,
+    height: null,
     hasThumbnail: false,
     filename: "setlist.pdf",
     originalFilename: "setlist.pdf",

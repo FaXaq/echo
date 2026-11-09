@@ -258,7 +258,8 @@ export function useUploadFileMutation({
       const mimeType = mimeTypeForFile(input.file);
       const preview = isRawImage(mimeType) ? await extractRawPreview(input.file) : null;
       const generated = await createThumbnail(input.file, mimeType, preview);
-      const thumbnail = generated && generated.size <= MAX_THUMBNAIL_BYTES ? generated : null;
+      const thumbnail =
+        generated && generated.blob.size <= MAX_THUMBNAIL_BYTES ? generated.blob : null;
 
       const { fileId, uploadUrl, previewUploadUrl, thumbnailUploadUrl } =
         await apiClient.drive.createUpload.mutate({
@@ -269,6 +270,8 @@ export function useUploadFileMutation({
           mimeType,
           sizeBytes: input.file.size,
           ...metadata,
+          width: metadata.width ?? generated?.width,
+          height: metadata.height ?? generated?.height,
           filename: input.file.name,
           previewSizeBytes: preview?.size,
           thumbnailSizeBytes: thumbnail?.size,

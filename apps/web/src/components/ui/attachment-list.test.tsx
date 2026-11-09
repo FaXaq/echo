@@ -174,6 +174,32 @@ describe("AttachmentList", () => {
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });
 
+  it.each([
+    { name: "landscape", width: 480, height: 320, column: "span 2", row: "span 1" },
+    { name: "portrait", width: 320, height: 480, column: "span 1", row: "span 2" },
+    { name: "near-square", width: 400, height: 500, column: "span 1", row: "span 1" },
+    { name: "unmeasured", width: null, height: null, column: "span 1", row: "span 1" },
+  ])("sizes a $name tile from its dimensions", async ({ name, width, height, column, row }) => {
+    render(
+      <AttachmentList
+        files={[
+          makeFile({
+            id: name,
+            kind: "image",
+            filename: name,
+            thumbnailUrl: `https://example.com/${name}.jpg`,
+            width,
+            height,
+          }),
+        ]}
+      />,
+    );
+
+    const tile = (await screen.findByRole("img", { name })).closest("li");
+    expect(tile?.style.gridColumn).toBe(column);
+    expect(tile?.style.gridRow).toBe(row);
+  });
+
   it("shows no thumbnail without requesting the original", async () => {
     render(
       <AttachmentList

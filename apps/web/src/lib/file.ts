@@ -164,7 +164,10 @@ async function renderThumbnail(source: Blob, isVideo: boolean, signal: AbortSign
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(element, 0, 0, canvas.width, canvas.height);
-    return await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.8));
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.8),
+    );
+    return blob && { blob, width, height };
   } finally {
     element.removeAttribute("src");
     if (element instanceof HTMLVideoElement) element.load();

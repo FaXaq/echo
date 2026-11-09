@@ -44,6 +44,8 @@ export function toFileRecord(row: FileRow): FileRecord {
     mimeType: row.mime_type,
     sizeBytes: row.size_bytes,
     durationSeconds: row.duration_seconds,
+    width: row.width,
+    height: row.height,
     hasThumbnail: row.has_thumbnail,
     filename: row.filename,
     originalFilename: row.original_filename,

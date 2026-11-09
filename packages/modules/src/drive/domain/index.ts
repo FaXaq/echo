@@ -113,6 +113,8 @@ export type FileRecord = {
   mimeType: string;
   sizeBytes: number;
   durationSeconds: number | null;
+  width: number | null;
+  height: number | null;
   filename: string;
   originalFilename: string;
   s3Key: string;

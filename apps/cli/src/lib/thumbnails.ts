@@ -1,9 +1,20 @@
 import { execFile } from "node:child_process";
 import sharp from "sharp";
-import type { CaptureVideoFramePort, PutBytesPort, ResizeImagePort } from "@echo/modules/drive/app";
+import type {
+  CaptureVideoFramePort,
+  PutBytesPort,
+  ReadImageSizePort,
+  ResizeImagePort,
+} from "@echo/modules/drive/app";
 
 const SHORTEST_SIDE = 480;
 const FFMPEG_TIMEOUT_MS = 60_000;
+
+export const readImageSize: ReadImageSizePort = async (bytes) => {
+  const { width, height } = await sharp(bytes).metadata();
+  if (!width || !height) throw new Error("Image size could not be read");
+  return { width, height };
+};
 
 export const resizeImage: ResizeImagePort = (bytes) =>
   sharp(bytes)

@@ -37,6 +37,8 @@ function makeSongFile(overrides: Partial<driveResource.SongFile> = {}): driveRes
     mimeType: "audio/mpeg",
     sizeBytes: 10,
     durationSeconds: null,
+    width: null,
+    height: null,
     hasThumbnail: false,
     thumbnailUrl: null,
     filename: "demo.mp3",
