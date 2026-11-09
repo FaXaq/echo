@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ForbiddenError, ConflictError, NotFoundError, QuotaExceededError } from "@echo/errors";
 import { planCatalog } from "@echo/modules/plan/domain";
 import { createOrganizationScope, type OrganizationScope } from "@echo/modules/shared/domain";
+import { MAX_PREVIEW_BYTES } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import { createUpload } from "./create-upload.js";
 import {
@@ -327,6 +328,39 @@ describe("createUpload", () => {
     it("issues no preview upload url for other files", async () => {
       const result = await createUpload(deps(), { ...baseInput, previewSizeBytes: 512 });
 
+      expect(result.previewUploadUrl).toBeNull();
+    });
+
+    const raw = { ...baseInput, mimeType: "image/x-sony-arw", filename: "photo.arw" };
+
+    it("leaves the preview out of the storage quota check", async () => {
+      const result = await createUpload(
+        {
+          ...deps(),
+          ...makeFakeQuotaPorts({
+            getOrganizationStorageUsage: async () =>
+              planCatalog.free.limits.storageBytes - raw.sizeBytes,
+          }),
+        },
+        { ...raw, previewSizeBytes: 512 },
+      );
+
+      expect(result.previewUploadUrl).toMatch(/photo\.arw\.preview\.jpg$/);
+    });
+
+    it("accepts a preview at the size cap", async () => {
+      const result = await createUpload(deps(), { ...raw, previewSizeBytes: MAX_PREVIEW_BYTES });
+
+      expect(result.previewUploadUrl).toMatch(/photo\.arw\.preview\.jpg$/);
+    });
+
+    it("still uploads the raw file without a preview over the size cap", async () => {
+      const result = await createUpload(deps(), {
+        ...raw,
+        previewSizeBytes: MAX_PREVIEW_BYTES + 1,
+      });
+
+      expect(result.uploadUrl).toContain("https://fake-s3.local/");
       expect(result.previewUploadUrl).toBeNull();
     });
   });

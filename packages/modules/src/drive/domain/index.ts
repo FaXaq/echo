@@ -68,6 +68,8 @@ export function previewKeyFor(s3Key: string) {
   return `${s3Key}.preview.jpg`;
 }
 
+export const MAX_PREVIEW_BYTES = 26_214_400;
+
 export const MAX_THUMBNAIL_BYTES = 1_048_576;
 
 export function thumbnailKeyFor(s3Key: string) {

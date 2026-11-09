@@ -12,6 +12,7 @@ import {
   hasThumbnailKind,
   isRawImage,
   kindForMimeType,
+  MAX_PREVIEW_BYTES,
   previewKeyFor,
   thumbnailKeyFor,
 } from "../domain/index.js";
@@ -89,11 +90,8 @@ export async function createUpload(
     });
   }
 
-  const previewSizeBytes = isRawImage(input.mimeType) ? input.previewSizeBytes : undefined;
-
   const usedBytes = await deps.getOrganizationStorageUsage(deps.db, input.scope);
-  const delta = input.sizeBytes + (previewSizeBytes ?? 0);
-  if (exceedsLimit({ current: usedBytes, delta, limit: limits.storageBytes })) {
+  if (exceedsLimit({ current: usedBytes, delta: input.sizeBytes, limit: limits.storageBytes })) {
     throw quotaExceeded({
       limitName: "storageBytes",
       limit: limits.storageBytes,
@@ -139,8 +137,12 @@ export async function createUpload(
           .url
       : null;
 
-  // ponytail: preview bytes count toward this check but not toward stored usage, they're ~1 MB next to a 25+ MB raw
-  const previewUploadUrl = await signJpegUpload(previewKeyFor(s3Key), previewSizeBytes);
+  const previewUploadUrl = await signJpegUpload(
+    previewKeyFor(s3Key),
+    isRawImage(input.mimeType) && (input.previewSizeBytes ?? 0) <= MAX_PREVIEW_BYTES
+      ? input.previewSizeBytes
+      : undefined,
+  );
   const thumbnailUploadUrl = await signJpegUpload(
     thumbnailKeyFor(s3Key),
     hasThumbnailKind(input.mimeType) ? input.thumbnailSizeBytes : undefined,
