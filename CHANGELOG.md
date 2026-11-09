@@ -1,3 +1,9 @@
+## [0.29.0](https://github.com/FaXaq/echo/compare/v0.28.0...v0.29.0) (2026-11-09)
+
+### ✨ Features
+
+* **drive:** add gallery thumbnails ([#75](https://github.com/FaXaq/echo/issues/75)) ([5b59154](https://github.com/FaXaq/echo/commit/5b591546d970f84a32177394945198314e121502))
+
 ## [0.28.0](https://github.com/FaXaq/echo/compare/v0.27.0...v0.28.0) (2026-11-08)
 
 ### ✨ Features
