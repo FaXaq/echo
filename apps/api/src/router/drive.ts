@@ -16,6 +16,7 @@ import {
   listSongFiles,
   moveFile,
   moveFolder,
+  previewFolderDelete,
   renameFile,
   renameFolder,
   searchDrive,
@@ -44,6 +45,7 @@ import {
   markFileUploadedCommandFactory,
   moveFileToFolderCommandFactory,
   moveFolderCommandFactory,
+  previewFolderDeleteQueryFactory,
   renameFileByIdCommandFactory,
   renameFolderByIdCommandFactory,
   searchDriveQueryFactory,
@@ -58,13 +60,18 @@ import {
 } from "@echo/modules/plan/infrastructure";
 import { organizationProcedure, router } from "../trpc";
 
-const driveSortFieldSchema = z.enum(["name", "event", "updatedAt", "sizeBytes"]);
+const driveSortFieldSchema = z.enum(["name", "updatedAt", "sizeBytes"]);
 const driveSortOrderSchema = z.enum(["asc", "desc"]);
 const placeSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("root") }),
   z.object({ kind: z.literal("folder"), id: z.string() }),
   z.object({ kind: z.literal("event"), id: z.string() }),
   z.object({ kind: z.literal("song"), id: z.string() }),
+]);
+const driveLocationSchema = z.discriminatedUnion("kind", [
+  ...placeSchema.options,
+  z.object({ kind: z.literal("events") }),
+  z.object({ kind: z.literal("songs") }),
 ]);
 
 const insertPendingFileCommand = insertPendingFileCommandFactory();
@@ -91,6 +98,7 @@ const deleteOccurrenceCommand = deleteOccurrenceCommandFactory();
 const listFileOccurrencesQuery = listFileOccurrencesQueryFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
 const searchDriveQuery = searchDriveQueryFactory();
+const previewFolderDeleteQuery = previewFolderDeleteQueryFactory();
 const resolvePlanQuery = resolvePlanQueryFactory();
 const getOrganizationStorageUsageQuery = getOrganizationStorageUsageQueryFactory();
 
@@ -419,10 +427,24 @@ export const makeDriveRouter = () =>
         }
       }),
 
+    previewFolderDelete: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .query(({ ctx, input }) =>
+        previewFolderDelete(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
+            previewFolderDeleteQuery,
+          },
+          { id: input.id, scope: ctx.organizationScope },
+        ),
+      ),
+
     listFolderContents: organizationProcedure
       .input(
         z.object({
-          folderId: z.string().nullable(),
+          location: driveLocationSchema,
           sort: z
             .object({ field: driveSortFieldSchema, order: driveSortOrderSchema })
             .default({ field: "name", order: "asc" }),
@@ -436,7 +458,7 @@ export const makeDriveRouter = () =>
             findFolderByIdQuery,
             listFolderContentsQuery,
           },
-          { scope: ctx.organizationScope, folderId: input.folderId, sort: input.sort },
+          { scope: ctx.organizationScope, location: input.location, sort: input.sort },
         ),
       ),
 

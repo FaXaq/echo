@@ -111,6 +111,11 @@ export type DriveLocation = Place | { kind: "events" } | { kind: "songs" };
 export type PlaceLabel = { place: Place; path: string[] };
 export type SystemFolderEntry = { location: DriveLocation; name: string };
 
+export const ROOT_SYSTEM_FOLDERS: SystemFolderEntry[] = [
+  { location: { kind: "events" }, name: "Events" },
+  { location: { kind: "songs" }, name: "Songs" },
+];
+
 export type FileRecord = {
   id: string;
   organizationId: string;

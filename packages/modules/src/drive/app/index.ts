@@ -20,6 +20,7 @@ export type { DeleteFolderFailure } from "./delete-folder.js";
 export { purgeOrphanedFiles } from "./purge-orphaned-files.js";
 export type { PurgeFailure } from "./purge-orphaned-files.js";
 export { listFolderContents } from "./list-folder-contents.js";
+export { previewFolderDelete } from "./preview-folder-delete.js";
 export { getFolder } from "./get-folder.js";
 export { searchDrive } from "./search-drive.js";
 export { backfillFileDurations } from "./backfill-file-durations.js";

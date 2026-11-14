@@ -182,3 +182,10 @@ export type {
   ListFileOccurrencesQueryPort,
 } from "./list-file-occurrences.query.port.js";
 export { listFileOccurrencesQueryFactory } from "./list-file-occurrences.query.kysely.js";
+
+export type {
+  PreviewFolderDeleteQueryInput,
+  PreviewFolderDeleteResult,
+  PreviewFolderDeleteQueryPort,
+} from "./preview-folder-delete.query.port.js";
+export { previewFolderDeleteQueryFactory } from "./preview-folder-delete.query.kysely.js";

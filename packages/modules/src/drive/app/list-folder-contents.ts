@@ -2,7 +2,13 @@ import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { FileRecord, FolderRecord } from "../domain/index.js";
+import {
+  ROOT_SYSTEM_FOLDERS,
+  type DriveLocation,
+  type FileRecord,
+  type FolderRecord,
+  type SystemFolderEntry,
+} from "../domain/index.js";
 import type {
   DriveSortField,
   DriveSortOrder,
@@ -19,25 +25,34 @@ export async function listFolderContents(
   },
   input: {
     scope: OrganizationScope;
-    folderId: string | null;
+    location: DriveLocation;
     sort: { field: DriveSortField; order: DriveSortOrder };
   },
-): Promise<{ folders: FolderRecord[]; files: FileRecord[] }> {
+): Promise<{
+  folders: FolderRecord[];
+  systemFolders: SystemFolderEntry[];
+  files: FileRecord[];
+}> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { drive: ["read"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "read" });
 
-  if (input.folderId !== null) {
-    const folder = await deps.findFolderByIdQuery(deps.db, input.scope, { id: input.folderId });
+  if (input.location.kind === "folder") {
+    const folder = await deps.findFolderByIdQuery(deps.db, input.scope, { id: input.location.id });
     if (!folder) throw notFound("Folder");
   }
 
-  const { folders, files } = await deps.listFolderContentsQuery(deps.db, input.scope, {
-    folderId: input.folderId,
-    sort: input.sort,
-  });
+  const { folders, systemFolders, files } = await deps.listFolderContentsQuery(
+    deps.db,
+    input.scope,
+    { location: input.location, sort: input.sort },
+  );
 
-  return { folders, files: files.filter((file) => file.status === "uploaded") };
+  return {
+    folders,
+    systemFolders: input.location.kind === "root" ? ROOT_SYSTEM_FOLDERS : systemFolders,
+    files: files.filter((file) => file.status === "uploaded"),
+  };
 }
