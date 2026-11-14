@@ -4,9 +4,15 @@ export const deleteCalendarEventCommandFactory: DeleteCalendarEventCommandPortFa
   () => async (db, scope, input) => {
     return db.transaction().execute(async (trx) => {
       const links = await trx
-        .selectFrom("event_file")
-        .select("file_id")
+        .deleteFrom("event_file")
         .where("event_id", "=", input.id)
+        .where("event_id", "in", (eb) =>
+          eb
+            .selectFrom("calendar_event")
+            .select("calendar_event.id")
+            .where("calendar_event.organization_id", "=", scope.organizationId),
+        )
+        .returning("file_id")
         .execute();
 
       const result = await trx

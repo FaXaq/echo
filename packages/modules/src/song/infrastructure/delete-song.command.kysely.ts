@@ -4,9 +4,15 @@ export const deleteSongCommandFactory: DeleteSongCommandPortFactory =
   () => async (db, scope, input) => {
     return db.transaction().execute(async (trx) => {
       const links = await trx
-        .selectFrom("song_file")
-        .select("file_id")
+        .deleteFrom("song_file")
         .where("song_id", "=", input.id)
+        .where("song_id", "in", (eb) =>
+          eb
+            .selectFrom("song")
+            .select("song.id")
+            .where("song.organization_id", "=", scope.organizationId),
+        )
+        .returning("file_id")
         .execute();
 
       const result = await trx

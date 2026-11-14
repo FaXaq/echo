@@ -8,10 +8,9 @@ export const deleteFolderCascadeCommandFactory: DeleteFolderCascadeCommandPortFa
       if (folderIds.length === 0) return null;
 
       const placements = await trx
-        .selectFrom("folder_file")
-        .select("file_id")
-        .distinct()
+        .deleteFrom("folder_file")
         .where("folder_id", "in", folderIds)
+        .returning("file_id")
         .execute();
 
       await trx
@@ -20,6 +19,6 @@ export const deleteFolderCascadeCommandFactory: DeleteFolderCascadeCommandPortFa
         .where("organization_id", "=", scope.organizationId)
         .execute();
 
-      return { fileIds: placements.map((placement) => placement.file_id) };
+      return { fileIds: [...new Set(placements.map((placement) => placement.file_id))] };
     });
   };
