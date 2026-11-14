@@ -1,10 +1,10 @@
 ## Working with this design system
 
-This is Echo's shadcn/ui-based component kit (Tailwind CSS v4 + Radix primitives), synced directly from `apps/web/src/components/ui/*.tsx`. It ships no separate "theme provider" component — styling is driven entirely by CSS custom properties already baked into `styles.css`.
+This is Echo's shadcn/ui-based component kit (Tailwind CSS v4 + Radix primitives), synced directly from `apps/web/src/components/ui/*.tsx`. It ships no separate "theme provider" component — styling is driven entirely by CSS custom properties already baked into `components/bundle.css`.
 
 ### Setup
 
-No wrapping component is required. Just load `styles.css` (it `@import`s the compiled Tailwind output, all component CSS, and the self-hosted Inter Variable font) before rendering. Every component reads its colors from CSS variables already defined at `:root`, so components render correctly with zero extra setup:
+No wrapping component is required. Load `components/bundle.css` (compiled Tailwind output, all component CSS) and `tokens.css` (tokens + `@font-face` for Nunito Sans, Instrument Sans, Inter and JetBrains Mono, served from `fonts/`), then `components/bundle.js` (exposes `window.EchoUI`). Every component reads its colors from CSS variables already defined at `:root`, so components render correctly with zero extra setup:
 
 ```jsx
 import { Button } from "EchoUI";
@@ -36,9 +36,12 @@ Radius uses the same pattern: `rounded-md` / `rounded-lg` (backed by `--radius`)
 
 ### Where the truth lives
 
-- `styles.css` — the full compiled stylesheet (Tailwind utilities + tokens + fonts); read it before inventing a new class name to confirm it exists.
-- Each component's `<Name>.d.ts` — exact prop signature.
-- Each component's `<Name>.prompt.md` — usage examples pulled from this repo's own Storybook stories.
+All paths are under `project/`:
+
+- `components/bundle.css` — the full compiled stylesheet (Tailwind utilities); read it before inventing a new class name to confirm it exists.
+- `tokens.json` / `tokens.css` — every CSS custom property (colors, radius, fonts).
+- `api/components/<Name>.md` — short card per component (global name, `x-import` usage).
+- `components/<Name>/README.md` — props and usage examples pulled from this repo's own Storybook stories; `components/<Name>/<Name>.d.ts` — exact prop signature.
 
 ### Example composition
 
