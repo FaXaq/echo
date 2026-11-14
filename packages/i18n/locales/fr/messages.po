@@ -96,7 +96,7 @@ msgid "{0} of {count} assigned — failed: {1}"
 msgstr "{0} sur {count} associés — échecs : {1}"
 
 #. placeholder {0}: playlist.songCount
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:432
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:442
 msgid "{0} songs"
 msgstr "{0} titres"
 
@@ -292,11 +292,11 @@ msgstr "Toute la journée"
 msgid "All files uploaded."
 msgstr "Tous les fichiers ont été envoyés."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:448
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:458
 msgid "All playlists"
 msgstr "Toutes les playlists"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:398
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:408
 msgid "All songs"
 msgstr "Toutes les chansons"
 
@@ -394,7 +394,7 @@ msgstr "Au moins une lettre majuscule"
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:250
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:256
 msgid "Audio and documents you upload to the drive show up here."
 msgstr "Les audios et documents ajoutés au drive apparaissent ici."
 
@@ -452,7 +452,7 @@ msgstr "Le BPM doit être un nombre entier"
 msgid "Build a setlist for your next gig or rehearsal."
 msgstr "Préparez une setlist pour votre prochain concert ou votre prochaine répétition."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:416
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:426
 msgid "Build a setlist from the playlists page."
 msgstr "Créez une setlist depuis la page des playlists."
 
@@ -466,7 +466,7 @@ msgid "By exact amounts"
 msgstr "Par montants exacts"
 
 #: apps/web/src/components/features/event-calendar/event-upload-context.tsx:30
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:138
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:144
 #: apps/web/src/hooks/use-navigation.ts:62
 #: apps/web/src/lib/dynamic-messages.ts:49
 msgid "Calendar"
@@ -716,7 +716,7 @@ msgstr "Impossible de charger le résumé"
 msgid "Couldn't load this file"
 msgstr "Impossible de charger ce fichier"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:41
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:44
 msgid "Couldn't load this section"
 msgstr "Impossible de charger cette section"
 
@@ -1021,8 +1021,8 @@ msgid "Drag to reorder"
 msgstr "Glisser pour réordonner"
 
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:52
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:284
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:348
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:290
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:358
 #: apps/web/src/hooks/use-navigation.ts:67
 #: apps/web/src/lib/dynamic-messages.ts:56
 msgid "Drive"
@@ -1496,7 +1496,7 @@ msgstr "Tonalité"
 msgid "Language"
 msgstr "Langue"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:198
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:204
 msgid "Last event"
 msgstr "Dernier événement"
 
@@ -1508,7 +1508,7 @@ msgstr "Dernière modification"
 msgid "Latest demo"
 msgstr "Dernière démo"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:281
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:287
 msgid "Latest files"
 msgstr "Derniers fichiers"
 
@@ -1516,7 +1516,7 @@ msgstr "Derniers fichiers"
 msgid "Latest final"
 msgstr "Dernière version finale"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:345
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:355
 msgid "Latest media"
 msgstr "Derniers médias"
 
@@ -1645,7 +1645,7 @@ msgstr "Mois"
 msgid "Move or delete this column's cards first"
 msgstr "Déplacez ou supprimez d'abord les cartes de cette colonne"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:235
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:241
 msgid "My balance"
 msgstr "Mon solde"
 
@@ -1697,7 +1697,7 @@ msgstr "Nouveau mot de passe"
 msgid "New playlist"
 msgstr "Nouvelle playlist"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:445
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:455
 msgid "New playlists"
 msgstr "Nouvelles playlists"
 
@@ -1767,7 +1767,7 @@ msgstr "Aucune dépense pour le moment"
 #~ msgstr "Aucun fichier lié pour le moment."
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:440
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:249
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:255
 #: apps/web/src/components/ui/attachment-list.tsx:192
 #: apps/web/src/components/ui/attachment-list.tsx:432
 msgid "No files yet"
@@ -1799,11 +1799,11 @@ msgstr "Pas de membres pour le moment"
 #~ msgid "No organization"
 #~ msgstr "Aucune organisation"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:167
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:173
 msgid "No past events yet"
 msgstr "Aucun événement passé"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:303
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:309
 msgid "No photos or videos yet"
 msgstr "Aucune photo ni vidéo"
 
@@ -1815,7 +1815,7 @@ msgstr "Aucun lieu trouvé"
 msgid "No playlists for this event"
 msgstr "Aucune playlist pour cet événement"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:415
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:425
 #: apps/web/src/components/features/playlist/suspended-playlist-list.tsx:67
 msgid "No playlists yet"
 msgstr "Aucune playlist pour le moment"
@@ -1845,7 +1845,7 @@ msgstr "Aucune chanson dans cette playlist"
 #~ msgid "No songs in this playlist."
 #~ msgstr "Aucune chanson dans cette playlist."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:365
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:375
 #: apps/web/src/components/features/song/suspended-song-list.tsx:62
 msgid "No songs yet"
 msgstr "Aucune chanson pour le moment"
@@ -1858,7 +1858,7 @@ msgstr "Aucune chanson pour le moment"
 msgid "No thumbnail"
 msgstr "Pas de miniature"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:99
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:102
 msgid "No upcoming events"
 msgstr "Aucun événement à venir"
 
@@ -1902,7 +1902,7 @@ msgstr "Seuls des fichiers peuvent être associés à un événement"
 msgid "Open {0}"
 msgstr "Ouvrir {0}"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:227
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:233
 msgid "Open expenses"
 msgstr "Voir les dépenses"
 
@@ -2042,7 +2042,7 @@ msgstr "Forfait et utilisation"
 msgid "Plan limit reached"
 msgstr "Limite du forfait atteinte"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:100
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:103
 msgid "Plan rehearsals and gigs from the calendar."
 msgstr "Planifiez répétitions et concerts depuis le calendrier."
 
@@ -2146,7 +2146,7 @@ msgstr "Diffuser"
 msgid "Reading file details…"
 msgstr "Lecture des informations du fichier…"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:395
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:405
 msgid "Recently edited songs"
 msgstr "Chansons modifiées"
 
@@ -2449,7 +2449,7 @@ msgstr "Chanson introuvable"
 msgid "Songs"
 msgstr "Morceaux"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:366
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:376
 msgid "Songs you create or edit show up here."
 msgstr "Les chansons créées ou modifiées apparaissent ici."
 
@@ -2716,7 +2716,7 @@ msgstr "À suivre"
 msgid "Up next: {0}"
 msgstr "À suivre : {0}"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:135
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:141
 msgid "Upcoming events"
 msgstr "Prochains événements"
 
@@ -2751,7 +2751,7 @@ msgstr "Importer des fichiers"
 msgid "Upload files with the button above."
 msgstr "Importez des fichiers avec le bouton ci-dessus."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:304
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:310
 msgid "Upload media to the drive or to an event."
 msgstr "Ajoutez des médias au drive ou à un événement."
 
@@ -2837,7 +2837,7 @@ msgstr "Oui, annuler"
 msgid "Yes, remove"
 msgstr "Oui, retirer"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:210
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:216
 #: apps/web/src/components/ui/expense/ledger-stats.tsx:66
 msgid "You are owed"
 msgstr "On vous doit"
@@ -2850,12 +2850,12 @@ msgstr "Vous êtes à jour"
 msgid "You have been invited to join"
 msgstr "Vous avez été invité(e) à rejoindre"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:209
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:215
 #: apps/web/src/components/ui/expense/ledger-stats.tsx:68
 msgid "You owe"
 msgstr "Vous devez"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:211
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:217
 msgid "You're all settled"
 msgstr "Vous êtes à jour"
 
@@ -2871,7 +2871,7 @@ msgstr "Votre forfait actuel et ce que vous en avez utilisé."
 #~ msgid "Your email has been verified. You can now sign in."
 #~ msgstr "Votre e-mail a été vérifié. Vous pouvez maintenant vous connecter."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:168
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:174
 msgid "Your latest event will show up here once it's over."
 msgstr "Votre dernier événement apparaîtra ici une fois terminé."
 
