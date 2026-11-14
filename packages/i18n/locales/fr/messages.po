@@ -1109,7 +1109,7 @@ msgid "Drag to reorder"
 msgstr "Glisser pour réordonner"
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:138
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:67
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:68
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:53
 #: apps/web/src/components/features/drive/use-remove-occurrence.ts:31
 #: apps/web/src/components/features/home/suspended-home-sections.tsx:316
@@ -1266,7 +1266,7 @@ msgstr "Détails de l'événement"
 msgid "Event not found"
 msgstr "Événement introuvable"
 
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:66
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:67
 #: apps/web/src/components/features/drive/use-remove-occurrence.ts:33
 #: apps/web/src/hooks/use-folder-path.ts:17
 #: apps/web/src/lib/dynamic-messages.ts:50
@@ -1415,7 +1415,7 @@ msgstr "Fichier supprimé"
 msgid "File linked to the song"
 msgstr "Fichier lié à la chanson"
 
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:123
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:124
 msgid "Files"
 msgstr "Fichiers"
 
@@ -1440,7 +1440,7 @@ msgstr "Focale"
 msgid "Folder deleted"
 msgstr "Dossier supprimé"
 
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:103
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:104
 msgid "Folders"
 msgstr "Dossiers"
 
@@ -1877,7 +1877,7 @@ msgstr "Aucune dépense pour le moment"
 msgid "No files yet"
 msgstr "Aucun fichier pour l'instant"
 
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:101
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:102
 msgid "No matches"
 msgstr "Aucun résultat"
 
@@ -2440,7 +2440,7 @@ msgstr "Enregistrement..."
 msgid "Saving…"
 msgstr "Enregistrement…"
 
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:89
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:90
 msgid "Search Drive"
 msgstr "Rechercher dans le Drive"
 
@@ -2460,7 +2460,7 @@ msgstr "Rechercher des playlists à associer…"
 msgid "Search songs to add…"
 msgstr "Rechercher des chansons à ajouter…"
 
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:100
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:101
 #: apps/web/src/components/ui/event-calendar/place-field.tsx:151
 msgid "Searching…"
 msgstr "Recherche…"
@@ -2583,7 +2583,7 @@ msgstr "Détails de la chanson"
 msgid "Song not found"
 msgstr "Chanson introuvable"
 
-#: apps/web/src/components/features/drive/drive-search-combobox.tsx:66
+#: apps/web/src/components/features/drive/drive-search-combobox.tsx:67
 #: apps/web/src/components/features/drive/use-remove-occurrence.ts:33
 #: apps/web/src/components/features/song/song-upload-context.tsx:30
 #: apps/web/src/hooks/use-folder-path.ts:18
