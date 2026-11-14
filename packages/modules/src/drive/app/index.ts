@@ -30,3 +30,4 @@ export type {
   PutBytesPort,
   ResizeImagePort,
 } from "./backfill-file-thumbnails.js";
+export { listRecentFiles, listRecentMedia } from "./list-recent-files.js";

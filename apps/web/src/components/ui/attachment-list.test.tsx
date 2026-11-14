@@ -37,6 +37,38 @@ describe("AttachmentList", () => {
     expect(dialog).toBeInTheDocument();
   });
 
+  it("lists files of every kind without tabs in list view", () => {
+    render(
+      <AttachmentList
+        view="list"
+        files={[
+          makeFile(),
+          makeFile({ id: "audio-1", kind: "audio", filename: "demo.mp3", mimeType: "audio/mpeg" }),
+        ]}
+      />,
+    );
+
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Open setlist.pdf" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Open demo.mp3" })).toBeInTheDocument();
+  });
+
+  it("shows only images and videos without tabs in gallery view", () => {
+    render(
+      <AttachmentList
+        view="gallery"
+        files={[
+          makeFile({ id: "doc-1", kind: "document", filename: "setlist.pdf" }),
+          makeFile({ id: "image-1", kind: "image", filename: "cover.png" }),
+        ]}
+      />,
+    );
+
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getByText("cover.png")).toBeInTheDocument();
+    expect(screen.queryByText("setlist.pdf")).not.toBeInTheDocument();
+  });
+
   it("calls onRename with the file when Rename is chosen from the actions menu", async () => {
     const user = userEvent.setup();
     const onRename = vi.fn();

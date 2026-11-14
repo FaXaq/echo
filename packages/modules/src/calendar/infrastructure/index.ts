@@ -30,3 +30,15 @@ export type {
   GetCalendarEventByIdQueryPort,
 } from "./get-calendar-event-by-id.query.port";
 export { getCalendarEventByIdFactory } from "./get-calendar-event-by-id.query.kysely";
+
+export type {
+  ListUpcomingCalendarEventsQueryInput,
+  ListUpcomingCalendarEventsQueryPort,
+} from "./list-upcoming-calendar-events.query.port.js";
+export { listUpcomingCalendarEventsQueryFactory } from "./list-upcoming-calendar-events.query.kysely.js";
+
+export type {
+  FindLastCalendarEventQueryInput,
+  FindLastCalendarEventQueryPort,
+} from "./find-last-calendar-event.query.port.js";
+export { findLastCalendarEventQueryFactory } from "./find-last-calendar-event.query.kysely.js";

@@ -189,3 +189,13 @@ export function useDetachPlaylistFromEventMutation({ organizationId }: { organiz
     },
   });
 }
+
+export function getRecentPlaylistsQueryOptions(opts: { organizationId: string; limit?: number }) {
+  return queryOptions({
+    queryKey: getResourceKey("listRecentPlaylists", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.playlist.listRecentPlaylists.query(params, { signal });
+    },
+  });
+}

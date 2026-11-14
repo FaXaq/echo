@@ -125,3 +125,13 @@ export function useDeleteRepaymentMutation({ organizationId }: { organizationId:
     },
   });
 }
+
+export function getMyBalanceQueryOptions(opts: { organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getMyBalance", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.expense.getMyBalance.query(params, { signal });
+    },
+  });
+}

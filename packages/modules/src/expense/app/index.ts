@@ -12,3 +12,4 @@ export type { LedgerSummary } from "./get-ledger-summary.js";
 export { getLedgerSummary } from "./get-ledger-summary.js";
 export { getLedgerSettings } from "./get-ledger-settings.js";
 export { checkCurrencyChange } from "./check-currency-change.js";
+export { getMyBalance } from "./get-my-balance.js";

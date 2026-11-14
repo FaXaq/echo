@@ -205,3 +205,13 @@ export function useDeleteSongMutation({
     },
   });
 }
+
+export function getRecentSongsQueryOptions(opts: { organizationId: string; limit?: number }) {
+  return queryOptions({
+    queryKey: getResourceKey("listRecentSongs", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.song.listRecentSongs.query(params, { signal });
+    },
+  });
+}

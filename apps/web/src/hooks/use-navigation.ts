@@ -14,7 +14,7 @@ type NavItem = {
   isActive?: boolean;
 };
 
-export type NavGroup = { title: string; items: NavItem[] };
+export type NavGroup = { title?: string; items: NavItem[] };
 
 type OrganizationOption = Organizations[number];
 
@@ -50,6 +50,15 @@ export function useNavigation() {
 
   const slug = activeOrganization?.slug ?? "";
   const navGroups: NavGroup[] = [
+    {
+      items: [
+        {
+          title: t`Home`,
+          to: "/projects/$projectSlug",
+          params: { projectSlug: slug },
+        },
+      ],
+    },
     {
       title: t`Organize`,
       items: [

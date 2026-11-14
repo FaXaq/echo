@@ -11,6 +11,7 @@ import {
   listRepayments,
   updateExpense,
   updateRepayment,
+  getMyBalance,
 } from "@echo/modules/expense/app";
 import {
   deleteExpenseCommandFactory,
@@ -97,6 +98,19 @@ const toRepaymentDraft = (input: z.infer<typeof repaymentInput>) => ({
 
 export const makeExpenseRouter = () =>
   router({
+    getMyBalance: organizationProcedure.query(({ ctx }) =>
+      getMyBalance(
+        {
+          db: ctx.db,
+          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          listExpensesQuery,
+          listRepaymentsQuery,
+          getOrganizationCurrencyQuery,
+        },
+        { scope: ctx.organizationScope, userId: ctx.session.user.id },
+      ),
+    ),
+
     list: organizationProcedure
       .input(z.object({ eventId: z.string().optional() }))
       .query(({ ctx, input }) =>

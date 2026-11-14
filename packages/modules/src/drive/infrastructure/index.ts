@@ -176,3 +176,9 @@ export type {
   UpdateFileDurationByIdCommandPort,
 } from "./update-file-duration-by-id.command.port.js";
 export { updateFileDurationByIdCommandFactory } from "./update-file-duration-by-id.command.kysely.js";
+
+export type {
+  ListRecentFilesQueryInput,
+  ListRecentFilesQueryPort,
+} from "./list-recent-files.query.port.js";
+export { listRecentFilesQueryFactory } from "./list-recent-files.query.kysely.js";
