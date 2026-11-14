@@ -52,7 +52,7 @@ describe("removeOccurrence", () => {
   it("returns deleted: false when other occurrences remain", async () => {
     const deletedKeys: string[] = [];
     const result = await removeOccurrence(makeDeps({}, deletedKeys), input);
-    expect(result).toEqual({ deleted: false });
+    expect(result).toEqual({ deleted: false, failures: [] });
     expect(deletedKeys).toEqual([]);
   });
 
@@ -67,7 +67,26 @@ describe("removeOccurrence", () => {
       deletedKeys,
     );
     const result = await removeOccurrence(deps, input);
-    expect(result).toEqual({ deleted: true });
+    expect(result).toEqual({ deleted: true, failures: [] });
     expect(deletedKeys).toEqual(["org/org-1/file-1/a.mp3"]);
+  });
+
+  it("returns purge failures when S3 deletion fails", async () => {
+    const error = new Error("s3 down");
+    const deps = {
+      ...makeDeps({
+        deleteOrphanedFilesCommand: async () => [
+          { id: "file-1", s3Key: "org/org-1/file-1/a.mp3", mimeType: "audio/mpeg" },
+        ],
+      }),
+      s3Storage: {
+        ...makeFakeS3Storage(),
+        deleteObject: async () => {
+          throw error;
+        },
+      },
+    };
+    const result = await removeOccurrence(deps, input);
+    expect(result).toEqual({ deleted: true, failures: [{ fileId: "file-1", error }] });
   });
 });

@@ -315,8 +315,8 @@ export const makeDriveRouter = () =>
 
     removeOccurrence: organizationProcedure
       .input(z.object({ fileId: z.string(), place: placeSchema }))
-      .mutation(({ ctx, input }) =>
-        removeOccurrence(
+      .mutation(async ({ ctx, input }) => {
+        const { deleted, failures } = await removeOccurrence(
           {
             db: ctx.db,
             s3Storage: ctx.s3Storage,
@@ -325,8 +325,15 @@ export const makeDriveRouter = () =>
             deleteOrphanedFilesCommand,
           },
           { ...input, scope: ctx.organizationScope },
-        ),
-      ),
+        );
+        for (const failure of failures) {
+          ctx.logger.error(
+            { error: failure.error, fileId: failure.fileId },
+            "Failed to delete S3 object during occurrence removal",
+          );
+        }
+        return { deleted };
+      }),
 
     listFileOccurrences: organizationProcedure
       .input(z.object({ fileId: z.string() }))
@@ -393,8 +400,8 @@ export const makeDriveRouter = () =>
 
     deleteFolder: organizationProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteFolder(
+      .mutation(async ({ ctx, input }) => {
+        const failures = await deleteFolder(
           {
             db: ctx.db,
             s3Storage: ctx.s3Storage,
@@ -403,8 +410,14 @@ export const makeDriveRouter = () =>
             deleteOrphanedFilesCommand,
           },
           { id: input.id, scope: ctx.organizationScope },
-        ),
-      ),
+        );
+        for (const failure of failures) {
+          ctx.logger.error(
+            { error: failure.error, fileId: failure.fileId, folderId: input.id },
+            "Failed to delete S3 object during folder deletion",
+          );
+        }
+      }),
 
     listFolderContents: organizationProcedure
       .input(

@@ -8,7 +8,7 @@ import type {
   DeleteOccurrenceCommandPort,
   DeleteOrphanedFilesCommandPort,
 } from "../infrastructure/index.js";
-import { purgeOrphanedFiles } from "./purge-orphaned-files.js";
+import { purgeOrphanedFiles, type PurgeFailure } from "./purge-orphaned-files.js";
 
 export async function removeOccurrence(
   deps: {
@@ -19,7 +19,7 @@ export async function removeOccurrence(
     deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort;
   },
   input: { fileId: string; place: Place; scope: OrganizationScope },
-): Promise<{ deleted: boolean }> {
+): Promise<{ deleted: boolean; failures: PurgeFailure[] }> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { drive: ["delete"] },
@@ -32,9 +32,9 @@ export async function removeOccurrence(
   });
   if (!removed) throw notFound("Occurrence");
 
-  const { deletedFileIds } = await purgeOrphanedFiles(deps, {
+  const { deletedFileIds, failures } = await purgeOrphanedFiles(deps, {
     scope: input.scope,
     fileIds: [input.fileId],
   });
-  return { deleted: deletedFileIds.includes(input.fileId) };
+  return { deleted: deletedFileIds.includes(input.fileId), failures };
 }
