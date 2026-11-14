@@ -1,45 +1,46 @@
 import { describe, expect, it } from "vitest";
+import { ForbiddenError } from "@echo/errors";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
-import type { GetMemberBalanceQueryPort } from "../infrastructure/get-member-balance.query.port.js";
 import { getMyBalance } from "./get-my-balance.js";
-import { deniedPermissionChecks, makeFakeDb, makeFakePermissionChecks } from "./test-fixtures.js";
+import {
+  deniedPermissionChecks,
+  makeFakeDb,
+  makeFakeExpense,
+  makeFakePermissionChecks,
+  makeFakeRepayment,
+} from "./test-fixtures.js";
 
 const scope = createOrganizationScope("org-1");
-const getOrganizationCurrencyQuery = async () => "EUR";
+
+function makeDeps(overrides: Partial<Parameters<typeof getMyBalance>[0]> = {}) {
+  return {
+    db: makeFakeDb(),
+    ...makeFakePermissionChecks(),
+    listExpensesQuery: async () => [makeFakeExpense()],
+    listRepaymentsQuery: async () => [makeFakeRepayment({ amountMinor: 500 })],
+    getOrganizationCurrencyQuery: async () => "EUR",
+    ...overrides,
+  };
+}
 
 describe("getMyBalance", () => {
-  it("returns the balance of the requesting member in the organization currency", async () => {
-    const requested: string[] = [];
-    const getMemberBalanceQuery: GetMemberBalanceQueryPort = async (_db, _scope, input) => {
-      requested.push(input.userId);
-      return -9610;
-    };
+  it("returns the requesting member's balance in the organization currency", async () => {
+    await expect(getMyBalance(makeDeps(), { scope, userId: "paul" })).resolves.toEqual({
+      amountMinor: -1500,
+      currency: "EUR",
+    });
+  });
 
-    const balance = await getMyBalance(
-      {
-        db: makeFakeDb(),
-        ...makeFakePermissionChecks(),
-        getMemberBalanceQuery,
-        getOrganizationCurrencyQuery,
-      },
-      { scope, userId: "user-1" },
-    );
-
-    expect(balance).toEqual({ amountMinor: -9610, currency: "EUR" });
-    expect(requested).toEqual(["user-1"]);
+  it("returns zero for a member with no ledger entries", async () => {
+    await expect(getMyBalance(makeDeps(), { scope, userId: "lea" })).resolves.toEqual({
+      amountMinor: 0,
+      currency: "EUR",
+    });
   });
 
   it("rejects members who cannot read expenses", async () => {
     await expect(
-      getMyBalance(
-        {
-          db: makeFakeDb(),
-          ...deniedPermissionChecks,
-          getMemberBalanceQuery: async () => 0,
-          getOrganizationCurrencyQuery,
-        },
-        { scope, userId: "user-1" },
-      ),
-    ).rejects.toThrow();
+      getMyBalance(makeDeps(deniedPermissionChecks), { scope, userId: "paul" }),
+    ).rejects.toBeInstanceOf(ForbiddenError);
   });
 });

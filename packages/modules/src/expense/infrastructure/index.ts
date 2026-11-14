@@ -63,9 +63,3 @@ export { getOrganizationCurrencyQueryFactory } from "./get-organization-currency
 
 export type { HasLedgerEntriesQueryPort } from "./has-ledger-entries.query.port.js";
 export { hasLedgerEntriesQueryFactory } from "./has-ledger-entries.query.kysely.js";
-
-export type {
-  GetMemberBalanceQueryInput,
-  GetMemberBalanceQueryPort,
-} from "./get-member-balance.query.port.js";
-export { getMemberBalanceQueryFactory } from "./get-member-balance.query.kysely.js";
