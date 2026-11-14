@@ -1,24 +1,39 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { DriveLocation } from "@echo/modules/drive/domain";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import { render, screen, within } from "@/lib/test-utils";
+import { render, screen, waitFor, within } from "@/lib/test-utils";
 
 const navigate = vi.fn();
+const addOccurrences = vi.fn();
+const toastAdd = vi.fn();
+
+vi.mock("@/services/api-client", () => ({
+  apiClient: { drive: { addOccurrences: { mutate: (input: unknown) => addOccurrences(input) } } },
+}));
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast: { add: (options: unknown) => toastAdd(options) },
+}));
 
 vi.mock("@tanstack/react-router", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@tanstack/react-router")>()),
   useNavigate: () => navigate,
   Link: ({ children }: { children?: React.ReactNode }) => <a href="#">{children}</a>,
 }));
-vi.mock("./drive-search-combobox", () => ({ DriveSearchCombobox: () => null }));
+vi.mock("./drive-search-combobox", () => ({
+  DriveSearchCombobox: () => <input aria-label="Search drive" />,
+}));
 vi.mock("./suspended-drive-quota-bar", () => ({ SuspendedDriveQuotaBar: () => null }));
 
 import { DriveExplorer } from "./drive-explorer";
+import { copyFiles, useDriveClipboard } from "./drive-clipboard";
+import { renderHook } from "@testing-library/react";
 import {
   getDriveLocationPathQueryKey,
   listFolderContentsQueryOptions,
   type FolderContents,
+  type OrganizationFile,
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 
@@ -61,6 +76,39 @@ const folder = {
   createdAt: "2026-08-02T09:30:00.000Z",
   updatedAt: "2026-08-02T09:30:00.000Z",
 };
+
+function makeFile(id: string, filename: string): OrganizationFile {
+  return {
+    id,
+    organizationId: "org-1",
+    uploadedBy: "user-1",
+    uploadedByName: "Jane Doe",
+    kind: "document",
+    mimeType: "application/pdf",
+    sizeBytes: 1000,
+    durationSeconds: null,
+    width: null,
+    height: null,
+    hasThumbnail: false,
+    filename,
+    originalFilename: filename,
+    s3Key: `key-${id}`,
+    status: "uploaded",
+    createdAt: "2026-08-02T09:30:00.000Z",
+    updatedAt: "2026-08-02T09:30:00.000Z",
+  };
+}
+
+async function selectRow(user: ReturnType<typeof userEvent.setup>, label: string) {
+  const cell = (await screen.findByLabelText(label)).closest("td");
+  if (!cell) throw new Error(`No cell for ${label}`);
+  await user.click(cell);
+}
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  renderHook(() => useDriveClipboard("org-1")).result.current.clear();
+});
 
 describe("DriveExplorer system folders", () => {
   it("renders Events and Songs rows first at Drive root", async () => {
@@ -139,5 +187,160 @@ describe("DriveExplorer system folders", () => {
 
     expect(await screen.findByRole("button", { name: /new folder/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /upload/i })).toBeInTheDocument();
+  });
+});
+
+describe("DriveExplorer copy and paste", () => {
+  const files = [makeFile("f1", "a.pdf"), makeFile("f2", "b.pdf")];
+
+  it("pastes copied files into another folder with the keyboard", async () => {
+    const user = userEvent.setup();
+    const source = renderExplorer({ kind: "root" }, { files });
+    await selectRow(user, "Select a.pdf");
+    await selectRow(user, "Select b.pdf");
+    await user.keyboard("{Meta>}c{/Meta}");
+    source.unmount();
+
+    renderExplorer({ kind: "folder", id: "folder-1" });
+    await user.click(await screen.findByText("This folder is empty"));
+    await user.keyboard("{Meta>}v{/Meta}");
+
+    await waitFor(() =>
+      expect(addOccurrences).toHaveBeenCalledWith({
+        fileIds: ["f1", "f2"],
+        place: { kind: "folder", id: "folder-1" },
+        organizationId: "org-1",
+      }),
+    );
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Pasted 2 files", type: "success" }),
+      ),
+    );
+  });
+
+  it("ignores shortcuts typed in an input", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    renderExplorer({ kind: "root" });
+
+    await user.click(await screen.findByLabelText("Search drive"));
+    await user.keyboard("{Meta>}v{/Meta}");
+
+    expect(addOccurrences).not.toHaveBeenCalled();
+  });
+
+  it("does not paste in the Events root", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    renderExplorer({ kind: "events" });
+
+    await user.click(await screen.findByText("No events yet"));
+    await user.keyboard("{Meta>}v{/Meta}");
+
+    expect(addOccurrences).not.toHaveBeenCalled();
+  });
+
+  it("disables Copy when a folder is selected", async () => {
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { folders: [folder], files });
+
+    await selectRow(user, "Select Demos");
+    await selectRow(user, "Select a.pdf");
+    await user.click(screen.getByRole("button", { name: "Selection actions" }));
+
+    expect(await screen.findByRole("menuitem", { name: "Copy" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  it("copies from the file context menu", async () => {
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { files });
+
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("a.pdf")).closest("tr")!,
+    });
+    await user.click(await screen.findByRole("menuitem", { name: "Copy" }));
+
+    const { result } = renderHook(() => useDriveClipboard("org-1"));
+    expect(result.current.fileIds).toEqual(["f1"]);
+  });
+
+  it("pastes into a folder row from its context menu", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    renderExplorer({ kind: "root" }, { folders: [folder] });
+
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("Demos")).closest("tr")!,
+    });
+    await user.click(await screen.findByRole("menuitem", { name: "Paste into" }));
+
+    await waitFor(() =>
+      expect(addOccurrences).toHaveBeenCalledWith({
+        fileIds: ["f1"],
+        place: { kind: "folder", id: "folder-1" },
+        organizationId: "org-1",
+      }),
+    );
+  });
+
+  it("pastes into an Event system folder row but offers nothing on the Events root row", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    renderExplorer(
+      { kind: "events" },
+      { systemFolders: [{ location: { kind: "event", id: "event-1" }, name: "Gig" }] },
+    );
+
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("Gig")).closest("tr")!,
+    });
+    await user.click(await screen.findByRole("menuitem", { name: "Paste into" }));
+
+    await waitFor(() =>
+      expect(addOccurrences).toHaveBeenCalledWith({
+        fileIds: ["f1"],
+        place: { kind: "event", id: "event-1" },
+        organizationId: "org-1",
+      }),
+    );
+  });
+
+  it("offers no paste on the Events root row", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    renderExplorer(
+      { kind: "root" },
+      { systemFolders: [{ location: { kind: "events" }, name: "Events" }] },
+    );
+
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("Events")).closest("tr")!,
+    });
+
+    expect(screen.queryByRole("menuitem", { name: "Paste into" })).not.toBeInTheDocument();
+  });
+});
+
+describe("DriveExplorer item count", () => {
+  it("counts system folders", async () => {
+    renderExplorer(
+      { kind: "events" },
+      {
+        systemFolders: [
+          { location: { kind: "event", id: "e1" }, name: "Gig" },
+          { location: { kind: "event", id: "e2" }, name: "Rehearsal" },
+        ],
+      },
+    );
+
+    expect(await screen.findByText("2 items")).toBeInTheDocument();
   });
 });

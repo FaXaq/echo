@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import type { DragEndEvent, DragStartEvent } from "@dnd-kit/react";
+import type { DragStartEvent } from "@dnd-kit/react";
 import { FileText, Image as ImageIcon, Music, Video } from "lucide-react";
 import type { Folder, OrganizationFile } from "@/services/resources/drive";
 
@@ -40,7 +40,8 @@ export type DriveRow = { kind: "folder"; data: Folder } | { kind: "file"; data: 
 
 export type DragData = { kind: "file"; id: string } | { kind: "folder"; id: string };
 
-export type DragEndEventPayload = Parameters<DragEndEvent>[0];
+type DragEntity = { data?: Record<string, unknown> } | null;
+export type DragEndEventPayload = { operation: { source?: DragEntity; target?: DragEntity } };
 export type DragStartEventPayload = Parameters<DragStartEvent>[0];
 
 export function readDragData(data: Record<string, unknown> | undefined): DragData | null {

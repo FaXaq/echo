@@ -2,8 +2,9 @@ import { Suspense, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import type { DriveLocation } from "@echo/modules/drive/domain";
+import type { DriveLocation, Place } from "@echo/modules/drive/domain";
 import { useTable } from "@tanstack/react-table";
+import { plural } from "@lingui/core/macro";
 import { Plural, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
 import { CalendarDays, Folder as FolderIcon, FolderPlus, Music, Upload } from "lucide-react";
@@ -29,6 +30,7 @@ import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import {
   listFolderContentsQueryOptions,
+  useAddOccurrencesMutation,
   useCreateFolderMutation,
   useDeleteFolderMutation,
   useRemoveOccurrenceMutation,
@@ -60,11 +62,14 @@ import {
   isSelectionKey,
   selectionKey,
 } from "./drive-item-utils";
+import { copyFiles, useDriveClipboard } from "./drive-clipboard";
 import { SelectionActionsMenu } from "./drive-selection-actions-menu";
 import { useDriveTableColumns } from "./drive-table-columns";
 import { useDriveFileTransfer } from "./use-drive-file-transfer";
 import { useDrivePendingDeletes } from "./use-drive-pending-deletes";
 import { useDriveSelection } from "./use-drive-selection";
+
+const EDITABLE_SELECTOR = 'input, textarea, [contenteditable=""], [contenteditable="true"]';
 
 function DriveExplorerContent({
   organizationId,
@@ -123,11 +128,14 @@ function DriveExplorerContent({
   const deleteFolderMutation = useDeleteFolderMutation();
   const renameFileMutation = useRenameFileMutation();
   const removeOccurrenceMutation = useRemoveOccurrenceMutation();
+  const addOccurrencesMutation = useAddOccurrencesMutation();
+  const clipboard = useDriveClipboard(organizationId);
 
   const visibleFolders = data.folders.filter((folder) => !pendingDeleteIds.has(folder.id));
   const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
   const isEmpty =
     data.systemFolders.length === 0 && visibleFolders.length === 0 && visibleFiles.length === 0;
+  const itemCount = data.systemFolders.length + visibleFolders.length + visibleFiles.length;
 
   const openGalleryPreview = (fileId: string) => {
     const galleryFiles = visibleFiles.filter(
@@ -235,6 +243,46 @@ function DriveExplorerContent({
   const assignDisabledReason =
     selectedFolderCount > 0 ? t`Only files can be assigned to an event` : null;
 
+  const copyDisabledReason = selectedFolderCount > 0 ? t`Only files can be copied` : null;
+
+  const handleCopy = () => {
+    if (copyDisabledReason || selectedFiles.length === 0) return;
+    copyFiles(
+      organizationId,
+      selectedFiles.map((file) => file.id),
+    );
+  };
+
+  const pasteInto = (target: Place | null) => {
+    if (!target || clipboard.fileIds.length === 0) return;
+    const count = clipboard.fileIds.length;
+    addOccurrencesMutation.mutate(
+      { fileIds: clipboard.fileIds, place: target, organizationId },
+      {
+        onSuccess: () =>
+          toast.add({
+            title: plural(count, { one: "Pasted # file", other: "Pasted # files" }),
+            type: "success",
+          }),
+        onError: () => toast.add({ title: t`Couldn't paste files`, type: "error" }),
+      },
+    );
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return;
+    if (!(event.target instanceof Element) || !event.currentTarget.contains(event.target)) return;
+    if (event.target.closest(EDITABLE_SELECTOR)) return;
+
+    if (event.key === "c" && !copyDisabledReason && selectedFiles.length > 0) {
+      event.preventDefault();
+      handleCopy();
+    } else if (event.key === "v" && place && clipboard.fileIds.length > 0) {
+      event.preventDefault();
+      pasteInto(place);
+    }
+  };
+
   const handleBulkDeleteFiles = async () => {
     if (!place) return;
     const results = await Promise.allSettled(
@@ -284,7 +332,11 @@ function DriveExplorerContent({
     navigate(driveLocationLink(projectSlug, target));
 
   return (
-    <div className="flex flex-1 flex-col min-h-0 gap-3">
+    <div
+      className="flex flex-1 flex-col min-h-0 gap-3 outline-none"
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-col w-full">
           <DriveBreadcrumbs projectSlug={projectSlug} path={path} />
@@ -324,6 +376,8 @@ function DriveExplorerContent({
               )}
               {selectedKeys.size > 0 && (
                 <SelectionActionsMenu
+                  copyDisabledReason={copyDisabledReason}
+                  onCopy={handleCopy}
                   downloadDisabledReason={downloadDisabledReason}
                   isDownloading={isDownloading}
                   onDownload={handleBulkDownload}
@@ -402,6 +456,12 @@ function DriveExplorerContent({
                 key={entry.location.kind}
                 name={locationLabel(entry.location, entry.name)}
                 onNavigate={() => navigateToLocation(entry.location)}
+                canPaste={clipboard.fileIds.length > 0}
+                onPasteInto={
+                  locationPlace(entry.location)
+                    ? () => pasteInto(locationPlace(entry.location))
+                    : undefined
+                }
               />
             ))}
             {table.getRowModel().rows.map((row) => {
@@ -421,6 +481,8 @@ function DriveExplorerContent({
                       replaceSelection("folder", original.data.id);
                     }
                   }}
+                  canPaste={clipboard.fileIds.length > 0}
+                  onPasteInto={() => pasteInto({ kind: "folder", id: original.data.id })}
                   onRename={() => setRenamingFolder(original.data)}
                   onDelete={() => setDeletingFolder(original.data)}
                   bulkDownloadDisabledReason={downloadDisabledReason}
@@ -442,6 +504,8 @@ function DriveExplorerContent({
                       replaceSelection("file", original.data.id);
                     }
                   }}
+                  onCopy={handleCopy}
+                  copyDisabledReason={copyDisabledReason}
                   onRename={() => setRenamingFile(original.data)}
                   onAssignToEvent={() => setAssigningFiles([original.data])}
                   onShowDetails={() => setDetailsFile(original.data)}
@@ -482,11 +546,7 @@ function DriveExplorerContent({
 
       <div className="flex items-center justify-between gap-6">
         <p className="text-xs text-muted-foreground">
-          <Plural
-            value={visibleFolders.length + visibleFiles.length}
-            one="# item"
-            other="# items"
-          />
+          <Plural value={itemCount} one="# item" other="# items" />
           {selectedKeys.size > 0 && (
             <>
               {" · "}

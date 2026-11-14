@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import { useDraggable } from "@dnd-kit/react";
-import { CalendarPlus, Download, Info, MoreVertical, Pen, Trash } from "lucide-react";
+import { CalendarPlus, Copy, Download, Info, MoreVertical, Pen, Trash } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   ContextMenu,
@@ -28,6 +28,8 @@ export function FileRow({
   file,
   selected,
   selectionCount,
+  onCopy,
+  copyDisabledReason,
   onToggleSelect,
   onContextMenuTrigger,
   onRename,
@@ -44,6 +46,8 @@ export function FileRow({
   file: OrganizationFile;
   selected: boolean;
   selectionCount: number;
+  onCopy: () => void;
+  copyDisabledReason: string | null;
   onToggleSelect: (event: React.MouseEvent) => void;
   onContextMenuTrigger: () => void;
   onRename: () => void;
@@ -192,24 +196,50 @@ export function FileRow({
       </ContextMenuTrigger>
       <ContextMenuContent>
         {isBulkSelected ? (
-          bulkDownloadDisabledReason ? (
-            <Tooltip>
-              <TooltipTrigger
-                render={<ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />}
-              >
-                <Download />
+          <>
+            {copyDisabledReason ? (
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />
+                  }
+                >
+                  <Copy />
+                  {t`Copy`}
+                </TooltipTrigger>
+                <TooltipContent>{copyDisabledReason}</TooltipContent>
+              </Tooltip>
+            ) : (
+              <ContextMenuItem onClick={onCopy}>
+                <Copy />
+                {t`Copy`}
+              </ContextMenuItem>
+            )}
+            {bulkDownloadDisabledReason ? (
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />
+                  }
+                >
+                  <Download />
+                  {t`Download`}
+                </TooltipTrigger>
+                <TooltipContent>{bulkDownloadDisabledReason}</TooltipContent>
+              </Tooltip>
+            ) : (
+              <ContextMenuItem onClick={onBulkDownload} disabled={isBulkDownloading}>
+                {isBulkDownloading ? <Spinner className="size-4" /> : <Download />}
                 {t`Download`}
-              </TooltipTrigger>
-              <TooltipContent>{bulkDownloadDisabledReason}</TooltipContent>
-            </Tooltip>
-          ) : (
-            <ContextMenuItem onClick={onBulkDownload} disabled={isBulkDownloading}>
-              {isBulkDownloading ? <Spinner className="size-4" /> : <Download />}
-              {t`Download`}
-            </ContextMenuItem>
-          )
+              </ContextMenuItem>
+            )}
+          </>
         ) : (
           <>
+            <ContextMenuItem onClick={onCopy}>
+              <Copy />
+              {t`Copy`}
+            </ContextMenuItem>
             <ContextMenuItem onClick={onDownload}>
               <Download />
               {t`Download`}

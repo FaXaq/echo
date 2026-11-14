@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useLingui } from "@lingui/react/macro";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
 import {
+  ClipboardPaste,
   Download,
   FolderOpen,
   Folder as FolderIcon,
@@ -34,6 +35,8 @@ export function FolderRow({
   folder,
   selected,
   selectionCount,
+  canPaste,
+  onPasteInto,
   onNavigate,
   onToggleSelect,
   onContextMenuTrigger,
@@ -47,6 +50,8 @@ export function FolderRow({
   folder: Folder;
   selected: boolean;
   selectionCount: number;
+  canPaste: boolean;
+  onPasteInto: () => void;
   onNavigate: () => void;
   onToggleSelect: (event: React.MouseEvent) => void;
   onContextMenuTrigger: () => void;
@@ -197,6 +202,10 @@ export function FolderRow({
         </TableCell>
       </ContextMenuTrigger>
       <ContextMenuContent>
+        <ContextMenuItem onClick={onPasteInto} disabled={!canPaste}>
+          <ClipboardPaste />
+          {t`Paste into`}
+        </ContextMenuItem>
         {isBulkSelected ? (
           bulkDownloadDisabledReason ? (
             <Tooltip>

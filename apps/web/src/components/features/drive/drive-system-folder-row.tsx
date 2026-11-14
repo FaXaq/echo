@@ -1,20 +1,40 @@
-import { Folder as FolderIcon } from "lucide-react";
+import { useLingui } from "@lingui/react/macro";
+import { ClipboardPaste, Folder as FolderIcon } from "lucide-react";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
 
-export function SystemFolderRow({ name, onNavigate }: { name: string; onNavigate: () => void }) {
-  return (
-    <TableRow
-      tabIndex={0}
-      className="cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
-      onClick={onNavigate}
-      onKeyDown={(event) => {
-        if (event.target !== event.currentTarget) return;
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onNavigate();
-        }
-      }}
-    >
+export function SystemFolderRow({
+  name,
+  onNavigate,
+  canPaste,
+  onPasteInto,
+}: {
+  name: string;
+  onNavigate: () => void;
+  canPaste: boolean;
+  onPasteInto?: () => void;
+}) {
+  const { t } = useLingui();
+  const rowProps = {
+    tabIndex: 0,
+    className:
+      "cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
+    onClick: onNavigate,
+    onKeyDown: (event: React.KeyboardEvent) => {
+      if (event.target !== event.currentTarget) return;
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onNavigate();
+      }
+    },
+  };
+  const cells = (
+    <>
       <TableCell />
       <TableCell>
         <div className="flex items-center gap-2.5">
@@ -26,6 +46,20 @@ export function SystemFolderRow({ name, onNavigate }: { name: string; onNavigate
       <TableCell />
       <TableCell />
       <TableCell />
-    </TableRow>
+    </>
+  );
+
+  if (!onPasteInto) return <TableRow {...rowProps}>{cells}</TableRow>;
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger render={<TableRow {...rowProps} />}>{cells}</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={onPasteInto} disabled={!canPaste}>
+          <ClipboardPaste />
+          {t`Paste into`}
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
