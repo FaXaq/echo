@@ -8,6 +8,6 @@ export type ListRecentPlaylistsQueryPort = (
   db: KyselyDB,
   scope: OrganizationScope,
   input: ListRecentPlaylistsQueryInput,
-) => Promise<(Playlist & { songCount: number })[]>;
+) => Promise<Playlist[]>;
 
 export type ListRecentPlaylistsQueryPortFactory = () => ListRecentPlaylistsQueryPort;

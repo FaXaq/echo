@@ -3,6 +3,7 @@ import { forbidden } from "@echo/errors";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
+import type { FileRecord } from "../domain/index.js";
 import type { ListRecentFilesQueryPort } from "../infrastructure/index.js";
 import { createPreviewUrl, createThumbnailUrl } from "./create-preview-url.js";
 
@@ -11,6 +12,15 @@ type Deps = {
   userHasPermissionInOrganization: CheckOrganizationPermission;
   listRecentFilesQuery: ListRecentFilesQueryPort;
 };
+
+async function withUrls(s3Storage: S3StoragePort, file: FileRecord) {
+  return {
+    ...file,
+    downloadUrl: (await s3Storage.createDownloadUrl(file.s3Key)).url,
+    previewUrl: await createPreviewUrl(s3Storage, file),
+    thumbnailUrl: await createThumbnailUrl(s3Storage, file),
+  };
+}
 
 async function assertCanRead(deps: Deps, scope: OrganizationScope) {
   const { success } = await deps.userHasPermissionInOrganization({
@@ -21,14 +31,15 @@ async function assertCanRead(deps: Deps, scope: OrganizationScope) {
 }
 
 export async function listRecentFiles(
-  deps: Deps,
+  deps: Deps & { s3Storage: S3StoragePort },
   input: { scope: OrganizationScope; limit: number },
 ) {
   await assertCanRead(deps, input.scope);
-  return deps.listRecentFilesQuery(deps.db, input.scope, {
+  const files = await deps.listRecentFilesQuery(deps.db, input.scope, {
     kinds: ["audio", "document"],
     limit: input.limit,
   });
+  return Promise.all(files.map((file) => withUrls(deps.s3Storage, file)));
 }
 
 export async function listRecentMedia(
@@ -41,12 +52,5 @@ export async function listRecentMedia(
     limit: input.limit,
   });
 
-  return Promise.all(
-    files.map(async (file) => ({
-      ...file,
-      downloadUrl: (await deps.s3Storage.createDownloadUrl(file.s3Key)).url,
-      previewUrl: await createPreviewUrl(deps.s3Storage, file),
-      thumbnailUrl: await createThumbnailUrl(deps.s3Storage, file),
-    })),
-  );
+  return Promise.all(files.map((file) => withUrls(deps.s3Storage, file)));
 }

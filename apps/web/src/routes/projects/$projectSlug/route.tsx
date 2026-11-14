@@ -51,7 +51,7 @@ function RouteComponent() {
                 />
               </div>
             </header>
-            <div className="flex-1 overflow-y-auto typeset typeset-notes">
+            <div className="relative flex-1 overflow-y-auto typeset typeset-notes">
               <Outlet />
             </div>
           </SidebarInset>

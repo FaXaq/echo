@@ -10,17 +10,10 @@ export const listRecentPlaylistsQueryFactory: ListRecentPlaylistsQueryPortFactor
       .selectAll("playlist")
       .select("user.name as created_by_name")
       .select(["organization.name as organization_name", "organization.slug as organization_slug"])
-      .select((eb) =>
-        eb
-          .selectFrom("playlist_song")
-          .whereRef("playlist_song.playlist_id", "=", "playlist.id")
-          .select((count) => count.fn.countAll<number>().as("count"))
-          .as("song_count"),
-      )
       .where("playlist.organization_id", "=", scope.organizationId)
       .orderBy("playlist.created_at", "desc")
       .limit(input.limit)
       .execute();
 
-    return rows.map((row) => ({ ...toPlaylist(row), songCount: Number(row.song_count ?? 0) }));
+    return rows.map(toPlaylist);
   };

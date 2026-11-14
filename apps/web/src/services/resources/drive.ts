@@ -33,6 +33,7 @@ export const uploadFileMutationKey = ["drive", "uploadFile"] as const;
 export type EventFile = RouterOutputs["drive"]["listEventFiles"][number];
 export type SongFile = RouterOutputs["drive"]["listSongFiles"][number];
 export type OrganizationFile = RouterOutputs["drive"]["listOrganizationFiles"][number];
+export type RecentFile = RouterOutputs["drive"]["listRecentFiles"][number];
 export type Folder = RouterOutputs["drive"]["getFolder"];
 export type FolderContents = RouterOutputs["drive"]["listFolderContents"];
 
@@ -359,6 +360,7 @@ export function getRecentFilesQueryOptions(opts: { organizationId: string; limit
       const [{ params }] = queryKey;
       return apiClient.drive.listRecentFiles.query(params, { signal });
     },
+    staleTime: 5 * 60 * 1000,
   });
 }
 

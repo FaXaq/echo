@@ -94,6 +94,7 @@ export const makeDriveRouter = () =>
         listRecentFiles(
           {
             db: ctx.db,
+            s3Storage: ctx.s3Storage,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             listRecentFilesQuery,
           },

@@ -117,6 +117,8 @@ export interface AttachmentListProps<F extends AttachmentFile> {
   onPlayAudio?: (file: F) => void;
   onSetAudioRole?: (file: F, role: Role) => void;
   onClearAudioRole?: (file: F) => void;
+  /** "list" shows every file in one compact list, "gallery" only images and videos as a bento grid. */
+  view?: "tabs" | "list" | "gallery";
 }
 
 type AttachmentTab = "audio" | "gallery" | "misc";
@@ -381,7 +383,7 @@ function AttachmentListItems<F extends AttachmentFile>({
   );
 }
 
-export function gallerySpan({ width, height }: Pick<AttachmentFile, "width" | "height">) {
+function gallerySpan({ width, height }: Pick<AttachmentFile, "width" | "height">) {
   if (!width || !height) return { columns: 1, rows: 1 };
   return match(width / height)
     .when(
@@ -656,6 +658,7 @@ export function AttachmentList<F extends AttachmentFile>({
   onPlayAudio,
   onSetAudioRole,
   onClearAudioRole,
+  view = "tabs",
 }: AttachmentListProps<F>) {
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
@@ -705,56 +708,75 @@ export function AttachmentList<F extends AttachmentFile>({
     onClearAudioRole,
   };
 
+  const galleryGrid = (
+    <AttachmentGalleryGrid
+      files={galleryFiles}
+      pendingFiles={galleryPending}
+      failedThumbnailUrls={failedThumbnailUrls}
+      onThumbnailError={markThumbnailFailed}
+      selectedIds={selectedIds}
+      onToggleSelect={onToggleSelect}
+      onOpen={openGalleryPreview}
+      onRename={onRename}
+      onLinkToSong={onLinkToSong}
+      onDownload={onDownload}
+      onShowDetails={onShowDetails}
+      onDelete={onDelete}
+    />
+  );
+
+  const toolbar = (
+    <div className="flex items-center gap-1.5">
+      {actions}
+      {selectedFiles.length > 0 && onDeleteSelected && (
+        <AttachmentSelectionMenu files={selectedFiles} onDeleteSelected={onDeleteSelected} />
+      )}
+    </div>
+  );
+
   return (
     <>
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as AttachmentTab)}>
-        <div className="flex items-center justify-between gap-2">
-          <TabsList>
-            <TabsTrigger value="audio">
-              <Trans>Audio ({audioFiles.length + audioPending.length})</Trans>
-            </TabsTrigger>
-            <TabsTrigger value="gallery">
-              <Trans>Gallery ({galleryFiles.length + galleryPending.length})</Trans>
-            </TabsTrigger>
-            <TabsTrigger value="misc">
-              <Trans>Misc ({miscFiles.length + miscPending.length})</Trans>
-            </TabsTrigger>
-          </TabsList>
-          <div className="flex items-center gap-1.5">
-            {actions}
-            {selectedFiles.length > 0 && onDeleteSelected && (
-              <AttachmentSelectionMenu files={selectedFiles} onDeleteSelected={onDeleteSelected} />
-            )}
-          </div>
+      {view !== "tabs" ? (
+        <div className="flex flex-col gap-2">
+          {(actions || selectedFiles.length > 0) && (
+            <div className="flex justify-end">{toolbar}</div>
+          )}
+          {view === "gallery" ? (
+            galleryGrid
+          ) : (
+            <AttachmentListItems files={files} pendingFiles={pendingFiles} dense {...sharedProps} />
+          )}
         </div>
-        <TabsContent value="audio">
-          <AttachmentListItems files={audioFiles} pendingFiles={audioPending} {...sharedProps} />
-        </TabsContent>
-        <TabsContent value="gallery">
-          <AttachmentGalleryGrid
-            files={galleryFiles}
-            pendingFiles={galleryPending}
-            failedThumbnailUrls={failedThumbnailUrls}
-            onThumbnailError={markThumbnailFailed}
-            selectedIds={selectedIds}
-            onToggleSelect={onToggleSelect}
-            onOpen={openGalleryPreview}
-            onRename={onRename}
-            onLinkToSong={onLinkToSong}
-            onDownload={onDownload}
-            onShowDetails={onShowDetails}
-            onDelete={onDelete}
-          />
-        </TabsContent>
-        <TabsContent value="misc">
-          <AttachmentListItems
-            files={miscFiles}
-            pendingFiles={miscPending}
-            dense
-            {...sharedProps}
-          />
-        </TabsContent>
-      </Tabs>
+      ) : (
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as AttachmentTab)}>
+          <div className="flex items-center justify-between gap-2">
+            <TabsList>
+              <TabsTrigger value="audio">
+                <Trans>Audio ({audioFiles.length + audioPending.length})</Trans>
+              </TabsTrigger>
+              <TabsTrigger value="gallery">
+                <Trans>Gallery ({galleryFiles.length + galleryPending.length})</Trans>
+              </TabsTrigger>
+              <TabsTrigger value="misc">
+                <Trans>Misc ({miscFiles.length + miscPending.length})</Trans>
+              </TabsTrigger>
+            </TabsList>
+            {toolbar}
+          </div>
+          <TabsContent value="audio">
+            <AttachmentListItems files={audioFiles} pendingFiles={audioPending} {...sharedProps} />
+          </TabsContent>
+          <TabsContent value="gallery">{galleryGrid}</TabsContent>
+          <TabsContent value="misc">
+            <AttachmentListItems
+              files={miscFiles}
+              pendingFiles={miscPending}
+              dense
+              {...sharedProps}
+            />
+          </TabsContent>
+        </Tabs>
+      )}
 
       <FilePreviewDialog
         file={previewFile ?? null}

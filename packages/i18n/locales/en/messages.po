@@ -42,7 +42,7 @@ msgid "{0, plural, one {# song} other {# songs}}"
 msgstr "{0, plural, one {# song} other {# songs}}"
 
 #. placeholder {0}: files.length
-#: apps/web/src/components/ui/attachment-list.tsx:633
+#: apps/web/src/components/ui/attachment-list.tsx:635
 msgid "{0, plural, one {Delete # file?} other {Delete # files?}}"
 msgstr "{0, plural, one {Delete # file?} other {Delete # files?}}"
 
@@ -96,9 +96,9 @@ msgid "{0} of {count} assigned — failed: {1}"
 msgstr "{0} of {count} assigned — failed: {1}"
 
 #. placeholder {0}: playlist.songCount
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:442
-msgid "{0} songs"
-msgstr "{0} songs"
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:478
+#~ msgid "{0} songs"
+#~ msgstr "{0} songs"
 
 #. placeholder {0}: input.file.name
 #: apps/web/src/services/resources/drive.ts:281
@@ -177,6 +177,10 @@ msgstr "/"
 msgid "+ {amount}"
 msgstr "+ {amount}"
 
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:178
+msgid "+{others} files"
+msgstr "+{others} files"
+
 #: apps/web/src/components/forgot-password-form.tsx:89
 msgid "<0>Back to login</0>"
 msgstr "<0>Back to login</0>"
@@ -206,12 +210,12 @@ msgstr "Actions"
 #. placeholder {0}: folder.name
 #: apps/web/src/components/features/drive/drive-file-row.tsx:159
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:169
-#: apps/web/src/components/ui/attachment-list.tsx:295
-#: apps/web/src/components/ui/attachment-list.tsx:533
+#: apps/web/src/components/ui/attachment-list.tsx:297
+#: apps/web/src/components/ui/attachment-list.tsx:535
 msgid "Actions for {0}"
 msgstr "Actions for {0}"
 
-#: apps/web/src/components/ui/attachment-list.tsx:615
+#: apps/web/src/components/ui/attachment-list.tsx:617
 msgid "Actions for selected files"
 msgstr "Actions for selected files"
 
@@ -292,11 +296,11 @@ msgstr "All day"
 msgid "All files uploaded."
 msgstr "All files uploaded."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:458
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:447
 msgid "All playlists"
 msgstr "All playlists"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:408
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:407
 msgid "All songs"
 msgstr "All songs"
 
@@ -390,11 +394,11 @@ msgid "At least one uppercase letter"
 msgstr "At least one uppercase letter"
 
 #. placeholder {0}: audioFiles.length + audioPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:714
+#: apps/web/src/components/ui/attachment-list.tsx:755
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:256
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:284
 msgid "Audio and documents you upload to the drive show up here."
 msgstr "Audio and documents you upload to the drive show up here."
 
@@ -452,7 +456,7 @@ msgstr "BPM must be a whole number"
 msgid "Build a setlist for your next gig or rehearsal."
 msgstr "Build a setlist for your next gig or rehearsal."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:426
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:425
 msgid "Build a setlist from the playlists page."
 msgstr "Build a setlist from the playlists page."
 
@@ -466,8 +470,8 @@ msgid "By exact amounts"
 msgstr "By exact amounts"
 
 #: apps/web/src/components/features/event-calendar/event-upload-context.tsx:30
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:144
-#: apps/web/src/hooks/use-navigation.ts:62
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:151
+#: apps/web/src/hooks/use-navigation.ts:66
 #: apps/web/src/lib/dynamic-messages.ts:49
 msgid "Calendar"
 msgstr "Calendar"
@@ -710,13 +714,13 @@ msgid "Couldn't load the summary"
 msgstr "Couldn't load the summary"
 
 #: apps/web/src/components/ui/attachment-carousel-dialog.tsx:103
-#: apps/web/src/components/ui/attachment-list.tsx:275
-#: apps/web/src/components/ui/attachment-list.tsx:281
+#: apps/web/src/components/ui/attachment-list.tsx:277
+#: apps/web/src/components/ui/attachment-list.tsx:283
 #: apps/web/src/components/ui/file-preview-dialog.tsx:55
 msgid "Couldn't load this file"
 msgstr "Couldn't load this file"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:44
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:50
 msgid "Couldn't load this section"
 msgstr "Couldn't load this section"
 
@@ -771,7 +775,7 @@ msgstr "Couldn't save repayment"
 msgid "Cover"
 msgstr "Cover"
 
-#: apps/web/src/hooks/use-navigation.ts:79
+#: apps/web/src/hooks/use-navigation.ts:83
 msgid "Create"
 msgstr "Create"
 
@@ -858,7 +862,7 @@ msgstr "Date is required"
 msgid "Day"
 msgstr "Day"
 
-#: apps/web/src/components/ui/attachment-list.tsx:355
+#: apps/web/src/components/ui/attachment-list.tsx:357
 msgid "Define as"
 msgstr "Define as"
 
@@ -879,10 +883,10 @@ msgstr "Define as"
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:323
 #: apps/web/src/components/features/outreach/outreach-column.tsx:144
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:260
-#: apps/web/src/components/ui/attachment-list.tsx:370
-#: apps/web/src/components/ui/attachment-list.tsx:582
-#: apps/web/src/components/ui/attachment-list.tsx:624
-#: apps/web/src/components/ui/attachment-list.tsx:635
+#: apps/web/src/components/ui/attachment-list.tsx:372
+#: apps/web/src/components/ui/attachment-list.tsx:584
+#: apps/web/src/components/ui/attachment-list.tsx:626
+#: apps/web/src/components/ui/attachment-list.tsx:637
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:188
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:254
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
@@ -955,7 +959,7 @@ msgid "Delete this folder?"
 msgstr "Delete this folder?"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:78
-#: apps/web/src/components/ui/attachment-list.tsx:268
+#: apps/web/src/components/ui/attachment-list.tsx:270
 msgid "Demo"
 msgstr "Demo"
 
@@ -970,15 +974,15 @@ msgstr "Desc"
 msgid "Description"
 msgstr "Description"
 
-#: apps/web/src/components/ui/attachment-list.tsx:304
-#: apps/web/src/components/ui/attachment-list.tsx:542
+#: apps/web/src/components/ui/attachment-list.tsx:306
+#: apps/web/src/components/ui/attachment-list.tsx:544
 msgid "Deselect"
 msgstr "Deselect"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:201
 #: apps/web/src/components/features/drive/drive-file-row.tsx:251
-#: apps/web/src/components/ui/attachment-list.tsx:342
-#: apps/web/src/components/ui/attachment-list.tsx:576
+#: apps/web/src/components/ui/attachment-list.tsx:344
+#: apps/web/src/components/ui/attachment-list.tsx:578
 msgid "Details"
 msgstr "Details"
 
@@ -1006,8 +1010,8 @@ msgstr "Dismiss"
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:215
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:56
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:63
-#: apps/web/src/components/ui/attachment-list.tsx:336
-#: apps/web/src/components/ui/attachment-list.tsx:570
+#: apps/web/src/components/ui/attachment-list.tsx:338
+#: apps/web/src/components/ui/attachment-list.tsx:572
 #: apps/web/src/components/ui/file-preview-dialog.tsx:69
 msgid "Download"
 msgstr "Download"
@@ -1021,9 +1025,9 @@ msgid "Drag to reorder"
 msgstr "Drag to reorder"
 
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:52
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:290
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:358
-#: apps/web/src/hooks/use-navigation.ts:67
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:316
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:356
+#: apps/web/src/hooks/use-navigation.ts:71
 #: apps/web/src/lib/dynamic-messages.ts:56
 msgid "Drive"
 msgstr "Drive"
@@ -1204,7 +1208,8 @@ msgstr "Expense actions"
 #: apps/web/src/components/features/expense/suspended-event-expenses.tsx:26
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:73
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:94
-#: apps/web/src/hooks/use-navigation.ts:72
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:261
+#: apps/web/src/hooks/use-navigation.ts:76
 #: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Expenses"
 msgstr "Expenses"
@@ -1324,7 +1329,7 @@ msgid "Fill in the details below to get started"
 msgstr "Fill in the details below to get started"
 
 #: apps/web/src/components/features/song/suspended-song-audio-versions.tsx:79
-#: apps/web/src/components/ui/attachment-list.tsx:268
+#: apps/web/src/components/ui/attachment-list.tsx:270
 msgid "Final"
 msgstr "Final"
 
@@ -1384,7 +1389,7 @@ msgid "Full screen"
 msgstr "Full screen"
 
 #. placeholder {0}: galleryFiles.length + galleryPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:717
+#: apps/web/src/components/ui/attachment-list.tsx:758
 msgid "Gallery ({0})"
 msgstr "Gallery ({0})"
 
@@ -1428,7 +1433,7 @@ msgstr "Hide"
 msgid "Hide — keep uploading"
 msgstr "Hide — keep uploading"
 
-#: apps/web/src/hooks/use-navigation.ts:57
+#: apps/web/src/hooks/use-navigation.ts:56
 #: apps/web/src/routes/projects/$projectSlug/index.tsx:33
 msgid "Home"
 msgstr "Home"
@@ -1496,7 +1501,7 @@ msgstr "Key"
 msgid "Language"
 msgstr "Language"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:204
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:227
 msgid "Last event"
 msgstr "Last event"
 
@@ -1504,19 +1509,19 @@ msgstr "Last event"
 msgid "Last modified"
 msgstr "Last modified"
 
-#: apps/web/src/components/ui/attachment-list.tsx:359
+#: apps/web/src/components/ui/attachment-list.tsx:361
 msgid "Latest demo"
 msgstr "Latest demo"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:287
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:313
 msgid "Latest files"
 msgstr "Latest files"
 
-#: apps/web/src/components/ui/attachment-list.tsx:362
+#: apps/web/src/components/ui/attachment-list.tsx:364
 msgid "Latest final"
 msgstr "Latest final"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:355
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:353
 msgid "Latest media"
 msgstr "Latest media"
 
@@ -1545,8 +1550,8 @@ msgstr "Link {0} to a song"
 msgid "Link copied to clipboard"
 msgstr "Link copied to clipboard"
 
-#: apps/web/src/components/ui/attachment-list.tsx:326
-#: apps/web/src/components/ui/attachment-list.tsx:560
+#: apps/web/src/components/ui/attachment-list.tsx:328
+#: apps/web/src/components/ui/attachment-list.tsx:562
 msgid "Link to a song"
 msgstr "Link to a song"
 
@@ -1586,7 +1591,7 @@ msgstr "Login to your account"
 msgid "Lyrics"
 msgstr "Lyrics"
 
-#: apps/web/src/hooks/use-navigation.ts:107
+#: apps/web/src/hooks/use-navigation.ts:111
 msgid "Manage"
 msgstr "Manage"
 
@@ -1633,7 +1638,7 @@ msgid "Members"
 msgstr "Members"
 
 #. placeholder {0}: miscFiles.length + miscPending.length
-#: apps/web/src/components/ui/attachment-list.tsx:720
+#: apps/web/src/components/ui/attachment-list.tsx:761
 msgid "Misc ({0})"
 msgstr "Misc ({0})"
 
@@ -1645,7 +1650,7 @@ msgstr "Month"
 msgid "Move or delete this column's cards first"
 msgstr "Move or delete this column's cards first"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:241
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:258
 msgid "My balance"
 msgstr "My balance"
 
@@ -1697,7 +1702,7 @@ msgstr "New password"
 msgid "New playlist"
 msgstr "New playlist"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:455
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:444
 msgid "New playlists"
 msgstr "New playlists"
 
@@ -1767,9 +1772,9 @@ msgstr "No expenses yet"
 #~ msgstr "No files linked yet."
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:440
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:255
-#: apps/web/src/components/ui/attachment-list.tsx:192
-#: apps/web/src/components/ui/attachment-list.tsx:432
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:283
+#: apps/web/src/components/ui/attachment-list.tsx:194
+#: apps/web/src/components/ui/attachment-list.tsx:434
 msgid "No files yet"
 msgstr "No files yet"
 
@@ -1799,11 +1804,11 @@ msgstr "No members yet"
 #~ msgid "No organization"
 #~ msgstr "No organization"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:173
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:194
 msgid "No past events yet"
 msgstr "No past events yet"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:309
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:335
 msgid "No photos or videos yet"
 msgstr "No photos or videos yet"
 
@@ -1815,7 +1820,7 @@ msgstr "No places found"
 msgid "No playlists for this event"
 msgstr "No playlists for this event"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:425
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:424
 #: apps/web/src/components/features/playlist/suspended-playlist-list.tsx:67
 msgid "No playlists yet"
 msgstr "No playlists yet"
@@ -1845,7 +1850,7 @@ msgstr "No songs in this playlist"
 #~ msgid "No songs in this playlist."
 #~ msgstr "No songs in this playlist."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:375
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:373
 #: apps/web/src/components/features/song/suspended-song-list.tsx:62
 msgid "No songs yet"
 msgstr "No songs yet"
@@ -1854,11 +1859,11 @@ msgstr "No songs yet"
 #~ msgid "No songs yet."
 #~ msgstr "No songs yet."
 
-#: apps/web/src/components/ui/attachment-list.tsx:499
+#: apps/web/src/components/ui/attachment-list.tsx:501
 msgid "No thumbnail"
 msgstr "No thumbnail"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:102
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:109
 msgid "No upcoming events"
 msgstr "No upcoming events"
 
@@ -1897,14 +1902,14 @@ msgid "Only files can be assigned to an event"
 msgstr "Only files can be assigned to an event"
 
 #. placeholder {0}: file.filename
-#: apps/web/src/components/ui/attachment-list.tsx:239
-#: apps/web/src/components/ui/attachment-list.tsx:477
+#: apps/web/src/components/ui/attachment-list.tsx:241
+#: apps/web/src/components/ui/attachment-list.tsx:479
 msgid "Open {0}"
 msgstr "Open {0}"
 
 #: apps/web/src/components/features/home/suspended-home-sections.tsx:233
-msgid "Open expenses"
-msgstr "Open expenses"
+#~ msgid "Open expenses"
+#~ msgstr "Open expenses"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:122
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:103
@@ -1940,7 +1945,7 @@ msgstr "Orange"
 #~ msgid "Organization not found"
 #~ msgstr "Organization not found"
 
-#: apps/web/src/hooks/use-navigation.ts:54
+#: apps/web/src/hooks/use-navigation.ts:63
 msgid "Organize"
 msgstr "Organize"
 
@@ -1955,7 +1960,7 @@ msgid "Original"
 msgstr "Original"
 
 #: apps/web/src/components/features/outreach/outreach-board.tsx:120
-#: apps/web/src/hooks/use-navigation.ts:97
+#: apps/web/src/hooks/use-navigation.ts:101
 #: apps/web/src/lib/dynamic-messages.ts:57
 msgid "Outreach"
 msgstr "Outreach"
@@ -2042,7 +2047,7 @@ msgstr "Plan & usage"
 msgid "Plan limit reached"
 msgstr "Plan limit reached"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:103
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:110
 msgid "Plan rehearsals and gigs from the calendar."
 msgstr "Plan rehearsals and gigs from the calendar."
 
@@ -2077,7 +2082,7 @@ msgid "Playlist not found"
 msgstr "Playlist not found"
 
 #: apps/web/src/components/ui/event-calendar/event-detail.tsx:213
-#: apps/web/src/hooks/use-navigation.ts:87
+#: apps/web/src/hooks/use-navigation.ts:91
 #: apps/web/src/lib/dynamic-messages.ts:54
 msgid "Playlists"
 msgstr "Playlists"
@@ -2122,7 +2127,7 @@ msgstr "Project name is required"
 msgid "Project not found"
 msgstr "Project not found"
 
-#: apps/web/src/hooks/use-navigation.ts:110
+#: apps/web/src/hooks/use-navigation.ts:114
 msgid "Project settings"
 msgstr "Project settings"
 
@@ -2138,7 +2143,7 @@ msgstr "Purple"
 #~ msgid "Quote"
 #~ msgstr "Quote"
 
-#: apps/web/src/hooks/use-navigation.ts:94
+#: apps/web/src/hooks/use-navigation.ts:98
 msgid "Reach"
 msgstr "Reach"
 
@@ -2146,7 +2151,7 @@ msgstr "Reach"
 msgid "Reading file details…"
 msgstr "Reading file details…"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:405
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:404
 msgid "Recently edited songs"
 msgstr "Recently edited songs"
 
@@ -2179,7 +2184,7 @@ msgstr "Remove {0}"
 msgid "Remove playlist"
 msgstr "Remove playlist"
 
-#: apps/web/src/components/ui/attachment-list.tsx:348
+#: apps/web/src/components/ui/attachment-list.tsx:350
 msgid "Remove role"
 msgstr "Remove role"
 
@@ -2191,8 +2196,8 @@ msgstr "Remove song"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:243
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:184
 #: apps/web/src/components/features/drive/drive-folder-row.tsx:222
-#: apps/web/src/components/ui/attachment-list.tsx:320
-#: apps/web/src/components/ui/attachment-list.tsx:554
+#: apps/web/src/components/ui/attachment-list.tsx:322
+#: apps/web/src/components/ui/attachment-list.tsx:556
 msgid "Rename"
 msgstr "Rename"
 
@@ -2333,8 +2338,8 @@ msgstr "Searching…"
 msgid "seconds"
 msgstr "seconds"
 
-#: apps/web/src/components/ui/attachment-list.tsx:304
-#: apps/web/src/components/ui/attachment-list.tsx:542
+#: apps/web/src/components/ui/attachment-list.tsx:306
+#: apps/web/src/components/ui/attachment-list.tsx:544
 msgid "Select"
 msgstr "Select"
 
@@ -2444,12 +2449,12 @@ msgid "Song not found"
 msgstr "Song not found"
 
 #: apps/web/src/components/features/song/song-upload-context.tsx:30
-#: apps/web/src/hooks/use-navigation.ts:82
+#: apps/web/src/hooks/use-navigation.ts:86
 #: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Songs"
 msgstr "Songs"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:376
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:374
 msgid "Songs you create or edit show up here."
 msgstr "Songs you create or edit show up here."
 
@@ -2590,7 +2595,7 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 msgid "This will permanently delete the file. This action cannot be undone."
 msgstr "This will permanently delete the file. This action cannot be undone."
 
-#: apps/web/src/components/ui/attachment-list.tsx:634
+#: apps/web/src/components/ui/attachment-list.tsx:636
 msgid "This will permanently delete the selected files. This action cannot be undone."
 msgstr "This will permanently delete the selected files. This action cannot be undone."
 
@@ -2716,7 +2721,7 @@ msgstr "Up next"
 msgid "Up next: {0}"
 msgstr "Up next: {0}"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:141
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:148
 msgid "Upcoming events"
 msgstr "Upcoming events"
 
@@ -2746,12 +2751,12 @@ msgstr "Upload failed"
 msgid "Upload files"
 msgstr "Upload files"
 
-#: apps/web/src/components/ui/attachment-list.tsx:193
-#: apps/web/src/components/ui/attachment-list.tsx:433
+#: apps/web/src/components/ui/attachment-list.tsx:195
+#: apps/web/src/components/ui/attachment-list.tsx:435
 msgid "Upload files with the button above."
 msgstr "Upload files with the button above."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:310
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:336
 msgid "Upload media to the drive or to an event."
 msgstr "Upload media to the drive or to an event."
 
@@ -2768,8 +2773,8 @@ msgstr "Uploaded by"
 msgid "Uploaded on"
 msgstr "Uploaded on"
 
-#: apps/web/src/components/ui/attachment-list.tsx:213
-#: apps/web/src/components/ui/attachment-list.tsx:216
+#: apps/web/src/components/ui/attachment-list.tsx:215
+#: apps/web/src/components/ui/attachment-list.tsx:218
 msgid "Uploading…"
 msgstr "Uploading…"
 
@@ -2837,7 +2842,7 @@ msgstr "Yes, cancel"
 msgid "Yes, remove"
 msgstr "Yes, remove"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:216
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:240
 #: apps/web/src/components/ui/expense/ledger-stats.tsx:66
 msgid "You are owed"
 msgstr "You are owed"
@@ -2850,12 +2855,12 @@ msgstr "You are settled up"
 msgid "You have been invited to join"
 msgstr "You have been invited to join"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:215
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:239
 #: apps/web/src/components/ui/expense/ledger-stats.tsx:68
 msgid "You owe"
 msgstr "You owe"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:217
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:241
 msgid "You're all settled"
 msgstr "You're all settled"
 
@@ -2871,7 +2876,7 @@ msgstr "Your current plan and what you have used of it."
 #~ msgid "Your email has been verified. You can now sign in."
 #~ msgstr "Your email has been verified. You can now sign in."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:174
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:195
 msgid "Your latest event will show up here once it's over."
 msgstr "Your latest event will show up here once it's over."
 

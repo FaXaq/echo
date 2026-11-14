@@ -61,6 +61,8 @@ export const makePlaylistRouter = () =>
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             listRecentPlaylistsQuery,
+            listPlaylistSongsQuery,
+            listSongAudioVersionsQuery,
           },
           { scope: ctx.organizationScope, limit: input.limit },
         ),

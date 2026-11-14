@@ -37,7 +37,7 @@ function RouteComponent() {
           <Link
             to="/projects/$projectSlug/drive"
             params={{ projectSlug }}
-            className={buttonVariants({ variant: "outline" })}
+            className={buttonVariants({ variant: "outline", className: "no-underline" })}
           >
             <Upload />
             <Trans>Upload a file</Trans>
@@ -45,7 +45,7 @@ function RouteComponent() {
           <Link
             to="/projects/$projectSlug/calendar"
             params={{ projectSlug }}
-            className={buttonVariants()}
+            className={buttonVariants({ className: "no-underline" })}
           >
             <CalendarPlus />
             <Trans>New event</Trans>
