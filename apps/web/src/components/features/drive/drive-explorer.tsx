@@ -6,7 +6,7 @@ import type { DriveLocation } from "@echo/modules/drive/domain";
 import { useTable } from "@tanstack/react-table";
 import { Plural, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
-import { FolderPlus, Upload } from "lucide-react";
+import { CalendarDays, Folder as FolderIcon, FolderPlus, Music, Upload } from "lucide-react";
 import {
   AttachmentCarouselDialog,
   type CarouselAttachment,
@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FilePreviewDialog } from "@/components/ui/file-preview-dialog";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { dataTableFeatures } from "@/components/ui/data-table-features";
 import {
@@ -40,7 +41,7 @@ import {
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 import { useDriveLocationLabel, useDriveLocationPath } from "@/hooks/use-folder-path";
-import { driveLocationLink, locationPlace } from "@/lib/drive-location";
+import { canCreateFolderAt, driveLocationLink, locationPlace } from "@/lib/drive-location";
 import { getFileDownloadUrl, getFilesDownloadUrls } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { DriveSearchCombobox } from "./drive-search-combobox";
@@ -92,6 +93,8 @@ function DriveExplorerContent({
   const locationLabel = useDriveLocationLabel();
   const folderId = location.kind === "folder" ? location.id : null;
   const place = locationPlace(location);
+  const canUpload = place !== null;
+  const canCreateFolder = canCreateFolderAt(location);
   const organizationName = organizations.find((org) => org.id === organizationId)?.name ?? "";
 
   const [creatingFolder, setCreatingFolder] = useState(false);
@@ -254,6 +257,29 @@ function DriveExplorerContent({
     }
   };
 
+  const emptyState = {
+    events: {
+      icon: <CalendarDays />,
+      title: t`No events yet`,
+      description: t`Events appear here once they are created in the calendar.`,
+    },
+    songs: {
+      icon: <Music />,
+      title: t`No songs yet`,
+      description: t`Songs appear here once they are added to the project.`,
+    },
+    root: {
+      icon: <FolderIcon />,
+      title: t`No files yet`,
+      description: t`Upload files with the Upload button, or drop them here.`,
+    },
+    folder: {
+      icon: <FolderIcon />,
+      title: t`This folder is empty`,
+      description: t`Upload files with the Upload button, or drop them here.`,
+    },
+  }[location.kind === "event" || location.kind === "song" ? "folder" : location.kind];
+
   const navigateToLocation = (target: DriveLocation) =>
     navigate(driveLocationLink(projectSlug, target));
 
@@ -265,31 +291,37 @@ function DriveExplorerContent({
           <div className="flex items-center justify-between gap-2 w-full">
             <DriveSearchCombobox organizationId={organizationId} onSelect={navigateToLocation} />
             <div className="flex gap-2 items-center">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setCreatingFolder(true)}
-              >
-                <FolderPlus />
-                <span className="hidden md:inline">{t`New Folder`}</span>
-              </Button>
-              <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload />
-                <span className="hidden md:inline">{t`Upload`}</span>
-              </Button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                className="sr-only"
-                aria-label={t`Upload files`}
-                onChange={(event) => {
-                  const files = Array.from(event.target.files ?? []);
-                  files.forEach((file) => uploadFile(file));
-                  event.target.value = "";
-                }}
-              />
+              {canCreateFolder && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCreatingFolder(true)}
+                >
+                  <FolderPlus />
+                  <span className="hidden md:inline">{t`New Folder`}</span>
+                </Button>
+              )}
+              {canUpload && (
+                <>
+                  <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
+                    <Upload />
+                    <span className="hidden md:inline">{t`Upload`}</span>
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    className="sr-only"
+                    aria-label={t`Upload files`}
+                    onChange={(event) => {
+                      const files = Array.from(event.target.files ?? []);
+                      files.forEach((file) => uploadFile(file));
+                      event.target.value = "";
+                    }}
+                  />
+                </>
+              )}
               {selectedKeys.size > 0 && (
                 <SelectionActionsMenu
                   downloadDisabledReason={downloadDisabledReason}
@@ -315,7 +347,7 @@ function DriveExplorerContent({
           )}
           className="m-0"
           onDragEnter={(event) => {
-            if (!isFileDrag(event)) return;
+            if (!isFileDrag(event) || !canUpload) return;
             event.preventDefault();
             tableDragDepthRef.current += 1;
             setIsTableDragActive(true);
@@ -325,7 +357,7 @@ function DriveExplorerContent({
             event.preventDefault();
           }}
           onDragLeave={(event) => {
-            if (!isFileDrag(event)) return;
+            if (!isFileDrag(event) || !canUpload) return;
             tableDragDepthRef.current -= 1;
             if (tableDragDepthRef.current <= 0) {
               tableDragDepthRef.current = 0;
@@ -337,7 +369,7 @@ function DriveExplorerContent({
             event.preventDefault();
             tableDragDepthRef.current = 0;
             setIsTableDragActive(false);
-            handleOsDrop(event.dataTransfer, null);
+            if (canUpload) handleOsDrop(event.dataTransfer, null);
           }}
         >
           <TableHeader>
@@ -439,8 +471,8 @@ function DriveExplorerContent({
             })}
             {isEmpty && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  {location.kind === "root" ? t`No files yet` : t`This folder is empty`}
+                <TableCell colSpan={6}>
+                  <ListEmptyState className="border-0" {...emptyState} />
                 </TableCell>
               </TableRow>
             )}

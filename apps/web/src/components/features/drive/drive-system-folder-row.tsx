@@ -3,7 +3,18 @@ import { TableCell, TableRow } from "@/components/ui/table";
 
 export function SystemFolderRow({ name, onNavigate }: { name: string; onNavigate: () => void }) {
   return (
-    <TableRow className="cursor-pointer" onClick={onNavigate}>
+    <TableRow
+      tabIndex={0}
+      className="cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
+      onClick={onNavigate}
+      onKeyDown={(event) => {
+        if (event.target !== event.currentTarget) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onNavigate();
+        }
+      }}
+    >
       <TableCell />
       <TableCell>
         <div className="flex items-center gap-2.5">

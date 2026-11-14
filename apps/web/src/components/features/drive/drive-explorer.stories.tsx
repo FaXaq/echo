@@ -6,6 +6,7 @@ import {
   getDriveLocationPathQueryKey,
   listFolderContentsQueryOptions,
   type Folder,
+  type FolderContents,
   type OrganizationFile,
 } from "@/services/resources/drive";
 import { selfListOrganizations, type Organizations } from "@/services/resources/organization";
@@ -60,6 +61,7 @@ function withSeededDrive(opts: {
   location: DriveLocation;
   folders: Folder[];
   files: OrganizationFile[];
+  systemFolders?: FolderContents["systemFolders"];
   path?: { name: string; location: DriveLocation }[];
 }) {
   const queryClient = new QueryClient();
@@ -70,7 +72,7 @@ function withSeededDrive(opts: {
       sort: "name",
       order: "asc",
     }).queryKey,
-    { folders: opts.folders, systemFolders: [], files: opts.files },
+    { folders: opts.folders, systemFolders: opts.systemFolders ?? [], files: opts.files },
   );
   queryClient.setQueryData(
     getDriveLocationPathQueryKey({ location: opts.location, organizationId: "org-1" }),
@@ -111,6 +113,10 @@ export const Root: Story = {
       <QueryClientProvider
         client={withSeededDrive({
           location: { kind: "root" },
+          systemFolders: [
+            { location: { kind: "events" }, name: "Events" },
+            { location: { kind: "songs" }, name: "Songs" },
+          ],
           folders: [
             makeFolder({ id: "folder-1", name: "Demos" }),
             makeFolder({ id: "folder-2", name: "Artwork" }),
@@ -166,6 +172,24 @@ export const Empty: Story = {
     (Story) => (
       <QueryClientProvider
         client={withSeededDrive({ location: { kind: "root" }, folders: [], files: [] })}
+      >
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
+};
+
+export const EventsRootEmpty: Story = {
+  args: { location: { kind: "events" } },
+  decorators: [
+    (Story) => (
+      <QueryClientProvider
+        client={withSeededDrive({
+          location: { kind: "events" },
+          folders: [],
+          files: [],
+          path: [{ name: "Events", location: { kind: "events" } }],
+        })}
       >
         <Story />
       </QueryClientProvider>

@@ -33,3 +33,14 @@ export function locationPlace(location: DriveLocation): Place | null {
 export function locationKey(location: DriveLocation) {
   return "id" in location ? `${location.kind}:${location.id}` : location.kind;
 }
+
+export function canCreateFolderAt(location: DriveLocation) {
+  return location.kind === "root" || location.kind === "folder";
+}
+
+export function resolveUploadPlace(
+  location: DriveLocation,
+  targetFolder: { id: string } | null,
+): Place | null {
+  return targetFolder ? { kind: "folder", id: targetFolder.id } : locationPlace(location);
+}

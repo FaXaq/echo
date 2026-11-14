@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useLingui } from "@lingui/react/macro";
-import type { DriveLocation, Place } from "@echo/modules/drive/domain";
+import type { DriveLocation } from "@echo/modules/drive/domain";
 import { toast } from "@/components/ui/toast";
 import { formatUploadDestination, useUploadFile } from "./use-upload-file";
 import { evaluateOsFileDrop } from "@/lib/drive-drop";
-import { locationPlace } from "@/lib/drive-location";
+import { resolveUploadPlace } from "@/lib/drive-location";
 import { downloadBlob, formatSize } from "@/lib/file";
 import {
   DRIVE_BULK_DOWNLOAD_MAX_BYTES,
@@ -54,9 +54,7 @@ export function useDriveFileTransfer({
       ...path.map((segment) => segment.label),
       targetFolder?.name,
     ]);
-    const place: Place | null = targetFolder
-      ? { kind: "folder", id: targetFolder.id }
-      : locationPlace(location);
+    const place = resolveUploadPlace(location, targetFolder);
     if (!place) return;
     uploadMutation.mutate({ organizationId, place, file, destinationLabel });
   };
