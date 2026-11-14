@@ -43,6 +43,7 @@ describe("searchDriveQuery", () => {
     expect(sql).toContain("event_file");
     expect(sql).toContain("folder_file");
     expect(sql).toContain("DISTINCT ON");
+    expect(sql).toContain("ORDER BY file_id, at ASC, kind ASC, place_id ASC");
     expect(sql).toContain("UNION ALL");
   });
 

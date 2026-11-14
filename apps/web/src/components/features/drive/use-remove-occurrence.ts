@@ -83,7 +83,7 @@ export function useRemoveOccurrence(place: Place, organizationId: string, placeN
         type: "success",
       });
     } catch {
-      toast.add({ title: t`Couldn't delete file`, type: "error" });
+      toast.add({ title: t`Couldn't remove file`, type: "error" });
     }
   };
 

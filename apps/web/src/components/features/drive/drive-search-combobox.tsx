@@ -62,6 +62,12 @@ export function DriveSearchCombobox({
   const isSearching = isDebouncePending || (isSearchReady && isFetching);
   const hasNoResults = isSearchReady && !isFetching && folders.length === 0 && files.length === 0;
 
+  const formatLocation = ({ location, path }: { location: DriveLocation; path: string[] }) => {
+    const head =
+      location.kind === "event" ? t`Events` : location.kind === "song" ? t`Songs` : path[0];
+    return formatDriveSearchLocation(path.length === 0 ? [] : [head, ...path.slice(1)], t`Drive`);
+  };
+
   const closeAndReset = () => {
     setOpen(false);
     setQuery("");
@@ -108,7 +114,7 @@ export function DriveSearchCombobox({
                     <FolderIcon className="size-4 shrink-0 text-muted-foreground" />
                     <span className="truncate">{folder.name}</span>
                     <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-                      {formatDriveSearchLocation(folder.path)}
+                      {formatLocation(folder)}
                     </span>
                   </CommandItem>
                 ))}
@@ -130,7 +136,7 @@ export function DriveSearchCombobox({
                       <Icon className="size-4 shrink-0 text-muted-foreground" />
                       <span className="truncate">{file.filename}</span>
                       <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-                        {formatDriveSearchLocation(file.path)}
+                        {formatLocation(file)}
                       </span>
                     </CommandItem>
                   );

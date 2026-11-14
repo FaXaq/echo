@@ -111,7 +111,7 @@ export const searchDriveQueryFactory: SearchDriveQueryPortFactory =
         SELECT file_id, linked_at AS at, 'song' AS kind, song_id AS place_id FROM song_file
       ) occurrence
       WHERE file_id IN (SELECT id FROM matched)
-      ORDER BY file_id, at ASC
+      ORDER BY file_id, at ASC, kind ASC, place_id ASC
     )
     SELECT matched.*,
       oldest.kind AS occurrence_kind,

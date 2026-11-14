@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { DriveLocation } from "@echo/modules/drive/domain";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import { TRPCClientError } from "@trpc/client";
 import { render, screen, waitFor, within } from "@/lib/test-utils";
 
 const navigate = vi.fn();
@@ -139,12 +140,33 @@ describe("DriveExplorer system folders", () => {
       },
     );
 
-    await screen.findByText("Demos");
+    await waitFor(() => expect(screen.getAllByRole("row")).toHaveLength(4));
     const names = screen
       .getAllByRole("row")
       .slice(1)
       .map((row) => within(row).queryByText(/^(Events|Songs|Demos)$/)?.textContent);
     expect(names).toEqual(["Events", "Songs", "Demos"]);
+  });
+
+  it("renders every Event system folder row without duplicate keys", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    renderExplorer(
+      { kind: "events" },
+      {
+        systemFolders: [
+          { location: { kind: "event", id: "event-1" }, name: "Gig A" },
+          { location: { kind: "event", id: "event-2" }, name: "Gig B" },
+        ],
+      },
+    );
+
+    expect(await screen.findByText("Gig A")).toBeInTheDocument();
+    expect(screen.getByText("Gig B")).toBeInTheDocument();
+    expect(consoleError).not.toHaveBeenCalledWith(
+      expect.stringContaining("same key"),
+      expect.anything(),
+    );
+    consoleError.mockRestore();
   });
 
   it("does not select or offer actions on system folder rows", async () => {
@@ -233,6 +255,45 @@ describe("DriveExplorer copy and paste", () => {
         expect.objectContaining({ title: "Pasted 2 files", type: "success" }),
       ),
     );
+  });
+
+  it("clears the clipboard and says so when a copied file no longer exists", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    addOccurrences.mockRejectedValue(
+      TRPCClientError.from({
+        error: { message: "Not found", code: -32004, data: { code: "NOT_FOUND", httpStatus: 404 } },
+      }),
+    );
+    renderExplorer({ kind: "folder", id: "folder-1" });
+    await user.click(await screen.findByText("This folder is empty"));
+    await user.keyboard("{Meta>}v{/Meta}");
+
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Some copied files no longer exist — copy them again",
+          type: "error",
+        }),
+      ),
+    );
+    expect(renderHook(() => useDriveClipboard("org-1")).result.current.fileIds).toEqual([]);
+  });
+
+  it("keeps the clipboard and shows the generic toast on other paste errors", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    addOccurrences.mockRejectedValue(new Error("boom"));
+    renderExplorer({ kind: "folder", id: "folder-1" });
+    await user.click(await screen.findByText("This folder is empty"));
+    await user.keyboard("{Meta>}v{/Meta}");
+
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Couldn't paste files", type: "error" }),
+      ),
+    );
+    expect(renderHook(() => useDriveClipboard("org-1")).result.current.fileIds).toEqual(["f1"]);
   });
 
   it("ignores shortcuts typed in an input", async () => {
@@ -442,6 +503,26 @@ describe("DriveExplorer removal", () => {
     await waitFor(() =>
       expect(toastAdd).toHaveBeenCalledWith(
         expect.objectContaining({ title: "File deleted", type: "success" }),
+      ),
+    );
+  });
+
+  it("uses neutral wording when removing a file fails", async () => {
+    listFileOccurrences.mockResolvedValue([
+      { place: folderPlace, path: ["Demos"] },
+      { place: { kind: "root" }, path: [] },
+    ]);
+    removeOccurrence.mockRejectedValue(new Error("boom"));
+    const user = userEvent.setup();
+    renderExplorer({ kind: "folder", id: "folder-1" }, { files }, [
+      { name: "Demos", location: { kind: "folder", id: "folder-1" } },
+    ]);
+    await chooseDeleteFromContextMenu(user);
+    await user.click(await screen.findByRole("button", { name: "Remove" }));
+
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "Couldn't remove file", type: "error" }),
       ),
     );
   });

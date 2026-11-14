@@ -2,6 +2,7 @@ import { Suspense, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { TRPCClientError } from "@trpc/client";
 import type { DriveLocation, Place } from "@echo/modules/drive/domain";
 import { useTable } from "@tanstack/react-table";
 import { plural } from "@lingui/core/macro";
@@ -42,7 +43,12 @@ import {
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 import { useDriveLocationLabel, useDriveLocationPath } from "@/hooks/use-folder-path";
-import { canCreateFolderAt, driveLocationLink, locationPlace } from "@/lib/drive-location";
+import {
+  canCreateFolderAt,
+  driveLocationLink,
+  locationKey,
+  locationPlace,
+} from "@/lib/drive-location";
 import { getFileDownloadUrl, getFilesDownloadUrls } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { DriveSearchCombobox } from "./drive-search-combobox";
@@ -267,7 +273,17 @@ function DriveExplorerContent({
             title: plural(count, { one: "Pasted # file", other: "Pasted # files" }),
             type: "success",
           }),
-        onError: () => toast.add({ title: t`Couldn't paste files`, type: "error" }),
+        onError: (error) => {
+          if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
+            clipboard.clear();
+            toast.add({
+              title: t`Some copied files no longer exist — copy them again`,
+              type: "error",
+            });
+          } else {
+            toast.add({ title: t`Couldn't paste files`, type: "error" });
+          }
+        },
       },
     );
   };
@@ -442,7 +458,7 @@ function DriveExplorerContent({
           <TableBody>
             {data.systemFolders.map((entry) => (
               <SystemFolderRow
-                key={entry.location.kind}
+                key={locationKey(entry.location)}
                 name={locationLabel(entry.location, entry.name)}
                 onNavigate={() => navigateToLocation(entry.location)}
                 canPaste={clipboard.fileIds.length > 0}
