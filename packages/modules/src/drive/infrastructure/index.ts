@@ -47,18 +47,6 @@ export type {
 export { listSongAudioVersionsQueryFactory } from "./list-song-audio-versions.query.kysely.js";
 
 export type {
-  LinkFileToSongInput,
-  LinkFileToSongCommandPort,
-} from "./link-file-to-song.command.port.js";
-export { linkFileToSongCommandFactory } from "./link-file-to-song.command.kysely.js";
-
-export type {
-  LinkFileToEventInput,
-  LinkFileToEventCommandPort,
-} from "./link-file-to-event.command.port.js";
-export { linkFileToEventCommandFactory } from "./link-file-to-event.command.kysely.js";
-
-export type {
   EventExistsInOrganizationInput,
   EventExistsInOrganizationQueryPort,
 } from "./event-exists-in-organization.query.port.js";
@@ -84,12 +72,6 @@ export { clearSongFileRoleCommandFactory } from "./clear-song-file-role.command.
 
 export type { ListFilesByOrganizationQueryPort } from "./list-files-by-organization.query.port.js";
 export { listFilesByOrganizationQueryFactory } from "./list-files-by-organization.query.kysely.js";
-
-export type {
-  DeleteFileByIdInput,
-  DeleteFileByIdCommandPort,
-} from "./delete-file-by-id.command.port.js";
-export { deleteFileByIdCommandFactory } from "./delete-file-by-id.command.kysely.js";
 
 export type {
   RenameFileByIdInput,
@@ -182,3 +164,21 @@ export type {
   ListRecentFilesQueryPort,
 } from "./list-recent-files.query.port.js";
 export { listRecentFilesQueryFactory } from "./list-recent-files.query.kysely.js";
+
+export type {
+  InsertOccurrencesInput,
+  InsertOccurrencesCommandPort,
+} from "./insert-occurrences.command.port.js";
+export { insertOccurrencesCommandFactory } from "./insert-occurrences.command.kysely.js";
+
+export type {
+  DeleteOccurrenceInput,
+  DeleteOccurrenceCommandPort,
+} from "./delete-occurrence.command.port.js";
+export { deleteOccurrenceCommandFactory } from "./delete-occurrence.command.kysely.js";
+
+export type {
+  ListFileOccurrencesQueryInput,
+  ListFileOccurrencesQueryPort,
+} from "./list-file-occurrences.query.port.js";
+export { listFileOccurrencesQueryFactory } from "./list-file-occurrences.query.kysely.js";

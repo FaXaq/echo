@@ -2,7 +2,7 @@ import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { FileRecord } from "../domain/index.js";
+import type { FileRecord, FolderPlace } from "../domain/index.js";
 import type {
   FindFolderByIdQueryPort,
   MoveFileToFolderCommandPort,
@@ -15,7 +15,12 @@ export async function moveFile(
     findFolderByIdQuery: FindFolderByIdQueryPort;
     moveFileToFolderCommand: MoveFileToFolderCommandPort;
   },
-  input: { id: string; userId: string; scope: OrganizationScope; folderId: string | null },
+  input: {
+    id: string;
+    from: FolderPlace;
+    scope: OrganizationScope;
+    folderId: string | null;
+  },
 ): Promise<FileRecord> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
@@ -30,8 +35,8 @@ export async function moveFile(
 
   const updated = await deps.moveFileToFolderCommand(deps.db, input.scope, {
     id: input.id,
+    from: input.from,
     folderId: input.folderId,
-    placedBy: input.userId,
   });
   if (!updated) throw notFound("File");
   return updated;

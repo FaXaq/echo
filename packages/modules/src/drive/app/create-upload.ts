@@ -1,5 +1,5 @@
 import type { KyselyDB } from "@echo/db";
-import { conflict, forbidden, notFound, quotaExceeded } from "@echo/errors";
+import { conflict, forbidden, quotaExceeded } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
@@ -17,6 +17,7 @@ import {
   thumbnailKeyFor,
 } from "../domain/index.js";
 import type { MediaMetadata, Place } from "../domain/index.js";
+import { assertPlaceExists } from "./assert-place-exists.js";
 import type {
   EventExistsInOrganizationQueryPort,
   FindFolderByIdQueryPort,
@@ -26,36 +27,6 @@ import type {
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
 
 export type GetPersonalOrganizationIdPort = (userId: string) => Promise<string | undefined>;
-
-async function assertPlaceExists(
-  deps: {
-    db: KyselyDB;
-    findFolderByIdQuery: FindFolderByIdQueryPort;
-    eventExistsInOrganizationQuery: EventExistsInOrganizationQueryPort;
-    songExistsInOrganizationQuery: SongExistsInOrganizationQueryPort;
-  },
-  scope: OrganizationScope,
-  place: Place,
-) {
-  switch (place.kind) {
-    case "root":
-      return;
-    case "folder":
-      if (!(await deps.findFolderByIdQuery(deps.db, scope, { id: place.id }))) {
-        throw notFound("Folder");
-      }
-      return;
-    case "event":
-      if (!(await deps.eventExistsInOrganizationQuery(deps.db, scope, { eventId: place.id }))) {
-        throw notFound("CalendarEvent");
-      }
-      return;
-    case "song":
-      if (!(await deps.songExistsInOrganizationQuery(deps.db, scope, { songId: place.id }))) {
-        throw notFound("Song");
-      }
-  }
-}
 
 export async function createUpload(
   deps: {

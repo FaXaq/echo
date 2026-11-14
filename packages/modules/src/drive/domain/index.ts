@@ -106,6 +106,7 @@ export type Place =
   | { kind: "folder"; id: string }
   | { kind: "event"; id: string }
   | { kind: "song"; id: string };
+export type FolderPlace = Extract<Place, { kind: "root" | "folder" }>;
 export type DriveLocation = Place | { kind: "events" } | { kind: "songs" };
 export type PlaceLabel = { place: Place; path: string[] };
 export type SystemFolderEntry = { location: DriveLocation; name: string };
@@ -147,3 +148,6 @@ export type FolderRecord = {
   createdAt: Date | null;
   updatedAt: Date | null;
 };
+
+export const eventFolderName = (event: { title: string; startDate: Date }) =>
+  `${event.startDate.toISOString().slice(0, 10)} · ${event.title}`;

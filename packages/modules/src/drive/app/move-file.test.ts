@@ -30,7 +30,7 @@ describe("moveFile", () => {
             }),
           }),
         },
-        { id: "file-1", userId: "user-1", scope, folderId: "folder-1" },
+        { id: "file-1", from: { kind: "root" }, scope, folderId: "folder-1" },
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
   });
@@ -46,7 +46,7 @@ describe("moveFile", () => {
           moveFileToFolderCommand,
           ...makeFakePermissionChecks(),
         },
-        { id: "file-1", userId: "user-1", scope, folderId: "missing-folder" },
+        { id: "file-1", from: { kind: "root" }, scope, folderId: "missing-folder" },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
@@ -62,7 +62,7 @@ describe("moveFile", () => {
           moveFileToFolderCommand,
           ...makeFakePermissionChecks(),
         },
-        { id: "missing", userId: "user-1", scope, folderId: "folder-1" },
+        { id: "missing", from: { kind: "root" }, scope, folderId: "folder-1" },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
@@ -79,13 +79,13 @@ describe("moveFile", () => {
         moveFileToFolderCommand,
         ...makeFakePermissionChecks(),
       },
-      { id: "file-1", userId: "user-1", scope, folderId: "folder-1" },
+      { id: "file-1", from: { kind: "root" }, scope, folderId: "folder-1" },
     );
 
     expect(moveFileToFolderCommand).toHaveBeenCalledWith(expect.anything(), scope, {
       id: "file-1",
+      from: { kind: "root" },
       folderId: "folder-1",
-      placedBy: "user-1",
     });
   });
 
@@ -101,13 +101,13 @@ describe("moveFile", () => {
         moveFileToFolderCommand,
         ...makeFakePermissionChecks(),
       },
-      { id: "file-1", userId: "user-1", scope, folderId: null },
+      { id: "file-1", from: { kind: "root" }, scope, folderId: null },
     );
 
     expect(moveFileToFolderCommand).toHaveBeenCalledWith(expect.anything(), scope, {
       id: "file-1",
+      from: { kind: "root" },
       folderId: null,
-      placedBy: "user-1",
     });
   });
 });

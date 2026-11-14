@@ -14,8 +14,6 @@ import type {
   InsertPendingFileCommandPort,
   InsertPendingFileInput,
   EventExistsInOrganizationQueryPort,
-  LinkFileToEventCommandPort,
-  LinkFileToSongCommandPort,
   MarkFileUploadedCommandPort,
   SongExistsInOrganizationQueryPort,
 } from "../infrastructure/index.js";
@@ -112,18 +110,6 @@ export function makeFakeInsertPendingFile(
     };
     return record;
   };
-}
-
-export function makeFakeLinkFileToSong(
-  onLink?: (songId: string, fileId: string) => void,
-): LinkFileToSongCommandPort {
-  return async (_db, _scope, input) => {
-    onLink?.(input.songId, input.fileId);
-  };
-}
-
-export function makeFakeLinkFileToEvent(linked = true): LinkFileToEventCommandPort {
-  return async () => linked;
 }
 
 export function makeFakeEventExistsInOrganization(

@@ -3,18 +3,18 @@ import {
   confirmUpload,
   createFolder,
   createUpload,
-  deleteFile,
   deleteFolder,
   getFileDownloadUrl,
   getFilesDownloadUrls,
+  addOccurrences,
   getFolder,
+  listFileOccurrences,
+  removeOccurrence,
   listEventFiles,
   listFolderContents,
   listOrganizationFiles,
   listSongFiles,
   moveFile,
-  linkFileToSong,
-  linkFileToEvent,
   moveFolder,
   renameFile,
   renameFolder,
@@ -24,8 +24,8 @@ import {
 } from "@echo/modules/drive/app";
 import { MAX_THUMBNAIL_BYTES } from "@echo/modules/drive/domain";
 import {
-  deleteFileByIdCommandFactory,
   deleteFolderCascadeCommandFactory,
+  deleteOccurrenceCommandFactory,
   deleteOrphanedFilesCommandFactory,
   eventExistsInOrganizationQueryFactory,
   findFileByIdQueryFactory,
@@ -34,9 +34,9 @@ import {
   findFolderByParentAndNameQueryFactory,
   findFolderDescendantIdsQueryFactory,
   insertFolderCommandFactory,
+  insertOccurrencesCommandFactory,
   insertPendingFileCommandFactory,
-  linkFileToSongCommandFactory,
-  linkFileToEventCommandFactory,
+  listFileOccurrencesQueryFactory,
   listFilesByEventQueryFactory,
   listFilesByOrganizationQueryFactory,
   listFilesBySongQueryFactory,
@@ -68,8 +68,6 @@ const placeSchema = z.discriminatedUnion("kind", [
 ]);
 
 const insertPendingFileCommand = insertPendingFileCommandFactory();
-const linkFileToSongCommand = linkFileToSongCommandFactory();
-const linkFileToEventCommand = linkFileToEventCommandFactory();
 const songExistsInOrganizationQuery = songExistsInOrganizationQueryFactory();
 const eventExistsInOrganizationQuery = eventExistsInOrganizationQueryFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
@@ -78,7 +76,6 @@ const markFileUploadedCommand = markFileUploadedCommandFactory();
 const listFilesByEventQuery = listFilesByEventQueryFactory();
 const listFilesBySongQuery = listFilesBySongQueryFactory();
 const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
-const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 const renameFileByIdCommand = renameFileByIdCommandFactory();
 const moveFileToFolderCommand = moveFileToFolderCommandFactory();
 const findFolderByIdQuery = findFolderByIdQueryFactory();
@@ -89,6 +86,9 @@ const moveFolderCommand = moveFolderCommandFactory();
 const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
 const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
 const deleteOrphanedFilesCommand = deleteOrphanedFilesCommandFactory();
+const insertOccurrencesCommand = insertOccurrencesCommandFactory();
+const deleteOccurrenceCommand = deleteOccurrenceCommandFactory();
+const listFileOccurrencesQuery = listFileOccurrencesQueryFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
 const searchDriveQuery = searchDriveQueryFactory();
 const resolvePlanQuery = resolvePlanQueryFactory();
@@ -227,21 +227,6 @@ export const makeDriveRouter = () =>
         ),
       ),
 
-    deleteFile: organizationProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteFile(
-          {
-            db: ctx.db,
-            s3Storage: ctx.s3Storage,
-            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFileByIdQuery,
-            deleteFileByIdCommand,
-          },
-          { id: input.id, scope: ctx.organizationScope },
-        ),
-      ),
-
     renameFile: organizationProcedure
       .input(z.object({ id: z.string(), filename: z.string().min(1) }))
       .mutation(({ ctx, input }) =>
@@ -284,7 +269,16 @@ export const makeDriveRouter = () =>
       ),
 
     moveFile: organizationProcedure
-      .input(z.object({ id: z.string(), folderId: z.string().nullable() }))
+      .input(
+        z.object({
+          id: z.string(),
+          from: z.discriminatedUnion("kind", [
+            z.object({ kind: z.literal("root") }),
+            z.object({ kind: z.literal("folder"), id: z.string() }),
+          ]),
+          folderId: z.string().nullable(),
+        }),
+      )
       .mutation(({ ctx, input }) =>
         moveFile(
           {
@@ -295,39 +289,55 @@ export const makeDriveRouter = () =>
           },
           {
             id: input.id,
-            userId: ctx.session.user.id,
+            from: input.from,
             scope: ctx.organizationScope,
             folderId: input.folderId,
           },
         ),
       ),
 
-    linkFileToSong: organizationProcedure
-      .input(z.object({ fileId: z.string(), songId: z.string() }))
+    addOccurrences: organizationProcedure
+      .input(z.object({ fileIds: z.array(z.string()).min(1), place: placeSchema }))
       .mutation(({ ctx, input }) =>
-        linkFileToSong(
+        addOccurrences(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFileByIdQuery,
+            findFilesByIdsQuery,
+            findFolderByIdQuery,
+            eventExistsInOrganizationQuery,
             songExistsInOrganizationQuery,
-            linkFileToSongCommand,
+            insertOccurrencesCommand,
           },
           { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
         ),
       ),
 
-    linkFileToEvent: organizationProcedure
-      .input(z.object({ fileId: z.string(), eventId: z.string() }))
+    removeOccurrence: organizationProcedure
+      .input(z.object({ fileId: z.string(), place: placeSchema }))
       .mutation(({ ctx, input }) =>
-        linkFileToEvent(
+        removeOccurrence(
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            deleteOccurrenceCommand,
+            deleteOrphanedFilesCommand,
+          },
+          { ...input, scope: ctx.organizationScope },
+        ),
+      ),
+
+    listFileOccurrences: organizationProcedure
+      .input(z.object({ fileId: z.string() }))
+      .query(({ ctx, input }) =>
+        listFileOccurrences(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFileByIdQuery,
-            linkFileToEventCommand,
+            listFileOccurrencesQuery,
           },
-          { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
+          { fileId: input.fileId, scope: ctx.organizationScope },
         ),
       ),
 
