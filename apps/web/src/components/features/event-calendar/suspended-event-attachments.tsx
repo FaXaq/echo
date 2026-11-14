@@ -25,7 +25,7 @@ import { toast } from "@/components/ui/toast";
 import {
   downloadOrganizationFile,
   getEventFilesQueryOptions,
-  useDeleteFileMutation,
+  useRemoveOccurrenceMutation,
   useRenameFileMutation,
   type EventFile,
 } from "@/services/resources/drive";
@@ -142,7 +142,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const uploadMutation = useEventUploadMutation();
   const getDestinationLabel = useEventDestinationLabel(eventId, organizationId);
   const pendingFiles = useEventUploadingFiles(eventId);
-  const deleteMutation = useDeleteFileMutation();
+  const removeMutation = useRemoveOccurrenceMutation();
   const renameMutation = useRenameFileMutation();
   const [renamingFile, setRenamingFile] = useState<EventFile | null>(null);
   const [detailsFile, setDetailsFile] = useState<EventFile | null>(null);
@@ -157,7 +157,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
       uploadMutation.mutate({
-        eventId,
+        place: { kind: "event", id: eventId },
         organizationId,
         file,
         destinationLabel: getDestinationLabel(),
@@ -167,7 +167,13 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
 
   const handleDeleteSelected = async (filesToDelete: EventFile[]) => {
     await Promise.all(
-      filesToDelete.map((file) => deleteMutation.mutateAsync({ id: file.id, organizationId })),
+      filesToDelete.map((file) =>
+        removeMutation.mutateAsync({
+          fileId: file.id,
+          place: { kind: "event", id: eventId },
+          organizationId,
+        }),
+      ),
     );
     setSelectedIds(new Set());
     toast.add({ title: t`${filesToDelete.length} files deleted`, type: "success" });
@@ -211,7 +217,6 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
             id: file.id,
             filename: file.filename,
             downloadUrl: file.downloadUrl,
-            contextLabel: file.eventTitle ?? undefined,
           })
         }
       />
@@ -231,7 +236,11 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         confirmLabel={t`Delete`}
         onConfirm={async () => {
           if (!deletingFileId) return;
-          await deleteMutation.mutateAsync({ id: deletingFileId, organizationId });
+          await removeMutation.mutateAsync({
+            fileId: deletingFileId,
+            place: { kind: "event", id: eventId },
+            organizationId,
+          });
           toast.add({ title: t`File deleted`, type: "success" });
         }}
       />

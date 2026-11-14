@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import type { DriveLocation } from "@echo/modules/drive/domain";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DriveExplorer } from "./drive-explorer";
 import {
-  getFolderContentsQueryOptions,
-  getFolderPathQueryKey,
+  getDriveLocationPathQueryKey,
+  listFolderContentsQueryOptions,
   type Folder,
   type OrganizationFile,
 } from "@/services/resources/drive";
@@ -35,9 +36,6 @@ function makeFolder(overrides: Partial<Folder>): Folder {
 function makeFile(overrides: Partial<OrganizationFile>): OrganizationFile {
   return {
     id: Math.random().toString(36),
-    eventId: null,
-    eventTitle: null,
-    folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
     uploadedByName: "Jane Doe",
@@ -59,23 +57,23 @@ function makeFile(overrides: Partial<OrganizationFile>): OrganizationFile {
 }
 
 function withSeededDrive(opts: {
-  folderId: string | null;
+  location: DriveLocation;
   folders: Folder[];
   files: OrganizationFile[];
-  path?: Folder[];
+  path?: { name: string; location: DriveLocation }[];
 }) {
   const queryClient = new QueryClient();
   queryClient.setQueryData(
-    getFolderContentsQueryOptions({
-      folderId: opts.folderId,
+    listFolderContentsQueryOptions({
+      location: opts.location,
       organizationId: "org-1",
       sort: "name",
       order: "asc",
     }).queryKey,
-    { folders: opts.folders, files: opts.files },
+    { folders: opts.folders, systemFolders: [], files: opts.files },
   );
   queryClient.setQueryData(
-    getFolderPathQueryKey({ folderId: opts.folderId, organizationId: "org-1" }),
+    getDriveLocationPathQueryKey({ location: opts.location, organizationId: "org-1" }),
     opts.path ?? [],
   );
   queryClient.setQueryData(selfListOrganizations().queryKey, [makeOrganization({})]);
@@ -90,7 +88,7 @@ const meta = {
   args: {
     organizationId: "org-1",
     projectSlug: "acme",
-    folderId: null,
+    location: { kind: "root" },
     sort: "name",
     order: "asc",
     onSortChange: () => {},
@@ -112,7 +110,7 @@ export const Root: Story = {
     (Story) => (
       <QueryClientProvider
         client={withSeededDrive({
-          folderId: null,
+          location: { kind: "root" },
           folders: [
             makeFolder({ id: "folder-1", name: "Demos" }),
             makeFolder({ id: "folder-2", name: "Artwork" }),
@@ -137,12 +135,12 @@ export const Root: Story = {
 };
 
 export const NestedFolder: Story = {
-  args: { folderId: "folder-1" },
+  args: { location: { kind: "folder", id: "folder-1" } },
   decorators: [
     (Story) => (
       <QueryClientProvider
         client={withSeededDrive({
-          folderId: "folder-1",
+          location: { kind: "folder", id: "folder-1" },
           folders: [],
           files: [
             makeFile({
@@ -154,7 +152,7 @@ export const NestedFolder: Story = {
               sizeBytes: 245_000,
             }),
           ],
-          path: [makeFolder({ id: "folder-1", name: "Demos" })],
+          path: [{ name: "Demos", location: { kind: "folder", id: "folder-1" } }],
         })}
       >
         <Story />
@@ -166,7 +164,9 @@ export const NestedFolder: Story = {
 export const Empty: Story = {
   decorators: [
     (Story) => (
-      <QueryClientProvider client={withSeededDrive({ folderId: null, folders: [], files: [] })}>
+      <QueryClientProvider
+        client={withSeededDrive({ location: { kind: "root" }, folders: [], files: [] })}
+      >
         <Story />
       </QueryClientProvider>
     ),

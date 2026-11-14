@@ -25,7 +25,7 @@ import { toast } from "@/components/ui/toast";
 import {
   downloadOrganizationFile,
   getSongFilesQueryOptions,
-  useDeleteFileMutation,
+  useRemoveOccurrenceMutation,
   useRenameFileMutation,
   type SongFile,
 } from "@/services/resources/drive";
@@ -145,7 +145,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const uploadMutation = useSongUploadMutation();
   const getDestinationLabel = useSongDestinationLabel(songId, organizationId);
   const pendingFiles = useSongUploadingFiles(songId);
-  const deleteMutation = useDeleteFileMutation();
+  const removeMutation = useRemoveOccurrenceMutation();
   const renameMutation = useRenameFileMutation();
   const setAudioVersionMutation = useSetSongAudioVersionMutation({
     songId,
@@ -169,7 +169,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
       uploadMutation.mutate({
-        songId,
+        place: { kind: "song", id: songId },
         organizationId,
         file,
         destinationLabel: getDestinationLabel(),
@@ -179,7 +179,13 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
 
   const handleDeleteSelected = async (filesToDelete: SongFile[]) => {
     await Promise.all(
-      filesToDelete.map((file) => deleteMutation.mutateAsync({ id: file.id, organizationId })),
+      filesToDelete.map((file) =>
+        removeMutation.mutateAsync({
+          fileId: file.id,
+          place: { kind: "song", id: songId },
+          organizationId,
+        }),
+      ),
     );
     setSelectedIds(new Set());
     toast.add({ title: t`${filesToDelete.length} files deleted`, type: "success" });
@@ -222,7 +228,6 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
             id: file.id,
             filename: file.filename,
             downloadUrl: file.downloadUrl,
-            contextLabel: file.eventTitle ?? undefined,
           })
         }
         onSetAudioRole={(file, role) => {
@@ -260,7 +265,11 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
         confirmLabel={t`Delete`}
         onConfirm={async () => {
           if (!deletingFileId) return;
-          await deleteMutation.mutateAsync({ id: deletingFileId, organizationId });
+          await removeMutation.mutateAsync({
+            fileId: deletingFileId,
+            place: { kind: "song", id: songId },
+            organizationId,
+          });
           toast.add({ title: t`File deleted`, type: "success" });
         }}
       />

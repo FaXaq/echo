@@ -24,10 +24,10 @@ export function useUploadFile() {
         description: input.destinationLabel,
       });
 
-      if (!input.songId || !input.songAudioRole) return;
+      if (input.place.kind !== "song" || !input.songAudioRole) return;
       try {
         await setSongAudioVersion(queryClient, {
-          songId: input.songId,
+          songId: input.place.id,
           organizationId: input.organizationId,
           fileId: uploaded.id,
           role: input.songAudioRole,

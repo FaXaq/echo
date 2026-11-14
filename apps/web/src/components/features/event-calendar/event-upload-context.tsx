@@ -54,7 +54,8 @@ export function useEventUploadingFiles(eventId: string) {
     select: (mutation): UploadingFile | null => {
       if (
         !isUploadFileInput(mutation.state.variables) ||
-        mutation.state.variables.eventId !== eventId
+        mutation.state.variables.place.kind !== "event" ||
+        mutation.state.variables.place.id !== eventId
       )
         return null;
       return {

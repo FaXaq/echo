@@ -34,7 +34,7 @@ function RouteComponent() {
       <DriveExplorer
         organizationId={organizationId}
         projectSlug={projectSlug}
-        folderId={folderId}
+        location={{ kind: "folder", id: folderId }}
         sort={sort}
         order={order}
         onSortChange={(field) =>

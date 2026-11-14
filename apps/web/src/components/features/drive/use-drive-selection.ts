@@ -7,7 +7,9 @@ import {
   type Folder,
   type OrganizationFile,
 } from "@/services/resources/drive";
+import type { DriveLocation } from "@echo/modules/drive/domain";
 import { toast } from "@/components/ui/toast";
+import { locationKey } from "@/lib/drive-location";
 import {
   parseSelectionKey,
   readDragData,
@@ -20,13 +22,13 @@ import {
 
 export function useDriveSelection({
   organizationId,
-  folderId,
+  location,
   rows,
   visibleFolders,
   visibleFiles,
 }: {
   organizationId: string;
-  folderId: string | null;
+  location: DriveLocation;
   rows: { kind: DriveItemKind; id: string }[];
   visibleFolders: Folder[];
   visibleFiles: OrganizationFile[];
@@ -38,7 +40,7 @@ export function useDriveSelection({
   useEffect(() => {
     setSelectedKeys(new Set());
     selectionAnchorRef.current = null;
-  }, [folderId]);
+  }, [locationKey(location)]);
 
   useEffect(() => {
     return tinykeys(window, {
@@ -97,6 +99,7 @@ export function useDriveSelection({
     const source = readDragData(event.operation.source?.data);
     const target = readDragData(event.operation.target?.data);
     if (!source || !target || target.kind !== "folder") return;
+    if (location.kind !== "root" && location.kind !== "folder") return;
 
     const sourceKey = selectionKey(source.kind, source.id);
     const movingKeys = selectedKeys.has(sourceKey) ? Array.from(selectedKeys) : [sourceKey];
@@ -109,7 +112,12 @@ export function useDriveSelection({
     if (movingItems.length === 1) {
       const item = movingItems[0];
       if (item.kind === "file") {
-        moveFileMutation.mutate({ id: item.id, organizationId, folderId: target.id });
+        moveFileMutation.mutate({
+          id: item.id,
+          organizationId,
+          from: location,
+          folderId: target.id,
+        });
       } else {
         moveFolderMutation.mutate({ id: item.id, organizationId, parentFolderId: target.id });
       }
@@ -124,7 +132,12 @@ export function useDriveSelection({
     Promise.allSettled(
       movingItems.map((item) =>
         item.kind === "file"
-          ? moveFileMutation.mutateAsync({ id: item.id, organizationId, folderId: target.id })
+          ? moveFileMutation.mutateAsync({
+              id: item.id,
+              organizationId,
+              from: location,
+              folderId: target.id,
+            })
           : moveFolderMutation.mutateAsync({
               id: item.id,
               organizationId,

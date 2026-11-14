@@ -1,15 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
-import { Link } from "@tanstack/react-router";
 import { useDraggable } from "@dnd-kit/react";
-import {
-  Calendar as CalendarIcon,
-  CalendarPlus,
-  Download,
-  Info,
-  MoreVertical,
-  Pen,
-  Trash,
-} from "lucide-react";
+import { CalendarPlus, Download, Info, MoreVertical, Pen, Trash } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   ContextMenu,
@@ -35,7 +26,6 @@ import { type DragData, KIND_ICON, formatDate } from "./drive-item-utils";
 
 export function FileRow({
   file,
-  projectSlug,
   selected,
   selectionCount,
   onToggleSelect,
@@ -52,7 +42,6 @@ export function FileRow({
   isBulkDownloading,
 }: {
   file: OrganizationFile;
-  projectSlug: string;
   selected: boolean;
   selectionCount: number;
   onToggleSelect: (event: React.MouseEvent) => void;
@@ -121,19 +110,6 @@ export function FileRow({
               </span>
             )}
           </div>
-        </TableCell>
-        <TableCell>
-          {file.eventId && file.eventTitle && (
-            <Link
-              to="/projects/$projectSlug/calendar/$eventId"
-              params={{ projectSlug, eventId: file.eventId }}
-              onClick={(event) => event.stopPropagation()}
-              className="inline-flex max-w-full items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <CalendarIcon className="size-3 shrink-0" />
-              <span className="truncate">{file.eventTitle}</span>
-            </Link>
-          )}
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">

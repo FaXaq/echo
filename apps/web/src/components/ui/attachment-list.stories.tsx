@@ -8,9 +8,6 @@ import type { EventFile } from "@/services/resources/drive";
 function makeFile(overrides: Partial<EventFile>): EventFile {
   return {
     id: Math.random().toString(36),
-    eventId: "event-1",
-    eventTitle: null,
-    folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
     uploadedByName: "Jane Doe",

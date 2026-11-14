@@ -47,6 +47,7 @@ export const DYNAMIC_MESSAGES: Record<string, MessageDescriptor> = {
   "Upload failed": msg`Upload failed`,
 
   Calendar: msg`Calendar`,
+  Events: msg`Events`,
   Songs: msg`Songs`,
   Expenses: msg`Expenses`,
   "Event details": msg`Event details`,

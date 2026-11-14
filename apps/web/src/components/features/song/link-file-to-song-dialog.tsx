@@ -1,7 +1,7 @@
 import { useLingui } from "@lingui/react/macro";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/toast";
-import { useLinkFileToSongMutation } from "@/services/resources/drive";
+import { useAddOccurrencesMutation } from "@/services/resources/drive";
 import { SongPickerCombobox } from "@/components/features/playlist/song-picker-combobox";
 
 export function LinkFileToSongDialog({
@@ -14,7 +14,7 @@ export function LinkFileToSongDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const { t } = useLingui();
-  const linkMutation = useLinkFileToSongMutation({
+  const addMutation = useAddOccurrencesMutation({
     onSuccess: () => {
       toast.add({ type: "success", title: t`File linked to the song` });
       onOpenChange(false);
@@ -32,8 +32,8 @@ export function LinkFileToSongDialog({
           selectedSongs={[]}
           onAdd={(songId) => {
             if (!file) return;
-            linkMutation.mutate(
-              { fileId: file.id, songId, organizationId },
+            addMutation.mutate(
+              { fileIds: [file.id], place: { kind: "song", id: songId }, organizationId },
               { onError: () => toast.add({ type: "error", title: t`Couldn't link the file` }) },
             );
           }}

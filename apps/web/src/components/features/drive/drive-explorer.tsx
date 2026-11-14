@@ -2,6 +2,7 @@ import { Suspense, useRef, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import type { DriveLocation } from "@echo/modules/drive/domain";
 import { useTable } from "@tanstack/react-table";
 import { Plural, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
@@ -26,10 +27,10 @@ import {
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import {
-  getFolderContentsQueryOptions,
+  listFolderContentsQueryOptions,
   useCreateFolderMutation,
-  useDeleteFileMutation,
   useDeleteFolderMutation,
+  useRemoveOccurrenceMutation,
   useRenameFileMutation,
   useRenameFolderMutation,
   type DriveSortField,
@@ -38,7 +39,8 @@ import {
   type OrganizationFile,
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
-import { useFolderPath } from "@/hooks/use-folder-path";
+import { useDriveLocationLabel, useDriveLocationPath } from "@/hooks/use-folder-path";
+import { driveLocationLink, locationPlace } from "@/lib/drive-location";
 import { getFileDownloadUrl, getFilesDownloadUrls } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { DriveSearchCombobox } from "./drive-search-combobox";
@@ -49,6 +51,7 @@ import { FileRow } from "./drive-file-row";
 import { FileDetailsDialog } from "./file-details-dialog";
 import { LinkFileToEventDialog } from "./link-file-to-event-dialog";
 import { FolderRow } from "./drive-folder-row";
+import { SystemFolderRow } from "./drive-system-folder-row";
 import {
   type DriveItemKind,
   type DriveRow,
@@ -65,14 +68,14 @@ import { useDriveSelection } from "./use-drive-selection";
 function DriveExplorerContent({
   organizationId,
   projectSlug,
-  folderId,
+  location,
   sort,
   order,
   onSortChange,
 }: {
   organizationId: string;
   projectSlug: string;
-  folderId: string | null;
+  location: DriveLocation;
   sort: DriveSortField;
   order: DriveSortOrder;
   onSortChange: (field: DriveSortField) => void;
@@ -82,10 +85,13 @@ function DriveExplorerContent({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data } = useSuspenseQuery(
-    getFolderContentsQueryOptions({ folderId, organizationId, sort, order }),
+    listFolderContentsQueryOptions({ location, organizationId, sort, order }),
   );
   const { data: organizations } = useSuspenseQuery(selfListOrganizations());
-  const path = useFolderPath({ folderId, organizationId });
+  const path = useDriveLocationPath(location, organizationId);
+  const locationLabel = useDriveLocationLabel();
+  const folderId = location.kind === "folder" ? location.id : null;
+  const place = locationPlace(location);
   const organizationName = organizations.find((org) => org.id === organizationId)?.name ?? "";
 
   const [creatingFolder, setCreatingFolder] = useState(false);
@@ -113,11 +119,12 @@ function DriveExplorerContent({
   const renameFolderMutation = useRenameFolderMutation();
   const deleteFolderMutation = useDeleteFolderMutation();
   const renameFileMutation = useRenameFileMutation();
-  const deleteFileMutation = useDeleteFileMutation();
+  const removeOccurrenceMutation = useRemoveOccurrenceMutation();
 
   const visibleFolders = data.folders.filter((folder) => !pendingDeleteIds.has(folder.id));
   const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
-  const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
+  const isEmpty =
+    data.systemFolders.length === 0 && visibleFolders.length === 0 && visibleFiles.length === 0;
 
   const openGalleryPreview = (fileId: string) => {
     const galleryFiles = visibleFiles.filter(
@@ -170,7 +177,7 @@ function DriveExplorerContent({
     clearSelection,
     handleDragStart,
     handleDragEnd,
-  } = useDriveSelection({ organizationId, folderId, rows, visibleFolders, visibleFiles });
+  } = useDriveSelection({ organizationId, location, rows, visibleFolders, visibleFiles });
 
   const columns = useDriveTableColumns({ sort, order, onSortChange });
 
@@ -212,7 +219,7 @@ function DriveExplorerContent({
     handleBulkDownload,
   } = useDriveFileTransfer({
     organizationId,
-    folderId,
+    location,
     organizationName,
     path,
     selectedFiles,
@@ -226,8 +233,11 @@ function DriveExplorerContent({
     selectedFolderCount > 0 ? t`Only files can be assigned to an event` : null;
 
   const handleBulkDeleteFiles = async () => {
+    if (!place) return;
     const results = await Promise.allSettled(
-      selectedFiles.map((file) => deleteFileMutation.mutateAsync({ id: file.id, organizationId })),
+      selectedFiles.map((file) =>
+        removeOccurrenceMutation.mutateAsync({ fileId: file.id, place, organizationId }),
+      ),
     );
     const failedNames = results.flatMap((result, index) =>
       result.status === "rejected" ? [selectedFiles[index].filename] : [],
@@ -244,16 +254,8 @@ function DriveExplorerContent({
     }
   };
 
-  const navigateToFolder = (id: string | null) => {
-    if (id === null) {
-      navigate({ to: "/projects/$projectSlug/drive", params: { projectSlug } });
-    } else {
-      navigate({
-        to: "/projects/$projectSlug/drive/$folderId",
-        params: { projectSlug, folderId: id },
-      });
-    }
-  };
+  const navigateToLocation = (target: DriveLocation) =>
+    navigate(driveLocationLink(projectSlug, target));
 
   return (
     <div className="flex flex-1 flex-col min-h-0 gap-3">
@@ -261,11 +263,7 @@ function DriveExplorerContent({
         <div className="flex flex-col w-full">
           <DriveBreadcrumbs projectSlug={projectSlug} path={path} />
           <div className="flex items-center justify-between gap-2 w-full">
-            <DriveSearchCombobox
-              organizationId={organizationId}
-              onSelectFolder={(id) => navigateToFolder(id)}
-              onSelectFile={(file) => navigateToFolder(file.folderId)}
-            />
+            <DriveSearchCombobox organizationId={organizationId} onSelect={navigateToLocation} />
             <div className="flex gap-2 items-center">
               <Button
                 type="button"
@@ -367,6 +365,13 @@ function DriveExplorerContent({
             ))}
           </TableHeader>
           <TableBody>
+            {data.systemFolders.map((entry) => (
+              <SystemFolderRow
+                key={entry.location.kind}
+                name={locationLabel(entry.location, entry.name)}
+                onNavigate={() => navigateToLocation(entry.location)}
+              />
+            ))}
             {table.getRowModel().rows.map((row) => {
               const original = row.original;
               return original.kind === "folder" ? (
@@ -375,7 +380,7 @@ function DriveExplorerContent({
                   folder={original.data}
                   selected={row.getIsSelected()}
                   selectionCount={selectedKeys.size}
-                  onNavigate={() => navigateToFolder(original.data.id)}
+                  onNavigate={() => navigateToLocation({ kind: "folder", id: original.data.id })}
                   onToggleSelect={(event) =>
                     toggleSelection("folder", original.data.id, { shiftKey: event.shiftKey })
                   }
@@ -395,7 +400,6 @@ function DriveExplorerContent({
                 <FileRow
                   key={row.id}
                   file={original.data}
-                  projectSlug={projectSlug}
                   selected={row.getIsSelected()}
                   selectionCount={selectedKeys.size}
                   onToggleSelect={(event) =>
@@ -420,7 +424,6 @@ function DriveExplorerContent({
                       id: original.data.id,
                       filename: original.data.filename,
                       downloadUrl,
-                      contextLabel: original.data.eventTitle ?? undefined,
                     });
                   }}
                   onOpen={() =>
@@ -436,8 +439,8 @@ function DriveExplorerContent({
             })}
             {isEmpty && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
-                  {folderId === null ? t`No files yet` : t`This folder is empty`}
+                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                  {location.kind === "root" ? t`No files yet` : t`This folder is empty`}
                 </TableCell>
               </TableRow>
             )}
@@ -506,9 +509,13 @@ function DriveExplorerContent({
         deletingFile={deletingFile}
         onDeletingFileChange={(open) => !open && setDeletingFile(null)}
         onConfirmDeleteFile={async () => {
-          if (!deletingFile) return;
+          if (!deletingFile || !place) return;
           try {
-            await deleteFileMutation.mutateAsync({ id: deletingFile.id, organizationId });
+            await removeOccurrenceMutation.mutateAsync({
+              fileId: deletingFile.id,
+              place,
+              organizationId,
+            });
             toast.add({ title: t`File deleted`, type: "success" });
           } catch {
             toast.add({ title: t`Couldn't delete file`, type: "error" });
@@ -571,7 +578,7 @@ function DriveExplorerSkeleton() {
 export interface DriveExplorerProps {
   organizationId: string;
   projectSlug: string;
-  folderId: string | null;
+  location: DriveLocation;
   sort: DriveSortField;
   order: DriveSortOrder;
   onSortChange: (field: DriveSortField) => void;
@@ -580,7 +587,7 @@ export interface DriveExplorerProps {
 export function DriveExplorer({
   organizationId,
   projectSlug,
-  folderId,
+  location,
   sort,
   order,
   onSortChange,
@@ -591,7 +598,7 @@ export function DriveExplorer({
         <DriveExplorerContent
           organizationId={organizationId}
           projectSlug={projectSlug}
-          folderId={folderId}
+          location={location}
           sort={sort}
           order={order}
           onSortChange={onSortChange}

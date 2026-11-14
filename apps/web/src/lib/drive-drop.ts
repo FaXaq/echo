@@ -14,13 +14,3 @@ export function evaluateOsFileDrop(entries: OsDropEntry[]): OsDropEvaluation {
   }
   return { accepted: true };
 }
-
-export function resolveDropTargetFolderId({
-  hoveredFolderId,
-  currentFolderId,
-}: {
-  hoveredFolderId: string | null;
-  currentFolderId: string | null;
-}) {
-  return hoveredFolderId ?? currentFolderId;
-}

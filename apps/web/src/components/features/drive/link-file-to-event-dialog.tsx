@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react/macro";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/toast";
 import { EventPickerCombobox } from "@/components/features/event-calendar/event-picker-combobox";
-import { useLinkFileToEventMutation } from "@/services/resources/drive";
+import { useAddOccurrencesMutation } from "@/services/resources/drive";
 
 type LinkableFile = { id: string; filename: string };
 
@@ -19,7 +19,7 @@ export function LinkFileToEventDialog({
   onLinked?: () => void;
 }) {
   const { t } = useLingui();
-  const linkMutation = useLinkFileToEventMutation();
+  const addMutation = useAddOccurrencesMutation();
 
   const [files, setFiles] = useState(requestedFiles);
   useEffect(() => {
@@ -27,31 +27,30 @@ export function LinkFileToEventDialog({
   }, [requestedFiles]);
   const count = files.length;
 
-  const linkAll = async (eventId: string) => {
-    const results = await Promise.allSettled(
-      files.map((file) => linkMutation.mutateAsync({ fileId: file.id, eventId, organizationId })),
+  const linkAll = (eventId: string) =>
+    addMutation.mutate(
+      {
+        fileIds: files.map((file) => file.id),
+        place: { kind: "event", id: eventId },
+        organizationId,
+      },
+      {
+        onSuccess: () => {
+          toast.add({
+            type: "success",
+            title:
+              count === 1 ? t`File assigned to the event` : t`${count} files assigned to the event`,
+          });
+          onOpenChange(false);
+          onLinked?.();
+        },
+        onError: () =>
+          toast.add({
+            type: "error",
+            title: count === 1 ? t`Couldn't assign the file` : t`Couldn't assign the files`,
+          }),
+      },
     );
-    const failedNames = results.flatMap((result, index) =>
-      result.status === "rejected" ? [files[index].filename] : [],
-    );
-
-    if (failedNames.length === 0) {
-      toast.add({
-        type: "success",
-        title:
-          count === 1 ? t`File assigned to the event` : t`${count} files assigned to the event`,
-      });
-      onOpenChange(false);
-      onLinked?.();
-    } else if (count === 1) {
-      toast.add({ type: "error", title: t`Couldn't assign the file` });
-    } else {
-      toast.add({
-        type: "error",
-        title: t`${count - failedNames.length} of ${count} assigned — failed: ${failedNames.join(", ")}`,
-      });
-    }
-  };
 
   return (
     <Dialog open={requestedFiles.length > 0} onOpenChange={onOpenChange}>

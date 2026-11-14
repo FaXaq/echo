@@ -154,7 +154,6 @@ export function FolderRow({
           </div>
         </TableCell>
         <TableCell />
-        <TableCell />
         <TableCell className="text-muted-foreground">{formatDate(folder.updatedAt)}</TableCell>
         <TableCell />
         <TableCell>

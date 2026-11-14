@@ -4,6 +4,9 @@ import {
   isRawImage,
   MAX_THUMBNAIL_BYTES,
   mimeTypeForFile,
+  type DriveLocation,
+  type FolderPlace,
+  type Place,
   type Role,
 } from "@echo/modules/drive/domain";
 import { z } from "zod";
@@ -19,7 +22,7 @@ import { resetUploadProgress, setUploadDuration, setUploadProgress } from "@/lib
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
-export const driveSortFieldSchema = z.enum(["name", "event", "updatedAt", "sizeBytes"]);
+export const driveSortFieldSchema = z.enum(["name", "updatedAt", "sizeBytes"]);
 export const driveSortOrderSchema = z.enum(["asc", "desc"]);
 export type DriveSortField = z.infer<typeof driveSortFieldSchema>;
 export type DriveSortOrder = z.infer<typeof driveSortOrderSchema>;
@@ -37,8 +40,8 @@ export type RecentFile = RouterOutputs["drive"]["listRecentFiles"][number];
 export type Folder = RouterOutputs["drive"]["getFolder"];
 export type FolderContents = RouterOutputs["drive"]["listFolderContents"];
 
-export function getFolderContentsQueryOptions(opts: {
-  folderId: string | null;
+export function listFolderContentsQueryOptions(opts: {
+  location: DriveLocation;
   organizationId: string;
   sort: DriveSortField;
   order: DriveSortOrder;
@@ -50,7 +53,7 @@ export function getFolderContentsQueryOptions(opts: {
       return apiClient.drive.listFolderContents.query(
         {
           organizationId: params.organizationId,
-          folderId: params.folderId,
+          location: params.location,
           sort: { field: params.sort, order: params.order },
         },
         { signal },
@@ -70,8 +73,32 @@ export function getFolderQueryOptions(opts: { id: string; organizationId: string
   });
 }
 
-export function getFolderPathQueryKey(opts: { folderId: string | null; organizationId: string }) {
-  return getResourceKey("folderPath", opts);
+export function getDriveLocationPathQueryKey(opts: {
+  location: DriveLocation;
+  organizationId: string;
+}) {
+  return getResourceKey("locationPath", opts);
+}
+
+export function fileOccurrencesQueryOptions(opts: { fileId: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("listFileOccurrences", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.drive.listFileOccurrences.query(params, { signal });
+    },
+  });
+}
+
+export function previewFolderDeleteQueryOptions(opts: { id: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("previewFolderDelete", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.drive.previewFolderDelete.query(params, { signal });
+    },
+    gcTime: 0,
+  });
 }
 
 export function useCreateFolderMutation({
@@ -133,12 +160,12 @@ export function useDeleteFolderMutation({ onSuccess }: { onSuccess?: () => void 
   });
 }
 
-export function useLinkFileToSongMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+export function useAddOccurrencesMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { fileId: string; songId: string; organizationId: string }) =>
-      apiClient.drive.linkFileToSong.mutate(input),
+    mutationFn: (input: { fileIds: string[]; place: Place; organizationId: string }) =>
+      apiClient.drive.addOccurrences.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
@@ -146,15 +173,24 @@ export function useLinkFileToSongMutation({ onSuccess }: { onSuccess?: () => voi
   });
 }
 
-export function useLinkFileToEventMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+export function useRemoveOccurrenceMutation({
+  onSuccess,
+}: { onSuccess?: (result: { deleted: boolean }) => void } = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { fileId: string; eventId: string; organizationId: string }) =>
-      apiClient.drive.linkFileToEvent.mutate(input),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: key });
-      onSuccess?.();
+    mutationFn: (input: { fileId: string; place: Place; organizationId: string }) =>
+      apiClient.drive.removeOccurrence.mutate(input),
+    onSuccess: async (result, input) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        result.deleted &&
+          queryClient.invalidateQueries({
+            queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId })
+              .queryKey,
+          }),
+      ]);
+      onSuccess?.(result);
     },
   });
 }
@@ -163,8 +199,12 @@ export function useMoveFileMutation({ onSuccess }: { onSuccess?: () => void } = 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { id: string; organizationId: string; folderId: string | null }) =>
-      apiClient.drive.moveFile.mutate(input),
+    mutationFn: (input: {
+      id: string;
+      organizationId: string;
+      from: FolderPlace;
+      folderId: string | null;
+    }) => apiClient.drive.moveFile.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
@@ -224,9 +264,7 @@ export function getDriveSearchQueryOptions(opts: { organizationId: string; query
 }
 
 export interface UploadFileInput {
-  eventId?: string;
-  songId?: string;
-  folderId?: string | null;
+  place: Place;
   organizationId: string;
   file: File;
   destinationLabel: string;
@@ -264,9 +302,7 @@ export function useUploadFileMutation({
 
       const { fileId, uploadUrl, previewUploadUrl, thumbnailUploadUrl } =
         await apiClient.drive.createUpload.mutate({
-          eventId: input.eventId,
-          songId: input.songId,
-          folderId: input.folderId,
+          place: input.place,
           organizationId: input.organizationId,
           mimeType,
           sizeBytes: input.file.size,
@@ -301,24 +337,6 @@ export function useUploadFileMutation({
         }),
       ]);
       onSuccess?.(result, input);
-    },
-  });
-}
-
-export function useDeleteFileMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (input: { id: string; organizationId: string }) =>
-      apiClient.drive.deleteFile.mutate(input),
-    onSuccess: async (_result, input) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: key }),
-        queryClient.invalidateQueries({
-          queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId }).queryKey,
-        }),
-      ]);
-      onSuccess?.();
     },
   });
 }

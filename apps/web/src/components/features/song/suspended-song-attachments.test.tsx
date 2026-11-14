@@ -27,9 +27,6 @@ import * as driveResource from "@/services/resources/drive";
 function makeSongFile(overrides: Partial<driveResource.SongFile> = {}): driveResource.SongFile {
   return {
     id: "f1",
-    eventId: null,
-    eventTitle: null,
-    folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
     uploadedByName: "Jane",
