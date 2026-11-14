@@ -6,15 +6,18 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { formatSize } from "@/lib/file";
 import { TableCell, TableRow } from "@/components/ui/table";
 
 export function SystemFolderRow({
   name,
+  sizeBytes,
   onNavigate,
   canPaste,
   onPasteInto,
 }: {
   name: string;
+  sizeBytes: number;
   onNavigate: () => void;
   canPaste: boolean;
   onPasteInto?: () => void;
@@ -44,7 +47,7 @@ export function SystemFolderRow({
       </TableCell>
       <TableCell />
       <TableCell />
-      <TableCell />
+      <TableCell className="text-muted-foreground">{formatSize(sizeBytes)}</TableCell>
       <TableCell />
     </>
   );

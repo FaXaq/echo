@@ -114,6 +114,7 @@ const folder = {
   name: "Demos",
   createdAt: "2026-08-02T09:30:00.000Z",
   updatedAt: "2026-08-02T09:30:00.000Z",
+  sizeBytes: 0,
 };
 
 function makeFile(id: string, filename: string): OrganizationFile {
@@ -157,8 +158,8 @@ describe("DriveExplorer system folders", () => {
       {
         folders: [folder],
         systemFolders: [
-          { location: { kind: "events" }, name: "Events" },
-          { location: { kind: "songs" }, name: "Songs" },
+          { location: { kind: "events" }, name: "Events", sizeBytes: 0 },
+          { location: { kind: "songs" }, name: "Songs", sizeBytes: 0 },
         ],
       },
     );
@@ -177,8 +178,8 @@ describe("DriveExplorer system folders", () => {
       { kind: "events" },
       {
         systemFolders: [
-          { location: { kind: "event", id: "event-1" }, name: "Gig A" },
-          { location: { kind: "event", id: "event-2" }, name: "Gig B" },
+          { location: { kind: "event", id: "event-1" }, name: "Gig A", sizeBytes: 0 },
+          { location: { kind: "event", id: "event-2" }, name: "Gig B", sizeBytes: 0 },
         ],
       },
     );
@@ -195,7 +196,7 @@ describe("DriveExplorer system folders", () => {
   it("does not select or offer actions on system folder rows", async () => {
     renderExplorer(
       { kind: "root" },
-      { systemFolders: [{ location: { kind: "events" }, name: "Events" }] },
+      { systemFolders: [{ location: { kind: "events" }, name: "Events", sizeBytes: 0 }] },
     );
 
     const row = (await screen.findByText("Events")).closest("tr");
@@ -208,7 +209,7 @@ describe("DriveExplorer system folders", () => {
     const user = userEvent.setup();
     renderExplorer(
       { kind: "root" },
-      { systemFolders: [{ location: { kind: "events" }, name: "Events" }] },
+      { systemFolders: [{ location: { kind: "events" }, name: "Events", sizeBytes: 0 }] },
     );
 
     const row = (await screen.findByText("Events")).closest("tr");
@@ -425,7 +426,9 @@ describe("DriveExplorer copy and paste", () => {
     copyFiles("org-1", ["f1"]);
     renderExplorer(
       { kind: "events" },
-      { systemFolders: [{ location: { kind: "event", id: "event-1" }, name: "Gig" }] },
+      {
+        systemFolders: [{ location: { kind: "event", id: "event-1" }, name: "Gig", sizeBytes: 0 }],
+      },
     );
 
     await user.pointer({
@@ -448,7 +451,7 @@ describe("DriveExplorer copy and paste", () => {
     copyFiles("org-1", ["f1"]);
     renderExplorer(
       { kind: "root" },
-      { systemFolders: [{ location: { kind: "events" }, name: "Events" }] },
+      { systemFolders: [{ location: { kind: "events" }, name: "Events", sizeBytes: 0 }] },
     );
 
     await user.pointer({
@@ -681,12 +684,29 @@ describe("DriveExplorer item count", () => {
       { kind: "events" },
       {
         systemFolders: [
-          { location: { kind: "event", id: "e1" }, name: "Gig" },
-          { location: { kind: "event", id: "e2" }, name: "Rehearsal" },
+          { location: { kind: "event", id: "e1" }, name: "Gig", sizeBytes: 0 },
+          { location: { kind: "event", id: "e2" }, name: "Rehearsal", sizeBytes: 0 },
         ],
       },
     );
 
     expect(await screen.findByText("2 items")).toBeInTheDocument();
+  });
+});
+
+describe("DriveExplorer folder sizes", () => {
+  it("shows the size of folders and system folders", async () => {
+    renderExplorer(
+      { kind: "root" },
+      {
+        folders: [{ ...folder, sizeBytes: 2 * 1024 * 1024 }],
+        systemFolders: [{ location: { kind: "events" }, name: "Events", sizeBytes: 3 * 1024 }],
+      },
+    );
+
+    const folderRow = (await screen.findByText("Demos")).closest("tr");
+    const systemRow = screen.getByText("Events").closest("tr");
+    expect(within(folderRow!).getByText("2.0 MB")).toBeInTheDocument();
+    expect(within(systemRow!).getByText("3 KB")).toBeInTheDocument();
   });
 });

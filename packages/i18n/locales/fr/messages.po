@@ -40,7 +40,7 @@ msgstr "{0, plural, one {# fichier sera définitivement supprimé} other {# fich
 #~ msgstr "{0, plural, one {# fichier} other {# fichiers}}"
 
 #. placeholder {0}: selectedKeys.size
-#: apps/web/src/components/features/drive/drive-explorer.tsx:529
+#: apps/web/src/components/features/drive/drive-explorer.tsx:530
 msgid "{0, plural, one {# item selected} other {# items selected}}"
 msgstr "{0, plural, one {# élément sélectionné} other {# éléments sélectionnés}}"
 
@@ -192,7 +192,7 @@ msgstr "{fileName} envoyé"
 #~ msgid "{fromName} pays {toName}"
 #~ msgstr "{fromName} rembourse {toName}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:525
+#: apps/web/src/components/features/drive/drive-explorer.tsx:526
 msgid "{itemCount, plural, one {# item} other {# items}}"
 msgstr "{itemCount, plural, one {# élément} other {# éléments}}"
 
@@ -266,7 +266,7 @@ msgstr "Actions"
 #. placeholder {0}: file.filename
 #. placeholder {0}: folder.name
 #: apps/web/src/components/features/drive/drive-file-row.tsx:139
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:173
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:174
 #: apps/web/src/components/ui/attachment-list.tsx:296
 #: apps/web/src/components/ui/attachment-list.tsx:534
 msgid "Actions for {0}"
@@ -723,7 +723,7 @@ msgstr "Impossible de supprimer la dépense"
 #~ msgid "Couldn't delete file"
 #~ msgstr "Impossible de supprimer le fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:558
+#: apps/web/src/components/features/drive/drive-explorer.tsx:559
 msgid "Couldn't delete folder"
 msgstr "Impossible de supprimer le dossier"
 
@@ -752,7 +752,7 @@ msgstr "Impossible de charger les pièces jointes"
 msgid "Couldn't load balances"
 msgstr "Impossible de charger les soldes"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:620
+#: apps/web/src/components/features/drive/drive-explorer.tsx:621
 msgid "Couldn't load Drive"
 msgstr "Impossible de charger le Drive"
 
@@ -825,11 +825,11 @@ msgstr "Impossible de retirer le fichier"
 msgid "Couldn't rename column"
 msgstr "Impossible de renommer la colonne"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:570
+#: apps/web/src/components/features/drive/drive-explorer.tsx:571
 msgid "Couldn't rename file"
 msgstr "Impossible de renommer le fichier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:544
+#: apps/web/src/components/features/drive/drive-explorer.tsx:545
 msgid "Couldn't rename folder"
 msgstr "Impossible de renommer le dossier"
 
@@ -958,8 +958,8 @@ msgstr "Définir comme"
 #: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:66
 #: apps/web/src/components/features/drive/drive-file-row.tsx:191
 #: apps/web/src/components/features/drive/drive-file-row.tsx:261
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:198
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:234
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:199
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:235
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:108
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:115
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:169
@@ -1090,8 +1090,8 @@ msgstr "Ignorer"
 #: apps/web/src/components/features/drive/drive-file-row.tsx:226
 #: apps/web/src/components/features/drive/drive-file-row.tsx:233
 #: apps/web/src/components/features/drive/drive-file-row.tsx:245
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:216
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:223
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:217
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:224
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:76
 #: apps/web/src/components/features/drive/drive-selection-actions-menu.tsx:83
 #: apps/web/src/components/ui/attachment-list.tsx:337
@@ -1436,7 +1436,7 @@ msgstr "Finalisation…"
 msgid "Focal length"
 msgstr "Focale"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:552
+#: apps/web/src/components/features/drive/drive-explorer.tsx:553
 msgid "Folder deleted"
 msgstr "Dossier supprimé"
 
@@ -1778,11 +1778,11 @@ msgstr "Nouvel événement"
 msgid "New expense"
 msgstr "Nouvelle dépense"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:738
+#: apps/web/src/components/features/drive/drive-explorer.tsx:739
 msgid "New folder"
 msgstr "Nouveau dossier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:714
+#: apps/web/src/components/features/drive/drive-explorer.tsx:715
 msgid "New Folder"
 msgstr "Nouveau dossier"
 
@@ -2113,8 +2113,8 @@ msgstr "Échec de la réinitialisation du mot de passe"
 msgid "Passwords do not match"
 msgstr "Les mots de passe ne correspondent pas"
 
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:207
-#: apps/web/src/components/features/drive/drive-system-folder-row.tsx:60
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:208
+#: apps/web/src/components/features/drive/drive-system-folder-row.tsx:63
 msgid "Paste into"
 msgstr "Coller dans"
 
@@ -2325,8 +2325,8 @@ msgstr "Retiré de {placeName} — toujours dans {stillIn}"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:163
 #: apps/web/src/components/features/drive/drive-file-row.tsx:249
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:188
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:230
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:189
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:231
 #: apps/web/src/components/ui/attachment-list.tsx:321
 #: apps/web/src/components/ui/attachment-list.tsx:555
 msgid "Rename"
@@ -2477,7 +2477,7 @@ msgstr "Sélectionner"
 #. placeholder {0}: file.filename
 #. placeholder {0}: folder.name
 #: apps/web/src/components/features/drive/drive-file-row.tsx:103
-#: apps/web/src/components/features/drive/drive-folder-row.tsx:140
+#: apps/web/src/components/features/drive/drive-folder-row.tsx:141
 msgid "Select {0}"
 msgstr "Sélectionner {0}"
 
@@ -2902,7 +2902,7 @@ msgstr "Prochains événements"
 msgid "Update"
 msgstr "Modifier"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:720
+#: apps/web/src/components/features/drive/drive-explorer.tsx:721
 msgid "Upload"
 msgstr "Importer"
 

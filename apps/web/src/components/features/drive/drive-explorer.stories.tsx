@@ -5,7 +5,7 @@ import { DriveExplorer } from "./drive-explorer";
 import {
   getDriveLocationPathQueryKey,
   listFolderContentsQueryOptions,
-  type Folder,
+  type FolderListItem,
   type FolderContents,
   type OrganizationFile,
 } from "@/services/resources/drive";
@@ -22,7 +22,7 @@ function makeOrganization(overrides: Partial<Organizations[number]>): Organizati
   };
 }
 
-function makeFolder(overrides: Partial<Folder>): Folder {
+function makeFolder(overrides: Partial<FolderListItem>): FolderListItem {
   return {
     id: Math.random().toString(36),
     organizationId: "org-1",
@@ -30,6 +30,7 @@ function makeFolder(overrides: Partial<Folder>): Folder {
     name: "Demos",
     createdAt: "2026-08-02T09:30:00.000Z",
     updatedAt: "2026-08-02T09:30:00.000Z",
+    sizeBytes: 0,
     ...overrides,
   };
 }
@@ -59,7 +60,7 @@ function makeFile(overrides: Partial<OrganizationFile>): OrganizationFile {
 
 function withSeededDrive(opts: {
   location: DriveLocation;
-  folders: Folder[];
+  folders: FolderListItem[];
   files: OrganizationFile[];
   systemFolders?: FolderContents["systemFolders"];
   path?: { name: string; location: DriveLocation }[];
@@ -114,8 +115,8 @@ export const Root: Story = {
         client={withSeededDrive({
           location: { kind: "root" },
           systemFolders: [
-            { location: { kind: "events" }, name: "Events" },
-            { location: { kind: "songs" }, name: "Songs" },
+            { location: { kind: "events" }, name: "Events", sizeBytes: 0 },
+            { location: { kind: "songs" }, name: "Songs", sizeBytes: 0 },
           ],
           folders: [
             makeFolder({ id: "folder-1", name: "Demos" }),

@@ -3,7 +3,7 @@ import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type {
   DriveLocation,
   FileRecord,
-  FolderRecord,
+  FolderWithSize,
   SystemFolderEntry,
 } from "../domain/index.js";
 
@@ -16,7 +16,7 @@ export type ListFolderContentsQueryInput = {
 };
 
 export type ListFolderContentsResult = {
-  folders: FolderRecord[];
+  folders: FolderWithSize[];
   systemFolders: SystemFolderEntry[];
   files: FileRecord[];
 };

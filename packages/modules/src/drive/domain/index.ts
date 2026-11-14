@@ -109,9 +109,9 @@ export type Place =
 export type FolderPlace = Extract<Place, { kind: "root" | "folder" }>;
 export type DriveLocation = Place | { kind: "events" } | { kind: "songs" };
 export type PlaceLabel = { place: Place; path: string[] };
-export type SystemFolderEntry = { location: DriveLocation; name: string };
+export type SystemFolderEntry = { location: DriveLocation; name: string; sizeBytes: number };
 
-export const ROOT_SYSTEM_FOLDERS: SystemFolderEntry[] = [
+export const ROOT_SYSTEM_FOLDERS: Omit<SystemFolderEntry, "sizeBytes">[] = [
   { location: { kind: "events" }, name: "Events" },
   { location: { kind: "songs" }, name: "Songs" },
 ];
@@ -153,6 +153,8 @@ export type FolderRecord = {
   createdAt: Date | null;
   updatedAt: Date | null;
 };
+
+export type FolderWithSize = FolderRecord & { sizeBytes: number };
 
 export const eventFolderName = (event: { title: string; startDate: Date }) =>
   `${event.startDate.toISOString().slice(0, 10)} · ${event.title}`;

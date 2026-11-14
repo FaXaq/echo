@@ -28,7 +28,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Folder } from "@/services/resources/drive";
+import { formatSize } from "@/lib/file";
+import type { FolderListItem } from "@/services/resources/drive";
 import { type DragData, formatDate, isFileDrag } from "./drive-item-utils";
 
 export function FolderRow({
@@ -47,7 +48,7 @@ export function FolderRow({
   isBulkDownloading,
   onOsFilesDropped,
 }: {
-  folder: Folder;
+  folder: FolderListItem;
   selected: boolean;
   selectionCount: number;
   canPaste: boolean;
@@ -160,7 +161,7 @@ export function FolderRow({
         </TableCell>
         <TableCell />
         <TableCell className="text-muted-foreground">{formatDate(folder.updatedAt)}</TableCell>
-        <TableCell />
+        <TableCell className="text-muted-foreground">{formatSize(folder.sizeBytes)}</TableCell>
         <TableCell>
           <DropdownMenu>
             <DropdownMenuTrigger

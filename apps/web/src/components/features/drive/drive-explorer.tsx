@@ -431,6 +431,7 @@ function DriveTableContent({
               <SystemFolderRow
                 key={locationKey(entry.location)}
                 name={locationLabel(entry.location, entry.name)}
+                sizeBytes={entry.sizeBytes}
                 onNavigate={() => navigateToLocation(entry.location)}
                 canPaste={clipboard.fileIds.length > 0}
                 onPasteInto={

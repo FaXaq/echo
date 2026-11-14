@@ -3,10 +3,9 @@ import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import {
-  ROOT_SYSTEM_FOLDERS,
   type DriveLocation,
   type FileRecord,
-  type FolderRecord,
+  type FolderWithSize,
   type SystemFolderEntry,
 } from "../domain/index.js";
 import type {
@@ -29,7 +28,7 @@ export async function listFolderContents(
     sort: { field: DriveSortField; order: DriveSortOrder };
   },
 ): Promise<{
-  folders: FolderRecord[];
+  folders: FolderWithSize[];
   systemFolders: SystemFolderEntry[];
   files: FileRecord[];
 }> {
@@ -52,7 +51,7 @@ export async function listFolderContents(
 
   return {
     folders,
-    systemFolders: input.location.kind === "root" ? ROOT_SYSTEM_FOLDERS : systemFolders,
+    systemFolders,
     files: files.filter((file) => file.status === "uploaded"),
   };
 }

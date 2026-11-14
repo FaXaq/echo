@@ -39,6 +39,7 @@ export type OrganizationFile = RouterOutputs["drive"]["listOrganizationFiles"][n
 export type RecentFile = RouterOutputs["drive"]["listRecentFiles"][number];
 export type Folder = RouterOutputs["drive"]["getFolder"];
 export type FolderContents = RouterOutputs["drive"]["listFolderContents"];
+export type FolderListItem = FolderContents["folders"][number];
 
 export function listFolderContentsQueryOptions(opts: {
   location: DriveLocation;

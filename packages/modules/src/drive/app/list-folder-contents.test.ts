@@ -9,6 +9,7 @@ import {
   makeFakeFolderRecord,
   makeFakePermissionChecks,
 } from "./test-fixtures.js";
+import type { SystemFolderEntry } from "../domain/index.js";
 import type { ListFolderContentsQueryPort } from "../infrastructure/index.js";
 
 const scope = createOrganizationScope("org-1");
@@ -66,7 +67,7 @@ describe("listFolderContents", () => {
 
   it("returns folders and only uploaded files", async () => {
     const listFolderContentsQuery: ListFolderContentsQueryPort = async () => ({
-      folders: [makeFakeFolderRecord()],
+      folders: [{ ...makeFakeFolderRecord(), sizeBytes: 0 }],
       systemFolders: [],
       files: [
         makeFakeFileRecord({ id: "file-1", status: "uploaded" }),
@@ -111,10 +112,14 @@ describe("listFolderContents", () => {
     });
   });
 
-  it("lists the Events and Songs system folders first at the root", async () => {
+  it("returns the folders and system folders of the query with their sizes at the root", async () => {
+    const systemFolders: SystemFolderEntry[] = [
+      { location: { kind: "events" }, name: "Events", sizeBytes: 700 },
+      { location: { kind: "songs" }, name: "Songs", sizeBytes: 30 },
+    ];
     const listFolderContentsQuery: ListFolderContentsQueryPort = async () => ({
-      folders: [makeFakeFolderRecord()],
-      systemFolders: [],
+      folders: [{ ...makeFakeFolderRecord(), sizeBytes: 2048 }],
+      systemFolders,
       files: [],
     });
 
@@ -128,14 +133,16 @@ describe("listFolderContents", () => {
       { scope, location: { kind: "root" }, sort: { field: "name", order: "desc" } },
     );
 
-    expect(result.systemFolders.map((entry) => entry.location.kind)).toEqual(["events", "songs"]);
+    expect(result.systemFolders).toEqual(systemFolders);
+    expect(result.folders).toEqual([expect.objectContaining({ sizeBytes: 2048 })]);
   });
 
   it("returns the system folders of the query below the Events root", async () => {
-    const eventFolder = {
+    const eventFolder: SystemFolderEntry = {
       location: { kind: "event", id: "event-1" },
       name: "2026-01-01 · Gig",
-    } as const;
+      sizeBytes: 12,
+    };
     const listFolderContentsQuery: ListFolderContentsQueryPort = async () => ({
       folders: [],
       systemFolders: [eventFolder],

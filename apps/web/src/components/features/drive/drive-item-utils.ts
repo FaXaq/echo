@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import type { DragStartEvent } from "@dnd-kit/react";
 import { FileText, Image as ImageIcon, Music, Video } from "lucide-react";
-import type { Folder, OrganizationFile } from "@/services/resources/drive";
+import type { FolderListItem, OrganizationFile } from "@/services/resources/drive";
 
 export const KIND_ICON = {
   audio: Music,
@@ -36,7 +36,9 @@ export function isSelectionKey(value: string): value is SelectionKey {
   return isDriveItemKind(kind);
 }
 
-export type DriveRow = { kind: "folder"; data: Folder } | { kind: "file"; data: OrganizationFile };
+export type DriveRow =
+  | { kind: "folder"; data: FolderListItem }
+  | { kind: "file"; data: OrganizationFile };
 
 export type DragData = { kind: "file"; id: string } | { kind: "folder"; id: string };
 

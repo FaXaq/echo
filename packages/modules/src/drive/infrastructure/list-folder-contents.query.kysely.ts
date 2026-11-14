@@ -1,9 +1,12 @@
 import type { KyselyDB } from "@echo/db";
+import { sql } from "kysely";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import {
+  ROOT_SYSTEM_FOLDERS,
   eventFolderName,
   type DriveLocation,
   type FolderPlace,
+  type FolderWithSize,
   type SystemFolderEntry,
 } from "../domain/index.js";
 import type {
@@ -19,28 +22,61 @@ const FILE_SORT_COLUMN = {
   sizeBytes: "file.size_bytes",
 } as const;
 
-const byName = (order: DriveSortOrder) => (a: SystemFolderEntry, b: SystemFolderEntry) =>
-  order === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+type SortInput = { field: string; order: DriveSortOrder };
+type Sized = { name: string; sizeBytes: number };
+
+const bySort = (sort: SortInput) => (a: Sized, b: Sized) => {
+  const direction = sort.order === "asc" ? 1 : -1;
+  const bySize = sort.field === "sizeBytes" ? a.sizeBytes - b.sizeBytes : 0;
+  return direction * (bySize || a.name.localeCompare(b.name));
+};
+
+const listFolderSizes = async (db: KyselyDB, scope: OrganizationScope, place: FolderPlace) => {
+  const seed =
+    place.kind === "root" ? sql`parent_folder_id is null` : sql`parent_folder_id = ${place.id}`;
+  const { rows } = await sql<{ root_id: string; total: string }>`
+    with recursive tree as (
+      select id, id as root_id from folder where organization_id = ${scope.organizationId} and ${seed}
+      union all
+      select f.id, t.root_id from folder f inner join tree t on f.parent_folder_id = t.id
+    )
+    select sized.root_id, sum(sized.size_bytes) as total
+    from (
+      select distinct tree.root_id, file.id, file.size_bytes
+      from tree
+      inner join folder_file on folder_file.folder_id = tree.id
+      inner join file on file.id = folder_file.file_id
+      where file.organization_id = ${scope.organizationId} and file.status = 'uploaded'
+    ) sized
+    group by sized.root_id
+  `.execute(db);
+  return new Map(rows.map((row) => [row.root_id, Number(row.total)]));
+};
 
 const listUserFolders = async (
   db: KyselyDB,
   scope: OrganizationScope,
   place: FolderPlace,
-  sort: { field: string; order: DriveSortOrder },
-) => {
+  sort: SortInput,
+): Promise<FolderWithSize[]> => {
   const query = db
     .selectFrom("folder")
     .selectAll()
     .where("organization_id", "=", scope.organizationId);
-  const rows = await (
-    place.kind === "root"
+  const [rows, sizes] = await Promise.all([
+    (place.kind === "root"
       ? query.where("parent_folder_id", "is", null)
       : query.where("parent_folder_id", "=", place.id)
-  )
-    // Folders have no size — any field besides updatedAt falls back to name.
-    .orderBy(sort.field === "updatedAt" ? "updated_at" : "name", sort.order)
-    .execute();
-  return rows.map(toFolderRecord);
+    )
+      .orderBy(sort.field === "updatedAt" ? "updated_at" : "name", sort.order)
+      .execute(),
+    listFolderSizes(db, scope, place),
+  ]);
+  const folders = rows.map((row) => ({
+    ...toFolderRecord(row),
+    sizeBytes: sizes.get(row.id) ?? 0,
+  }));
+  return sort.field === "sizeBytes" ? folders.sort(bySort(sort)) : folders;
 };
 
 const placedFileIds = (db: KyselyDB, location: DriveLocation) => {
@@ -79,31 +115,105 @@ const listFiles = async (
   return rows.map(toFileRecord);
 };
 
-const listSystemFolders = async (
+const listRootSystemFolders = async (
   db: KyselyDB,
   scope: OrganizationScope,
-  location: DriveLocation,
 ): Promise<SystemFolderEntry[]> => {
-  if (location.kind === "events") {
-    const rows = await db
+  const totals = await db
+    .selectFrom("file")
+    .where("organization_id", "=", scope.organizationId)
+    .where("status", "=", "uploaded")
+    .select([
+      sql<string>`coalesce(sum(size_bytes) filter (where id in (select file_id from event_file)), 0)`.as(
+        "events",
+      ),
+      sql<string>`coalesce(sum(size_bytes) filter (where id in (select file_id from song_file)), 0)`.as(
+        "songs",
+      ),
+    ])
+    .executeTakeFirst();
+  return ROOT_SYSTEM_FOLDERS.map((entry) => ({
+    ...entry,
+    sizeBytes: Number(entry.location.kind === "events" ? totals?.events : totals?.songs) || 0,
+  }));
+};
+
+const listEventFolders = async (
+  db: KyselyDB,
+  scope: OrganizationScope,
+  sort: SortInput,
+): Promise<SystemFolderEntry[]> => {
+  const [rows, sizes] = await Promise.all([
+    db
       .selectFrom("calendar_event")
       .select(["id", "title", "start_date"])
       .where("organization_id", "=", scope.organizationId)
-      .execute();
-    return rows.map((row) => ({
+      .execute(),
+    db
+      .selectFrom("event_file")
+      .innerJoin("file", "file.id", "event_file.file_id")
+      .where("file.organization_id", "=", scope.organizationId)
+      .where("file.status", "=", "uploaded")
+      .select(["event_file.event_id as owner_id", sql<string>`sum(file.size_bytes)`.as("total")])
+      .groupBy("event_file.event_id")
+      .execute(),
+  ]);
+  const sizeById = new Map(sizes.map((row) => [row.owner_id, Number(row.total)]));
+  return rows
+    .map((row): SystemFolderEntry => ({
       location: { kind: "event", id: row.id },
       name: eventFolderName({ title: row.title, startDate: row.start_date }),
-    }));
-  }
-  if (location.kind === "songs") {
-    const rows = await db
+      sizeBytes: sizeById.get(row.id) ?? 0,
+    }))
+    .sort(bySort(sort));
+};
+
+const listSongFolders = async (
+  db: KyselyDB,
+  scope: OrganizationScope,
+  sort: SortInput,
+): Promise<SystemFolderEntry[]> => {
+  const [rows, sizes] = await Promise.all([
+    db
       .selectFrom("song")
       .select(["id", "title"])
       .where("organization_id", "=", scope.organizationId)
-      .execute();
-    return rows.map((row) => ({ location: { kind: "song", id: row.id }, name: row.title }));
+      .execute(),
+    db
+      .selectFrom("song_file")
+      .innerJoin("file", "file.id", "song_file.file_id")
+      .where("file.organization_id", "=", scope.organizationId)
+      .where("file.status", "=", "uploaded")
+      .select(["song_file.song_id as owner_id", sql<string>`sum(file.size_bytes)`.as("total")])
+      .groupBy("song_file.song_id")
+      .execute(),
+  ]);
+  const sizeById = new Map(sizes.map((row) => [row.owner_id, Number(row.total)]));
+  return rows
+    .map((row): SystemFolderEntry => ({
+      location: { kind: "song", id: row.id },
+      name: row.title,
+      sizeBytes: sizeById.get(row.id) ?? 0,
+    }))
+    .sort(bySort(sort));
+};
+
+const listSystemFolders = (
+  db: KyselyDB,
+  scope: OrganizationScope,
+  location: DriveLocation,
+  sort: SortInput,
+) => {
+  switch (location.kind) {
+    case "root":
+      return listRootSystemFolders(db, scope);
+    case "events":
+      return listEventFolders(db, scope, sort);
+    case "songs":
+      return listSongFolders(db, scope, sort);
+    default:
+      return [];
   }
-  return [];
 };
 
 export const listFolderContentsQueryFactory: ListFolderContentsQueryPortFactory =
@@ -113,9 +223,9 @@ export const listFolderContentsQueryFactory: ListFolderContentsQueryPortFactory 
       location.kind === "root" || location.kind === "folder"
         ? listUserFolders(db, scope, location, sort)
         : [],
-      listSystemFolders(db, scope, location),
+      listSystemFolders(db, scope, location, sort),
       listFiles(db, scope, location, sort),
     ]);
 
-    return { folders, systemFolders: systemFolders.sort(byName(sort.order)), files };
+    return { folders, systemFolders, files };
   };
