@@ -92,9 +92,6 @@ function FolderDeleteConfirm({
 
 export function DriveExplorerDialogs({
   organizationId,
-  creatingFolder,
-  onCreatingFolderChange,
-  onCreateFolder,
   renamingFolder,
   onRenamingFolderChange,
   onRenameFolder,
@@ -106,9 +103,6 @@ export function DriveExplorerDialogs({
   onRenameFile,
 }: {
   organizationId: string;
-  creatingFolder: boolean;
-  onCreatingFolderChange: (open: boolean) => void;
-  onCreateFolder: (name: string) => void;
   renamingFolder: Folder | null;
   onRenamingFolderChange: (open: boolean) => void;
   onRenameFolder: (name: string) => void;
@@ -123,13 +117,6 @@ export function DriveExplorerDialogs({
 
   return (
     <>
-      <FolderNameDialog
-        open={creatingFolder}
-        onOpenChange={onCreatingFolderChange}
-        title={t`New folder`}
-        onConfirm={onCreateFolder}
-      />
-
       <FolderNameDialog
         open={renamingFolder !== null}
         onOpenChange={onRenamingFolderChange}

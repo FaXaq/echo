@@ -12,10 +12,12 @@ const removeOccurrence = vi.fn();
 const previewFolderDelete = vi.fn();
 const deleteFolder = vi.fn();
 const toastAdd = vi.fn();
+const listFolderContents = vi.fn();
 
 vi.mock("@/services/api-client", () => ({
   apiClient: {
     drive: {
+      listFolderContents: { query: (input: unknown) => listFolderContents(input) },
       addOccurrences: { mutate: (input: unknown) => addOccurrences(input) },
       listFileOccurrences: { query: (input: unknown) => listFileOccurrences(input) },
       removeOccurrence: { mutate: (input: unknown) => removeOccurrence(input) },
@@ -50,28 +52,38 @@ import {
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 
-function renderExplorer(
-  location: DriveLocation,
-  contents: Partial<FolderContents> = {},
-  path: { name: string; location: DriveLocation }[] = [],
-) {
+function makeClient() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, staleTime: Infinity } },
   });
-  client.setQueryData(
-    listFolderContentsQueryOptions({
-      location,
-      organizationId: "org-1",
-      sort: "name",
-      order: "asc",
-    }).queryKey,
-    { folders: [], systemFolders: [], files: [], ...contents },
-  );
-  client.setQueryData(getDriveLocationPathQueryKey({ location, organizationId: "org-1" }), path);
   client.setQueryData(selfListOrganizations().queryKey, [
     { id: "org-1", name: "Acme", slug: "acme", isPersonal: false, logoPattern: [] },
   ]);
-  return render(
+  return client;
+}
+
+function seedLocation(
+  client: QueryClient,
+  location: DriveLocation,
+  contents: Partial<FolderContents> | null,
+  path: { name: string; location: DriveLocation }[] = [],
+) {
+  if (contents) {
+    client.setQueryData(
+      listFolderContentsQueryOptions({
+        location,
+        organizationId: "org-1",
+        sort: "name",
+        order: "asc",
+      }).queryKey,
+      { folders: [], systemFolders: [], files: [], ...contents },
+    );
+  }
+  client.setQueryData(getDriveLocationPathQueryKey({ location, organizationId: "org-1" }), path);
+}
+
+function explorer(client: QueryClient, location: DriveLocation) {
+  return (
     <QueryClientProvider client={client}>
       <DriveExplorer
         organizationId="org-1"
@@ -81,8 +93,18 @@ function renderExplorer(
         order="asc"
         onSortChange={() => {}}
       />
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
+}
+
+function renderExplorer(
+  location: DriveLocation,
+  contents: Partial<FolderContents> = {},
+  path: { name: string; location: DriveLocation }[] = [],
+) {
+  const client = makeClient();
+  seedLocation(client, location, contents, path);
+  return render(explorer(client, location));
 }
 
 const folder = {
@@ -124,6 +146,7 @@ async function selectRow(user: ReturnType<typeof userEvent.setup>, label: string
 
 beforeEach(() => {
   vi.clearAllMocks();
+  listFolderContents.mockReset();
   renderHook(() => useDriveClipboard("org-1")).result.current.clear();
 });
 
@@ -225,6 +248,37 @@ describe("DriveExplorer system folders", () => {
 
     expect(await screen.findByRole("button", { name: /new folder/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /upload/i })).toBeInTheDocument();
+  });
+});
+
+describe("DriveExplorer loading", () => {
+  it("shows the table skeleton, not a page skeleton, on first load", async () => {
+    listFolderContents.mockReturnValue(new Promise(() => {}));
+    const client = makeClient();
+    seedLocation(client, { kind: "root" }, null);
+    render(explorer(client, { kind: "root" }));
+
+    expect(await screen.findByTestId("drive-table-skeleton")).toBeInTheDocument();
+    expect(screen.getByLabelText("Search drive")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /new folder/i })).toBeInTheDocument();
+  });
+
+  it("keeps the toolbar and search mounted while the next folder's contents load", async () => {
+    listFolderContents.mockReturnValue(new Promise(() => {}));
+    const client = makeClient();
+    seedLocation(client, { kind: "root" }, { folders: [folder] });
+    const next: DriveLocation = { kind: "folder", id: "folder-1" };
+    seedLocation(client, next, null, [{ name: "Demos", location: next }]);
+    const { rerender } = render(explorer(client, { kind: "root" }));
+    expect(await screen.findByText("Demos")).toBeInTheDocument();
+    const search = screen.getByLabelText("Search drive");
+    const newFolder = screen.getByRole("button", { name: /new folder/i });
+
+    rerender(explorer(client, next));
+
+    expect(await screen.findByTestId("drive-table-skeleton")).toBeInTheDocument();
+    expect(search).toBeInTheDocument();
+    expect(newFolder).toBeInTheDocument();
   });
 });
 

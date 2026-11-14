@@ -40,7 +40,7 @@ msgstr "{0, plural, one {# file will be permanently deleted} other {# files will
 #~ msgstr "{0, plural, one {# file} other {# files}}"
 
 #. placeholder {0}: selectedKeys.size
-#: apps/web/src/components/features/drive/drive-explorer.tsx:558
+#: apps/web/src/components/features/drive/drive-explorer.tsx:529
 msgid "{0, plural, one {# item selected} other {# items selected}}"
 msgstr "{0, plural, one {# item selected} other {# items selected}}"
 
@@ -138,7 +138,7 @@ msgstr "{0} of {1} row(s) selected."
 #~ msgid "{count, plural, one {# item selected} other {# items selected}}"
 #~ msgstr "{count, plural, one {# item selected} other {# items selected}}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:273
+#: apps/web/src/components/features/drive/drive-explorer.tsx:268
 msgid "{count, plural, one {Pasted # file} other {Pasted # files}}"
 msgstr "{count, plural, one {Pasted # file} other {Pasted # files}}"
 
@@ -192,7 +192,7 @@ msgstr "{fileName} uploaded"
 #~ msgid "{fromName} pays {toName}"
 #~ msgstr "{fromName} pays {toName}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:554
+#: apps/web/src/components/features/drive/drive-explorer.tsx:525
 msgid "{itemCount, plural, one {# item} other {# items}}"
 msgstr "{itemCount, plural, one {# item} other {# items}}"
 
@@ -723,7 +723,7 @@ msgstr "Couldn't delete expense"
 #~ msgid "Couldn't delete file"
 #~ msgstr "Couldn't delete file"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:592
+#: apps/web/src/components/features/drive/drive-explorer.tsx:558
 msgid "Couldn't delete folder"
 msgstr "Couldn't delete folder"
 
@@ -752,7 +752,7 @@ msgstr "Couldn't load attachments"
 msgid "Couldn't load balances"
 msgstr "Couldn't load balances"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:654
+#: apps/web/src/components/features/drive/drive-explorer.tsx:620
 msgid "Couldn't load Drive"
 msgstr "Couldn't load Drive"
 
@@ -809,7 +809,7 @@ msgstr "Couldn't move card"
 msgid "Couldn't move song"
 msgstr "Couldn't move song"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:284
+#: apps/web/src/components/features/drive/drive-explorer.tsx:279
 msgid "Couldn't paste files"
 msgstr "Couldn't paste files"
 
@@ -825,11 +825,11 @@ msgstr "Couldn't remove file"
 msgid "Couldn't rename column"
 msgstr "Couldn't rename column"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:604
+#: apps/web/src/components/features/drive/drive-explorer.tsx:570
 msgid "Couldn't rename file"
 msgstr "Couldn't rename file"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:578
+#: apps/web/src/components/features/drive/drive-explorer.tsx:544
 msgid "Couldn't rename folder"
 msgstr "Couldn't rename folder"
 
@@ -1108,7 +1108,7 @@ msgstr "Drag and drop files here, or click to select"
 msgid "Drag to reorder"
 msgstr "Drag to reorder"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:138
+#: apps/web/src/components/features/drive/drive-explorer.tsx:133
 #: apps/web/src/components/features/drive/drive-search-combobox.tsx:68
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:53
 #: apps/web/src/components/features/drive/use-remove-occurrence.ts:31
@@ -1273,7 +1273,7 @@ msgstr "Event not found"
 msgid "Events"
 msgstr "Events"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:317
+#: apps/web/src/components/features/drive/drive-explorer.tsx:312
 msgid "Events appear here once they are created in the calendar."
 msgstr "Events appear here once they are created in the calendar."
 
@@ -1436,7 +1436,7 @@ msgstr "Finishing…"
 msgid "Focal length"
 msgstr "Focal length"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:586
+#: apps/web/src/components/features/drive/drive-explorer.tsx:552
 msgid "Folder deleted"
 msgstr "Folder deleted"
 
@@ -1778,11 +1778,11 @@ msgstr "New event"
 msgid "New expense"
 msgstr "New expense"
 
-#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:129
+#: apps/web/src/components/features/drive/drive-explorer.tsx:738
 msgid "New folder"
 msgstr "New folder"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:359
+#: apps/web/src/components/features/drive/drive-explorer.tsx:714
 msgid "New Folder"
 msgstr "New Folder"
 
@@ -1844,7 +1844,7 @@ msgstr "No event"
 msgid "No events scheduled"
 msgstr "No events scheduled"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:316
+#: apps/web/src/components/features/drive/drive-explorer.tsx:311
 msgid "No events yet"
 msgstr "No events yet"
 
@@ -1870,7 +1870,7 @@ msgstr "No expenses yet"
 #~ msgid "No files linked yet."
 #~ msgstr "No files linked yet."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:326
+#: apps/web/src/components/features/drive/drive-explorer.tsx:321
 #: apps/web/src/components/features/home/suspended-home-sections.tsx:283
 #: apps/web/src/components/ui/attachment-list.tsx:193
 #: apps/web/src/components/ui/attachment-list.tsx:433
@@ -1949,7 +1949,7 @@ msgstr "No songs in this playlist"
 #~ msgid "No songs in this playlist."
 #~ msgstr "No songs in this playlist."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:321
+#: apps/web/src/components/features/drive/drive-explorer.tsx:316
 #: apps/web/src/components/features/home/suspended-home-sections.tsx:373
 #: apps/web/src/components/features/song/suspended-song-list.tsx:62
 msgid "No songs yet"
@@ -1989,7 +1989,7 @@ msgstr "None yet"
 msgid "Note"
 msgstr "Note"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:251
+#: apps/web/src/components/features/drive/drive-explorer.tsx:246
 msgid "Only a selection of files can be deleted together"
 msgstr "Only a selection of files can be deleted together"
 
@@ -1997,11 +1997,11 @@ msgstr "Only a selection of files can be deleted together"
 msgid "Only a selection of files can be downloaded together"
 msgstr "Only a selection of files can be downloaded together"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:253
+#: apps/web/src/components/features/drive/drive-explorer.tsx:248
 msgid "Only files can be assigned to an event"
 msgstr "Only files can be assigned to an event"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:255
+#: apps/web/src/components/features/drive/drive-explorer.tsx:250
 msgid "Only files can be copied"
 msgstr "Only files can be copied"
 
@@ -2332,13 +2332,13 @@ msgstr "Removed from {placeName} — still in {stillIn}"
 msgid "Rename"
 msgstr "Rename"
 
-#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:153
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:140
 #: apps/web/src/components/features/event-calendar/suspended-event-attachments.tsx:69
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:73
 msgid "Rename file"
 msgstr "Rename file"
 
-#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:136
+#: apps/web/src/components/features/drive/drive-explorer-dialogs.tsx:123
 msgid "Rename folder"
 msgstr "Rename folder"
 
@@ -2481,7 +2481,7 @@ msgstr "Select"
 msgid "Select {0}"
 msgstr "Select {0}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:445
+#: apps/web/src/components/features/drive/drive-explorer.tsx:416
 msgid "Select all"
 msgstr "Select all"
 
@@ -2553,7 +2553,7 @@ msgstr "Size"
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:280
+#: apps/web/src/components/features/drive/drive-explorer.tsx:275
 msgid "Some copied files no longer exist — copy them again"
 msgstr "Some copied files no longer exist — copy them again"
 
@@ -2592,7 +2592,7 @@ msgstr "Song not found"
 msgid "Songs"
 msgstr "Songs"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:322
+#: apps/web/src/components/features/drive/drive-explorer.tsx:317
 msgid "Songs appear here once they are added to the project."
 msgstr "Songs appear here once they are added to the project."
 
@@ -2674,7 +2674,7 @@ msgstr "This file is too large for your plan."
 msgid "This file type can't be previewed here."
 msgstr "This file type can't be previewed here."
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:331
+#: apps/web/src/components/features/drive/drive-explorer.tsx:326
 msgid "This folder is empty"
 msgstr "This folder is empty"
 
@@ -2902,7 +2902,7 @@ msgstr "Upcoming events"
 msgid "Update"
 msgstr "Update"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:366
+#: apps/web/src/components/features/drive/drive-explorer.tsx:720
 msgid "Upload"
 msgstr "Upload"
 
@@ -2915,7 +2915,7 @@ msgstr "Upload a file"
 msgid "Upload failed"
 msgstr "Upload failed"
 
-#: apps/web/src/components/features/drive/drive-explorer.tsx:373
+#: apps/web/src/components/features/drive/drive-explorer.tsx:346
 msgid "Upload files"
 msgstr "Upload files"
 
@@ -2924,8 +2924,8 @@ msgstr "Upload files"
 msgid "Upload files with the button above."
 msgstr "Upload files with the button above."
 
+#: apps/web/src/components/features/drive/drive-explorer.tsx:322
 #: apps/web/src/components/features/drive/drive-explorer.tsx:327
-#: apps/web/src/components/features/drive/drive-explorer.tsx:332
 msgid "Upload files with the Upload button, or drop them here."
 msgstr "Upload files with the Upload button, or drop them here."
 

@@ -1,4 +1,5 @@
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -55,6 +56,7 @@ import { DriveSearchCombobox } from "./drive-search-combobox";
 import { SuspendedDriveQuotaBar } from "./suspended-drive-quota-bar";
 import { DriveBreadcrumbs } from "./drive-breadcrumbs";
 import { DriveExplorerDialogs } from "./drive-explorer-dialogs";
+import { FolderNameDialog } from "./folder-name-dialog";
 import { FileRow } from "./drive-file-row";
 import { FileDetailsDialog } from "./file-details-dialog";
 import { LinkFileToEventDialog } from "./link-file-to-event-dialog";
@@ -78,24 +80,21 @@ import { useRemoveOccurrence } from "./use-remove-occurrence";
 
 const EDITABLE_SELECTOR = 'input, textarea, [contenteditable=""], [contenteditable="true"]';
 
-function DriveExplorerContent({
+function DriveTableContent({
   organizationId,
   projectSlug,
   location,
   sort,
   order,
   onSortChange,
-}: {
-  organizationId: string;
-  projectSlug: string;
-  location: DriveLocation;
-  sort: DriveSortField;
-  order: DriveSortOrder;
-  onSortChange: (field: DriveSortField) => void;
+  fileInputRef,
+  actionsSlot,
+}: DriveExplorerProps & {
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  actionsSlot: HTMLElement | null;
 }) {
   const { t } = useLingui();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data } = useSuspenseQuery(
     listFolderContentsQueryOptions({ location, organizationId, sort, order }),
@@ -103,13 +102,10 @@ function DriveExplorerContent({
   const { data: organizations } = useSuspenseQuery(selfListOrganizations());
   const path = useDriveLocationPath(location, organizationId);
   const locationLabel = useDriveLocationLabel();
-  const folderId = location.kind === "folder" ? location.id : null;
   const place = locationPlace(location);
   const canUpload = place !== null;
-  const canCreateFolder = canCreateFolderAt(location);
   const organizationName = organizations.find((org) => org.id === organizationId)?.name ?? "";
 
-  const [creatingFolder, setCreatingFolder] = useState(false);
   const [renamingFolder, setRenamingFolder] = useState<Folder | null>(null);
   const [deletingFolder, setDeletingFolder] = useState<Folder | null>(null);
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
@@ -128,7 +124,6 @@ function DriveExplorerContent({
   const { pendingDeleteIds, scheduleDelete, clearPendingDelete } = useDrivePendingDeletes();
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
 
-  const createFolderMutation = useCreateFolderMutation();
   const renameFolderMutation = useRenameFolderMutation();
   const deleteFolderMutation = useDeleteFolderMutation();
   const renameFileMutation = useRenameFileMutation();
@@ -342,61 +337,37 @@ function DriveExplorerContent({
       tabIndex={-1}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex flex-col w-full">
-          <DriveBreadcrumbs projectSlug={projectSlug} path={path} />
-          <div className="flex items-center justify-between gap-2 w-full">
-            <DriveSearchCombobox organizationId={organizationId} onSelect={navigateToLocation} />
-            <div className="flex gap-2 items-center">
-              {canCreateFolder && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCreatingFolder(true)}
-                >
-                  <FolderPlus />
-                  <span className="hidden md:inline">{t`New Folder`}</span>
-                </Button>
-              )}
-              {canUpload && (
-                <>
-                  <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
-                    <Upload />
-                    <span className="hidden md:inline">{t`Upload`}</span>
-                  </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    className="sr-only"
-                    aria-label={t`Upload files`}
-                    onChange={(event) => {
-                      const files = Array.from(event.target.files ?? []);
-                      files.forEach((file) => uploadFile(file));
-                      event.target.value = "";
-                    }}
-                  />
-                </>
-              )}
-              {selectedKeys.size > 0 && (
-                <SelectionActionsMenu
-                  copyDisabledReason={copyDisabledReason}
-                  onCopy={handleCopy}
-                  downloadDisabledReason={downloadDisabledReason}
-                  isDownloading={isDownloading}
-                  onDownload={handleBulkDownload}
-                  deleteDisabledReason={deleteDisabledReason}
-                  onDelete={() => removal.requestMany(selectedFiles)}
-                  assignDisabledReason={assignDisabledReason}
-                  onAssignToEvent={() => setAssigningFiles(selectedFiles)}
-                  onClear={clearSelection}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {canUpload && (
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          className="sr-only"
+          aria-label={t`Upload files`}
+          onChange={(event) => {
+            const files = Array.from(event.target.files ?? []);
+            files.forEach((file) => uploadFile(file));
+            event.target.value = "";
+          }}
+        />
+      )}
+      {actionsSlot &&
+        selectedKeys.size > 0 &&
+        createPortal(
+          <SelectionActionsMenu
+            copyDisabledReason={copyDisabledReason}
+            onCopy={handleCopy}
+            downloadDisabledReason={downloadDisabledReason}
+            isDownloading={isDownloading}
+            onDownload={handleBulkDownload}
+            deleteDisabledReason={deleteDisabledReason}
+            onDelete={() => removal.requestMany(selectedFiles)}
+            assignDisabledReason={assignDisabledReason}
+            onAssignToEvent={() => setAssigningFiles(selectedFiles)}
+            onClear={clearSelection}
+          />,
+          actionsSlot,
+        )}
 
       <DragDropProvider onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <Table
@@ -564,11 +535,6 @@ function DriveExplorerContent({
 
       <DriveExplorerDialogs
         organizationId={organizationId}
-        creatingFolder={creatingFolder}
-        onCreatingFolderChange={setCreatingFolder}
-        onCreateFolder={(name) =>
-          createFolderMutation.mutate({ organizationId, parentFolderId: folderId, name })
-        }
         renamingFolder={renamingFolder}
         onRenamingFolderChange={(open) => !open && setRenamingFolder(null)}
         onRenameFolder={(name) => {
@@ -654,12 +620,46 @@ function DriveExplorerError() {
   return <p className="text-sm text-destructive">{t`Couldn't load Drive`}</p>;
 }
 
-function DriveExplorerSkeleton() {
+const SKELETON_CELL_WIDTHS = ["w-4", "w-40", "w-24", "w-24", "w-12", "w-6"];
+
+function DriveTableSkeleton() {
   return (
-    <div className="flex flex-1 flex-col gap-3">
-      <Skeleton className="h-64 w-full rounded-xl" />
-    </div>
+    <Table
+      data-testid="drive-table-skeleton"
+      containerClassName="min-h-0 border rounded border-border bg-card"
+      className="m-0"
+    >
+      <TableHeader>
+        <TableRow>
+          {SKELETON_CELL_WIDTHS.map((width, index) => (
+            <TableHead key={index}>
+              <Skeleton className={cn("h-4", width)} />
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 6 }, (_, row) => (
+          <TableRow key={row}>
+            {SKELETON_CELL_WIDTHS.map((width, index) => (
+              <TableCell key={index}>
+                <Skeleton className={cn("h-4", width)} />
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
+}
+
+function LocationBreadcrumbs({
+  organizationId,
+  projectSlug,
+  location,
+}: Pick<DriveExplorerProps, "organizationId" | "projectSlug" | "location">) {
+  const path = useDriveLocationPath(location, organizationId);
+  return <DriveBreadcrumbs projectSlug={projectSlug} path={path} />;
 }
 
 export interface DriveExplorerProps {
@@ -671,26 +671,75 @@ export interface DriveExplorerProps {
   onSortChange: (field: DriveSortField) => void;
 }
 
-export function DriveExplorer({
-  organizationId,
-  projectSlug,
-  location,
-  sort,
-  order,
-  onSortChange,
-}: DriveExplorerProps) {
+export function DriveExplorer(props: DriveExplorerProps) {
+  const { organizationId, projectSlug, location } = props;
+  const { t } = useLingui();
+  const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [actionsSlot, setActionsSlot] = useState<HTMLDivElement | null>(null);
+  const [creatingFolder, setCreatingFolder] = useState(false);
+  const createFolderMutation = useCreateFolderMutation();
+  const folderId = location.kind === "folder" ? location.id : null;
+  const canUpload = locationPlace(location) !== null;
+  const canCreateFolder = canCreateFolderAt(location);
+  const key = locationKey(location);
+
   return (
-    <ErrorBoundary FallbackComponent={DriveExplorerError}>
-      <Suspense fallback={<DriveExplorerSkeleton />}>
-        <DriveExplorerContent
-          organizationId={organizationId}
-          projectSlug={projectSlug}
-          location={location}
-          sort={sort}
-          order={order}
-          onSortChange={onSortChange}
-        />
-      </Suspense>
-    </ErrorBoundary>
+    <div className="flex flex-1 flex-col min-h-0 gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col w-full">
+          <ErrorBoundary key={key} fallback={null}>
+            <Suspense fallback={<Skeleton className="mb-2 h-5 w-40" />}>
+              <LocationBreadcrumbs
+                organizationId={organizationId}
+                projectSlug={projectSlug}
+                location={location}
+              />
+            </Suspense>
+          </ErrorBoundary>
+          <div className="flex items-center justify-between gap-2 w-full">
+            <DriveSearchCombobox
+              organizationId={organizationId}
+              onSelect={(target) => navigate(driveLocationLink(projectSlug, target))}
+            />
+            <div className="flex gap-2 items-center">
+              {canCreateFolder && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCreatingFolder(true)}
+                >
+                  <FolderPlus />
+                  <span className="hidden md:inline">{t`New Folder`}</span>
+                </Button>
+              )}
+              {canUpload && (
+                <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
+                  <Upload />
+                  <span className="hidden md:inline">{t`Upload`}</span>
+                </Button>
+              )}
+              <div ref={setActionsSlot} className="contents" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ErrorBoundary key={key} FallbackComponent={DriveExplorerError}>
+        <Suspense fallback={<DriveTableSkeleton />}>
+          <DriveTableContent {...props} fileInputRef={fileInputRef} actionsSlot={actionsSlot} />
+        </Suspense>
+      </ErrorBoundary>
+
+      <FolderNameDialog
+        open={creatingFolder}
+        onOpenChange={setCreatingFolder}
+        title={t`New folder`}
+        onConfirm={(name) =>
+          createFolderMutation.mutate({ organizationId, parentFolderId: folderId, name })
+        }
+      />
+    </div>
   );
 }
