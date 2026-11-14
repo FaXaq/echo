@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/projects/$projectSlug/calendar/")({
   validateSearch: z.object({
     view: calendarViewSchema.optional().catch(undefined),
     date: z.string().optional().catch(undefined),
+    create: z.boolean().optional().catch(undefined),
   }),
   component: OrganizationCalendarPage,
 });
@@ -28,6 +30,16 @@ function OrganizationCalendarPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const posthog = usePostHog();
+  const [startCreating] = useState(search.create === true);
+
+  useEffect(() => {
+    if (startCreating)
+      navigate({
+        from: Route.fullPath,
+        search: (prev) => ({ ...prev, create: undefined }),
+        replace: true,
+      });
+  }, [startCreating, navigate]);
   const { data: events = [] } = useQuery(getEventsQueryOptions({ organizationId }));
 
   const createEventMutation = useCreateEventMutation();
@@ -88,6 +100,7 @@ function OrganizationCalendarPage() {
         onEventUpdate={handleEventUpdate}
         onEventDelete={handleEventDelete}
         defaultOrganizationId={organizationId}
+        startCreating={startCreating}
         className="flex-1"
       />
     </div>

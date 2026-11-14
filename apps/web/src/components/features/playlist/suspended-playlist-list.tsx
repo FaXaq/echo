@@ -19,17 +19,21 @@ export interface SuspendedPlaylistListProps {
   organizationId: string;
   projectSlug: string;
   onPlaylistCreated: (playlist: Playlist) => void;
+  startCreating?: boolean;
 }
 
 function PlaylistListContent({
   organizationId,
   projectSlug,
   onPlaylistCreated,
+  startCreating = false,
 }: SuspendedPlaylistListProps) {
   const { t } = useLingui();
   const posthog = usePostHog();
   const { data: playlists } = useSuspenseQuery(getPlaylistsQueryOptions({ organizationId }));
-  const [dialogState, setDialogState] = useState<PlaylistDialogState>(null);
+  const [dialogState, setDialogState] = useState<PlaylistDialogState>(
+    startCreating ? { mode: "create" } : null,
+  );
 
   const createPlaylistMutation = useCreatePlaylistMutation({
     onSuccess: (playlist) => {
@@ -110,19 +114,11 @@ function PlaylistListLoader() {
   );
 }
 
-export function SuspendedPlaylistList({
-  organizationId,
-  projectSlug,
-  onPlaylistCreated,
-}: SuspendedPlaylistListProps) {
+export function SuspendedPlaylistList(props: SuspendedPlaylistListProps) {
   return (
     <ErrorBoundary FallbackComponent={PlaylistListError}>
       <Suspense fallback={<PlaylistListLoader />}>
-        <PlaylistListContent
-          organizationId={organizationId}
-          projectSlug={projectSlug}
-          onPlaylistCreated={onPlaylistCreated}
-        />
+        <PlaylistListContent {...props} />
       </Suspense>
     </ErrorBoundary>
   );

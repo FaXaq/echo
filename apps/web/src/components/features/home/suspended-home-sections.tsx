@@ -1,10 +1,22 @@
-import { Suspense, useState, type ReactNode } from "react";
+import { Suspense, useRef, useState, type ReactNode } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { ArrowUpRight, CalendarDays, Files, Images, ListMusic, Music } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import {
+  ArrowUpRight,
+  CalendarDays,
+  CalendarPlus,
+  Files,
+  ImagePlus,
+  Images,
+  ListMusic,
+  Music,
+  Plus,
+  Upload,
+} from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { useUploadFile } from "@/components/features/drive/use-upload-file";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -108,6 +120,15 @@ function UpcomingEventsContent({ organizationId, projectSlug }: HomeSectionProps
         icon={<CalendarDays />}
         title={<Trans>No upcoming events</Trans>}
         description={<Trans>Plan rehearsals and gigs from the calendar.</Trans>}
+        action={
+          <CreateLink
+            to="/projects/$projectSlug/calendar"
+            projectSlug={projectSlug}
+            icon={<CalendarPlus data-icon="inline-start" />}
+          >
+            <Trans>Create your next event</Trans>
+          </CreateLink>
+        }
       />
     );
 
@@ -193,6 +214,15 @@ function LastEventContent({ organizationId, projectSlug }: HomeSectionProps) {
         icon={<CalendarDays />}
         title={<Trans>No past events yet</Trans>}
         description={<Trans>Your latest event will show up here once it's over.</Trans>}
+        action={
+          <CreateLink
+            to="/projects/$projectSlug/calendar"
+            projectSlug={projectSlug}
+            icon={<CalendarPlus data-icon="inline-start" />}
+          >
+            <Trans>Create an event</Trans>
+          </CreateLink>
+        }
       />
     );
 
@@ -268,6 +298,8 @@ export function SuspendedMyBalance(props: HomeSectionProps & { className?: strin
 }
 
 function RecentFilesContent({ organizationId }: HomeSectionProps) {
+  const { t } = useLingui();
+  const uploadFiles = useDriveUpload(organizationId);
   const { data: files } = useSuspenseQuery(getRecentFilesQueryOptions({ organizationId }));
   const [detailsFile, setDetailsFile] = useState<RecentFile | null>(null);
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
@@ -277,12 +309,21 @@ function RecentFilesContent({ organizationId }: HomeSectionProps) {
 
   if (files.length === 0)
     return (
-      <ListEmptyState
-        className="py-4"
-        icon={<Files />}
-        title={<Trans>No files yet</Trans>}
-        description={<Trans>Audio and documents you upload to the drive show up here.</Trans>}
-      />
+      <DropZone onFiles={uploadFiles}>
+        <ListEmptyState
+          className="py-4"
+          icon={<Files />}
+          title={<Trans>No files yet</Trans>}
+          description={<Trans>Audio and documents you upload to the drive show up here.</Trans>}
+          action={
+            <UploadButton
+              label={t`Upload files`}
+              icon={<Upload data-icon="inline-start" />}
+              onFiles={uploadFiles}
+            />
+          }
+        />
+      </DropZone>
     );
 
   return (
@@ -322,19 +363,130 @@ export function SuspendedRecentFiles(props: HomeSectionProps & { className?: str
   );
 }
 
+function useDriveUpload(organizationId: string) {
+  const { t } = useLingui();
+  const upload = useUploadFile();
+  return (files: Iterable<File>) => {
+    for (const file of files) {
+      upload.mutate({ organizationId, file, folderId: null, destinationLabel: t`Drive` });
+    }
+  };
+}
+
+function UploadButton({
+  label,
+  icon,
+  onFiles,
+}: {
+  label: string;
+  icon: ReactNode;
+  onFiles: (files: Iterable<File>) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <input
+        ref={inputRef}
+        type="file"
+        multiple
+        aria-label={label}
+        className="sr-only"
+        onChange={(event) => {
+          onFiles(event.target.files ?? []);
+          event.target.value = "";
+        }}
+      />
+      <Button size="sm" onClick={() => inputRef.current?.click()}>
+        {icon}
+        {label}
+      </Button>
+    </>
+  );
+}
+
+function DropZone({
+  onFiles,
+  children,
+}: {
+  onFiles: (files: Iterable<File>) => void;
+  children: ReactNode;
+}) {
+  const [isDragging, setIsDragging] = useState(false);
+  return (
+    <div
+      data-dragging={isDragging}
+      className="rounded-xl transition-colors data-[dragging=true]:bg-muted/50 data-[dragging=true]:ring-2 data-[dragging=true]:ring-primary"
+      onDragOver={(event) => {
+        if (!event.dataTransfer.types.includes("Files")) return;
+        event.preventDefault();
+        setIsDragging(true);
+      }}
+      onDragLeave={(event) => {
+        const target = event.relatedTarget;
+        if (!(target instanceof Node && event.currentTarget.contains(target))) setIsDragging(false);
+      }}
+      onDrop={(event) => {
+        event.preventDefault();
+        setIsDragging(false);
+        onFiles(event.dataTransfer.files);
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CreateLink({
+  to,
+  projectSlug,
+  icon,
+  children,
+}: {
+  to:
+    | "/projects/$projectSlug/calendar"
+    | "/projects/$projectSlug/songs"
+    | "/projects/$projectSlug/playlists";
+  projectSlug: string;
+  icon: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      to={to}
+      params={{ projectSlug }}
+      search={{ create: true }}
+      className={buttonVariants({ size: "sm", className: "no-underline" })}
+    >
+      {icon}
+      {children}
+    </Link>
+  );
+}
+
 function RecentMediaContent({ organizationId }: HomeSectionProps) {
+  const { t } = useLingui();
+  const uploadMedia = useDriveUpload(organizationId);
   const { data: media } = useSuspenseQuery(
     getRecentMediaQueryOptions({ organizationId, limit: 9 }),
   );
 
   if (media.length === 0)
     return (
-      <ListEmptyState
-        className="py-4"
-        icon={<Images />}
-        title={<Trans>No photos or videos yet</Trans>}
-        description={<Trans>Upload media to the drive or to an event.</Trans>}
-      />
+      <DropZone onFiles={uploadMedia}>
+        <ListEmptyState
+          className="py-4"
+          icon={<Images />}
+          title={<Trans>No photos or videos yet</Trans>}
+          description={<Trans>Upload media to the drive or to an event.</Trans>}
+          action={
+            <UploadButton
+              label={t`Upload photos or videos`}
+              icon={<ImagePlus data-icon="inline-start" />}
+              onFiles={uploadMedia}
+            />
+          }
+        />
+      </DropZone>
     );
 
   return (
@@ -372,6 +524,15 @@ function RecentSongsContent({ organizationId, projectSlug }: HomeSectionProps) {
         icon={<Music />}
         title={<Trans>No songs yet</Trans>}
         description={<Trans>Songs you create or edit show up here.</Trans>}
+        action={
+          <CreateLink
+            to="/projects/$projectSlug/songs"
+            projectSlug={projectSlug}
+            icon={<Plus data-icon="inline-start" />}
+          >
+            <Trans>New song</Trans>
+          </CreateLink>
+        }
       />
     );
 
@@ -423,6 +584,15 @@ function RecentPlaylistsContent({ organizationId, projectSlug }: HomeSectionProp
         icon={<ListMusic />}
         title={<Trans>No playlists yet</Trans>}
         description={<Trans>Build a setlist from the playlists page.</Trans>}
+        action={
+          <CreateLink
+            to="/projects/$projectSlug/playlists"
+            projectSlug={projectSlug}
+            icon={<Plus data-icon="inline-start" />}
+          >
+            <Trans>New playlist</Trans>
+          </CreateLink>
+        }
       />
     );
 
