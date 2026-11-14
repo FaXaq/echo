@@ -13,7 +13,6 @@ import { AttachmentList } from "@/ui/attachment-list";
 import { FileDetailsDialog } from "@/components/features/drive/file-details-dialog";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { formatEventWhen } from "@/lib/event-format";
-import { formatMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
 import {
   getLastEventQueryOptions,
@@ -33,6 +32,7 @@ import type { FileRouteTypes } from "@/routeTree.gen";
 import { SongListItem } from "@/components/ui/song/song-list-item";
 import { PlaylistListItem } from "@/components/ui/playlist/playlist-list-item";
 import { SuspendedSongPlayButton } from "@/components/features/song/suspended-song-play-button";
+import { BalanceAmount } from "@/components/ui/expense/balance-amount";
 import { SuspendedSongDuration } from "@/components/features/song/suspended-song-duration";
 import { describeBalance } from "./describe-balance";
 
@@ -98,7 +98,11 @@ function SectionLink(props: {
 function UpcomingEventsContent({ organizationId, projectSlug }: HomeSectionProps) {
   const { i18n } = useLingui();
   const { data: events } = useSuspenseQuery(getUpcomingEventsQueryOptions({ organizationId }));
-  const dayFormat = new Intl.DateTimeFormat(i18n.locale, { day: "numeric", month: "short" });
+  const dayFormat = new Intl.DateTimeFormat(i18n.locale, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
   const timeFormat = new Intl.DateTimeFormat(i18n.locale, { timeStyle: "short" });
 
   if (events.length === 0)
@@ -120,7 +124,7 @@ function UpcomingEventsContent({ organizationId, projectSlug }: HomeSectionProps
             params={{ projectSlug, eventId: event.id }}
             className={rowClass}
           >
-            <span className="w-14 shrink-0 font-semibold tabular-nums">
+            <span className="w-24 shrink-0 font-semibold tabular-nums">
               {dayFormat.format(new Date(event.startDate))}
             </span>
             <span
@@ -232,9 +236,9 @@ export function SuspendedLastEvent(props: HomeSectionProps & { className?: strin
 }
 
 function MyBalanceContent({ organizationId }: HomeSectionProps) {
-  const { i18n, t } = useLingui();
+  const { t } = useLingui();
   const { data: balance } = useSuspenseQuery(getMyBalanceQueryOptions({ organizationId }));
-  const { kind, amountMinor } = describeBalance(balance.amountMinor);
+  const { kind } = describeBalance(balance.amountMinor);
   const label = {
     owe: t`You owe`,
     owed: t`You are owed`,
@@ -244,9 +248,11 @@ function MyBalanceContent({ organizationId }: HomeSectionProps) {
   return (
     <div className="flex flex-col gap-0.5">
       <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="font-heading text-3xl font-semibold tabular-nums">
-        {formatMoney(amountMinor, balance.currency, i18n.locale)}
-      </span>
+      <BalanceAmount
+        amountMinor={balance.amountMinor}
+        currency={balance.currency}
+        className="text-3xl"
+      />
     </div>
   );
 }

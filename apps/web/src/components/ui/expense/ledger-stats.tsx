@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Plural, useLingui } from "@lingui/react/macro";
 import { formatMoney } from "@/lib/money";
-import { cn } from "@/lib/utils";
+import { BalanceAmount } from "./balance-amount";
 
 export interface LedgerStatsProps {
   currency: string;
@@ -12,23 +12,11 @@ export interface LedgerStatsProps {
   settleCount: number;
 }
 
-function Stat({
-  label,
-  value,
-  hint,
-  className,
-}: {
-  label: ReactNode;
-  value: string;
-  hint: ReactNode;
-  className?: string;
-}) {
+function Stat({ label, value, hint }: { label: ReactNode; value: ReactNode; hint: ReactNode }) {
   return (
     <div className="flex flex-col gap-1 rounded-lg border bg-card px-4 py-3.5">
       <span className="text-sm text-muted-foreground">{label}</span>
-      <span className={cn("font-heading text-2xl font-semibold tabular-nums", className)}>
-        {value}
-      </span>
+      <span className="font-heading text-2xl font-semibold tabular-nums">{value}</span>
       <span className="text-xs text-muted-foreground">{hint}</span>
     </div>
   );
@@ -44,7 +32,6 @@ export function LedgerStats({
 }: LedgerStatsProps) {
   const { t, i18n } = useLingui();
   const format = (amountMinor: number) => formatMoney(amountMinor, currency, i18n.locale);
-  const balance = format(Math.abs(yourBalanceMinor));
 
   return (
     <section
@@ -58,9 +45,7 @@ export function LedgerStats({
       />
       <Stat
         label={t`Your balance`}
-        value={
-          yourBalanceMinor > 0 ? `+ ${balance}` : yourBalanceMinor < 0 ? `- ${balance}` : balance
-        }
+        value={<BalanceAmount amountMinor={yourBalanceMinor} currency={currency} />}
         hint={
           yourBalanceMinor > 0
             ? t`You are owed`
@@ -68,10 +53,6 @@ export function LedgerStats({
               ? t`You owe`
               : t`You are settled up`
         }
-        className={cn(
-          yourBalanceMinor > 0 && "text-emerald-600 dark:text-emerald-400",
-          yourBalanceMinor < 0 && "text-destructive",
-        )}
       />
       <Stat
         label={t`Left to settle`}
