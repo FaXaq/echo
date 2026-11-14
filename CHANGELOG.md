@@ -1,3 +1,9 @@
+## [0.30.0](https://github.com/FaXaq/echo/compare/v0.29.0...v0.30.0) (2026-11-14)
+
+### ✨ Features
+
+* **home:** add project home dashboard ([#76](https://github.com/FaXaq/echo/issues/76)) ([73ee7f6](https://github.com/FaXaq/echo/commit/73ee7f64a919595682abdb92aef4d45690bce609))
+
 ## [0.29.0](https://github.com/FaXaq/echo/compare/v0.28.0...v0.29.0) (2026-11-09)
 
 ### ✨ Features
