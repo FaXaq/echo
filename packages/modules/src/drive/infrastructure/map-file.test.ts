@@ -5,8 +5,6 @@ import { toFileRecord, toSongFileRecord } from "./map-file.js";
 function makeRow(overrides: Partial<FileRow> = {}): FileRow {
   return {
     id: "file-1",
-    event_id: null,
-    folder_id: null,
     organization_id: "org-1",
     uploaded_by: "user-1",
     uploaded_by_name: "Test User",

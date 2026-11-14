@@ -30,7 +30,7 @@ describe("moveFile", () => {
             }),
           }),
         },
-        { id: "file-1", scope, folderId: "folder-1" },
+        { id: "file-1", userId: "user-1", scope, folderId: "folder-1" },
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
   });
@@ -46,7 +46,7 @@ describe("moveFile", () => {
           moveFileToFolderCommand,
           ...makeFakePermissionChecks(),
         },
-        { id: "file-1", scope, folderId: "missing-folder" },
+        { id: "file-1", userId: "user-1", scope, folderId: "missing-folder" },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
@@ -62,44 +62,52 @@ describe("moveFile", () => {
           moveFileToFolderCommand,
           ...makeFakePermissionChecks(),
         },
-        { id: "missing", scope, folderId: "folder-1" },
+        { id: "missing", userId: "user-1", scope, folderId: "folder-1" },
       ),
     ).rejects.toBeInstanceOf(NotFoundError);
   });
 
   it("moves the file into the folder", async () => {
     const moveFileToFolderCommand: MoveFileToFolderCommandPort = vi.fn(async (_db, _scope, input) =>
-      makeFakeFileRecord({ id: input.id, folderId: input.folderId }),
+      makeFakeFileRecord({ id: input.id }),
     );
 
-    const result = await moveFile(
+    await moveFile(
       {
         db: makeFakeDb(),
         findFolderByIdQuery: makeFakeFindFolderById(),
         moveFileToFolderCommand,
         ...makeFakePermissionChecks(),
       },
-      { id: "file-1", scope, folderId: "folder-1" },
+      { id: "file-1", userId: "user-1", scope, folderId: "folder-1" },
     );
 
-    expect(result.folderId).toBe("folder-1");
+    expect(moveFileToFolderCommand).toHaveBeenCalledWith(expect.anything(), scope, {
+      id: "file-1",
+      folderId: "folder-1",
+      placedBy: "user-1",
+    });
   });
 
   it("moves the file back to root without checking a folder", async () => {
     const moveFileToFolderCommand: MoveFileToFolderCommandPort = vi.fn(async (_db, _scope, input) =>
-      makeFakeFileRecord({ id: input.id, folderId: input.folderId }),
+      makeFakeFileRecord({ id: input.id }),
     );
 
-    const result = await moveFile(
+    await moveFile(
       {
         db: makeFakeDb(),
         findFolderByIdQuery: makeFakeFindFolderById(null),
         moveFileToFolderCommand,
         ...makeFakePermissionChecks(),
       },
-      { id: "file-1", scope, folderId: null },
+      { id: "file-1", userId: "user-1", scope, folderId: null },
     );
 
-    expect(result.folderId).toBeNull();
+    expect(moveFileToFolderCommand).toHaveBeenCalledWith(expect.anything(), scope, {
+      id: "file-1",
+      folderId: null,
+      placedBy: "user-1",
+    });
   });
 });

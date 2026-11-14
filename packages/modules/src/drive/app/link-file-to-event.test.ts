@@ -10,7 +10,7 @@ import {
 } from "./test-fixtures.js";
 
 const scope = createOrganizationScope("org-1");
-const input = { fileId: "file-1", eventId: "event-1", scope };
+const input = { fileId: "file-1", eventId: "event-1", userId: "user-1", scope };
 
 function makeDeps(overrides: Partial<Parameters<typeof linkFileToEvent>[0]> = {}) {
   return {

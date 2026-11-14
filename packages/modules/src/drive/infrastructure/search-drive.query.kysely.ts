@@ -46,7 +46,11 @@ export const searchDriveQueryFactory: SearchDriveQueryPortFactory =
     SELECT file.*, "user".name AS uploaded_by_name, COALESCE(folder_path.path, ARRAY[]::text[]) AS path
     FROM file
     INNER JOIN "user" ON "user".id = file.uploaded_by
-    LEFT JOIN folder_path ON folder_path.id = file.folder_id
+    LEFT JOIN LATERAL (
+      SELECT folder_id FROM folder_file WHERE folder_file.file_id = file.id
+      ORDER BY placed_at LIMIT 1
+    ) placement ON true
+    LEFT JOIN folder_path ON folder_path.id = placement.folder_id
     WHERE file.organization_id = ${scope.organizationId}
       AND file.status = 'uploaded'
       AND strpos(lower(file.filename), lower(${input.query})) > 0

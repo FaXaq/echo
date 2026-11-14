@@ -5,6 +5,7 @@ import type { FileRecord } from "../domain/index.js";
 export type MoveFileToFolderInput = {
   id: string;
   folderId: string | null;
+  placedBy: string;
 };
 
 export type MoveFileToFolderCommandPort = (

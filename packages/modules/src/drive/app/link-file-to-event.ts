@@ -11,7 +11,7 @@ export async function linkFileToEvent(
     findFileByIdQuery: FindFileByIdQueryPort;
     linkFileToEventCommand: LinkFileToEventCommandPort;
   },
-  input: { fileId: string; eventId: string; scope: OrganizationScope },
+  input: { fileId: string; eventId: string; userId: string; scope: OrganizationScope },
 ) {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
@@ -25,6 +25,7 @@ export async function linkFileToEvent(
   const linked = await deps.linkFileToEventCommand(deps.db, input.scope, {
     eventId: input.eventId,
     fileId: input.fileId,
+    linkedBy: input.userId,
   });
   if (!linked) throw notFound("CalendarEvent");
 }

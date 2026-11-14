@@ -21,10 +21,7 @@ import {
   listUpcomingCalendarEventsQueryFactory,
   findLastCalendarEventQueryFactory,
 } from "@echo/modules/calendar/infrastructure";
-import {
-  findOrphanedFilesForEventQueryFactory,
-  deleteFileByIdCommandFactory,
-} from "@echo/modules/drive/infrastructure";
+import { deleteOrphanedFilesCommandFactory } from "@echo/modules/drive/infrastructure";
 
 const colorSchema = z.enum(EVENT_COLORS as [EventColor, ...EventColor[]]);
 
@@ -53,8 +50,7 @@ const deleteCalendarEventCommand = deleteCalendarEventCommandFactory();
 const listCalendarEventsQuery = listCalendarEventsQueryFactory();
 const searchCalendarEventsQuery = searchCalendarEventsQueryFactory();
 const getCalendarEventById = getCalendarEventByIdFactory();
-const findOrphanedFilesForEventQuery = findOrphanedFilesForEventQueryFactory();
-const deleteFileByIdCommand = deleteFileByIdCommandFactory();
+const deleteOrphanedFilesCommand = deleteOrphanedFilesCommandFactory();
 
 const listUpcomingCalendarEventsQuery = listUpcomingCalendarEventsQueryFactory();
 const findLastCalendarEventQuery = findLastCalendarEventQueryFactory();
@@ -154,8 +150,7 @@ export const makeCalendarRouter = () =>
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             deleteCalendarEventCommand,
-            findOrphanedFilesForEventQuery,
-            deleteFileByIdCommand,
+            deleteOrphanedFilesCommand,
             s3Storage: ctx.s3Storage,
           },
           { id: input.id, scope: ctx.organizationScope },

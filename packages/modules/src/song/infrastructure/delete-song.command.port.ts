@@ -7,6 +7,6 @@ export type DeleteSongCommandPort = (
   db: KyselyDB,
   scope: OrganizationScope,
   input: DeleteSongInput,
-) => Promise<boolean>;
+) => Promise<{ fileIds: string[] } | null>;
 
 export type DeleteSongCommandPortFactory = () => DeleteSongCommandPort;

@@ -2,11 +2,20 @@ import type { DeleteSongCommandPortFactory } from "./delete-song.command.port.js
 
 export const deleteSongCommandFactory: DeleteSongCommandPortFactory =
   () => async (db, scope, input) => {
-    const result = await db
-      .deleteFrom("song")
-      .where("id", "=", input.id)
-      .where("organization_id", "=", scope.organizationId)
-      .executeTakeFirst();
+    return db.transaction().execute(async (trx) => {
+      const links = await trx
+        .selectFrom("song_file")
+        .select("file_id")
+        .where("song_id", "=", input.id)
+        .execute();
 
-    return result.numDeletedRows > 0n;
+      const result = await trx
+        .deleteFrom("song")
+        .where("id", "=", input.id)
+        .where("organization_id", "=", scope.organizationId)
+        .executeTakeFirst();
+
+      if (result.numDeletedRows === 0n) return null;
+      return { fileIds: links.map((link) => link.file_id) };
+    });
   };

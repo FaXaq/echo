@@ -35,16 +35,10 @@ export type {
 export { listFilesBySongQueryFactory } from "./list-files-by-song.query.kysely.js";
 
 export type {
-  FindOrphanedFilesForEventQueryInput,
-  FindOrphanedFilesForEventQueryPort,
-} from "./find-orphaned-files-for-event.query.port.js";
-export { findOrphanedFilesForEventQueryFactory } from "./find-orphaned-files-for-event.query.kysely.js";
-
-export type {
-  FindOrphanedFilesForSongQueryInput,
-  FindOrphanedFilesForSongQueryPort,
-} from "./find-orphaned-files-for-song.query.port.js";
-export { findOrphanedFilesForSongQueryFactory } from "./find-orphaned-files-for-song.query.kysely.js";
+  DeleteOrphanedFilesInput,
+  DeleteOrphanedFilesCommandPort,
+} from "./delete-orphaned-files.command.port.js";
+export { deleteOrphanedFilesCommandFactory } from "./delete-orphaned-files.command.kysely.js";
 
 export type {
   ListSongAudioVersionsQueryInput,
@@ -63,6 +57,12 @@ export type {
   LinkFileToEventCommandPort,
 } from "./link-file-to-event.command.port.js";
 export { linkFileToEventCommandFactory } from "./link-file-to-event.command.kysely.js";
+
+export type {
+  EventExistsInOrganizationInput,
+  EventExistsInOrganizationQueryPort,
+} from "./event-exists-in-organization.query.port.js";
+export { eventExistsInOrganizationQueryFactory } from "./event-exists-in-organization.query.kysely.js";
 
 export type {
   SongExistsInOrganizationInput,

@@ -1,13 +1,10 @@
 import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
-import type {
-  DeleteFileByIdCommandPort,
-  FindOrphanedFilesForEventQueryPort,
-} from "@echo/modules/drive/infrastructure";
+import type { DeleteOrphanedFilesCommandPort } from "@echo/modules/drive/infrastructure";
+import { purgeOrphanedFiles } from "@echo/modules/drive/app";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
-import { fileObjectKeys } from "@echo/modules/drive/domain";
 import type { DeleteCalendarEventCommandPort } from "../infrastructure/delete-calendar-event.command.port.js";
 
 export type DeleteEventFileFailure = { fileId: string; error: unknown };
@@ -17,8 +14,7 @@ export async function deleteEvent(
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
     deleteCalendarEventCommand: DeleteCalendarEventCommandPort;
-    findOrphanedFilesForEventQuery: FindOrphanedFilesForEventQueryPort;
-    deleteFileByIdCommand: DeleteFileByIdCommandPort;
+    deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort;
     s3Storage: S3StoragePort;
   },
   input: { id: string; scope: OrganizationScope },
@@ -29,27 +25,12 @@ export async function deleteEvent(
   });
   if (!success) throw forbidden({ entity: "CalendarEvent", action: "delete" });
 
-  const orphanedFiles = await deps.findOrphanedFilesForEventQuery(deps.db, input.scope, {
-    eventId: input.id,
-  });
-
-  const results = await Promise.allSettled(
-    orphanedFiles.map((file) =>
-      Promise.all(fileObjectKeys(file).map((key) => deps.s3Storage.deleteObject(key))),
-    ),
-  );
-  const failures = results.flatMap((result, index) =>
-    result.status === "rejected"
-      ? [{ fileId: orphanedFiles[index]!.id, error: result.reason }]
-      : [],
-  );
-
-  await Promise.all(
-    orphanedFiles.map((file) => deps.deleteFileByIdCommand(deps.db, input.scope, { id: file.id })),
-  );
-
   const deleted = await deps.deleteCalendarEventCommand(deps.db, input.scope, { id: input.id });
   if (!deleted) throw notFound("CalendarEvent");
 
+  const { failures } = await purgeOrphanedFiles(deps, {
+    scope: input.scope,
+    fileIds: deleted.fileIds,
+  });
   return failures;
 }

@@ -1,11 +1,10 @@
 import type { KyselyDB } from "@echo/db";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { FileKind, FileRecord, MediaMetadata } from "../domain/index.js";
+import type { FileKind, FileRecord, MediaMetadata, Place } from "../domain/index.js";
 
 export type InsertPendingFileInput = MediaMetadata & {
   id: string;
-  eventId: string | null;
-  folderId: string | null;
+  place: Place;
   uploadedBy: string;
   kind: FileKind;
   mimeType: string;

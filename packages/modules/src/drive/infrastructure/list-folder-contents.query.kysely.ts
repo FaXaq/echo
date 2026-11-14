@@ -4,7 +4,7 @@ import { toFileRecord } from "./map-file.js";
 
 const FILE_SORT_COLUMN = {
   name: "file.filename",
-  event: "calendar_event.title",
+  event: "file.filename",
   updatedAt: "file.updated_at",
   sizeBytes: "file.size_bytes",
 } as const;
@@ -27,14 +27,14 @@ export const listFolderContentsQueryFactory: ListFolderContentsQueryPortFactory 
     let fileQuery = db
       .selectFrom("file")
       .innerJoin("user", "file.uploaded_by", "user.id")
-      .leftJoin("calendar_event", "file.event_id", "calendar_event.id")
+      .innerJoin("folder_file", "folder_file.file_id", "file.id")
       .selectAll("file")
-      .select(["user.name as uploaded_by_name", "calendar_event.title as event_title"])
+      .select("user.name as uploaded_by_name")
       .where("file.organization_id", "=", scope.organizationId);
     fileQuery =
       input.folderId === null
-        ? fileQuery.where("folder_id", "is", null)
-        : fileQuery.where("folder_id", "=", input.folderId);
+        ? fileQuery.where("folder_file.folder_id", "is", null)
+        : fileQuery.where("folder_file.folder_id", "=", input.folderId);
     fileQuery = fileQuery.orderBy(FILE_SORT_COLUMN[input.sort.field], input.sort.order);
 
     const [folderRows, fileRows] = await Promise.all([folderQuery.execute(), fileQuery.execute()]);

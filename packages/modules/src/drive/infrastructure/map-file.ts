@@ -4,7 +4,6 @@ import type { DB } from "@echo/db";
 
 export type FileRow = Selectable<DB["file"]> & {
   uploaded_by_name: string | null;
-  event_title?: string | null;
 };
 
 export type SongFileRow = FileRow & {
@@ -34,9 +33,6 @@ function toRole(value: string | null): Role | null {
 export function toFileRecord(row: FileRow): FileRecord {
   return {
     id: row.id,
-    eventId: row.event_id,
-    eventTitle: row.event_title ?? null,
-    folderId: row.folder_id,
     organizationId: row.organization_id,
     uploadedBy: row.uploaded_by,
     uploadedByName: row.uploaded_by_name ?? row.uploaded_by,

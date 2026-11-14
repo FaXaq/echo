@@ -101,11 +101,17 @@ export type MediaMetadata = {
   height: number | null;
 };
 
+export type Place =
+  | { kind: "root" }
+  | { kind: "folder"; id: string }
+  | { kind: "event"; id: string }
+  | { kind: "song"; id: string };
+export type DriveLocation = Place | { kind: "events" } | { kind: "songs" };
+export type PlaceLabel = { place: Place; path: string[] };
+export type SystemFolderEntry = { location: DriveLocation; name: string };
+
 export type FileRecord = {
   id: string;
-  eventId: string | null;
-  eventTitle: string | null;
-  folderId: string | null;
   organizationId: string;
   uploadedBy: string;
   uploadedByName: string;

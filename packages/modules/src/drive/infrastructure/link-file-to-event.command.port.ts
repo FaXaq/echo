@@ -4,6 +4,7 @@ import type { OrganizationScope } from "@echo/modules/shared/domain";
 export type LinkFileToEventInput = {
   eventId: string;
   fileId: string;
+  linkedBy: string;
 };
 
 export type LinkFileToEventCommandPort = (

@@ -26,6 +26,8 @@ import { MAX_THUMBNAIL_BYTES } from "@echo/modules/drive/domain";
 import {
   deleteFileByIdCommandFactory,
   deleteFolderCascadeCommandFactory,
+  deleteOrphanedFilesCommandFactory,
+  eventExistsInOrganizationQueryFactory,
   findFileByIdQueryFactory,
   findFilesByIdsQueryFactory,
   findFolderByIdQueryFactory,
@@ -58,11 +60,18 @@ import { organizationProcedure, router } from "../trpc";
 
 const driveSortFieldSchema = z.enum(["name", "event", "updatedAt", "sizeBytes"]);
 const driveSortOrderSchema = z.enum(["asc", "desc"]);
+const placeSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("root") }),
+  z.object({ kind: z.literal("folder"), id: z.string() }),
+  z.object({ kind: z.literal("event"), id: z.string() }),
+  z.object({ kind: z.literal("song"), id: z.string() }),
+]);
 
 const insertPendingFileCommand = insertPendingFileCommandFactory();
 const linkFileToSongCommand = linkFileToSongCommandFactory();
 const linkFileToEventCommand = linkFileToEventCommandFactory();
 const songExistsInOrganizationQuery = songExistsInOrganizationQueryFactory();
+const eventExistsInOrganizationQuery = eventExistsInOrganizationQueryFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
 const findFilesByIdsQuery = findFilesByIdsQueryFactory();
 const markFileUploadedCommand = markFileUploadedCommandFactory();
@@ -79,6 +88,7 @@ const renameFolderByIdCommand = renameFolderByIdCommandFactory();
 const moveFolderCommand = moveFolderCommandFactory();
 const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
 const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
+const deleteOrphanedFilesCommand = deleteOrphanedFilesCommandFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
 const searchDriveQuery = searchDriveQueryFactory();
 const resolvePlanQuery = resolvePlanQueryFactory();
@@ -119,9 +129,7 @@ export const makeDriveRouter = () =>
     createUpload: organizationProcedure
       .input(
         z.object({
-          eventId: z.string().optional(),
-          songId: z.string().optional(),
-          folderId: z.string().nullish(),
+          place: placeSchema,
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
           durationSeconds: z.number().int().nonnegative().nullish(),
@@ -141,7 +149,7 @@ export const makeDriveRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             findFolderByIdQuery,
             insertPendingFileCommand,
-            linkFileToSongCommand,
+            eventExistsInOrganizationQuery,
             songExistsInOrganizationQuery,
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
@@ -285,7 +293,12 @@ export const makeDriveRouter = () =>
             findFolderByIdQuery,
             moveFileToFolderCommand,
           },
-          { id: input.id, scope: ctx.organizationScope, folderId: input.folderId },
+          {
+            id: input.id,
+            userId: ctx.session.user.id,
+            scope: ctx.organizationScope,
+            folderId: input.folderId,
+          },
         ),
       ),
 
@@ -314,7 +327,7 @@ export const makeDriveRouter = () =>
             findFileByIdQuery,
             linkFileToEventCommand,
           },
-          { ...input, scope: ctx.organizationScope },
+          { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
         ),
       ),
 
@@ -377,6 +390,7 @@ export const makeDriveRouter = () =>
             s3Storage: ctx.s3Storage,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             deleteFolderCascadeCommand,
+            deleteOrphanedFilesCommand,
           },
           { id: input.id, scope: ctx.organizationScope },
         ),

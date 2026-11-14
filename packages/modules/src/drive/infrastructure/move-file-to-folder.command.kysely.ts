@@ -7,13 +7,19 @@ export const moveFileToFolderCommandFactory: MoveFileToFolderCommandPortFactory 
     const row = await db.transaction().execute(async (trx) => {
       const updated = await trx
         .updateTable("file")
-        .set({ folder_id: input.folderId, updated_at: new Date() })
+        .set({ updated_at: new Date() })
         .where("id", "=", input.id)
         .where("organization_id", "=", scope.organizationId)
         .returning("file.id")
         .executeTakeFirst();
 
       if (!updated) return undefined;
+
+      await trx.deleteFrom("folder_file").where("file_id", "=", updated.id).execute();
+      await trx
+        .insertInto("folder_file")
+        .values({ file_id: updated.id, folder_id: input.folderId, placed_by: input.placedBy })
+        .execute();
 
       const selectFileById = makeSelectFileByIdQuery(trx);
 

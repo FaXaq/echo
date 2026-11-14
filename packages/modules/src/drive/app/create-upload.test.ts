@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ForbiddenError, ConflictError, NotFoundError, QuotaExceededError } from "@echo/errors";
 import { planCatalog } from "@echo/modules/plan/domain";
 import { createOrganizationScope, type OrganizationScope } from "@echo/modules/shared/domain";
-import { MAX_PREVIEW_BYTES } from "../domain/index.js";
+import { MAX_PREVIEW_BYTES, type Place } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import { createUpload } from "./create-upload.js";
 import {
@@ -10,7 +10,7 @@ import {
   makeFakeS3Storage,
   makeFakePermissionChecks,
   makeFakeInsertPendingFile,
-  makeFakeLinkFileToSong,
+  makeFakeEventExistsInOrganization,
   makeFakeSongExistsInOrganization,
   makeFakePersonalOrganizationId,
   makeFakeQuotaPorts,
@@ -23,6 +23,7 @@ const baseInput = {
   mimeType: "audio/mpeg",
   sizeBytes: 1024,
   filename: "demo.mp3",
+  place: { kind: "root" } satisfies Place,
 };
 
 describe("createUpload", () => {
@@ -33,7 +34,7 @@ describe("createUpload", () => {
           db: makeFakeDb(),
           findFolderByIdQuery: makeFakeFindFolderById(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
-          linkFileToSongCommand: makeFakeLinkFileToSong(),
+          eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
           songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
@@ -52,7 +53,7 @@ describe("createUpload", () => {
           db: makeFakeDb(),
           findFolderByIdQuery: makeFakeFindFolderById(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
-          linkFileToSongCommand: makeFakeLinkFileToSong(),
+          eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
           songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           s3Storage: makeFakeS3Storage(),
@@ -81,7 +82,7 @@ describe("createUpload", () => {
         insertPendingFileCommand: makeFakeInsertPendingFile((scope, input) =>
           inserted.push({ scope, input }),
         ),
-        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
         songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
@@ -105,7 +106,7 @@ describe("createUpload", () => {
         insertPendingFileCommand: makeFakeInsertPendingFile((_scope, input) =>
           inserted.push(input),
         ),
-        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
         songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
@@ -128,7 +129,7 @@ describe("createUpload", () => {
         insertPendingFileCommand: makeFakeInsertPendingFile((_scope, input) =>
           inserted.push(input),
         ),
-        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
         songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
@@ -140,48 +141,74 @@ describe("createUpload", () => {
     expect(inserted[0].durationSeconds).toBeNull();
   });
 
-  it("rejects a songId that doesn't belong to the caller's organization", async () => {
-    const linked: string[] = [];
+  describe("place", () => {
+    const deps = (
+      overrides: Partial<{
+        findFolderByIdQuery: ReturnType<typeof makeFakeFindFolderById>;
+        eventExistsInOrganizationQuery: ReturnType<typeof makeFakeEventExistsInOrganization>;
+        songExistsInOrganizationQuery: ReturnType<typeof makeFakeSongExistsInOrganization>;
+        insertPendingFileCommand: ReturnType<typeof makeFakeInsertPendingFile>;
+      }> = {},
+    ) => ({
+      db: makeFakeDb(),
+      findFolderByIdQuery: makeFakeFindFolderById(),
+      s3Storage: makeFakeS3Storage(),
+      insertPendingFileCommand: makeFakeInsertPendingFile(),
+      eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
+      songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
+      getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+      ...makeFakePermissionChecks(),
+      ...makeFakeQuotaPorts(),
+      ...overrides,
+    });
 
-    await expect(
-      createUpload(
-        {
-          db: makeFakeDb(),
-          findFolderByIdQuery: makeFakeFindFolderById(),
-          s3Storage: makeFakeS3Storage(),
-          insertPendingFileCommand: makeFakeInsertPendingFile(),
-          linkFileToSongCommand: makeFakeLinkFileToSong((songId) => linked.push(songId)),
-          songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(false),
-          getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
-          ...makeFakePermissionChecks(),
-          ...makeFakeQuotaPorts(),
-        },
-        { ...baseInput, songId: "song-in-another-org" },
-      ),
-    ).rejects.toBeInstanceOf(NotFoundError);
+    it.each([
+      { kind: "root" },
+      { kind: "folder", id: "folder-1" },
+      { kind: "event", id: "event-1" },
+      { kind: "song", id: "song-1" },
+    ] satisfies Place[])("inserts the file with its $kind place", async (place) => {
+      const inserted: InsertPendingFileInput[] = [];
 
-    expect(linked).toEqual([]);
-  });
+      await createUpload(
+        deps({ insertPendingFileCommand: makeFakeInsertPendingFile((_s, i) => inserted.push(i)) }),
+        { ...baseInput, place },
+      );
 
-  it("links the uploaded file to the song once ownership is confirmed", async () => {
-    const linked: string[] = [];
+      expect(inserted[0].place).toEqual(place);
+    });
 
-    await createUpload(
+    it.each([
       {
-        db: makeFakeDb(),
-        findFolderByIdQuery: makeFakeFindFolderById(),
-        s3Storage: makeFakeS3Storage(),
-        insertPendingFileCommand: makeFakeInsertPendingFile(),
-        linkFileToSongCommand: makeFakeLinkFileToSong((songId) => linked.push(songId)),
-        songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(true),
-        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
-        ...makeFakePermissionChecks(),
-        ...makeFakeQuotaPorts(),
+        place: { kind: "folder", id: "x" },
+        deps: { findFolderByIdQuery: makeFakeFindFolderById(null) },
       },
-      { ...baseInput, songId: "song-1" },
-    );
+      {
+        place: { kind: "event", id: "x" },
+        deps: { eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(false) },
+      },
+      {
+        place: { kind: "song", id: "x" },
+        deps: { songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(false) },
+      },
+    ] satisfies { place: Place; deps: Parameters<typeof deps>[0] }[])(
+      "rejects a place whose $place.kind isn't in this organization",
+      async ({ place, deps: overrides }) => {
+        const inserted: InsertPendingFileInput[] = [];
 
-    expect(linked).toEqual(["song-1"]);
+        await expect(
+          createUpload(
+            deps({
+              ...overrides,
+              insertPendingFileCommand: makeFakeInsertPendingFile((_s, i) => inserted.push(i)),
+            }),
+            { ...baseInput, place },
+          ),
+        ).rejects.toBeInstanceOf(NotFoundError);
+
+        expect(inserted).toEqual([]);
+      },
+    );
   });
 
   it("rejects a file larger than the plan's max file size", async () => {
@@ -192,7 +219,7 @@ describe("createUpload", () => {
           findFolderByIdQuery: makeFakeFindFolderById(),
           s3Storage: makeFakeS3Storage(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
-          linkFileToSongCommand: makeFakeLinkFileToSong(),
+          eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
           songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           ...makeFakePermissionChecks(),
@@ -210,7 +237,7 @@ describe("createUpload", () => {
         findFolderByIdQuery: makeFakeFindFolderById(),
         s3Storage: makeFakeS3Storage(),
         insertPendingFileCommand: makeFakeInsertPendingFile(),
-        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
         songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
@@ -230,7 +257,7 @@ describe("createUpload", () => {
           findFolderByIdQuery: makeFakeFindFolderById(),
           s3Storage: makeFakeS3Storage(),
           insertPendingFileCommand: makeFakeInsertPendingFile(),
-          linkFileToSongCommand: makeFakeLinkFileToSong(),
+          eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
           songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           ...makeFakePermissionChecks(),
@@ -250,7 +277,7 @@ describe("createUpload", () => {
         findFolderByIdQuery: makeFakeFindFolderById(),
         s3Storage: makeFakeS3Storage(),
         insertPendingFileCommand: makeFakeInsertPendingFile(),
-        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
         songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
         getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
         ...makeFakePermissionChecks(),
@@ -286,7 +313,7 @@ describe("createUpload", () => {
           findFolderByIdQuery: makeFakeFindFolderById(),
           s3Storage: trackingS3,
           insertPendingFileCommand: makeFakeInsertPendingFile(),
-          linkFileToSongCommand: makeFakeLinkFileToSong(),
+          eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
           songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
           getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
           ...makeFakePermissionChecks(),
@@ -307,7 +334,7 @@ describe("createUpload", () => {
       findFolderByIdQuery: makeFakeFindFolderById(),
       s3Storage: makeFakeS3Storage(),
       insertPendingFileCommand: makeFakeInsertPendingFile(),
-      linkFileToSongCommand: makeFakeLinkFileToSong(),
+      eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
       songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
       getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
       ...makeFakePermissionChecks(),
@@ -371,7 +398,7 @@ describe("createUpload", () => {
       findFolderByIdQuery: makeFakeFindFolderById(),
       s3Storage: makeFakeS3Storage(),
       insertPendingFileCommand: makeFakeInsertPendingFile(),
-      linkFileToSongCommand: makeFakeLinkFileToSong(),
+      eventExistsInOrganizationQuery: makeFakeEventExistsInOrganization(),
       songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
       getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
       ...makeFakePermissionChecks(),

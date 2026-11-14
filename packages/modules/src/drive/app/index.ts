@@ -17,6 +17,8 @@ export { renameFolder } from "./rename-folder.js";
 export { moveFolder } from "./move-folder.js";
 export { deleteFolder } from "./delete-folder.js";
 export type { DeleteFolderFailure } from "./delete-folder.js";
+export { purgeOrphanedFiles } from "./purge-orphaned-files.js";
+export type { PurgeFailure } from "./purge-orphaned-files.js";
 export { listFolderContents } from "./list-folder-contents.js";
 export { getFolder } from "./get-folder.js";
 export { searchDrive } from "./search-drive.js";

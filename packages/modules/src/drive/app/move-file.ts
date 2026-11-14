@@ -15,7 +15,7 @@ export async function moveFile(
     findFolderByIdQuery: FindFolderByIdQueryPort;
     moveFileToFolderCommand: MoveFileToFolderCommandPort;
   },
-  input: { id: string; scope: OrganizationScope; folderId: string | null },
+  input: { id: string; userId: string; scope: OrganizationScope; folderId: string | null },
 ): Promise<FileRecord> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
@@ -31,6 +31,7 @@ export async function moveFile(
   const updated = await deps.moveFileToFolderCommand(deps.db, input.scope, {
     id: input.id,
     folderId: input.folderId,
+    placedBy: input.userId,
   });
   if (!updated) throw notFound("File");
   return updated;

@@ -9,6 +9,6 @@ export type DeleteCalendarEventCommandPort = (
   db: KyselyDB,
   scope: OrganizationScope,
   input: DeleteCalendarEventInput,
-) => Promise<boolean>;
+) => Promise<{ fileIds: string[] } | null>;
 
 export type DeleteCalendarEventCommandPortFactory = () => DeleteCalendarEventCommandPort;
