@@ -4,3 +4,5 @@ export { searchEvents } from "./search-events.js";
 export { updateEvent } from "./update-event.js";
 export { deleteEvent } from "./delete-event.js";
 export { getEventById } from "./get-event-by-id.js";
+export { listUpcomingEvents } from "./list-upcoming-events.js";
+export { getLastEvent } from "./get-last-event.js";

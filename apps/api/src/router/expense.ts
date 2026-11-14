@@ -11,6 +11,7 @@ import {
   listRepayments,
   updateExpense,
   updateRepayment,
+  getMyBalance,
 } from "@echo/modules/expense/app";
 import {
   deleteExpenseCommandFactory,
@@ -27,6 +28,7 @@ import {
   listRepaymentsQueryFactory,
   updateExpenseCommandFactory,
   updateRepaymentCommandFactory,
+  getMemberBalanceQueryFactory,
 } from "@echo/modules/expense/infrastructure";
 import { MAX_AMOUNT_MINOR } from "@echo/modules/expense/domain";
 import { getCalendarEventByIdFactory } from "@echo/modules/calendar/infrastructure";
@@ -95,8 +97,22 @@ const toRepaymentDraft = (input: z.infer<typeof repaymentInput>) => ({
   note: input.note ?? null,
 });
 
+const getMemberBalanceQuery = getMemberBalanceQueryFactory();
+
 export const makeExpenseRouter = () =>
   router({
+    getMyBalance: organizationProcedure.query(({ ctx }) =>
+      getMyBalance(
+        {
+          db: ctx.db,
+          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          getMemberBalanceQuery,
+          getOrganizationCurrencyQuery,
+        },
+        { scope: ctx.organizationScope, userId: ctx.session.user.id },
+      ),
+    ),
+
     list: organizationProcedure
       .input(z.object({ eventId: z.string().optional() }))
       .query(({ ctx, input }) =>

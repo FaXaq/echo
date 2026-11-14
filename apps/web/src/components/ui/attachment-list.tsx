@@ -381,7 +381,7 @@ function AttachmentListItems<F extends AttachmentFile>({
   );
 }
 
-function gallerySpan({ width, height }: Pick<AttachmentFile, "width" | "height">) {
+export function gallerySpan({ width, height }: Pick<AttachmentFile, "width" | "height">) {
   if (!width || !height) return { columns: 1, rows: 1 };
   return match(width / height)
     .when(

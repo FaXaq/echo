@@ -54,6 +54,11 @@ export function useNavigation() {
       title: t`Organize`,
       items: [
         {
+          title: t`Home`,
+          to: "/projects/$projectSlug",
+          params: { projectSlug: slug },
+        },
+        {
           title: t`Calendar`,
           to: "/projects/$projectSlug/calendar",
           params: { projectSlug: slug },

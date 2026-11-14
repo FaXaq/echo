@@ -7,6 +7,8 @@ import {
   updateEvent,
   deleteEvent,
   getEventById,
+  listUpcomingEvents,
+  getLastEvent,
 } from "@echo/modules/calendar/app";
 import { EVENT_COLORS, eventTypeSchema, type EventColor } from "@echo/modules/calendar/domain";
 import {
@@ -16,6 +18,8 @@ import {
   listCalendarEventsQueryFactory,
   searchCalendarEventsQueryFactory,
   getCalendarEventByIdFactory,
+  listUpcomingCalendarEventsQueryFactory,
+  findLastCalendarEventQueryFactory,
 } from "@echo/modules/calendar/infrastructure";
 import {
   findOrphanedFilesForEventQueryFactory,
@@ -52,8 +56,35 @@ const getCalendarEventById = getCalendarEventByIdFactory();
 const findOrphanedFilesForEventQuery = findOrphanedFilesForEventQueryFactory();
 const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 
+const listUpcomingCalendarEventsQuery = listUpcomingCalendarEventsQueryFactory();
+const findLastCalendarEventQuery = findLastCalendarEventQueryFactory();
+
 export const makeCalendarRouter = () =>
   router({
+    listUpcomingEvents: organizationProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(20).default(5) }))
+      .query(({ ctx, input }) =>
+        listUpcomingEvents(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            listUpcomingCalendarEventsQuery,
+          },
+          { scope: ctx.organizationScope, now: new Date(), limit: input.limit },
+        ),
+      ),
+
+    getLastEvent: organizationProcedure.query(({ ctx }) =>
+      getLastEvent(
+        {
+          db: ctx.db,
+          userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+          findLastCalendarEventQuery,
+        },
+        { scope: ctx.organizationScope, now: new Date() },
+      ),
+    ),
+
     getEventById: organizationProcedure
       .input(z.object({ eventId: z.string() }))
       .query(({ ctx, input }) =>

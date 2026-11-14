@@ -351,3 +351,24 @@ export async function downloadOrganizationFile(input: { id: string; organization
 export function getFilesDownloadUrls(input: { ids: string[]; organizationId: string }) {
   return apiClient.drive.getFilesDownloadUrls.mutate(input);
 }
+
+export function getRecentFilesQueryOptions(opts: { organizationId: string; limit?: number }) {
+  return queryOptions({
+    queryKey: getResourceKey("listRecentFiles", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.drive.listRecentFiles.query(params, { signal });
+    },
+  });
+}
+
+export function getRecentMediaQueryOptions(opts: { organizationId: string; limit?: number }) {
+  return queryOptions({
+    queryKey: getResourceKey("listRecentMedia", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.drive.listRecentMedia.query(params, { signal });
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}

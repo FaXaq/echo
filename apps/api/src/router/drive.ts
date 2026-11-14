@@ -19,6 +19,8 @@ import {
   renameFile,
   renameFolder,
   searchDrive,
+  listRecentFiles,
+  listRecentMedia,
 } from "@echo/modules/drive/app";
 import { MAX_THUMBNAIL_BYTES } from "@echo/modules/drive/domain";
 import {
@@ -44,6 +46,7 @@ import {
   renameFolderByIdCommandFactory,
   searchDriveQueryFactory,
   songExistsInOrganizationQueryFactory,
+  listRecentFilesQueryFactory,
 } from "@echo/modules/drive/infrastructure";
 import { getPersonalOrganizationQuery } from "@echo/modules/organization/infrastructure";
 import { resolveEntitlements } from "@echo/modules/plan/app";
@@ -81,8 +84,37 @@ const searchDriveQuery = searchDriveQueryFactory();
 const resolvePlanQuery = resolvePlanQueryFactory();
 const getOrganizationStorageUsageQuery = getOrganizationStorageUsageQueryFactory();
 
+const listRecentFilesQuery = listRecentFilesQueryFactory();
+
 export const makeDriveRouter = () =>
   router({
+    listRecentFiles: organizationProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(20).default(5) }))
+      .query(({ ctx, input }) =>
+        listRecentFiles(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            listRecentFilesQuery,
+          },
+          { scope: ctx.organizationScope, limit: input.limit },
+        ),
+      ),
+
+    listRecentMedia: organizationProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(20).default(5) }))
+      .query(({ ctx, input }) =>
+        listRecentMedia(
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            listRecentFilesQuery,
+          },
+          { scope: ctx.organizationScope, limit: input.limit },
+        ),
+      ),
+
     createUpload: organizationProcedure
       .input(
         z.object({

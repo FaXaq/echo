@@ -94,3 +94,23 @@ export function useDeleteEventMutation({
     },
   });
 }
+
+export function getUpcomingEventsQueryOptions(opts: { organizationId: string; limit?: number }) {
+  return queryOptions({
+    queryKey: getResourceKey("listUpcomingEvents", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.calendar.listUpcomingEvents.query(params, { signal });
+    },
+  });
+}
+
+export function getLastEventQueryOptions(opts: { organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getLastEvent", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.calendar.getLastEvent.query(params, { signal });
+    },
+  });
+}

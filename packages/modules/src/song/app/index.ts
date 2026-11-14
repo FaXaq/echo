@@ -11,3 +11,4 @@ export { clearSongAudioVersion } from "./clear-song-audio-version.js";
 export { listSongAudioVersions } from "./list-song-audio-versions.js";
 export type { SongAudioVersion, SongAudioVersions } from "./list-song-audio-versions.js";
 export { getSongDefaultAudio } from "./get-song-default-audio.js";
+export { listRecentSongs } from "./list-recent-songs.js";

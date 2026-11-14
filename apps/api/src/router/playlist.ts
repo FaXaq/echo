@@ -14,6 +14,7 @@ import {
   detachPlaylistFromEvent,
   listEventPlaylists,
   searchPlaylists,
+  listRecentPlaylists,
 } from "@echo/modules/playlist/app";
 import {
   insertPlaylistCommandFactory,
@@ -29,6 +30,7 @@ import {
   detachPlaylistFromEventCommandFactory,
   listEventPlaylistsQueryFactory,
   searchPlaylistsQueryFactory,
+  listRecentPlaylistsQueryFactory,
 } from "@echo/modules/playlist/infrastructure";
 import { listSongAudioVersionsQueryFactory } from "@echo/modules/drive/infrastructure";
 
@@ -47,8 +49,23 @@ const detachPlaylistFromEventCommand = detachPlaylistFromEventCommandFactory();
 const listEventPlaylistsQuery = listEventPlaylistsQueryFactory();
 const searchPlaylistsQuery = searchPlaylistsQueryFactory();
 
+const listRecentPlaylistsQuery = listRecentPlaylistsQueryFactory();
+
 export const makePlaylistRouter = () =>
   router({
+    listRecentPlaylists: organizationProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(20).default(5) }))
+      .query(({ ctx, input }) =>
+        listRecentPlaylists(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            listRecentPlaylistsQuery,
+          },
+          { scope: ctx.organizationScope, limit: input.limit },
+        ),
+      ),
+
     getPlaylistById: organizationProcedure
       .input(z.object({ playlistId: z.string() }))
       .query(({ ctx, input }) =>

@@ -21,3 +21,9 @@ export { listSongsQueryFactory } from "./list-songs.query.kysely.js";
 
 export type { SearchSongsQueryInput, SearchSongsQueryPort } from "./search-songs.query.port.js";
 export { searchSongsQueryFactory } from "./search-songs.query.kysely.js";
+
+export type {
+  ListRecentSongsQueryInput,
+  ListRecentSongsQueryPort,
+} from "./list-recent-songs.query.port.js";
+export { listRecentSongsQueryFactory } from "./list-recent-songs.query.kysely.js";

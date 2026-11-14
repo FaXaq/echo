@@ -12,6 +12,7 @@ import {
   clearSongAudioVersion,
   listSongAudioVersions,
   getSongDefaultAudio,
+  listRecentSongs,
 } from "@echo/modules/song/app";
 import { songTypeSchema } from "@echo/modules/song/domain";
 import {
@@ -22,6 +23,7 @@ import {
   listSongsQueryFactory,
   getSongByIdQueryFactory,
   searchSongsQueryFactory,
+  listRecentSongsQueryFactory,
 } from "@echo/modules/song/infrastructure";
 import {
   findOrphanedFilesForSongQueryFactory,
@@ -54,8 +56,19 @@ const setSongFileRoleCommand = setSongFileRoleCommandFactory();
 const clearSongFileRoleCommand = clearSongFileRoleCommandFactory();
 const listSongAudioVersionsQuery = listSongAudioVersionsQueryFactory();
 
+const listRecentSongsQuery = listRecentSongsQueryFactory();
+
 export const makeSongRouter = () =>
   router({
+    listRecentSongs: organizationProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(20).default(5) }))
+      .query(({ ctx, input }) =>
+        listRecentSongs(
+          { db: ctx.db, listRecentSongsQuery },
+          { scope: ctx.organizationScope, limit: input.limit },
+        ),
+      ),
+
     getSongById: organizationProcedure
       .input(z.object({ songId: z.string() }))
       .query(({ ctx, input }) =>

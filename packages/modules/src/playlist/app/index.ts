@@ -11,3 +11,4 @@ export { attachPlaylistToEvent } from "./attach-playlist-to-event.js";
 export { detachPlaylistFromEvent } from "./detach-playlist-from-event.js";
 export { listEventPlaylists } from "./list-event-playlists.js";
 export { searchPlaylists } from "./search-playlists.js";
+export { listRecentPlaylists } from "./list-recent-playlists.js";

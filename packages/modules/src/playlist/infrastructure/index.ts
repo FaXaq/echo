@@ -72,3 +72,9 @@ export type {
   SearchPlaylistsQueryPort,
 } from "./search-playlists.query.port.js";
 export { searchPlaylistsQueryFactory } from "./search-playlists.query.kysely.js";
+
+export type {
+  ListRecentPlaylistsQueryInput,
+  ListRecentPlaylistsQueryPort,
+} from "./list-recent-playlists.query.port.js";
+export { listRecentPlaylistsQueryFactory } from "./list-recent-playlists.query.kysely.js";
