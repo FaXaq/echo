@@ -67,7 +67,9 @@ import { SelectionActionsMenu } from "./drive-selection-actions-menu";
 import { useDriveTableColumns } from "./drive-table-columns";
 import { useDriveFileTransfer } from "./use-drive-file-transfer";
 import { useDrivePendingDeletes } from "./use-drive-pending-deletes";
+import { RemoveOccurrenceDialog } from "./remove-occurrence-dialog";
 import { useDriveSelection } from "./use-drive-selection";
+import { useRemoveOccurrence } from "./use-remove-occurrence";
 
 const EDITABLE_SELECTOR = 'input, textarea, [contenteditable=""], [contenteditable="true"]';
 
@@ -106,7 +108,6 @@ function DriveExplorerContent({
   const [renamingFolder, setRenamingFolder] = useState<Folder | null>(null);
   const [deletingFolder, setDeletingFolder] = useState<Folder | null>(null);
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
-  const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
   const [assigningFiles, setAssigningFiles] = useState<OrganizationFile[]>([]);
   const [detailsFile, setDetailsFile] = useState<OrganizationFile | null>(null);
   const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
@@ -128,6 +129,11 @@ function DriveExplorerContent({
   const deleteFolderMutation = useDeleteFolderMutation();
   const renameFileMutation = useRenameFileMutation();
   const removeOccurrenceMutation = useRemoveOccurrenceMutation();
+  const removal = useRemoveOccurrence(
+    place ?? { kind: "root" },
+    organizationId,
+    path.at(-1)?.label ?? t`Drive`,
+  );
   const addOccurrencesMutation = useAddOccurrencesMutation();
   const clipboard = useDriveClipboard(organizationId);
 
@@ -274,10 +280,13 @@ function DriveExplorerContent({
     if (!(event.target instanceof Element) || !event.currentTarget.contains(event.target)) return;
     if (event.target.closest(EDITABLE_SELECTOR)) return;
 
-    if (event.key === "c" && !copyDisabledReason && selectedFiles.length > 0) {
+    const key = event.key.toLowerCase();
+    const hasTextSelection = window.getSelection()?.isCollapsed === false;
+
+    if (key === "c" && !copyDisabledReason && !hasTextSelection && selectedFiles.length > 0) {
       event.preventDefault();
       handleCopy();
-    } else if (event.key === "v" && place && clipboard.fileIds.length > 0) {
+    } else if (key === "v" && place && clipboard.fileIds.length > 0) {
       event.preventDefault();
       pasteInto(place);
     }
@@ -296,10 +305,13 @@ function DriveExplorerContent({
 
     clearSelection();
     if (failedNames.length === 0) {
-      toast.add({ title: t`${selectedFiles.length} files deleted`, type: "success" });
+      toast.add({
+        title: plural(selectedFiles.length, { one: "# file removed", other: "# files removed" }),
+        type: "success",
+      });
     } else {
       toast.add({
-        title: t`${selectedFiles.length - failedNames.length} of ${selectedFiles.length} deleted — failed: ${failedNames.join(", ")}`,
+        title: t`${selectedFiles.length - failedNames.length} of ${selectedFiles.length} removed — failed: ${failedNames.join(", ")}`,
         type: "error",
       });
     }
@@ -509,7 +521,7 @@ function DriveExplorerContent({
                   onRename={() => setRenamingFile(original.data)}
                   onAssignToEvent={() => setAssigningFiles([original.data])}
                   onShowDetails={() => setDetailsFile(original.data)}
-                  onDelete={() => setDeletingFile(original.data)}
+                  onDelete={() => removal.request(original.data.id)}
                   onDownload={() => handleDownloadFile(original.data)}
                   onPlay={async () => {
                     const { downloadUrl } = await getFileDownloadUrl({
@@ -558,6 +570,7 @@ function DriveExplorerContent({
       </div>
 
       <DriveExplorerDialogs
+        organizationId={organizationId}
         creatingFolder={creatingFolder}
         onCreatingFolderChange={setCreatingFolder}
         onCreateFolder={(name) =>
@@ -598,25 +611,12 @@ function DriveExplorerContent({
               { onError: () => toast.add({ title: t`Couldn't rename file`, type: "error" }) },
             );
         }}
-        deletingFile={deletingFile}
-        onDeletingFileChange={(open) => !open && setDeletingFile(null)}
-        onConfirmDeleteFile={async () => {
-          if (!deletingFile || !place) return;
-          try {
-            await removeOccurrenceMutation.mutateAsync({
-              fileId: deletingFile.id,
-              place,
-              organizationId,
-            });
-            toast.add({ title: t`File deleted`, type: "success" });
-          } catch {
-            toast.add({ title: t`Couldn't delete file`, type: "error" });
-          }
-        }}
         bulkDeleteCount={confirmingBulkDelete ? selectedFiles.length : 0}
         onBulkDeleteCountChange={(open) => !open && setConfirmingBulkDelete(false)}
         onConfirmBulkDeleteFiles={handleBulkDeleteFiles}
       />
+
+      <RemoveOccurrenceDialog {...removal.dialogProps} />
 
       <FileDetailsDialog
         file={detailsFile}

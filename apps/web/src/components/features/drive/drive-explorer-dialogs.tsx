@@ -1,9 +1,34 @@
-import { Plural, useLingui } from "@lingui/react/macro";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Plural, Trans, useLingui } from "@lingui/react/macro";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import type { Folder, OrganizationFile } from "@/services/resources/drive";
+import {
+  previewFolderDeleteQueryOptions,
+  type Folder,
+  type OrganizationFile,
+} from "@/services/resources/drive";
 import { FolderNameDialog } from "./folder-name-dialog";
 
+function FolderDeleteSummary({ id, organizationId }: { id: string; organizationId: string }) {
+  const { data } = useSuspenseQuery(previewFolderDeleteQueryOptions({ id, organizationId }));
+  return (
+    <>
+      <Plural
+        value={data.deletedCount}
+        one="# file will be permanently deleted"
+        other="# files will be permanently deleted"
+      />
+      {", "}
+      <Plural value={data.keptCount} one="# stays in other places" other="# stay in other places" />
+      {". "}
+      <Trans>This action cannot be undone.</Trans>
+    </>
+  );
+}
+
 export function DriveExplorerDialogs({
+  organizationId,
   creatingFolder,
   onCreatingFolderChange,
   onCreateFolder,
@@ -16,13 +41,11 @@ export function DriveExplorerDialogs({
   renamingFile,
   onRenamingFileChange,
   onRenameFile,
-  deletingFile,
-  onDeletingFileChange,
-  onConfirmDeleteFile,
   bulkDeleteCount,
   onBulkDeleteCountChange,
   onConfirmBulkDeleteFiles,
 }: {
+  organizationId: string;
   creatingFolder: boolean;
   onCreatingFolderChange: (open: boolean) => void;
   onCreateFolder: (name: string) => void;
@@ -35,9 +58,6 @@ export function DriveExplorerDialogs({
   renamingFile: OrganizationFile | null;
   onRenamingFileChange: (open: boolean) => void;
   onRenameFile: (filename: string) => void;
-  deletingFile: OrganizationFile | null;
-  onDeletingFileChange: (open: boolean) => void;
-  onConfirmDeleteFile: () => void | Promise<void>;
   bulkDeleteCount: number;
   onBulkDeleteCountChange: (open: boolean) => void;
   onConfirmBulkDeleteFiles: () => Promise<void>;
@@ -66,7 +86,15 @@ export function DriveExplorerDialogs({
         onOpenChange={onDeletingFolderChange}
         variant="destructive"
         title={t`Delete this folder?`}
-        description={t`This permanently deletes the folder and any files inside it that aren't attached to an event or song. Files still attached elsewhere are kept and simply removed from this folder. This action cannot be undone.`}
+        description={
+          deletingFolder && (
+            <ErrorBoundary fallback={<Trans>This action cannot be undone.</Trans>}>
+              <Suspense fallback={<Trans>Counting files…</Trans>}>
+                <FolderDeleteSummary id={deletingFolder.id} organizationId={organizationId} />
+              </Suspense>
+            </ErrorBoundary>
+          )
+        }
         confirmLabel={t`Delete`}
         onConfirm={onConfirmDeleteFolder}
       />
@@ -80,21 +108,11 @@ export function DriveExplorerDialogs({
       />
 
       <ConfirmDialog
-        open={deletingFile !== null}
-        onOpenChange={onDeletingFileChange}
-        variant="destructive"
-        title={t`Delete this file?`}
-        description={t`This permanently deletes the file, including from any event or song it's attached to. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={onConfirmDeleteFile}
-      />
-
-      <ConfirmDialog
         open={bulkDeleteCount > 0}
         onOpenChange={onBulkDeleteCountChange}
         variant="destructive"
         title={<Plural value={bulkDeleteCount} one="Delete # file?" other="Delete # files?" />}
-        description={t`This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone.`}
+        description={t`This removes the selected files from here. Files that are nowhere else are permanently deleted. This action cannot be undone.`}
         confirmLabel={t`Delete`}
         onConfirm={onConfirmBulkDeleteFiles}
       />

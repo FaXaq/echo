@@ -6,10 +6,22 @@ import { render, screen, waitFor, within } from "@/lib/test-utils";
 
 const navigate = vi.fn();
 const addOccurrences = vi.fn();
+const listFileOccurrences = vi.fn();
+const removeOccurrence = vi.fn();
+const previewFolderDelete = vi.fn();
+const deleteFolder = vi.fn();
 const toastAdd = vi.fn();
 
 vi.mock("@/services/api-client", () => ({
-  apiClient: { drive: { addOccurrences: { mutate: (input: unknown) => addOccurrences(input) } } },
+  apiClient: {
+    drive: {
+      addOccurrences: { mutate: (input: unknown) => addOccurrences(input) },
+      listFileOccurrences: { query: (input: unknown) => listFileOccurrences(input) },
+      removeOccurrence: { mutate: (input: unknown) => removeOccurrence(input) },
+      previewFolderDelete: { query: (input: unknown) => previewFolderDelete(input) },
+      deleteFolder: { mutate: (input: unknown) => deleteFolder(input) },
+    },
+  },
 }));
 vi.mock("@/components/ui/toast", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/components/ui/toast")>()),
@@ -37,7 +49,11 @@ import {
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
 
-function renderExplorer(location: DriveLocation, contents: Partial<FolderContents> = {}) {
+function renderExplorer(
+  location: DriveLocation,
+  contents: Partial<FolderContents> = {},
+  path: { name: string; location: DriveLocation }[] = [],
+) {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, staleTime: Infinity } },
   });
@@ -50,7 +66,7 @@ function renderExplorer(location: DriveLocation, contents: Partial<FolderContent
     }).queryKey,
     { folders: [], systemFolders: [], files: [], ...contents },
   );
-  client.setQueryData(getDriveLocationPathQueryKey({ location, organizationId: "org-1" }), []);
+  client.setQueryData(getDriveLocationPathQueryKey({ location, organizationId: "org-1" }), path);
   client.setQueryData(selfListOrganizations().queryKey, [
     { id: "org-1", name: "Acme", slug: "acme", isPersonal: false, logoPattern: [] },
   ]);
@@ -326,6 +342,125 @@ describe("DriveExplorer copy and paste", () => {
     });
 
     expect(screen.queryByRole("menuitem", { name: "Paste into" })).not.toBeInTheDocument();
+  });
+});
+
+describe("DriveExplorer shortcuts", () => {
+  const files = [makeFile("f1", "a.pdf")];
+
+  it("copies with Caps Lock on", async () => {
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { files });
+    await selectRow(user, "Select a.pdf");
+    await user.keyboard("{Meta>}C{/Meta}");
+
+    const { result } = renderHook(() => useDriveClipboard("org-1"));
+    expect(result.current.fileIds).toEqual(["f1"]);
+  });
+
+  it("pastes with Caps Lock on", async () => {
+    const user = userEvent.setup();
+    copyFiles("org-1", ["f1"]);
+    renderExplorer({ kind: "folder", id: "folder-1" });
+    await user.click(await screen.findByText("This folder is empty"));
+    await user.keyboard("{Meta>}V{/Meta}");
+
+    await waitFor(() => expect(addOccurrences).toHaveBeenCalled());
+  });
+
+  it("leaves native copy alone while text is highlighted", async () => {
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { files });
+    await selectRow(user, "Select a.pdf");
+    const text = await screen.findByText("a.pdf");
+    window.getSelection()?.selectAllChildren(text);
+    await user.keyboard("{Meta>}c{/Meta}");
+    window.getSelection()?.removeAllRanges();
+
+    const { result } = renderHook(() => useDriveClipboard("org-1"));
+    expect(result.current.fileIds).toEqual([]);
+  });
+});
+
+describe("DriveExplorer removal", () => {
+  const files = [makeFile("f1", "a.pdf")];
+  const folderPlace = { kind: "folder", id: "folder-1" } as const;
+
+  async function chooseDeleteFromContextMenu(user: ReturnType<typeof userEvent.setup>) {
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("a.pdf")).closest("tr")!,
+    });
+    await user.click(await screen.findByRole("menuitem", { name: "Delete" }));
+  }
+
+  it("names the folder and lists the remaining places when the file is elsewhere too", async () => {
+    listFileOccurrences.mockResolvedValue([
+      { place: folderPlace, path: ["Demos"] },
+      { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
+      { place: { kind: "root" }, path: [] },
+    ]);
+    removeOccurrence.mockResolvedValue({ deleted: false });
+    const user = userEvent.setup();
+    renderExplorer({ kind: "folder", id: "folder-1" }, { files }, [
+      { name: "Demos", location: { kind: "folder", id: "folder-1" } },
+    ]);
+    await chooseDeleteFromContextMenu(user);
+
+    expect(await screen.findByText("Remove from Demos?")).toBeInTheDocument();
+    expect(screen.getByText("Songs › Intro")).toBeInTheDocument();
+    expect(screen.getByText("Drive")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+
+    await waitFor(() =>
+      expect(removeOccurrence).toHaveBeenCalledWith({
+        fileId: "f1",
+        place: folderPlace,
+        organizationId: "org-1",
+      }),
+    );
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Removed from Demos — still in Songs › Intro, Drive",
+        }),
+      ),
+    );
+  });
+
+  it("offers a permanent delete when this is the last place", async () => {
+    listFileOccurrences.mockResolvedValue([{ place: { kind: "root" }, path: [] }]);
+    removeOccurrence.mockResolvedValue({ deleted: true });
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { files });
+    await chooseDeleteFromContextMenu(user);
+
+    expect(await screen.findByText("Permanently delete this file?")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Permanently delete" }));
+
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "File deleted", type: "success" }),
+      ),
+    );
+  });
+
+  it("states how many files a folder delete removes and keeps", async () => {
+    previewFolderDelete.mockResolvedValue({ deletedCount: 3, keptCount: 1 });
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { folders: [folder] });
+
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("Demos")).closest("tr")!,
+    });
+    await user.click(await screen.findByRole("menuitem", { name: "Delete" }));
+
+    expect(
+      await screen.findByText(/3 files will be permanently deleted, 1 stays in other places/),
+    ).toBeInTheDocument();
+    expect(previewFolderDelete).toHaveBeenCalledWith({ id: "folder-1", organizationId: "org-1" });
   });
 });
 

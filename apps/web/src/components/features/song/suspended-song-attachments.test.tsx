@@ -1,7 +1,24 @@
 import { QueryClient, QueryClientProvider, useMutation } from "@tanstack/react-query";
-import { render, screen } from "@/lib/test-utils";
+import { render, screen, waitFor } from "@/lib/test-utils";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const listFileOccurrences = vi.fn();
+const removeOccurrence = vi.fn();
+const toastAdd = vi.fn();
+
+vi.mock("@/services/api-client", () => ({
+  apiClient: {
+    drive: {
+      listFileOccurrences: { query: (input: unknown) => listFileOccurrences(input) },
+      removeOccurrence: { mutate: (input: unknown) => removeOccurrence(input) },
+    },
+  },
+}));
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast: { add: (options: unknown) => toastAdd(options) },
+}));
 
 vi.mock("@tanstack/react-router", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@tanstack/react-router")>()),
@@ -80,6 +97,65 @@ function renderWithFiles(files: driveResource.SongFile[]) {
     </QueryClientProvider>,
   );
 }
+
+const songPlace = { kind: "song", id: "song-1" } as const;
+
+async function chooseDelete(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(await screen.findByRole("button", { name: "Actions for demo.mp3" }));
+  await user.click(await screen.findByRole("menuitem", { name: "Delete" }));
+}
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("SuspendedSongAttachments removal", () => {
+  it("says 'Remove from this song' and lists 'Events › 2026-08-02 · Gig' when the file is also on an event", async () => {
+    listFileOccurrences.mockResolvedValue([
+      { place: songPlace, path: ["Songs", "Intro"] },
+      { place: { kind: "event", id: "event-1" }, path: ["Events", "2026-08-02 · Gig"] },
+      { place: { kind: "folder", id: "folder-1" }, path: ["Demos", "Old"] },
+    ]);
+    removeOccurrence.mockResolvedValue({ deleted: false });
+    const user = userEvent.setup();
+    renderWithFiles([makeSongFile()]);
+
+    await chooseDelete(user);
+
+    expect(await screen.findByText("Remove from this song?")).toBeInTheDocument();
+    expect(screen.getByText("Events › 2026-08-02 · Gig")).toBeInTheDocument();
+    expect(screen.getByText("Demos › Old")).toBeInTheDocument();
+    expect(screen.queryByText("Songs › Intro")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+
+    await waitFor(() =>
+      expect(removeOccurrence).toHaveBeenCalledWith({
+        fileId: "f1",
+        place: songPlace,
+        organizationId: "org-1",
+      }),
+    );
+  });
+
+  it("says 'Permanently delete' when the song is its only occurrence", async () => {
+    listFileOccurrences.mockResolvedValue([{ place: songPlace, path: ["Songs", "Intro"] }]);
+    removeOccurrence.mockResolvedValue({ deleted: true });
+    const user = userEvent.setup();
+    renderWithFiles([makeSongFile()]);
+
+    await chooseDelete(user);
+
+    expect(await screen.findByText("Permanently delete this file?")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Permanently delete" }));
+
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ title: "File deleted", type: "success" }),
+      ),
+    );
+  });
+});
 
 describe("SuspendedSongAttachments", () => {
   it("shows the empty state and an upload button when there are no files", async () => {

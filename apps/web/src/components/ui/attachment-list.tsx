@@ -633,7 +633,7 @@ function AttachmentSelectionMenu<F extends AttachmentFile>({
         onOpenChange={setConfirmOpen}
         variant="destructive"
         title={<Plural value={files.length} one="Delete # file?" other="Delete # files?" />}
-        description={t`This will permanently delete the selected files. This action cannot be undone.`}
+        description={t`This removes the selected files from here. Files that are nowhere else are permanently deleted. This action cannot be undone.`}
         confirmLabel={t`Delete`}
         onConfirm={() => onDeleteSelected(files)}
       />
