@@ -1,10 +1,12 @@
 import { FileDetailsDialog } from "@/components/features/drive/file-details-dialog";
-import { RemoveOccurrenceDialog } from "@/components/features/drive/remove-occurrence-dialog";
+import {
+  RemoveManyOccurrencesDialog,
+  RemoveOccurrenceDialog,
+} from "@/components/features/drive/remove-occurrence-dialog";
 import { useRemoveOccurrence } from "@/components/features/drive/use-remove-occurrence";
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { plural } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
@@ -27,7 +29,6 @@ import { toast } from "@/components/ui/toast";
 import {
   downloadOrganizationFile,
   getSongFilesQueryOptions,
-  useRemoveOccurrenceMutation,
   useRenameFileMutation,
   type SongFile,
 } from "@/services/resources/drive";
@@ -147,7 +148,6 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const uploadMutation = useSongUploadMutation();
   const getDestinationLabel = useSongDestinationLabel(songId, organizationId);
   const pendingFiles = useSongUploadingFiles(songId);
-  const removeMutation = useRemoveOccurrenceMutation();
   const removal = useRemoveOccurrence({ kind: "song", id: songId }, organizationId, t`this song`);
   const renameMutation = useRenameFileMutation();
   const setAudioVersionMutation = useSetSongAudioVersionMutation({
@@ -179,21 +179,9 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
     });
   };
 
-  const handleDeleteSelected = async (filesToDelete: SongFile[]) => {
-    await Promise.all(
-      filesToDelete.map((file) =>
-        removeMutation.mutateAsync({
-          fileId: file.id,
-          place: { kind: "song", id: songId },
-          organizationId,
-        }),
-      ),
-    );
+  const handleBulkRemoveConfirm = async () => {
+    await removal.bulkDialogProps.onConfirm();
     setSelectedIds(new Set());
-    toast.add({
-      title: plural(filesToDelete.length, { one: "# file removed", other: "# files removed" }),
-      type: "success",
-    });
   };
 
   return (
@@ -223,7 +211,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
             return next;
           })
         }
-        onDeleteSelected={handleDeleteSelected}
+        onDeleteSelected={(files) => removal.requestMany(files)}
         onDelete={(file) => removal.request(file.id)}
         onRename={(file) => setRenamingFile(file)}
         onDownload={(file) => downloadOrganizationFile({ id: file.id, organizationId })}
@@ -262,6 +250,11 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
       />
 
       <RemoveOccurrenceDialog {...removal.dialogProps} />
+
+      <RemoveManyOccurrencesDialog
+        {...removal.bulkDialogProps}
+        onConfirm={handleBulkRemoveConfirm}
+      />
 
       <RenameFileDialog
         file={renamingFile}

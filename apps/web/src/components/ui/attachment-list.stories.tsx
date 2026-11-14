@@ -209,7 +209,7 @@ function WithSelectionDemo() {
           return next;
         })
       }
-      onDeleteSelected={async (deleted) => {
+      onDeleteSelected={(deleted) => {
         setSelectedIds((prev) => {
           const next = new Set(prev);
           deleted.forEach((file) => next.delete(file.id));

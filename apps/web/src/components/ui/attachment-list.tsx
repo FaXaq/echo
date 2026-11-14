@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Plural, Trans, useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import {
   AudioLines,
   Check,
@@ -32,7 +32,6 @@ import {
 } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
 import { ListEmptyState } from "@/components/ui/list-empty-state";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FilePreviewDialog } from "@/components/ui/file-preview-dialog";
 import {
   DropdownMenu,
@@ -108,7 +107,7 @@ export interface AttachmentListProps<F extends AttachmentFile> {
   playingFileId?: string;
   onSelect?: (file: F) => void;
   onUnselect?: (file: F) => void;
-  onDeleteSelected?: (files: F[]) => Promise<void>;
+  onDeleteSelected?: (files: F[]) => void;
   onDelete?: (file: F) => void;
   onRename?: (file: F) => void;
   onLinkToSong?: (file: F) => void;
@@ -600,44 +599,31 @@ function AttachmentSelectionMenu<F extends AttachmentFile>({
   onDeleteSelected,
 }: {
   files: F[];
-  onDeleteSelected: (files: F[]) => Promise<void>;
+  onDeleteSelected: (files: F[]) => void;
 }) {
   const { t } = useLingui();
-  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <Button
-              type="button"
-              variant="outline"
-              size="icon-sm"
-              aria-label={t`Actions for selected files`}
-            />
-          }
-        >
-          <ListChecks />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
-            <Trash />
-            {t`Delete`}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <ConfirmDialog
-        open={confirmOpen}
-        onOpenChange={setConfirmOpen}
-        variant="destructive"
-        title={<Plural value={files.length} one="Delete # file?" other="Delete # files?" />}
-        description={t`This removes the selected files from here. Files that are nowhere else are permanently deleted. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={() => onDeleteSelected(files)}
-      />
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            type="button"
+            variant="outline"
+            size="icon-sm"
+            aria-label={t`Actions for selected files`}
+          />
+        }
+      >
+        <ListChecks />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem variant="destructive" onClick={() => onDeleteSelected(files)}>
+          <Trash />
+          {t`Delete`}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

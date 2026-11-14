@@ -1,10 +1,12 @@
 import { FileDetailsDialog } from "@/components/features/drive/file-details-dialog";
-import { RemoveOccurrenceDialog } from "@/components/features/drive/remove-occurrence-dialog";
+import {
+  RemoveManyOccurrencesDialog,
+  RemoveOccurrenceDialog,
+} from "@/components/features/drive/remove-occurrence-dialog";
 import { useRemoveOccurrence } from "@/components/features/drive/use-remove-occurrence";
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { plural } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
@@ -23,11 +25,9 @@ import { AttachmentList } from "@/ui/attachment-list";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/components/ui/toast";
 import {
   downloadOrganizationFile,
   getEventFilesQueryOptions,
-  useRemoveOccurrenceMutation,
   useRenameFileMutation,
   type EventFile,
 } from "@/services/resources/drive";
@@ -144,7 +144,6 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const uploadMutation = useEventUploadMutation();
   const getDestinationLabel = useEventDestinationLabel(eventId, organizationId);
   const pendingFiles = useEventUploadingFiles(eventId);
-  const removeMutation = useRemoveOccurrenceMutation();
   const removal = useRemoveOccurrence(
     { kind: "event", id: eventId },
     organizationId,
@@ -171,21 +170,9 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
     });
   };
 
-  const handleDeleteSelected = async (filesToDelete: EventFile[]) => {
-    await Promise.all(
-      filesToDelete.map((file) =>
-        removeMutation.mutateAsync({
-          fileId: file.id,
-          place: { kind: "event", id: eventId },
-          organizationId,
-        }),
-      ),
-    );
+  const handleBulkRemoveConfirm = async () => {
+    await removal.bulkDialogProps.onConfirm();
     setSelectedIds(new Set());
-    toast.add({
-      title: plural(filesToDelete.length, { one: "# file removed", other: "# files removed" }),
-      type: "success",
-    });
   };
 
   return (
@@ -215,7 +202,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
             return next;
           })
         }
-        onDeleteSelected={handleDeleteSelected}
+        onDeleteSelected={(files) => removal.requestMany(files)}
         onDelete={(file) => removal.request(file.id)}
         onRename={(file) => setRenamingFile(file)}
         onLinkToSong={(file) => setLinkingFile(file)}
@@ -237,6 +224,11 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
       />
 
       <RemoveOccurrenceDialog {...removal.dialogProps} />
+
+      <RemoveManyOccurrencesDialog
+        {...removal.bulkDialogProps}
+        onConfirm={handleBulkRemoveConfirm}
+      />
 
       <LinkFileToSongDialog
         file={linkingFile}

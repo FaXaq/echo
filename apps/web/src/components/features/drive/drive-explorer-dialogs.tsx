@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Plural, Trans, useLingui } from "@lingui/react/macro";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog, type ConfirmDialogProps } from "@/components/ui/confirm-dialog";
 import {
   previewFolderDeleteQueryOptions,
   type Folder,
@@ -10,20 +10,83 @@ import {
 } from "@/services/resources/drive";
 import { FolderNameDialog } from "./folder-name-dialog";
 
-function FolderDeleteSummary({ id, organizationId }: { id: string; organizationId: string }) {
-  const { data } = useSuspenseQuery(previewFolderDeleteQueryOptions({ id, organizationId }));
+function FolderDeleteCounts({
+  folderId,
+  organizationId,
+  ...dialog
+}: {
+  folderId: string;
+  organizationId: string;
+} & Omit<ConfirmDialogProps, "description">) {
+  const { data } = useSuspenseQuery(
+    previewFolderDeleteQueryOptions({ id: folderId, organizationId }),
+  );
+
   return (
-    <>
-      <Plural
-        value={data.deletedCount}
-        one="# file will be permanently deleted"
-        other="# files will be permanently deleted"
-      />
-      {", "}
-      <Plural value={data.keptCount} one="# stays in other places" other="# stay in other places" />
-      {". "}
-      <Trans>This action cannot be undone.</Trans>
-    </>
+    <ConfirmDialog
+      {...dialog}
+      description={
+        <>
+          <Plural
+            value={data.deletedCount}
+            one="# file will be permanently deleted"
+            other="# files will be permanently deleted"
+          />
+          {", "}
+          <Plural
+            value={data.keptCount}
+            one="# stays in other places"
+            other="# stay in other places"
+          />
+          {". "}
+          <Trans>This action cannot be undone.</Trans>
+        </>
+      }
+    />
+  );
+}
+
+function FolderDeleteConfirm({
+  folderId,
+  organizationId,
+  onOpenChange,
+  onConfirm,
+}: {
+  folderId: string;
+  organizationId: string;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  const { t } = useLingui();
+  const dialog = {
+    open: true,
+    onOpenChange,
+    variant: "destructive",
+    title: t`Delete this folder?`,
+    confirmLabel: t`Delete`,
+    onConfirm,
+  } as const;
+
+  return (
+    <ErrorBoundary
+      fallback={
+        <ConfirmDialog
+          {...dialog}
+          confirmDisabled
+          description={
+            <Trans>Couldn't count the files in this folder. Close this and try again.</Trans>
+          }
+        />
+      }
+    >
+      <Suspense
+        fallback={
+          <ConfirmDialog {...dialog} confirmDisabled description={<Trans>Counting files…</Trans>} />
+        }
+      >
+        <FolderDeleteCounts folderId={folderId} organizationId={organizationId} {...dialog} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 
@@ -41,9 +104,6 @@ export function DriveExplorerDialogs({
   renamingFile,
   onRenamingFileChange,
   onRenameFile,
-  bulkDeleteCount,
-  onBulkDeleteCountChange,
-  onConfirmBulkDeleteFiles,
 }: {
   organizationId: string;
   creatingFolder: boolean;
@@ -58,9 +118,6 @@ export function DriveExplorerDialogs({
   renamingFile: OrganizationFile | null;
   onRenamingFileChange: (open: boolean) => void;
   onRenameFile: (filename: string) => void;
-  bulkDeleteCount: number;
-  onBulkDeleteCountChange: (open: boolean) => void;
-  onConfirmBulkDeleteFiles: () => Promise<void>;
 }) {
   const { t } = useLingui();
 
@@ -81,23 +138,14 @@ export function DriveExplorerDialogs({
         onConfirm={onRenameFolder}
       />
 
-      <ConfirmDialog
-        open={deletingFolder !== null}
-        onOpenChange={onDeletingFolderChange}
-        variant="destructive"
-        title={t`Delete this folder?`}
-        description={
-          deletingFolder && (
-            <ErrorBoundary fallback={<Trans>This action cannot be undone.</Trans>}>
-              <Suspense fallback={<Trans>Counting files…</Trans>}>
-                <FolderDeleteSummary id={deletingFolder.id} organizationId={organizationId} />
-              </Suspense>
-            </ErrorBoundary>
-          )
-        }
-        confirmLabel={t`Delete`}
-        onConfirm={onConfirmDeleteFolder}
-      />
+      {deletingFolder && (
+        <FolderDeleteConfirm
+          folderId={deletingFolder.id}
+          organizationId={organizationId}
+          onOpenChange={onDeletingFolderChange}
+          onConfirm={onConfirmDeleteFolder}
+        />
+      )}
 
       <FolderNameDialog
         open={renamingFile !== null}
@@ -105,16 +153,6 @@ export function DriveExplorerDialogs({
         title={t`Rename file`}
         initialName={renamingFile?.filename}
         onConfirm={onRenameFile}
-      />
-
-      <ConfirmDialog
-        open={bulkDeleteCount > 0}
-        onOpenChange={onBulkDeleteCountChange}
-        variant="destructive"
-        title={<Plural value={bulkDeleteCount} one="Delete # file?" other="Delete # files?" />}
-        description={t`This removes the selected files from here. Files that are nowhere else are permanently deleted. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={onConfirmBulkDeleteFiles}
       />
     </>
   );

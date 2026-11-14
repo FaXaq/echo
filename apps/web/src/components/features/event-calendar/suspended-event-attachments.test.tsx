@@ -71,16 +71,30 @@ function renderWithFiles(files: driveResource.EventFile[]) {
 
 const eventPlace = { kind: "event", id: "event-1" } as const;
 
-function demoFile() {
+function makeEventFile(overrides: Partial<driveResource.EventFile> = {}): driveResource.EventFile {
   return {
     id: "f1",
-    kind: "audio",
-    originalFilename: "demo.mp3",
-    filename: "demo.mp3",
-    downloadUrl: "https://example.com/demo.mp3",
-    sizeBytes: 10,
+    organizationId: "org-1",
+    uploadedBy: "user-1",
     uploadedByName: "Jane",
-  } as driveResource.EventFile;
+    kind: "audio",
+    mimeType: "audio/mpeg",
+    sizeBytes: 10,
+    durationSeconds: null,
+    width: null,
+    height: null,
+    hasThumbnail: false,
+    thumbnailUrl: null,
+    filename: "demo.mp3",
+    originalFilename: "demo.mp3",
+    s3Key: "events/event-1/demo.mp3",
+    status: "uploaded",
+    createdAt: null,
+    updatedAt: null,
+    downloadUrl: "https://example.com/demo.mp3",
+    previewUrl: null,
+    ...overrides,
+  };
 }
 
 async function chooseDelete(user: ReturnType<typeof userEvent.setup>) {
@@ -100,7 +114,7 @@ describe("SuspendedEventAttachments removal", () => {
     ]);
     removeOccurrence.mockResolvedValue({ deleted: false });
     const user = userEvent.setup();
-    renderWithFiles([demoFile()]);
+    renderWithFiles([makeEventFile()]);
 
     await chooseDelete(user);
 
@@ -133,7 +147,7 @@ describe("SuspendedEventAttachments removal", () => {
     ]);
     removeOccurrence.mockResolvedValue({ deleted: true });
     const user = userEvent.setup();
-    renderWithFiles([demoFile()]);
+    renderWithFiles([makeEventFile()]);
 
     await chooseDelete(user);
 
@@ -143,6 +157,51 @@ describe("SuspendedEventAttachments removal", () => {
     await waitFor(() =>
       expect(toastAdd).toHaveBeenCalledWith(
         expect.objectContaining({ title: "File deleted", type: "success" }),
+      ),
+    );
+  });
+});
+
+describe("SuspendedEventAttachments bulk removal", () => {
+  it("states how many files are removed from here and how many are permanently deleted", async () => {
+    listFileOccurrences.mockImplementation(({ fileId }: { fileId: string }) =>
+      Promise.resolve(
+        fileId === "f1"
+          ? [
+              { place: eventPlace, path: ["Events", "Gig"] },
+              { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
+            ]
+          : [{ place: eventPlace, path: ["Events", "Gig"] }],
+      ),
+    );
+    removeOccurrence.mockImplementation(({ fileId }: { fileId: string }) =>
+      Promise.resolve({ deleted: fileId === "f2" }),
+    );
+    const user = userEvent.setup();
+    renderWithFiles([
+      makeEventFile(),
+      makeEventFile({ id: "f2", filename: "take2.mp3", originalFilename: "take2.mp3" }),
+    ]);
+
+    for (const name of ["demo.mp3", "take2.mp3"]) {
+      await user.click(await screen.findByRole("button", { name: `Actions for ${name}` }));
+      await user.click(await screen.findByRole("menuitem", { name: "Select" }));
+    }
+    await user.click(screen.getByRole("button", { name: "Actions for selected files" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Delete" }));
+
+    expect(await screen.findByText("Remove 2 files?")).toBeInTheDocument();
+    expect(screen.getByText(/1 file will be removed from here/)).toBeInTheDocument();
+    expect(screen.getByText(/1 file will be permanently deleted/)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "1 file removed from here, 1 file permanently deleted",
+          type: "success",
+        }),
       ),
     );
   });
@@ -158,24 +217,16 @@ describe("SuspendedEventAttachments", () => {
   it("renders every linked file grouped by tab", async () => {
     const user = userEvent.setup();
     renderWithFiles([
-      {
-        id: "f1",
-        kind: "audio",
-        originalFilename: "demo.mp3",
-        filename: "demo.mp3",
-        downloadUrl: "https://example.com/demo.mp3",
-        sizeBytes: 10,
-        uploadedByName: "Jane",
-      } as driveResource.EventFile,
-      {
+      makeEventFile(),
+      makeEventFile({
         id: "f2",
         kind: "document",
-        originalFilename: "setlist.pdf",
-        filename: "setlist.pdf",
-        downloadUrl: "https://example.com/setlist.pdf",
+        mimeType: "application/pdf",
         sizeBytes: 20,
-        uploadedByName: "Jane",
-      } as driveResource.EventFile,
+        filename: "setlist.pdf",
+        originalFilename: "setlist.pdf",
+        downloadUrl: "https://example.com/setlist.pdf",
+      }),
     ]);
 
     expect(await screen.findByText("demo.mp3")).toBeInTheDocument();

@@ -446,6 +446,82 @@ describe("DriveExplorer removal", () => {
     );
   });
 
+  it("states how many files a bulk removal only removes and how many it permanently deletes", async () => {
+    listFileOccurrences.mockImplementation(({ fileId }: { fileId: string }) =>
+      Promise.resolve(
+        fileId === "f1"
+          ? [
+              { place: { kind: "root" }, path: [] },
+              { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
+            ]
+          : [{ place: { kind: "root" }, path: [] }],
+      ),
+    );
+    removeOccurrence.mockImplementation(({ fileId }: { fileId: string }) =>
+      Promise.resolve({ deleted: fileId === "f2" }),
+    );
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { files: [makeFile("f1", "a.pdf"), makeFile("f2", "b.pdf")] });
+    await selectRow(user, "Select a.pdf");
+    await selectRow(user, "Select b.pdf");
+    await user.click(screen.getByRole("button", { name: "Selection actions" }));
+    await user.click(await screen.findByRole("menuitem", { name: "Delete" }));
+
+    expect(await screen.findByText("Remove 2 files?")).toBeInTheDocument();
+    expect(screen.getByText(/1 file will be removed from here/)).toBeInTheDocument();
+    expect(screen.getByText(/1 file will be permanently deleted/)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+
+    await waitFor(() =>
+      expect(toastAdd).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "1 file removed from here, 1 file permanently deleted",
+          type: "success",
+        }),
+      ),
+    );
+  });
+
+  it("keeps the folder Delete button disabled until the counts load", async () => {
+    let resolvePreview: (value: { deletedCount: number; keptCount: number }) => void = () => {};
+    previewFolderDelete.mockReturnValue(
+      new Promise((resolve) => {
+        resolvePreview = resolve;
+      }),
+    );
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { folders: [folder] });
+
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("Demos")).closest("tr")!,
+    });
+    await user.click(await screen.findByRole("menuitem", { name: "Delete" }));
+
+    expect(await screen.findByText("Counting files…")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Delete" })).toBeDisabled();
+
+    resolvePreview({ deletedCount: 2, keptCount: 0 });
+    await screen.findByText(/2 files will be permanently deleted/);
+    expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled();
+  });
+
+  it("does not let a folder be deleted when the counts fail to load", async () => {
+    previewFolderDelete.mockRejectedValue(new Error("boom"));
+    const user = userEvent.setup();
+    renderExplorer({ kind: "root" }, { folders: [folder] });
+
+    await user.pointer({
+      keys: "[MouseRight]",
+      target: (await screen.findByText("Demos")).closest("tr")!,
+    });
+    await user.click(await screen.findByRole("menuitem", { name: "Delete" }));
+
+    await screen.findByText(/Couldn't count the files/);
+    expect(screen.getByRole("button", { name: "Delete" })).toBeDisabled();
+  });
+
   it("states how many files a folder delete removes and keeps", async () => {
     previewFolderDelete.mockResolvedValue({ deletedCount: 3, keptCount: 1 });
     const user = userEvent.setup();

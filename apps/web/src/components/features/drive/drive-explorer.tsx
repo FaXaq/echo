@@ -33,7 +33,6 @@ import {
   useAddOccurrencesMutation,
   useCreateFolderMutation,
   useDeleteFolderMutation,
-  useRemoveOccurrenceMutation,
   useRenameFileMutation,
   useRenameFolderMutation,
   type DriveSortField,
@@ -67,7 +66,7 @@ import { SelectionActionsMenu } from "./drive-selection-actions-menu";
 import { useDriveTableColumns } from "./drive-table-columns";
 import { useDriveFileTransfer } from "./use-drive-file-transfer";
 import { useDrivePendingDeletes } from "./use-drive-pending-deletes";
-import { RemoveOccurrenceDialog } from "./remove-occurrence-dialog";
+import { RemoveManyOccurrencesDialog, RemoveOccurrenceDialog } from "./remove-occurrence-dialog";
 import { useDriveSelection } from "./use-drive-selection";
 import { useRemoveOccurrence } from "./use-remove-occurrence";
 
@@ -110,7 +109,6 @@ function DriveExplorerContent({
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
   const [assigningFiles, setAssigningFiles] = useState<OrganizationFile[]>([]);
   const [detailsFile, setDetailsFile] = useState<OrganizationFile | null>(null);
-  const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
   const [carouselFiles, setCarouselFiles] = useState<CarouselAttachment[]>([]);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [documentPreview, setDocumentPreview] = useState<{
@@ -128,7 +126,6 @@ function DriveExplorerContent({
   const renameFolderMutation = useRenameFolderMutation();
   const deleteFolderMutation = useDeleteFolderMutation();
   const renameFileMutation = useRenameFileMutation();
-  const removeOccurrenceMutation = useRemoveOccurrenceMutation();
   const removal = useRemoveOccurrence(
     place ?? { kind: "root" },
     organizationId,
@@ -292,29 +289,9 @@ function DriveExplorerContent({
     }
   };
 
-  const handleBulkDeleteFiles = async () => {
-    if (!place) return;
-    const results = await Promise.allSettled(
-      selectedFiles.map((file) =>
-        removeOccurrenceMutation.mutateAsync({ fileId: file.id, place, organizationId }),
-      ),
-    );
-    const failedNames = results.flatMap((result, index) =>
-      result.status === "rejected" ? [selectedFiles[index].filename] : [],
-    );
-
+  const handleBulkRemoveConfirm = async () => {
+    await removal.bulkDialogProps.onConfirm();
     clearSelection();
-    if (failedNames.length === 0) {
-      toast.add({
-        title: plural(selectedFiles.length, { one: "# file removed", other: "# files removed" }),
-        type: "success",
-      });
-    } else {
-      toast.add({
-        title: t`${selectedFiles.length - failedNames.length} of ${selectedFiles.length} removed — failed: ${failedNames.join(", ")}`,
-        type: "error",
-      });
-    }
   };
 
   const emptyState = {
@@ -394,7 +371,7 @@ function DriveExplorerContent({
                   isDownloading={isDownloading}
                   onDownload={handleBulkDownload}
                   deleteDisabledReason={deleteDisabledReason}
-                  onDelete={() => setConfirmingBulkDelete(true)}
+                  onDelete={() => removal.requestMany(selectedFiles)}
                   assignDisabledReason={assignDisabledReason}
                   onAssignToEvent={() => setAssigningFiles(selectedFiles)}
                   onClear={clearSelection}
@@ -611,12 +588,14 @@ function DriveExplorerContent({
               { onError: () => toast.add({ title: t`Couldn't rename file`, type: "error" }) },
             );
         }}
-        bulkDeleteCount={confirmingBulkDelete ? selectedFiles.length : 0}
-        onBulkDeleteCountChange={(open) => !open && setConfirmingBulkDelete(false)}
-        onConfirmBulkDeleteFiles={handleBulkDeleteFiles}
       />
 
       <RemoveOccurrenceDialog {...removal.dialogProps} />
+
+      <RemoveManyOccurrencesDialog
+        {...removal.bulkDialogProps}
+        onConfirm={handleBulkRemoveConfirm}
+      />
 
       <FileDetailsDialog
         file={detailsFile}

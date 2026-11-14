@@ -20,6 +20,7 @@ export interface ConfirmDialogProps {
   confirmLabel: ReactNode;
   cancelLabel?: ReactNode;
   variant?: "default" | "destructive";
+  confirmDisabled?: boolean;
   onConfirm: () => void | Promise<void>;
 }
 
@@ -31,6 +32,7 @@ export function ConfirmDialog({
   confirmLabel,
   cancelLabel,
   variant = "default",
+  confirmDisabled = false,
   onConfirm,
 }: ConfirmDialogProps) {
   const { t } = useLingui();
@@ -60,7 +62,7 @@ export function ConfirmDialog({
           <AlertDialogCancel disabled={isPending}>{cancelLabel ?? t`Cancel`}</AlertDialogCancel>
           <AlertDialogAction
             variant={variant === "destructive" ? "destructive" : undefined}
-            disabled={isPending}
+            disabled={isPending || confirmDisabled}
             onClick={handleConfirm}
           >
             {isPending ? <Spinner /> : confirmLabel}
