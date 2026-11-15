@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLingui } from "@lingui/react/macro";
 import { tinykeys } from "tinykeys";
-import {
-  useMoveFileMutation,
-  useMoveFolderMutation,
-  type Folder,
-  type OrganizationFile,
-} from "@/services/resources/drive";
+import { useMoveFilesMutation, useMoveFoldersMutation } from "@/services/resources/drive";
 import type { DriveLocation } from "@echo/modules/drive/domain";
 import { toast } from "@/components/ui/toast";
 import { locationKey } from "@/lib/drive-location";
@@ -24,14 +19,10 @@ export function useDriveSelection({
   organizationId,
   location,
   rows,
-  visibleFolders,
-  visibleFiles,
 }: {
   organizationId: string;
   location: DriveLocation;
   rows: { kind: DriveItemKind; id: string }[];
-  visibleFolders: Folder[];
-  visibleFiles: OrganizationFile[];
 }) {
   const { t } = useLingui();
   const [selectedKeys, setSelectedKeys] = useState<Set<SelectionKey>>(new Set());
@@ -51,8 +42,8 @@ export function useDriveSelection({
     });
   }, []);
 
-  const moveFolderMutation = useMoveFolderMutation();
-  const moveFileMutation = useMoveFileMutation();
+  const moveFoldersMutation = useMoveFoldersMutation();
+  const moveFilesMutation = useMoveFilesMutation();
 
   const toggleSelection = (kind: DriveItemKind, id: string, options: { shiftKey?: boolean }) => {
     const key = selectionKey(kind, id);
@@ -109,73 +100,44 @@ export function useDriveSelection({
 
     if (movingItems.length === 0) return;
 
-    if (movingItems.length === 1) {
-      const item = movingItems[0];
-      if (item.kind === "file") {
-        moveFileMutation.mutate({
-          id: item.id,
+    const idsOf = (kind: DriveItemKind) =>
+      movingItems.filter((item) => item.kind === kind).map((item) => item.id);
+    const fileIds = idsOf("file");
+    const folderIds = idsOf("folder");
+
+    Promise.all([
+      fileIds.length > 0 &&
+        moveFilesMutation.mutateAsync({
+          ids: fileIds,
           organizationId,
           from: location,
           folderId: target.id,
+        }),
+      folderIds.length > 0 &&
+        moveFoldersMutation.mutateAsync({
+          ids: folderIds,
+          organizationId,
+          parentFolderId: target.id,
+        }),
+    ]).then(
+      () => {
+        setSelectedKeys((prev) => {
+          const next = new Set(prev);
+          movingItems.forEach((item) => next.delete(item.key));
+          return next;
         });
-      } else {
-        moveFolderMutation.mutate({ id: item.id, organizationId, parentFolderId: target.id });
-      }
-      setSelectedKeys((prev) => {
-        const next = new Set(prev);
-        next.delete(item.key);
-        return next;
-      });
-      return;
-    }
-
-    Promise.allSettled(
-      movingItems.map((item) =>
-        item.kind === "file"
-          ? moveFileMutation.mutateAsync({
-              id: item.id,
-              organizationId,
-              from: location,
-              folderId: target.id,
-            })
-          : moveFolderMutation.mutateAsync({
-              id: item.id,
-              organizationId,
-              parentFolderId: target.id,
-            }),
-      ),
-    ).then((results) => {
-      const failedNames: string[] = [];
-      const succeededKeys: SelectionKey[] = [];
-
-      results.forEach((result, index) => {
-        const item = movingItems[index];
-        if (result.status === "fulfilled") {
-          succeededKeys.push(item.key);
-        } else {
-          const name =
-            item.kind === "file"
-              ? visibleFiles.find((file) => file.id === item.id)?.filename
-              : visibleFolders.find((folder) => folder.id === item.id)?.name;
-          failedNames.push(name ?? item.id);
+        if (movingItems.length > 1) {
+          toast.add({ title: t`${movingItems.length} items moved`, type: "success" });
         }
-      });
-
-      setSelectedKeys((prev) => {
-        const next = new Set(prev);
-        succeededKeys.forEach((key) => next.delete(key));
-        return next;
-      });
-
-      if (failedNames.length === 0) {
-        toast.add({ title: t`${movingItems.length} items moved`, type: "success" });
-      } else {
+      },
+      (error: unknown) => {
         toast.add({
-          title: t`${succeededKeys.length} of ${movingItems.length} moved — failed: ${failedNames.join(", ")}`,
+          title: t`Couldn't move items`,
+          description: error instanceof Error ? error.message : undefined,
           type: "error",
         });
-      }
-    });
+      },
+    );
   };
 
   return {

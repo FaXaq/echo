@@ -45,7 +45,7 @@ describe("listFolderContentsQuery folder sizes", () => {
     expect(sql).toContain("sum");
     expect(sql).toContain("distinct");
     expect(sql).toContain("folder_file");
-    expect(sql).toContain("'uploaded'");
+    expect(sql).toContain('"file"."status" = $');
   });
 
   it("orders folders by size when sorting on sizeBytes", async () => {
@@ -60,9 +60,11 @@ describe("listFolderContentsQuery folder sizes", () => {
   });
 
   it("sizes the Events and Songs roots from the files linked to any event or song", async () => {
-    const { db, queries } = makeScriptedDb((sql) =>
-      sql.includes("event_file") ? [{ events: "700", songs: "30" }] : [],
-    );
+    const { db, queries } = makeScriptedDb((sql) => {
+      if (sql.includes('from "event_file"')) return [{ total: "700" }];
+      if (sql.includes('from "song_file"')) return [{ total: "30" }];
+      return [];
+    });
 
     const result = await listFolderContentsQueryFactory()(db, scope, {
       location: { kind: "root" },

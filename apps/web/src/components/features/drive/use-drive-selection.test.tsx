@@ -6,18 +6,19 @@ import { i18n } from "@lingui/core";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const moveFile = vi.fn();
-const moveFolder = vi.fn();
+const moveFiles = vi.fn();
+const moveFolders = vi.fn();
 
 vi.mock("@/services/api-client", () => ({
   apiClient: {
     drive: {
-      moveFile: { mutate: (input: unknown) => moveFile(input) },
-      moveFolder: { mutate: (input: unknown) => moveFolder(input) },
+      moveFiles: { mutate: (input: unknown) => moveFiles(input) },
+      moveFolders: { mutate: (input: unknown) => moveFolders(input) },
     },
   },
 }));
 
+import { selectionKey } from "./drive-item-utils";
 import { useDriveSelection } from "./use-drive-selection";
 
 function setup(location: DriveLocation) {
@@ -33,8 +34,6 @@ function setup(location: DriveLocation) {
         organizationId: "org-1",
         location,
         rows: [],
-        visibleFolders: [],
-        visibleFiles: [],
       }),
     { wrapper },
   );
@@ -55,7 +54,35 @@ describe("useDriveSelection drag to move", () => {
 
     await act(async () => result.current.handleDragEnd(dropFileOnFolder));
 
-    expect(moveFile).toHaveBeenCalledTimes(1);
+    expect(moveFiles).toHaveBeenCalledTimes(1);
+  });
+
+  it("moves a mixed selection with one request per item kind", async () => {
+    const { result } = setup({ kind: "root" });
+    act(() =>
+      result.current.setSelectedKeys(
+        new Set([
+          selectionKey("file", "file-1"),
+          selectionKey("file", "file-2"),
+          selectionKey("folder", "folder-2"),
+          selectionKey("folder", "folder-3"),
+        ]),
+      ),
+    );
+
+    await act(async () => result.current.handleDragEnd(dropFileOnFolder));
+
+    expect(moveFiles).toHaveBeenCalledExactlyOnceWith({
+      ids: ["file-1", "file-2"],
+      organizationId: "org-1",
+      from: { kind: "root" },
+      folderId: "folder-1",
+    });
+    expect(moveFolders).toHaveBeenCalledExactlyOnceWith({
+      ids: ["folder-2", "folder-3"],
+      organizationId: "org-1",
+      parentFolderId: "folder-1",
+    });
   });
 
   it.each<DriveLocation>([
@@ -68,7 +95,7 @@ describe("useDriveSelection drag to move", () => {
 
     await act(async () => result.current.handleDragEnd(dropFileOnFolder));
 
-    expect(moveFile).not.toHaveBeenCalled();
-    expect(moveFolder).not.toHaveBeenCalled();
+    expect(moveFiles).not.toHaveBeenCalled();
+    expect(moveFolders).not.toHaveBeenCalled();
   });
 });

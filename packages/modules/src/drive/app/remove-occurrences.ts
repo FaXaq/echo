@@ -5,36 +5,36 @@ import type { CheckOrganizationPermission } from "@echo/modules/user/infrastruct
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { Place } from "../domain/index.js";
 import type {
-  DeleteOccurrenceCommandPort,
+  DeleteOccurrencesCommandPort,
   DeleteOrphanedFilesCommandPort,
 } from "../infrastructure/index.js";
 import { purgeOrphanedFiles, type PurgeFailure } from "./purge-orphaned-files.js";
 
-export async function removeOccurrence(
+export async function removeOccurrences(
   deps: {
     db: KyselyDB;
     s3Storage: S3StoragePort;
     userHasPermissionInOrganization: CheckOrganizationPermission;
-    deleteOccurrenceCommand: DeleteOccurrenceCommandPort;
+    deleteOccurrencesCommand: DeleteOccurrencesCommandPort;
     deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort;
   },
-  input: { fileId: string; place: Place; scope: OrganizationScope },
-): Promise<{ deleted: boolean; failures: PurgeFailure[] }> {
+  input: { fileIds: string[]; place: Place; scope: OrganizationScope },
+): Promise<{ removedFileIds: string[]; deletedFileIds: string[]; failures: PurgeFailure[] }> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { drive: ["delete"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "delete" });
 
-  const removed = await deps.deleteOccurrenceCommand(deps.db, input.scope, {
-    fileId: input.fileId,
+  const removedFileIds = await deps.deleteOccurrencesCommand(deps.db, input.scope, {
+    fileIds: input.fileIds,
     place: input.place,
   });
-  if (!removed) throw notFound("Occurrence");
+  if (removedFileIds.length === 0) throw notFound("Occurrence");
 
   const { deletedFileIds, failures } = await purgeOrphanedFiles(deps, {
     scope: input.scope,
-    fileIds: [input.fileId],
+    fileIds: removedFileIds,
   });
-  return { deleted: deletedFileIds.includes(input.fileId), failures };
+  return { removedFileIds, deletedFileIds, failures };
 }

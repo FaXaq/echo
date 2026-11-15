@@ -8,7 +8,7 @@ import { render, screen, waitFor, within } from "@/lib/test-utils";
 const navigate = vi.fn();
 const addOccurrences = vi.fn();
 const listFileOccurrences = vi.fn();
-const removeOccurrence = vi.fn();
+const removeOccurrences = vi.fn();
 const previewFolderDelete = vi.fn();
 const deleteFolder = vi.fn();
 const toastAdd = vi.fn();
@@ -20,7 +20,7 @@ vi.mock("@/services/api-client", () => ({
       listFolderContents: { query: (input: unknown) => listFolderContents(input) },
       addOccurrences: { mutate: (input: unknown) => addOccurrences(input) },
       listFileOccurrences: { query: (input: unknown) => listFileOccurrences(input) },
-      removeOccurrence: { mutate: (input: unknown) => removeOccurrence(input) },
+      removeOccurrences: { mutate: (input: unknown) => removeOccurrences(input) },
       previewFolderDelete: { query: (input: unknown) => previewFolderDelete(input) },
       deleteFolder: { mutate: (input: unknown) => deleteFolder(input) },
     },
@@ -513,12 +513,14 @@ describe("DriveExplorer removal", () => {
   }
 
   it("names the folder and lists the remaining places when the file is elsewhere too", async () => {
-    listFileOccurrences.mockResolvedValue([
-      { place: folderPlace, path: ["Demos"] },
-      { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
-      { place: { kind: "root" }, path: [] },
-    ]);
-    removeOccurrence.mockResolvedValue({ deleted: false });
+    listFileOccurrences.mockResolvedValue({
+      f1: [
+        { place: folderPlace, path: ["Demos"] },
+        { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
+        { place: { kind: "root" }, path: [] },
+      ],
+    });
+    removeOccurrences.mockResolvedValue({ removedFileIds: ["f1"], deletedFileIds: [] });
     const user = userEvent.setup();
     renderExplorer({ kind: "folder", id: "folder-1" }, { files }, [
       { name: "Demos", location: { kind: "folder", id: "folder-1" } },
@@ -532,8 +534,8 @@ describe("DriveExplorer removal", () => {
     await user.click(screen.getByRole("button", { name: "Remove" }));
 
     await waitFor(() =>
-      expect(removeOccurrence).toHaveBeenCalledWith({
-        fileId: "f1",
+      expect(removeOccurrences).toHaveBeenCalledWith({
+        fileIds: ["f1"],
         place: folderPlace,
         organizationId: "org-1",
       }),
@@ -548,8 +550,8 @@ describe("DriveExplorer removal", () => {
   });
 
   it("offers a permanent delete when this is the last place", async () => {
-    listFileOccurrences.mockResolvedValue([{ place: { kind: "root" }, path: [] }]);
-    removeOccurrence.mockResolvedValue({ deleted: true });
+    listFileOccurrences.mockResolvedValue({ f1: [{ place: { kind: "root" }, path: [] }] });
+    removeOccurrences.mockResolvedValue({ removedFileIds: ["f1"], deletedFileIds: ["f1"] });
     const user = userEvent.setup();
     renderExplorer({ kind: "root" }, { files });
     await chooseDeleteFromContextMenu(user);
@@ -565,11 +567,13 @@ describe("DriveExplorer removal", () => {
   });
 
   it("uses neutral wording when removing a file fails", async () => {
-    listFileOccurrences.mockResolvedValue([
-      { place: folderPlace, path: ["Demos"] },
-      { place: { kind: "root" }, path: [] },
-    ]);
-    removeOccurrence.mockRejectedValue(new Error("boom"));
+    listFileOccurrences.mockResolvedValue({
+      f1: [
+        { place: folderPlace, path: ["Demos"] },
+        { place: { kind: "root" }, path: [] },
+      ],
+    });
+    removeOccurrences.mockRejectedValue(new Error("boom"));
     const user = userEvent.setup();
     renderExplorer({ kind: "folder", id: "folder-1" }, { files }, [
       { name: "Demos", location: { kind: "folder", id: "folder-1" } },
@@ -585,19 +589,14 @@ describe("DriveExplorer removal", () => {
   });
 
   it("states how many files a bulk removal only removes and how many it permanently deletes", async () => {
-    listFileOccurrences.mockImplementation(({ fileId }: { fileId: string }) =>
-      Promise.resolve(
-        fileId === "f1"
-          ? [
-              { place: { kind: "root" }, path: [] },
-              { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
-            ]
-          : [{ place: { kind: "root" }, path: [] }],
-      ),
-    );
-    removeOccurrence.mockImplementation(({ fileId }: { fileId: string }) =>
-      Promise.resolve({ deleted: fileId === "f2" }),
-    );
+    listFileOccurrences.mockResolvedValue({
+      f1: [
+        { place: { kind: "root" }, path: [] },
+        { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
+      ],
+      f2: [{ place: { kind: "root" }, path: [] }],
+    });
+    removeOccurrences.mockResolvedValue({ removedFileIds: ["f1", "f2"], deletedFileIds: ["f2"] });
     const user = userEvent.setup();
     renderExplorer({ kind: "root" }, { files: [makeFile("f1", "a.pdf"), makeFile("f2", "b.pdf")] });
     await selectRow(user, "Select a.pdf");
@@ -619,6 +618,15 @@ describe("DriveExplorer removal", () => {
         }),
       ),
     );
+    expect(listFileOccurrences).toHaveBeenCalledExactlyOnceWith({
+      fileIds: ["f1", "f2"],
+      organizationId: "org-1",
+    });
+    expect(removeOccurrences).toHaveBeenCalledExactlyOnceWith({
+      fileIds: ["f1", "f2"],
+      place: { kind: "root" },
+      organizationId: "org-1",
+    });
   });
 
   it("keeps the folder Delete button disabled until the counts load", async () => {

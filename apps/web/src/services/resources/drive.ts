@@ -81,7 +81,17 @@ export function getDriveLocationPathQueryKey(opts: {
   return getResourceKey("locationPath", opts);
 }
 
-export function fileOccurrencesQueryOptions(opts: { fileId: string; organizationId: string }) {
+export function getFolderPathQueryOptions(opts: { id: string; organizationId: string }) {
+  return queryOptions({
+    queryKey: getResourceKey("getFolderPath", opts),
+    queryFn: async ({ queryKey, signal }) => {
+      const [{ params }] = queryKey;
+      return apiClient.drive.getFolderPath.query(params, { signal });
+    },
+  });
+}
+
+export function fileOccurrencesQueryOptions(opts: { fileIds: string[]; organizationId: string }) {
   return queryOptions({
     queryKey: getResourceKey("listFileOccurrences", opts),
     queryFn: async ({ queryKey, signal }) => {
@@ -130,12 +140,12 @@ export function useRenameFolderMutation({ onSuccess }: { onSuccess?: () => void 
   });
 }
 
-export function useMoveFolderMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+export function useMoveFoldersMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { id: string; organizationId: string; parentFolderId: string | null }) =>
-      apiClient.drive.moveFolder.mutate(input),
+    mutationFn: (input: { ids: string[]; organizationId: string; parentFolderId: string | null }) =>
+      apiClient.drive.moveFolders.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();
@@ -174,38 +184,35 @@ export function useAddOccurrencesMutation({ onSuccess }: { onSuccess?: () => voi
   });
 }
 
-export function useRemoveOccurrenceMutation({
-  onSuccess,
-}: { onSuccess?: (result: { deleted: boolean }) => void } = {}) {
+export function useRemoveOccurrencesMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: { fileId: string; place: Place; organizationId: string }) =>
-      apiClient.drive.removeOccurrence.mutate(input),
+    mutationFn: (input: { fileIds: string[]; place: Place; organizationId: string }) =>
+      apiClient.drive.removeOccurrences.mutate(input),
     onSuccess: async (result, input) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: key }),
-        result.deleted &&
+        result.deletedFileIds.length > 0 &&
           queryClient.invalidateQueries({
             queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId })
               .queryKey,
           }),
       ]);
-      onSuccess?.(result);
     },
   });
 }
 
-export function useMoveFileMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
+export function useMoveFilesMutation({ onSuccess }: { onSuccess?: () => void } = {}) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (input: {
-      id: string;
+      ids: string[];
       organizationId: string;
       from: FolderPlace;
       folderId: string | null;
-    }) => apiClient.drive.moveFile.mutate(input),
+    }) => apiClient.drive.moveFiles.mutate(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: key });
       onSuccess?.();

@@ -1,19 +1,22 @@
 import { describe, expect, it } from "vitest";
 import { ForbiddenError, NotFoundError } from "@echo/errors";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
+import type { Place } from "../domain/index.js";
 import type {
-  DeleteOccurrenceCommandPort,
+  DeleteOccurrencesCommandPort,
   DeleteOrphanedFilesCommandPort,
 } from "../infrastructure/index.js";
-import { removeOccurrence } from "./remove-occurrence.js";
+import { removeOccurrences } from "./remove-occurrences.js";
 import { makeFakeDb, makeFakePermissionChecks, makeFakeS3Storage } from "./test-fixtures.js";
 
 const scope = createOrganizationScope("org-1");
-const input = { fileId: "file-1", place: { kind: "song", id: "song-1" } as const, scope };
+const place: Place = { kind: "song", id: "song-1" };
+const input = { fileIds: ["file-1", "file-2"], place, scope };
+const removeAll: DeleteOccurrencesCommandPort = async (_db, _scope, { fileIds }) => fileIds;
 
 function makeDeps(
   overrides: Partial<{
-    deleteOccurrenceCommand: DeleteOccurrenceCommandPort;
+    deleteOccurrencesCommand: DeleteOccurrencesCommandPort;
     deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort;
   }> = {},
   deletedKeys: string[] = [],
@@ -26,14 +29,14 @@ function makeDeps(
         deletedKeys.push(key);
       },
     },
-    deleteOccurrenceCommand: async () => true,
+    deleteOccurrencesCommand: removeAll,
     deleteOrphanedFilesCommand: async () => [],
     ...makeFakePermissionChecks(),
     ...overrides,
   };
 }
 
-describe("removeOccurrence", () => {
+describe("removeOccurrences", () => {
   it("rejects a member without drive:delete permission", async () => {
     const deps = {
       ...makeDeps(),
@@ -41,22 +44,26 @@ describe("removeOccurrence", () => {
         userHasPermissionInOrganization: async () => ({ success: false, error: null, role: null }),
       }),
     };
-    await expect(removeOccurrence(deps, input)).rejects.toBeInstanceOf(ForbiddenError);
+    await expect(removeOccurrences(deps, input)).rejects.toBeInstanceOf(ForbiddenError);
   });
 
-  it("throws NotFoundError when the occurrence does not exist", async () => {
-    const deps = makeDeps({ deleteOccurrenceCommand: async () => false });
-    await expect(removeOccurrence(deps, input)).rejects.toBeInstanceOf(NotFoundError);
+  it("throws NotFoundError when none of the occurrences exist", async () => {
+    const deps = makeDeps({ deleteOccurrencesCommand: async () => [] });
+    await expect(removeOccurrences(deps, input)).rejects.toBeInstanceOf(NotFoundError);
   });
 
-  it("returns deleted: false when other occurrences remain", async () => {
+  it("reports removed files without deleting those placed elsewhere", async () => {
     const deletedKeys: string[] = [];
-    const result = await removeOccurrence(makeDeps({}, deletedKeys), input);
-    expect(result).toEqual({ deleted: false, failures: [] });
+    const result = await removeOccurrences(makeDeps({}, deletedKeys), input);
+    expect(result).toEqual({
+      removedFileIds: ["file-1", "file-2"],
+      deletedFileIds: [],
+      failures: [],
+    });
     expect(deletedKeys).toEqual([]);
   });
 
-  it("returns deleted: true and purges when it was the last", async () => {
+  it("purges only the files whose last occurrence was removed", async () => {
     const deletedKeys: string[] = [];
     const deps = makeDeps(
       {
@@ -66,8 +73,12 @@ describe("removeOccurrence", () => {
       },
       deletedKeys,
     );
-    const result = await removeOccurrence(deps, input);
-    expect(result).toEqual({ deleted: true, failures: [] });
+    const result = await removeOccurrences(deps, input);
+    expect(result).toEqual({
+      removedFileIds: ["file-1", "file-2"],
+      deletedFileIds: ["file-1"],
+      failures: [],
+    });
     expect(deletedKeys).toEqual(["org/org-1/file-1/a.mp3"]);
   });
 
@@ -86,7 +97,7 @@ describe("removeOccurrence", () => {
         },
       },
     };
-    const result = await removeOccurrence(deps, input);
-    expect(result).toEqual({ deleted: true, failures: [{ fileId: "file-1", error }] });
+    const result = await removeOccurrences(deps, input);
+    expect(result.failures).toEqual([{ fileId: "file-1", error }]);
   });
 });

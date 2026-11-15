@@ -87,7 +87,7 @@ A file can have several occurrences: `folder_file`, `event_file` and `song_file`
 
 ```mermaid
 flowchart LR
-    A["removeOccurrence / deleteFolder / deleteEvent / deleteSong"] --> B["purgeOrphanedFiles<br/>files with no folder_file / event_file / song_file row"]
+    A["removeOccurrences / deleteFolder / deleteEvent / deleteSong"] --> B["purgeOrphanedFiles<br/>files with no folder_file / event_file / song_file row"]
     C["deleteOrganizationFiles"] --> D
     B --> D["fileObjectKeys(file)"]
     D --> E["delete s3Key<br/>+ s3Key.preview.jpg for RAW<br/>+ s3Key.thumbnail.jpg for images and videos"]

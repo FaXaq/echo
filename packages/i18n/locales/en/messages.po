@@ -83,7 +83,7 @@ msgstr "{0, plural, one {# stays in other places} other {# stay in other places}
 #~ msgstr "{0} is currently playing."
 
 #. placeholder {0}: movingItems.length
-#: apps/web/src/components/features/drive/use-drive-selection.ts:171
+#: apps/web/src/components/features/drive/use-drive-selection.ts:133
 msgid "{0} items moved"
 msgstr "{0} items moved"
 
@@ -98,13 +98,13 @@ msgstr "{0} items moved"
 #. placeholder {1}: movingItems.length
 #. placeholder {2}: failedNames.join(", ")
 #: apps/web/src/components/features/drive/use-drive-selection.ts:174
-msgid "{0} of {1} moved — failed: {2}"
-msgstr "{0} of {1} moved — failed: {2}"
+#~ msgid "{0} of {1} moved — failed: {2}"
+#~ msgstr "{0} of {1} moved — failed: {2}"
 
-#. placeholder {0}: results.length - failedNames.length
-#. placeholder {1}: results.length
+#. placeholder {0}: removedFileIds.length
+#. placeholder {1}: bulk.files.length
 #. placeholder {2}: failedNames.join(", ")
-#: apps/web/src/components/features/drive/use-remove-occurrence.ts:116
+#: apps/web/src/components/features/drive/use-remove-occurrence.ts:121
 msgid "{0} of {1} removed — failed: {2}"
 msgstr "{0} of {1} removed — failed: {2}"
 
@@ -146,7 +146,7 @@ msgstr "{count, plural, one {Pasted # file} other {Pasted # files}}"
 msgid "{count} files assigned to the event"
 msgstr "{count} files assigned to the event"
 
-#: apps/web/src/components/features/drive/use-remove-occurrence.ts:152
+#: apps/web/src/components/features/drive/use-remove-occurrence.ts:155
 msgid "{deletedCount, plural, one {# file permanently deleted} other {# files permanently deleted}}"
 msgstr "{deletedCount, plural, one {# file permanently deleted} other {# files permanently deleted}}"
 
@@ -201,7 +201,7 @@ msgstr "{itemCount, plural, one {# item} other {# items}}"
 msgid "{label} history"
 msgstr "{label} history"
 
-#: apps/web/src/components/features/drive/use-remove-occurrence.ts:147
+#: apps/web/src/components/features/drive/use-remove-occurrence.ts:150
 msgid "{removedCount, plural, one {# file removed from here} other {# files removed from here}}"
 msgstr "{removedCount, plural, one {# file removed from here} other {# files removed from here}}"
 
@@ -280,9 +280,9 @@ msgstr "Actions for selected files"
 msgid "Add a contact"
 msgstr "Add a contact"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:204
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:197
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:121
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:196
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:192
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
 msgid "Add a description…"
 msgstr "Add a description…"
 
@@ -307,11 +307,11 @@ msgstr "Add column"
 msgid "Add files"
 msgstr "Add files"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:222
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:214
 msgid "Add playlist"
 msgstr "Add playlist"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:158
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:153
 msgid "Add song"
 msgstr "Add song"
 
@@ -339,7 +339,7 @@ msgstr "Agenda"
 msgid "All balances and repayments are expressed in this currency."
 msgstr "All balances and repayments are expressed in this currency."
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:73
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:71
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:281
 #: apps/web/src/components/ui/event-calendar/time-grid-view.tsx:158
 msgid "All day"
@@ -548,15 +548,15 @@ msgstr "Can't play {filename}"
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:335
 #: apps/web/src/components/features/song/suspended-song-attachments.tsx:77
 #: apps/web/src/components/ui/confirm-dialog.tsx:62
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:247
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:239
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:389
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:403
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:352
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:179
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:213
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:179
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:208
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:174
 #: apps/web/src/components/ui/playlist/playlist-dialog.tsx:95
-#: apps/web/src/components/ui/song/song-detail.tsx:126
+#: apps/web/src/components/ui/song/song-detail.tsx:121
 #: apps/web/src/components/ui/song/song-dialog.tsx:164
 #: apps/web/src/routes/projects/$projectSlug/settings/-members-table.tsx:166
 msgid "Cancel"
@@ -571,7 +571,7 @@ msgid "Cannot find the invitation you're looking for"
 msgstr "Cannot find the invitation you're looking for"
 
 #: apps/web/src/components/features/outreach/outreach-card.tsx:75
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:172
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:167
 msgid "Card actions"
 msgstr "Card actions"
 
@@ -583,7 +583,7 @@ msgstr "Card deleted"
 msgid "Card not found"
 msgstr "Card not found"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:136
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:134
 msgid "Category"
 msgstr "Category"
 
@@ -694,7 +694,7 @@ msgstr "Couldn't assign the files"
 msgid "Couldn't build the download"
 msgstr "Couldn't build the download"
 
-#: apps/web/src/components/features/drive/use-remove-occurrence.ts:65
+#: apps/web/src/components/features/drive/use-remove-occurrence.ts:67
 msgid "Couldn't check where this file is"
 msgstr "Couldn't check where this file is"
 
@@ -805,6 +805,10 @@ msgstr "Couldn't load this section"
 msgid "Couldn't move card"
 msgstr "Couldn't move card"
 
+#: apps/web/src/components/features/drive/use-drive-selection.ts:138
+msgid "Couldn't move items"
+msgstr "Couldn't move items"
+
 #: apps/web/src/components/features/playlist/suspended-playlist-detail.tsx:205
 msgid "Couldn't move song"
 msgstr "Couldn't move song"
@@ -817,7 +821,7 @@ msgstr "Couldn't paste files"
 msgid "Couldn't read more details from this file."
 msgstr "Couldn't read more details from this file."
 
-#: apps/web/src/components/features/drive/use-remove-occurrence.ts:86
+#: apps/web/src/components/features/drive/use-remove-occurrence.ts:92
 msgid "Couldn't remove file"
 msgstr "Couldn't remove file"
 
@@ -930,7 +934,7 @@ msgstr "Currency updated"
 msgid "Danger zone"
 msgstr "Danger zone"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:96
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:94
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:214
 #: apps/web/src/components/ui/expense/expense-table.tsx:102
 #: apps/web/src/components/ui/expense/repayment-dialog.tsx:165
@@ -971,23 +975,23 @@ msgstr "Define as"
 #: apps/web/src/components/ui/attachment-list.tsx:371
 #: apps/web/src/components/ui/attachment-list.tsx:583
 #: apps/web/src/components/ui/attachment-list.tsx:623
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:188
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:254
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:181
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:246
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:379
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:391
 #: apps/web/src/components/ui/expense/expense-table.tsx:190
 #: apps/web/src/components/ui/expense/repayment-table.tsx:115
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:181
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:220
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:105
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:186
-#: apps/web/src/components/ui/song/song-detail.tsx:99
-#: apps/web/src/components/ui/song/song-detail.tsx:133
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:176
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:215
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:100
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:181
+#: apps/web/src/components/ui/song/song-detail.tsx:94
+#: apps/web/src/components/ui/song/song-detail.tsx:128
 msgid "Delete"
 msgstr "Delete"
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:315
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:207
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:202
 msgid "Delete card?"
 msgstr "Delete card?"
 
@@ -999,7 +1003,7 @@ msgstr "Delete column"
 msgid "Delete column?"
 msgstr "Delete column?"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:241
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:233
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:383
 msgid "Delete event?"
 msgstr "Delete event?"
@@ -1014,7 +1018,7 @@ msgstr "Delete expense?"
 #~ msgid "Delete organization"
 #~ msgstr "Delete organization"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:173
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:168
 msgid "Delete playlist?"
 msgstr "Delete playlist?"
 
@@ -1028,7 +1032,7 @@ msgstr "Delete project"
 msgid "Delete repayment?"
 msgstr "Delete repayment?"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:120
+#: apps/web/src/components/ui/song/song-detail.tsx:115
 msgid "Delete song?"
 msgstr "Delete song?"
 
@@ -1051,10 +1055,9 @@ msgstr "Demo"
 msgid "Desc"
 msgstr "Desc"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:199
 #: apps/web/src/components/ui/expense/expense-dialog.tsx:342
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:192
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:116
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:187
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:111
 msgid "Description"
 msgstr "Description"
 
@@ -1250,7 +1253,7 @@ msgstr "Equally"
 msgid "Event"
 msgstr "Event"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:179
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:172
 msgid "Event actions"
 msgstr "Event actions"
 
@@ -1268,7 +1271,7 @@ msgstr "Event not found"
 
 #: apps/web/src/components/features/drive/drive-search-combobox.tsx:67
 #: apps/web/src/components/features/drive/use-remove-occurrence.ts:33
-#: apps/web/src/hooks/use-folder-path.ts:17
+#: apps/web/src/hooks/use-folder-path.ts:16
 #: apps/web/src/lib/dynamic-messages.ts:50
 msgid "Events"
 msgstr "Events"
@@ -1407,7 +1410,7 @@ msgstr "Failed to update project name"
 msgid "File assigned to the event"
 msgstr "File assigned to the event"
 
-#: apps/web/src/components/features/drive/use-remove-occurrence.ts:82
+#: apps/web/src/components/features/drive/use-remove-occurrence.ts:87
 msgid "File deleted"
 msgstr "File deleted"
 
@@ -1533,7 +1536,7 @@ msgstr "Hide — keep uploading"
 msgid "Home"
 msgstr "Home"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:129
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:124
 msgid "Interval between songs"
 msgstr "Interval between songs"
 
@@ -1655,7 +1658,7 @@ msgstr "Link to a song"
 #~ msgstr "Linked files"
 
 #: apps/web/src/components/features/drive/file-details-dialog.tsx:98
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:111
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:109
 msgid "Location"
 msgstr "Location"
 
@@ -2015,7 +2018,7 @@ msgstr "Open {0}"
 #~ msgid "Open expenses"
 #~ msgstr "Open expenses"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:122
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:120
 #: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:103
 msgid "Open in Maps"
 msgstr "Open in Maps"
@@ -2053,7 +2056,7 @@ msgstr "Orange"
 msgid "Organize"
 msgstr "Organize"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:81
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:79
 msgid "Organizer"
 msgstr "Organizer"
 
@@ -2179,11 +2182,11 @@ msgstr "Play"
 #~ msgid "Play {0} instead?"
 #~ msgstr "Play {0} instead?"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:84
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:79
 msgid "Play playlist"
 msgstr "Play playlist"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:96
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:91
 msgid "Playlist actions"
 msgstr "Playlist actions"
 
@@ -2199,7 +2202,7 @@ msgstr "Playlist details"
 msgid "Playlist not found"
 msgstr "Playlist not found"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:213
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:205
 #: apps/web/src/hooks/use-navigation.ts:91
 #: apps/web/src/lib/dynamic-messages.ts:55
 msgid "Playlists"
@@ -2319,7 +2322,7 @@ msgstr "Remove role"
 msgid "Remove song"
 msgstr "Remove song"
 
-#: apps/web/src/components/features/drive/use-remove-occurrence.ts:82
+#: apps/web/src/components/features/drive/use-remove-occurrence.ts:88
 msgid "Removed from {placeName} — still in {stillIn}"
 msgstr "Removed from {placeName} — still in {stillIn}"
 
@@ -2465,7 +2468,7 @@ msgstr "Search songs to add…"
 msgid "Searching…"
 msgstr "Searching…"
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:143
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:138
 msgid "seconds"
 msgstr "seconds"
 
@@ -2524,9 +2527,9 @@ msgstr "Settle up"
 #~ msgid "Settled"
 #~ msgstr "Settled"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:167
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:160
-#: apps/web/src/components/ui/song/song-detail.tsx:78
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:160
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:155
+#: apps/web/src/components/ui/song/song-detail.tsx:73
 msgid "Share"
 msgstr "Share"
 
@@ -2567,7 +2570,7 @@ msgstr "Some copied files no longer exist — copy them again"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: apps/web/src/components/ui/song/song-detail.tsx:90
+#: apps/web/src/components/ui/song/song-detail.tsx:85
 msgid "Song actions"
 msgstr "Song actions"
 
@@ -2586,7 +2589,7 @@ msgstr "Song not found"
 #: apps/web/src/components/features/drive/drive-search-combobox.tsx:67
 #: apps/web/src/components/features/drive/use-remove-occurrence.ts:33
 #: apps/web/src/components/features/song/song-upload-context.tsx:30
-#: apps/web/src/hooks/use-folder-path.ts:18
+#: apps/web/src/hooks/use-folder-path.ts:17
 #: apps/web/src/hooks/use-navigation.ts:86
 #: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Songs"
@@ -2768,11 +2771,11 @@ msgstr "This will permanently delete <0>{0}</0> and all of its data. This action
 #~ msgstr "This will permanently delete the selected files. This action cannot be undone."
 
 #: apps/web/src/components/features/outreach/outreach-card-dialog.tsx:317
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:209
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:204
 msgid "This will permanently delete this card. This action cannot be undone."
 msgstr "This will permanently delete this card. This action cannot be undone."
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:243
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:235
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:385
 msgid "This will permanently delete this event. This action cannot be undone."
 msgstr "This will permanently delete this event. This action cannot be undone."
@@ -2781,7 +2784,7 @@ msgstr "This will permanently delete this event. This action cannot be undone."
 msgid "This will permanently delete this expense and change everyone's balance. This action cannot be undone."
 msgstr "This will permanently delete this expense and change everyone's balance. This action cannot be undone."
 
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:175
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:170
 msgid "This will permanently delete this playlist. This action cannot be undone."
 msgstr "This will permanently delete this playlist. This action cannot be undone."
 
@@ -2789,7 +2792,7 @@ msgstr "This will permanently delete this playlist. This action cannot be undone
 msgid "This will permanently delete this repayment and change the balances. This action cannot be undone."
 msgstr "This will permanently delete this repayment and change the balances. This action cannot be undone."
 
-#: apps/web/src/components/ui/song/song-detail.tsx:122
+#: apps/web/src/components/ui/song/song-detail.tsx:117
 msgid "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 msgstr "This will permanently delete this song and remove it from any playlists. This action cannot be undone."
 
@@ -2893,12 +2896,12 @@ msgstr "Up next: {0}"
 msgid "Upcoming events"
 msgstr "Upcoming events"
 
-#: apps/web/src/components/ui/event-calendar/event-detail.tsx:186
+#: apps/web/src/components/ui/event-calendar/event-detail.tsx:179
 #: apps/web/src/components/ui/expense/expense-table.tsx:188
 #: apps/web/src/components/ui/expense/repayment-table.tsx:113
-#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:179
-#: apps/web/src/components/ui/playlist/playlist-detail.tsx:103
-#: apps/web/src/components/ui/song/song-detail.tsx:97
+#: apps/web/src/components/ui/outreach/outreach-card-detail.tsx:174
+#: apps/web/src/components/ui/playlist/playlist-detail.tsx:98
+#: apps/web/src/components/ui/song/song-detail.tsx:92
 msgid "Update"
 msgstr "Update"
 

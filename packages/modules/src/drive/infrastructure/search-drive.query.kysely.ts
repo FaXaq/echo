@@ -1,146 +1,87 @@
-import { sql } from "kysely";
-import { eventFolderName, type Place } from "../domain/index.js";
+import type { ExpressionBuilder } from "kysely";
+import type { DB } from "@echo/db";
+import { eventFolderName } from "../domain/index.js";
+import { selectFolderPaths } from "./common.js";
+import { selectFileOccurrences } from "./list-file-occurrences.query.kysely.js";
 import type { SearchDriveQueryPortFactory, SearchDriveResult } from "./search-drive.query.port.js";
-import { toFileRecord, type FileRow } from "./map-file.js";
+import { toFileRecord } from "./map-file.js";
 
 const SEARCH_RESULT_LIMIT = 10;
 
-type FileSearchRow = FileRow & {
-  occurrence_kind: "folder" | "event" | "song" | null;
-  occurrence_place_id: string | null;
-  folder_path: string[] | null;
-  event_title: string | null;
-  event_start_date: Date | null;
-  song_title: string | null;
-};
+const containing = (query: string) => `%${query.replace(/[\\%_]/g, "\\$&")}%`;
 
-const occurrenceOf = (row: FileSearchRow): { location: Place; path: string[] } => {
-  if (row.occurrence_kind === "event" && row.occurrence_place_id !== null) {
-    return {
-      location: { kind: "event", id: row.occurrence_place_id },
-      path: [
-        "Events",
-        eventFolderName({
-          title: row.event_title ?? "",
-          startDate: row.event_start_date ?? new Date(0),
-        }),
-      ],
-    };
-  }
-  if (row.occurrence_kind === "song" && row.occurrence_place_id !== null) {
-    return {
-      location: { kind: "song", id: row.occurrence_place_id },
-      path: ["Songs", row.song_title ?? ""],
-    };
-  }
-  if (row.occurrence_kind === "folder" && row.occurrence_place_id !== null) {
-    return {
-      location: { kind: "folder", id: row.occurrence_place_id },
-      path: row.folder_path ?? [],
-    };
-  }
-  return { location: { kind: "root" }, path: [] };
-};
+const titleContains = (query: string) => (eb: ExpressionBuilder<DB, "calendar_event" | "song">) =>
+  eb("title", "ilike", containing(query));
 
 export const searchDriveQueryFactory: SearchDriveQueryPortFactory =
   () => async (db, scope, input) => {
-    const folderRows = await sql<{ id: string; name: string; path: string[] }>`
-    WITH RECURSIVE folder_path AS (
-      SELECT id, name, parent_folder_id, ARRAY[name] AS path
-      FROM folder
-      WHERE organization_id = ${scope.organizationId} AND parent_folder_id IS NULL
-      UNION ALL
-      SELECT f.id, f.name, f.parent_folder_id, fp.path || f.name
-      FROM folder f
-      INNER JOIN folder_path fp ON f.parent_folder_id = fp.id
-    )
-    SELECT folder.id, folder.name, COALESCE(parent_fp.path, ARRAY[]::text[]) AS path
-    FROM folder
-    LEFT JOIN folder_path parent_fp ON parent_fp.id = folder.parent_folder_id
-    WHERE folder.organization_id = ${scope.organizationId}
-      AND strpos(lower(folder.name), lower(${input.query})) > 0
-    ORDER BY folder.name ASC
-    LIMIT ${SEARCH_RESULT_LIMIT}
-  `.execute(db);
+    const [folderRows, eventRows, songRows, fileRows] = await Promise.all([
+      db
+        .selectFrom("folder")
+        .select(["id", "name", "parent_folder_id"])
+        .where("organization_id", "=", scope.organizationId)
+        .where("name", "ilike", containing(input.query))
+        .orderBy("name")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+      db
+        .selectFrom("calendar_event")
+        .select(["id", "title", "start_date"])
+        .where("organization_id", "=", scope.organizationId)
+        .where(titleContains(input.query))
+        .orderBy("title")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+      db
+        .selectFrom("song")
+        .select(["id", "title"])
+        .where("organization_id", "=", scope.organizationId)
+        .where(titleContains(input.query))
+        .orderBy("title")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+      db
+        .selectFrom("file")
+        .innerJoin("user", "user.id", "file.uploaded_by")
+        .selectAll("file")
+        .select("user.name as uploaded_by_name")
+        .where("file.organization_id", "=", scope.organizationId)
+        .where("file.status", "=", "uploaded")
+        .where("file.filename", "ilike", containing(input.query))
+        .orderBy("file.filename")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+    ]);
 
-    const eventRows = await db
-      .selectFrom("calendar_event")
-      .select(["id", "title", "start_date"])
-      .where("organization_id", "=", scope.organizationId)
-      .where(sql<boolean>`strpos(lower(title), lower(${input.query})) > 0`)
-      .orderBy("title")
-      .limit(SEARCH_RESULT_LIMIT)
-      .execute();
-
-    const songRows = await db
-      .selectFrom("song")
-      .select(["id", "title"])
-      .where("organization_id", "=", scope.organizationId)
-      .where(sql<boolean>`strpos(lower(title), lower(${input.query})) > 0`)
-      .orderBy("title")
-      .limit(SEARCH_RESULT_LIMIT)
-      .execute();
-
-    const fileRows = await sql<FileSearchRow>`
-    WITH RECURSIVE folder_path AS (
-      SELECT id, name, parent_folder_id, ARRAY[name] AS path
-      FROM folder
-      WHERE organization_id = ${scope.organizationId} AND parent_folder_id IS NULL
-      UNION ALL
-      SELECT f.id, f.name, f.parent_folder_id, fp.path || f.name
-      FROM folder f
-      INNER JOIN folder_path fp ON f.parent_folder_id = fp.id
-    ),
-    matched AS (
-      SELECT file.*, "user".name AS uploaded_by_name
-      FROM file
-      INNER JOIN "user" ON "user".id = file.uploaded_by
-      WHERE file.organization_id = ${scope.organizationId}
-        AND file.status = 'uploaded'
-        AND strpos(lower(file.filename), lower(${input.query})) > 0
-      ORDER BY file.filename ASC
-      LIMIT ${SEARCH_RESULT_LIMIT}
-    ),
-    oldest AS (
-      SELECT DISTINCT ON (file_id) file_id, kind, place_id
-      FROM (
-        SELECT file_id, placed_at AS at, 'folder' AS kind, folder_id AS place_id FROM folder_file
-        UNION ALL
-        SELECT file_id, linked_at AS at, 'event' AS kind, event_id AS place_id FROM event_file
-        UNION ALL
-        SELECT file_id, linked_at AS at, 'song' AS kind, song_id AS place_id FROM song_file
-      ) occurrence
-      WHERE file_id IN (SELECT id FROM matched)
-      ORDER BY file_id, at ASC, kind ASC, place_id ASC
-    )
-    SELECT matched.*,
-      oldest.kind AS occurrence_kind,
-      oldest.place_id AS occurrence_place_id,
-      folder_path.path AS folder_path,
-      calendar_event.title AS event_title,
-      calendar_event.start_date AS event_start_date,
-      song.title AS song_title
-    FROM matched
-    LEFT JOIN oldest ON oldest.file_id = matched.id
-    LEFT JOIN folder_path ON oldest.kind = 'folder' AND folder_path.id = oldest.place_id
-    LEFT JOIN calendar_event ON oldest.kind = 'event' AND calendar_event.id = oldest.place_id
-    LEFT JOIN song ON oldest.kind = 'song' AND song.id = oldest.place_id
-    ORDER BY matched.filename ASC
-  `.execute(db);
+    const [parentPaths, occurrences] = await Promise.all([
+      selectFolderPaths(
+        db,
+        scope,
+        folderRows.flatMap((row) => (row.parent_folder_id === null ? [] : [row.parent_folder_id])),
+      ),
+      selectFileOccurrences(
+        db,
+        scope,
+        fileRows.map((row) => row.id),
+      ),
+    ]);
 
     const folders: SearchDriveResult["folders"] = [
-      ...folderRows.rows.map((row) => ({
-        location: { kind: "folder" as const, id: row.id },
+      ...folderRows.map((row): SearchDriveResult["folders"][number] => ({
+        location: { kind: "folder", id: row.id },
         name: row.name,
-        path: row.path,
+        path:
+          row.parent_folder_id === null
+            ? []
+            : (parentPaths.get(row.parent_folder_id) ?? []).map((segment) => segment.name),
       })),
-      ...eventRows.map((row) => ({
-        location: { kind: "event" as const, id: row.id },
+      ...eventRows.map((row): SearchDriveResult["folders"][number] => ({
+        location: { kind: "event", id: row.id },
         name: eventFolderName({ title: row.title, startDate: row.start_date }),
         path: ["Events"],
       })),
-      ...songRows.map((row) => ({
-        location: { kind: "song" as const, id: row.id },
+      ...songRows.map((row): SearchDriveResult["folders"][number] => ({
+        location: { kind: "song", id: row.id },
         name: row.title,
         path: ["Songs"],
       })),
@@ -150,6 +91,13 @@ export const searchDriveQueryFactory: SearchDriveQueryPortFactory =
 
     return {
       folders,
-      files: fileRows.rows.map((row) => ({ ...toFileRecord(row), ...occurrenceOf(row) })),
+      files: fileRows.map((row) => {
+        const [oldest] = occurrences[row.id] ?? [];
+        return {
+          ...toFileRecord(row),
+          location: oldest?.place ?? { kind: "root" },
+          path: oldest?.path ?? [],
+        };
+      }),
     };
   };

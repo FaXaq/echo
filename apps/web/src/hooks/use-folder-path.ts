@@ -4,8 +4,7 @@ import { eventFolderName, type DriveLocation } from "@echo/modules/drive/domain"
 import { getEventQueryOptions } from "@/services/resources/calendar";
 import {
   getDriveLocationPathQueryKey,
-  getFolderQueryOptions,
-  type Folder,
+  getFolderPathQueryOptions,
 } from "@/services/resources/drive";
 import { getSongQueryOptions } from "@/services/resources/song";
 
@@ -32,14 +31,15 @@ export function useDriveLocationPath(location: DriveLocation, organizationId: st
         case "root":
           break;
         case "folder": {
-          let currentId: string | null = location.id;
-          while (currentId) {
-            const folder: Folder = await queryClient.fetchQuery(
-              getFolderQueryOptions({ id: currentId, organizationId }),
-            );
-            path.unshift({ name: folder.name, location: { kind: "folder", id: folder.id } });
-            currentId = folder.parentFolderId;
-          }
+          const folders = await queryClient.fetchQuery(
+            getFolderPathQueryOptions({ id: location.id, organizationId }),
+          );
+          path.push(
+            ...folders.map(({ id, name }): PathSegment => ({
+              name,
+              location: { kind: "folder", id },
+            })),
+          );
           break;
         }
         case "events":

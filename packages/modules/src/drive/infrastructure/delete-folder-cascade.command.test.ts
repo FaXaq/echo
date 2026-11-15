@@ -8,7 +8,7 @@ const scope = createOrganizationScope("org-1");
 describe("deleteFolderCascadeCommand", () => {
   it("collects the placed file ids by deleting them before the folder", async () => {
     const { db, queries } = makeScriptedDb((sql) => {
-      if (sql.includes("WITH RECURSIVE")) return [{ id: "folder-1" }, { id: "folder-2" }];
+      if (sql.startsWith("with recursive")) return [{ id: "folder-1" }, { id: "folder-2" }];
       if (sql.startsWith('delete from "folder_file"')) {
         return [{ file_id: "file-1" }, { file_id: "file-2" }, { file_id: "file-1" }];
       }

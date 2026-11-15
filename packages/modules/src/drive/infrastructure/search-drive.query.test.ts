@@ -23,51 +23,48 @@ const fileRow = (id: string) => ({
   status: "uploaded",
   created_at: null,
   updated_at: null,
-  occurrence_kind: null,
-  occurrence_place_id: null,
-  folder_path: null,
-  event_title: null,
-  event_start_date: null,
-  song_title: null,
 });
 
+const earlier = new Date("2026-01-01T00:00:00Z");
+const later = new Date("2026-02-01T00:00:00Z");
+
 describe("searchDriveQuery", () => {
-  it("searches folders, events and songs and resolves files to their oldest occurrence", async () => {
+  it("matches names case-insensitively, escaping LIKE wildcards", async () => {
     const { db, queries } = makeScriptedDb();
 
-    await searchDriveQueryFactory()(db, scope, { query: "demo" });
+    await searchDriveQueryFactory()(db, scope, { query: "50%_off" });
 
-    const sql = queries.join("\n");
-    expect(sql).toContain("calendar_event");
-    expect(sql).toContain("song_file");
-    expect(sql).toContain("event_file");
-    expect(sql).toContain("folder_file");
-    expect(sql).toContain("DISTINCT ON");
-    expect(sql).toContain("ORDER BY file_id, at ASC, kind ASC, place_id ASC");
-    expect(sql).toContain("UNION ALL");
+    expect(queries.filter((sql) => sql.includes(" ilike $"))).toHaveLength(4);
+    expect(queries.some((sql) => /\bsql\b|strpos/.test(sql))).toBe(false);
   });
 
-  it("returns Event and Song matches as system folders and the oldest occurrence path of files", async () => {
+  it("returns Event and Song matches as system folders and files at their oldest occurrence", async () => {
     const { db } = makeScriptedDb((sql) => {
-      if (sql.includes('from "calendar_event"'))
+      if (sql.startsWith("with recursive"))
+        return [
+          { leaf_id: "folder-1", id: "folder-0", name: "Band" },
+          { leaf_id: "folder-1", id: "folder-1", name: "Demos" },
+        ];
+      if (sql.includes('from "calendar_event"') && !sql.includes("event_file"))
         return [{ id: "event-1", title: "Gig", start_date: new Date("2026-03-04T20:00:00Z") }];
-      if (sql.includes('from "song"')) return [{ id: "song-1", title: "Demo song" }];
-      if (sql.includes("DISTINCT ON"))
+      if (sql.includes('from "song"') && !sql.includes("song_file"))
+        return [{ id: "song-1", title: "Demo song" }];
+      if (sql.includes('from "file"'))
+        return [fileRow("file-1"), fileRow("file-2"), fileRow("file-3")];
+      if (sql.includes('from "event_file"'))
         return [
           {
-            ...fileRow("file-1"),
-            occurrence_kind: "event",
-            occurrence_place_id: "event-1",
-            event_title: "Gig",
-            event_start_date: new Date("2026-03-04T20:00:00Z"),
+            file_id: "file-1",
+            id: "event-1",
+            title: "Gig",
+            start_date: new Date("2026-03-04T20:00:00Z"),
+            at: earlier,
           },
-          {
-            ...fileRow("file-2"),
-            occurrence_kind: "folder",
-            occurrence_place_id: "folder-1",
-            folder_path: ["Band", "Demos"],
-          },
-          { ...fileRow("file-3"), occurrence_kind: "folder", occurrence_place_id: null },
+        ];
+      if (sql.includes('from "folder_file"'))
+        return [
+          { file_id: "file-1", folder_id: null, at: later },
+          { file_id: "file-2", folder_id: "folder-1", at: earlier },
         ];
       return [];
     });

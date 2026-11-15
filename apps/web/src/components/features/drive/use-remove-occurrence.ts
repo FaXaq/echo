@@ -7,7 +7,7 @@ import { toast } from "@/components/ui/toast";
 import { locationKey } from "@/lib/drive-location";
 import {
   fileOccurrencesQueryOptions,
-  useRemoveOccurrenceMutation,
+  useRemoveOccurrencesMutation,
 } from "@/services/resources/drive";
 
 export interface RemoveOccurrenceOutcome {
@@ -38,7 +38,7 @@ export function useOccurrencePathLabel() {
 export function useRemoveOccurrence(place: Place, organizationId: string, placeName: string) {
   const { t } = useLingui();
   const queryClient = useQueryClient();
-  const mutation = useRemoveOccurrenceMutation();
+  const mutation = useRemoveOccurrencesMutation();
   const pathLabel = useOccurrencePathLabel();
   const [pending, setPending] = useState<{
     fileId: string;
@@ -48,25 +48,28 @@ export function useRemoveOccurrence(place: Place, organizationId: string, placeN
   const [bulk, setBulk] = useState<({ files: RemovableFile[] } & RemoveManyCounts) | null>(null);
   const [bulkOpen, setBulkOpen] = useState(false);
 
-  const describe = async (fileId: string): Promise<RemoveOccurrenceOutcome> => {
+  const describe = async (fileIds: string[]) => {
     const occurrences = await queryClient.fetchQuery({
-      ...fileOccurrencesQueryOptions({ fileId, organizationId }),
+      ...fileOccurrencesQueryOptions({ fileIds, organizationId }),
       staleTime: 0,
     });
-    const remaining = occurrences.filter(
-      (entry) => locationKey(entry.place) !== locationKey(place),
-    );
-    return { isLast: remaining.length === 0, remaining };
+    return fileIds.map((fileId): RemoveOccurrenceOutcome => {
+      const remaining = (occurrences[fileId] ?? []).filter(
+        (entry) => locationKey(entry.place) !== locationKey(place),
+      );
+      return { isLast: remaining.length === 0, remaining };
+    });
   };
 
-  const remove = (fileId: string) => mutation.mutateAsync({ fileId, place, organizationId });
+  const remove = (fileIds: string[]) => mutation.mutateAsync({ fileIds, place, organizationId });
 
   const checkFailed = () =>
     toast.add({ title: t`Couldn't check where this file is`, type: "error" });
 
   const request = async (fileId: string) => {
     try {
-      setPending({ fileId, outcome: await describe(fileId) });
+      const [outcome] = await describe([fileId]);
+      setPending({ fileId, outcome });
       setOpen(true);
     } catch {
       checkFailed();
@@ -77,9 +80,12 @@ export function useRemoveOccurrence(place: Place, organizationId: string, placeN
     if (!pending) return;
     const stillIn = pending.outcome.remaining.map(pathLabel).join(", ");
     try {
-      const { deleted } = await remove(pending.fileId);
+      const { deletedFileIds } = await remove([pending.fileId]);
       toast.add({
-        title: deleted ? t`File deleted` : t`Removed from ${placeName} — still in ${stillIn}`,
+        title:
+          deletedFileIds.length > 0
+            ? t`File deleted`
+            : t`Removed from ${placeName} — still in ${stillIn}`,
         type: "success",
       });
     } catch {
@@ -89,7 +95,7 @@ export function useRemoveOccurrence(place: Place, organizationId: string, placeN
 
   const requestMany = async (files: RemovableFile[]) => {
     try {
-      const outcomes = await Promise.all(files.map((file) => describe(file.id)));
+      const outcomes = await describe(files.map((file) => file.id));
       const deletedCount = outcomes.filter((outcome) => outcome.isLast).length;
       setBulk({ files, deletedCount, removedCount: files.length - deletedCount });
       setBulkOpen(true);
@@ -100,28 +106,25 @@ export function useRemoveOccurrence(place: Place, organizationId: string, placeN
 
   const confirmMany = async () => {
     if (!bulk) return;
-    const results = await Promise.allSettled(bulk.files.map((file) => remove(file.id)));
-    const failedNames = results.flatMap((result, index) =>
-      result.status === "rejected" ? [bulk.files[index].filename] : [],
-    );
-    const deletedCount = results.filter(
-      (result) => result.status === "fulfilled" && result.value.deleted,
-    ).length;
-    const removedCount = results.length - failedNames.length - deletedCount;
+    const result = await remove(bulk.files.map((file) => file.id)).catch(() => null);
+    const removedFileIds = result?.removedFileIds ?? [];
+    const failedNames = bulk.files
+      .filter((file) => !removedFileIds.includes(file.id))
+      .map((file) => file.filename);
+    const deletedCount = result?.deletedFileIds.length ?? 0;
+    const removedCount = removedFileIds.length - deletedCount;
 
     if (failedNames.length === 0) {
       toast.add({ title: describeManyOutcome({ removedCount, deletedCount }), type: "success" });
     } else {
       toast.add({
-        title: t`${results.length - failedNames.length} of ${results.length} removed — failed: ${failedNames.join(", ")}`,
+        title: t`${removedFileIds.length} of ${bulk.files.length} removed — failed: ${failedNames.join(", ")}`,
         type: "error",
       });
     }
   };
 
   return {
-    describe,
-    remove,
     request,
     requestMany,
     dialogProps: {

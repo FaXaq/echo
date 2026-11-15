@@ -6,7 +6,7 @@ import { listFileOccurrences } from "./list-file-occurrences.js";
 import { makeFakeDb, makeFakePermissionChecks } from "./test-fixtures.js";
 
 const scope = createOrganizationScope("org-1");
-const labels: PlaceLabel[] = [{ place: { kind: "root" }, path: [] }];
+const labels: Record<string, PlaceLabel[]> = { "file-1": [{ place: { kind: "root" }, path: [] }] };
 
 describe("listFileOccurrences", () => {
   it("rejects a member without drive:read permission", async () => {
@@ -23,12 +23,12 @@ describe("listFileOccurrences", () => {
             }),
           }),
         },
-        { fileId: "file-1", scope },
+        { fileIds: ["file-1"], scope },
       ),
     ).rejects.toBeInstanceOf(ForbiddenError);
   });
 
-  it("returns the file's place labels", async () => {
+  it("returns each file's place labels", async () => {
     await expect(
       listFileOccurrences(
         {
@@ -36,7 +36,7 @@ describe("listFileOccurrences", () => {
           listFileOccurrencesQuery: async () => labels,
           ...makeFakePermissionChecks(),
         },
-        { fileId: "file-1", scope },
+        { fileIds: ["file-1"], scope },
       ),
     ).resolves.toEqual(labels);
   });

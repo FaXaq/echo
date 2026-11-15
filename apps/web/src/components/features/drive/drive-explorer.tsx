@@ -192,7 +192,7 @@ function DriveTableContent({
     clearSelection,
     handleDragStart,
     handleDragEnd,
-  } = useDriveSelection({ organizationId, location, rows, visibleFolders, visibleFiles });
+  } = useDriveSelection({ organizationId, location, rows });
 
   const columns = useDriveTableColumns({ sort, order, onSortChange });
 

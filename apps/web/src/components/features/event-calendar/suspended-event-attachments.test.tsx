@@ -4,14 +4,14 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const listFileOccurrences = vi.fn();
-const removeOccurrence = vi.fn();
+const removeOccurrences = vi.fn();
 const toastAdd = vi.fn();
 
 vi.mock("@/services/api-client", () => ({
   apiClient: {
     drive: {
       listFileOccurrences: { query: (input: unknown) => listFileOccurrences(input) },
-      removeOccurrence: { mutate: (input: unknown) => removeOccurrence(input) },
+      removeOccurrences: { mutate: (input: unknown) => removeOccurrences(input) },
     },
   },
 }));
@@ -108,11 +108,13 @@ beforeEach(() => {
 
 describe("SuspendedEventAttachments removal", () => {
   it("says 'Remove from this event' and lists 'Songs › Intro' when the file is also on a song", async () => {
-    listFileOccurrences.mockResolvedValue([
-      { place: eventPlace, path: ["Events", "2026-08-02 · Gig"] },
-      { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
-    ]);
-    removeOccurrence.mockResolvedValue({ deleted: false });
+    listFileOccurrences.mockResolvedValue({
+      f1: [
+        { place: eventPlace, path: ["Events", "2026-08-02 · Gig"] },
+        { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
+      ],
+    });
+    removeOccurrences.mockResolvedValue({ removedFileIds: ["f1"], deletedFileIds: [] });
     const user = userEvent.setup();
     renderWithFiles([makeEventFile()]);
 
@@ -125,8 +127,8 @@ describe("SuspendedEventAttachments removal", () => {
     await user.click(screen.getByRole("button", { name: "Remove" }));
 
     await waitFor(() =>
-      expect(removeOccurrence).toHaveBeenCalledWith({
-        fileId: "f1",
+      expect(removeOccurrences).toHaveBeenCalledWith({
+        fileIds: ["f1"],
         place: eventPlace,
         organizationId: "org-1",
       }),
@@ -142,10 +144,10 @@ describe("SuspendedEventAttachments removal", () => {
   });
 
   it("says 'Permanently delete' when the event is its only occurrence", async () => {
-    listFileOccurrences.mockResolvedValue([
-      { place: eventPlace, path: ["Events", "2026-08-02 · Gig"] },
-    ]);
-    removeOccurrence.mockResolvedValue({ deleted: true });
+    listFileOccurrences.mockResolvedValue({
+      f1: [{ place: eventPlace, path: ["Events", "2026-08-02 · Gig"] }],
+    });
+    removeOccurrences.mockResolvedValue({ removedFileIds: ["f1"], deletedFileIds: ["f1"] });
     const user = userEvent.setup();
     renderWithFiles([makeEventFile()]);
 
@@ -164,19 +166,14 @@ describe("SuspendedEventAttachments removal", () => {
 
 describe("SuspendedEventAttachments bulk removal", () => {
   it("states how many files are removed from here and how many are permanently deleted", async () => {
-    listFileOccurrences.mockImplementation(({ fileId }: { fileId: string }) =>
-      Promise.resolve(
-        fileId === "f1"
-          ? [
-              { place: eventPlace, path: ["Events", "Gig"] },
-              { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
-            ]
-          : [{ place: eventPlace, path: ["Events", "Gig"] }],
-      ),
-    );
-    removeOccurrence.mockImplementation(({ fileId }: { fileId: string }) =>
-      Promise.resolve({ deleted: fileId === "f2" }),
-    );
+    listFileOccurrences.mockResolvedValue({
+      f1: [
+        { place: eventPlace, path: ["Events", "Gig"] },
+        { place: { kind: "song", id: "song-1" }, path: ["Songs", "Intro"] },
+      ],
+      f2: [{ place: eventPlace, path: ["Events", "Gig"] }],
+    });
+    removeOccurrences.mockResolvedValue({ removedFileIds: ["f1", "f2"], deletedFileIds: ["f2"] });
     const user = userEvent.setup();
     renderWithFiles([
       makeEventFile(),

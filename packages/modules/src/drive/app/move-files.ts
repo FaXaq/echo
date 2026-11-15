@@ -2,26 +2,26 @@ import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { FileRecord, FolderPlace } from "../domain/index.js";
+import type { FolderPlace } from "../domain/index.js";
 import type {
   FindFolderByIdQueryPort,
-  MoveFileToFolderCommandPort,
+  MoveFilesToFolderCommandPort,
 } from "../infrastructure/index.js";
 
-export async function moveFile(
+export async function moveFiles(
   deps: {
     db: KyselyDB;
     userHasPermissionInOrganization: CheckOrganizationPermission;
     findFolderByIdQuery: FindFolderByIdQueryPort;
-    moveFileToFolderCommand: MoveFileToFolderCommandPort;
+    moveFilesToFolderCommand: MoveFilesToFolderCommandPort;
   },
   input: {
-    id: string;
+    ids: string[];
     from: FolderPlace;
     scope: OrganizationScope;
     folderId: string | null;
   },
-): Promise<FileRecord> {
+): Promise<void> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { drive: ["update"] },
@@ -33,11 +33,10 @@ export async function moveFile(
     if (!folder) throw notFound("Folder");
   }
 
-  const updated = await deps.moveFileToFolderCommand(deps.db, input.scope, {
-    id: input.id,
+  const moved = await deps.moveFilesToFolderCommand(deps.db, input.scope, {
+    ids: [...new Set(input.ids)],
     from: input.from,
     folderId: input.folderId,
   });
-  if (!updated) throw notFound("File");
-  return updated;
+  if (!moved) throw notFound("File");
 }

@@ -1,5 +1,4 @@
 import type { KyselyDB } from "@echo/db";
-import { sql } from "kysely";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import {
   ROOT_SYSTEM_FOLDERS,
@@ -32,24 +31,37 @@ const bySort = (sort: SortInput) => (a: Sized, b: Sized) => {
 };
 
 const listFolderSizes = async (db: KyselyDB, scope: OrganizationScope, place: FolderPlace) => {
-  const seed =
-    place.kind === "root" ? sql`parent_folder_id is null` : sql`parent_folder_id = ${place.id}`;
-  const { rows } = await sql<{ root_id: string; total: string }>`
-    with recursive tree as (
-      select id, id as root_id from folder where organization_id = ${scope.organizationId} and ${seed}
-      union all
-      select f.id, t.root_id from folder f inner join tree t on f.parent_folder_id = t.id
+  const rows = await db
+    .withRecursive("tree(id, root_id)", (db) => {
+      const children = db
+        .selectFrom("folder")
+        .select(["id", "id as root_id"])
+        .where("organization_id", "=", scope.organizationId);
+      return (
+        place.kind === "root"
+          ? children.where("parent_folder_id", "is", null)
+          : children.where("parent_folder_id", "=", place.id)
+      ).unionAll((db) =>
+        db
+          .selectFrom("folder")
+          .innerJoin("tree", "tree.id", "folder.parent_folder_id")
+          .select(["folder.id", "tree.root_id"]),
+      );
+    })
+    .selectFrom((db) =>
+      db
+        .selectFrom("tree")
+        .innerJoin("folder_file", "folder_file.folder_id", "tree.id")
+        .innerJoin("file", "file.id", "folder_file.file_id")
+        .where("file.organization_id", "=", scope.organizationId)
+        .where("file.status", "=", "uploaded")
+        .select(["tree.root_id", "file.id", "file.size_bytes"])
+        .distinct()
+        .as("sized"),
     )
-    select sized.root_id, sum(sized.size_bytes) as total
-    from (
-      select distinct tree.root_id, file.id, file.size_bytes
-      from tree
-      inner join folder_file on folder_file.folder_id = tree.id
-      inner join file on file.id = folder_file.file_id
-      where file.organization_id = ${scope.organizationId} and file.status = 'uploaded'
-    ) sized
-    group by sized.root_id
-  `.execute(db);
+    .select((eb) => ["sized.root_id", eb.fn.sum<string>("sized.size_bytes").as("total")])
+    .groupBy("sized.root_id")
+    .execute();
   return new Map(rows.map((row) => [row.root_id, Number(row.total)]));
 };
 
@@ -115,26 +127,28 @@ const listFiles = async (
   return rows.map(toFileRecord);
 };
 
+const sumUploadedSizes = (db: KyselyDB, scope: OrganizationScope) =>
+  db
+    .selectFrom("file")
+    .where("file.organization_id", "=", scope.organizationId)
+    .where("file.status", "=", "uploaded")
+    .select((eb) => eb.fn.sum<string>("file.size_bytes").as("total"));
+
 const listRootSystemFolders = async (
   db: KyselyDB,
   scope: OrganizationScope,
 ): Promise<SystemFolderEntry[]> => {
-  const totals = await db
-    .selectFrom("file")
-    .where("organization_id", "=", scope.organizationId)
-    .where("status", "=", "uploaded")
-    .select([
-      sql<string>`coalesce(sum(size_bytes) filter (where id in (select file_id from event_file)), 0)`.as(
-        "events",
-      ),
-      sql<string>`coalesce(sum(size_bytes) filter (where id in (select file_id from song_file)), 0)`.as(
-        "songs",
-      ),
-    ])
-    .executeTakeFirst();
+  const [events, songs] = await Promise.all([
+    sumUploadedSizes(db, scope)
+      .where("file.id", "in", db.selectFrom("event_file").select("file_id"))
+      .executeTakeFirst(),
+    sumUploadedSizes(db, scope)
+      .where("file.id", "in", db.selectFrom("song_file").select("file_id"))
+      .executeTakeFirst(),
+  ]);
   return ROOT_SYSTEM_FOLDERS.map((entry) => ({
     ...entry,
-    sizeBytes: Number(entry.location.kind === "events" ? totals?.events : totals?.songs) || 0,
+    sizeBytes: Number((entry.location.kind === "events" ? events : songs)?.total ?? 0),
   }));
 };
 
@@ -149,12 +163,9 @@ const listEventFolders = async (
       .select(["id", "title", "start_date"])
       .where("organization_id", "=", scope.organizationId)
       .execute(),
-    db
-      .selectFrom("event_file")
-      .innerJoin("file", "file.id", "event_file.file_id")
-      .where("file.organization_id", "=", scope.organizationId)
-      .where("file.status", "=", "uploaded")
-      .select(["event_file.event_id as owner_id", sql<string>`sum(file.size_bytes)`.as("total")])
+    sumUploadedSizes(db, scope)
+      .innerJoin("event_file", "event_file.file_id", "file.id")
+      .select("event_file.event_id as owner_id")
       .groupBy("event_file.event_id")
       .execute(),
   ]);
@@ -179,12 +190,9 @@ const listSongFolders = async (
       .select(["id", "title"])
       .where("organization_id", "=", scope.organizationId)
       .execute(),
-    db
-      .selectFrom("song_file")
-      .innerJoin("file", "file.id", "song_file.file_id")
-      .where("file.organization_id", "=", scope.organizationId)
-      .where("file.status", "=", "uploaded")
-      .select(["song_file.song_id as owner_id", sql<string>`sum(file.size_bytes)`.as("total")])
+    sumUploadedSizes(db, scope)
+      .innerJoin("song_file", "song_file.file_id", "file.id")
+      .select("song_file.song_id as owner_id")
       .groupBy("song_file.song_id")
       .execute(),
   ]);

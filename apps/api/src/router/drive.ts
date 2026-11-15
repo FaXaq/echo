@@ -8,14 +8,15 @@ import {
   getFilesDownloadUrls,
   addOccurrences,
   getFolder,
+  getFolderPath,
   listFileOccurrences,
-  removeOccurrence,
+  removeOccurrences,
   listEventFiles,
   listFolderContents,
   listOrganizationFiles,
   listSongFiles,
-  moveFile,
-  moveFolder,
+  moveFiles,
+  moveFolders,
   previewFolderDelete,
   renameFile,
   renameFolder,
@@ -26,14 +27,16 @@ import {
 import { MAX_THUMBNAIL_BYTES } from "@echo/modules/drive/domain";
 import {
   deleteFolderCascadeCommandFactory,
-  deleteOccurrenceCommandFactory,
+  deleteOccurrencesCommandFactory,
   deleteOrphanedFilesCommandFactory,
   eventExistsInOrganizationQueryFactory,
   findFileByIdQueryFactory,
   findFilesByIdsQueryFactory,
   findFolderByIdQueryFactory,
   findFolderByParentAndNameQueryFactory,
-  findFolderDescendantIdsQueryFactory,
+  findFolderPathQueryFactory,
+  findFoldersByIdsQueryFactory,
+  findFoldersByParentAndNamesQueryFactory,
   insertFolderCommandFactory,
   insertOccurrencesCommandFactory,
   insertPendingFileCommandFactory,
@@ -43,8 +46,8 @@ import {
   listFilesBySongQueryFactory,
   listFolderContentsQueryFactory,
   markFileUploadedCommandFactory,
-  moveFileToFolderCommandFactory,
-  moveFolderCommandFactory,
+  moveFilesToFolderCommandFactory,
+  moveFoldersCommandFactory,
   previewFolderDeleteQueryFactory,
   renameFileByIdCommandFactory,
   renameFolderByIdCommandFactory,
@@ -84,17 +87,19 @@ const listFilesByEventQuery = listFilesByEventQueryFactory();
 const listFilesBySongQuery = listFilesBySongQueryFactory();
 const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
 const renameFileByIdCommand = renameFileByIdCommandFactory();
-const moveFileToFolderCommand = moveFileToFolderCommandFactory();
+const moveFilesToFolderCommand = moveFilesToFolderCommandFactory();
 const findFolderByIdQuery = findFolderByIdQueryFactory();
 const findFolderByParentAndNameQuery = findFolderByParentAndNameQueryFactory();
 const insertFolderCommand = insertFolderCommandFactory();
 const renameFolderByIdCommand = renameFolderByIdCommandFactory();
-const moveFolderCommand = moveFolderCommandFactory();
-const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
+const moveFoldersCommand = moveFoldersCommandFactory();
+const findFoldersByIdsQuery = findFoldersByIdsQueryFactory();
+const findFoldersByParentAndNamesQuery = findFoldersByParentAndNamesQueryFactory();
+const findFolderPathQuery = findFolderPathQueryFactory();
 const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
 const deleteOrphanedFilesCommand = deleteOrphanedFilesCommandFactory();
 const insertOccurrencesCommand = insertOccurrencesCommandFactory();
-const deleteOccurrenceCommand = deleteOccurrenceCommandFactory();
+const deleteOccurrencesCommand = deleteOccurrencesCommandFactory();
 const listFileOccurrencesQuery = listFileOccurrencesQueryFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
 const searchDriveQuery = searchDriveQueryFactory();
@@ -276,31 +281,23 @@ export const makeDriveRouter = () =>
         ),
       ),
 
-    moveFile: organizationProcedure
+    moveFiles: organizationProcedure
       .input(
         z.object({
-          id: z.string(),
-          from: z.discriminatedUnion("kind", [
-            z.object({ kind: z.literal("root") }),
-            z.object({ kind: z.literal("folder"), id: z.string() }),
-          ]),
+          ids: z.array(z.string()).min(1),
+          from: z.discriminatedUnion("kind", [placeSchema.options[0], placeSchema.options[1]]),
           folderId: z.string().nullable(),
         }),
       )
       .mutation(({ ctx, input }) =>
-        moveFile(
+        moveFiles(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             findFolderByIdQuery,
-            moveFileToFolderCommand,
+            moveFilesToFolderCommand,
           },
-          {
-            id: input.id,
-            from: input.from,
-            scope: ctx.organizationScope,
-            folderId: input.folderId,
-          },
+          { ...input, scope: ctx.organizationScope },
         ),
       ),
 
@@ -321,15 +318,15 @@ export const makeDriveRouter = () =>
         ),
       ),
 
-    removeOccurrence: organizationProcedure
-      .input(z.object({ fileId: z.string(), place: placeSchema }))
+    removeOccurrences: organizationProcedure
+      .input(z.object({ fileIds: z.array(z.string()).min(1), place: placeSchema }))
       .mutation(async ({ ctx, input }) => {
-        const { deleted, failures } = await removeOccurrence(
+        const { removedFileIds, deletedFileIds, failures } = await removeOccurrences(
           {
             db: ctx.db,
             s3Storage: ctx.s3Storage,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            deleteOccurrenceCommand,
+            deleteOccurrencesCommand,
             deleteOrphanedFilesCommand,
           },
           { ...input, scope: ctx.organizationScope },
@@ -340,11 +337,11 @@ export const makeDriveRouter = () =>
             "Failed to delete S3 object during occurrence removal",
           );
         }
-        return { deleted };
+        return { removedFileIds, deletedFileIds };
       }),
 
     listFileOccurrences: organizationProcedure
-      .input(z.object({ fileId: z.string() }))
+      .input(z.object({ fileIds: z.array(z.string()).min(1) }))
       .query(({ ctx, input }) =>
         listFileOccurrences(
           {
@@ -352,7 +349,7 @@ export const makeDriveRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             listFileOccurrencesQuery,
           },
-          { fileId: input.fileId, scope: ctx.organizationScope },
+          { fileIds: input.fileIds, scope: ctx.organizationScope },
         ),
       ),
 
@@ -390,19 +387,19 @@ export const makeDriveRouter = () =>
         ),
       ),
 
-    moveFolder: organizationProcedure
-      .input(z.object({ id: z.string(), parentFolderId: z.string().nullable() }))
+    moveFolders: organizationProcedure
+      .input(z.object({ ids: z.array(z.string()).min(1), parentFolderId: z.string().nullable() }))
       .mutation(({ ctx, input }) =>
-        moveFolder(
+        moveFolders(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFolderByIdQuery,
-            findFolderByParentAndNameQuery,
-            findFolderDescendantIdsQuery,
-            moveFolderCommand,
+            findFoldersByIdsQuery,
+            findFolderPathQuery,
+            findFoldersByParentAndNamesQuery,
+            moveFoldersCommand,
           },
-          { id: input.id, scope: ctx.organizationScope, parentFolderId: input.parentFolderId },
+          { ...input, scope: ctx.organizationScope },
         ),
       ),
 
@@ -472,4 +469,17 @@ export const makeDriveRouter = () =>
         { id: input.id, scope: ctx.organizationScope },
       ),
     ),
+
+    getFolderPath: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .query(({ ctx, input }) =>
+        getFolderPath(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderPathQuery,
+          },
+          { id: input.id, scope: ctx.organizationScope },
+        ),
+      ),
   });

@@ -11,13 +11,13 @@ export async function listFileOccurrences(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     listFileOccurrencesQuery: ListFileOccurrencesQueryPort;
   },
-  input: { fileId: string; scope: OrganizationScope },
-): Promise<PlaceLabel[]> {
+  input: { fileIds: string[]; scope: OrganizationScope },
+): Promise<Record<string, PlaceLabel[]>> {
   const { success } = await deps.userHasPermissionInOrganization({
     organizationId: input.scope.organizationId,
     permissions: { drive: ["read"] },
   });
   if (!success) throw forbidden({ entity: "File", action: "list occurrences" });
 
-  return deps.listFileOccurrencesQuery(deps.db, input.scope, { fileId: input.fileId });
+  return deps.listFileOccurrencesQuery(deps.db, input.scope, { fileIds: input.fileIds });
 }

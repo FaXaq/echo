@@ -80,10 +80,10 @@ export type {
 export { renameFileByIdCommandFactory } from "./rename-file-by-id.command.kysely.js";
 
 export type {
-  MoveFileToFolderInput,
-  MoveFileToFolderCommandPort,
-} from "./move-file-to-folder.command.port.js";
-export { moveFileToFolderCommandFactory } from "./move-file-to-folder.command.kysely.js";
+  MoveFilesToFolderInput,
+  MoveFilesToFolderCommandPort,
+} from "./move-files-to-folder.command.port.js";
+export { moveFilesToFolderCommandFactory } from "./move-files-to-folder.command.kysely.js";
 
 export type { InsertFolderInput, InsertFolderCommandPort } from "./insert-folder.command.port.js";
 export { insertFolderCommandFactory } from "./insert-folder.command.kysely.js";
@@ -106,14 +106,27 @@ export type {
 } from "./rename-folder-by-id.command.port.js";
 export { renameFolderByIdCommandFactory } from "./rename-folder-by-id.command.kysely.js";
 
-export type { MoveFolderInput, MoveFolderCommandPort } from "./move-folder.command.port.js";
-export { moveFolderCommandFactory } from "./move-folder.command.kysely.js";
+export type { MoveFoldersInput, MoveFoldersCommandPort } from "./move-folders.command.port.js";
+export { moveFoldersCommandFactory } from "./move-folders.command.kysely.js";
 
 export type {
-  FindFolderDescendantIdsQueryInput,
-  FindFolderDescendantIdsQueryPort,
-} from "./find-folder-descendant-ids.query.port.js";
-export { findFolderDescendantIdsQueryFactory } from "./find-folder-descendant-ids.query.kysely.js";
+  FindFoldersByIdsQueryInput,
+  FindFoldersByIdsQueryPort,
+} from "./find-folders-by-ids.query.port.js";
+export { findFoldersByIdsQueryFactory } from "./find-folders-by-ids.query.kysely.js";
+
+export type {
+  FindFoldersByParentAndNamesQueryInput,
+  FindFoldersByParentAndNamesQueryPort,
+} from "./find-folders-by-parent-and-names.query.port.js";
+export { findFoldersByParentAndNamesQueryFactory } from "./find-folders-by-parent-and-names.query.kysely.js";
+
+export type {
+  FolderPathSegment,
+  FindFolderPathQueryInput,
+  FindFolderPathQueryPort,
+} from "./find-folder-path.query.port.js";
+export { findFolderPathQueryFactory } from "./find-folder-path.query.kysely.js";
 
 export type {
   DeleteFolderCascadeInput,
@@ -172,10 +185,10 @@ export type {
 export { insertOccurrencesCommandFactory } from "./insert-occurrences.command.kysely.js";
 
 export type {
-  DeleteOccurrenceInput,
-  DeleteOccurrenceCommandPort,
-} from "./delete-occurrence.command.port.js";
-export { deleteOccurrenceCommandFactory } from "./delete-occurrence.command.kysely.js";
+  DeleteOccurrencesInput,
+  DeleteOccurrencesCommandPort,
+} from "./delete-occurrences.command.port.js";
+export { deleteOccurrencesCommandFactory } from "./delete-occurrences.command.kysely.js";
 
 export type {
   ListFileOccurrencesQueryInput,
