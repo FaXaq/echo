@@ -83,7 +83,7 @@ msgstr "{0, plural, one {# stays in other places} other {# stay in other places}
 #~ msgstr "{0} is currently playing."
 
 #. placeholder {0}: movingItems.length
-#: apps/web/src/components/features/drive/use-drive-selection.ts:133
+#: apps/web/src/components/features/drive/use-drive-selection.ts:130
 msgid "{0} items moved"
 msgstr "{0} items moved"
 
@@ -805,7 +805,7 @@ msgstr "Couldn't load this section"
 msgid "Couldn't move card"
 msgstr "Couldn't move card"
 
-#: apps/web/src/components/features/drive/use-drive-selection.ts:138
+#: apps/web/src/components/features/drive/use-drive-selection.ts:135
 msgid "Couldn't move items"
 msgstr "Couldn't move items"
 

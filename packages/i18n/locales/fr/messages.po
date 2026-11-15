@@ -83,7 +83,7 @@ msgstr "{0, plural, one {# reste ailleurs} other {# restent ailleurs}}"
 #~ msgstr "{0} est en cours de lecture."
 
 #. placeholder {0}: movingItems.length
-#: apps/web/src/components/features/drive/use-drive-selection.ts:133
+#: apps/web/src/components/features/drive/use-drive-selection.ts:130
 msgid "{0} items moved"
 msgstr "{0} éléments déplacés"
 
@@ -805,7 +805,7 @@ msgstr "Impossible de charger cette section"
 msgid "Couldn't move card"
 msgstr "Impossible de déplacer la carte"
 
-#: apps/web/src/components/features/drive/use-drive-selection.ts:138
+#: apps/web/src/components/features/drive/use-drive-selection.ts:135
 msgid "Couldn't move items"
 msgstr "Impossible de déplacer les éléments"
 
