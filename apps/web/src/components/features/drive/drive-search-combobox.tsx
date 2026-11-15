@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
+import type { DriveLocation } from "@echo/modules/drive/domain";
 import { Folder as FolderIcon, FileText, Image as ImageIcon, Music, Video } from "lucide-react";
 import {
   Command,
@@ -11,6 +12,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent } from "@/components/ui/popover";
+import { locationKey } from "@/lib/drive-location";
 import { formatDriveSearchLocation } from "@/lib/drive-search";
 import { getDriveSearchQueryOptions } from "@/services/resources/drive";
 
@@ -29,12 +31,10 @@ const SEARCH_DEBOUNCE_MS = 300;
 // (non-suspense) useQuery gated by `enabled`, same as any typeahead.
 export function DriveSearchCombobox({
   organizationId,
-  onSelectFolder,
-  onSelectFile,
+  onSelect,
 }: {
   organizationId: string;
-  onSelectFolder: (folderId: string) => void;
-  onSelectFile: (file: { id: string; folderId: string | null }) => void;
+  onSelect: (location: DriveLocation) => void;
 }) {
   const { t } = useLingui();
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -61,6 +61,12 @@ export function DriveSearchCombobox({
   const files = isSearchReady ? (data?.files ?? []) : [];
   const isSearching = isDebouncePending || (isSearchReady && isFetching);
   const hasNoResults = isSearchReady && !isFetching && folders.length === 0 && files.length === 0;
+
+  const formatLocation = ({ location, path }: { location: DriveLocation; path: string[] }) => {
+    const head =
+      location.kind === "event" ? t`Events` : location.kind === "song" ? t`Songs` : path[0];
+    return formatDriveSearchLocation(path.length === 0 ? [] : [head, ...path.slice(1)], t`Drive`);
+  };
 
   const closeAndReset = () => {
     setOpen(false);
@@ -98,17 +104,17 @@ export function DriveSearchCombobox({
               <CommandGroup heading={t`Folders`}>
                 {folders.map((folder) => (
                   <CommandItem
-                    key={folder.id}
-                    value={`folder:${folder.id}`}
+                    key={locationKey(folder.location)}
+                    value={`folder:${locationKey(folder.location)}`}
                     onSelect={() => {
                       closeAndReset();
-                      onSelectFolder(folder.id);
+                      onSelect(folder.location);
                     }}
                   >
                     <FolderIcon className="size-4 shrink-0 text-muted-foreground" />
                     <span className="truncate">{folder.name}</span>
                     <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-                      {formatDriveSearchLocation(folder.path)}
+                      {formatLocation(folder)}
                     </span>
                   </CommandItem>
                 ))}
@@ -124,13 +130,13 @@ export function DriveSearchCombobox({
                       value={`file:${file.id}`}
                       onSelect={() => {
                         closeAndReset();
-                        onSelectFile({ id: file.id, folderId: file.folderId });
+                        onSelect(file.location);
                       }}
                     >
                       <Icon className="size-4 shrink-0 text-muted-foreground" />
                       <span className="truncate">{file.filename}</span>
                       <span className="ml-auto shrink-0 text-xs text-muted-foreground">
-                        {formatDriveSearchLocation(file.path)}
+                        {formatLocation(file)}
                       </span>
                     </CommandItem>
                   );

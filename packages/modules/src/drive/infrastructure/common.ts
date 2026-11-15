@@ -1,6 +1,7 @@
 import type { DB, KyselyDB } from "@echo/db";
-import { sql, type ExpressionBuilder } from "kysely";
+import type { ExpressionBuilder } from "kysely";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
+import type { FolderPathSegment } from "./find-folder-path.query.port.js";
 
 export function songAndFileBelongToOrganization<TB extends keyof DB>(
   eb: ExpressionBuilder<DB, TB>,
@@ -60,38 +61,90 @@ export const makeSelectFolderByIdQuery =
       .executeTakeFirst();
   };
 
-export const makeSelectFolderByParentAndNameQuery =
-  (db: KyselyDB) => (scope: OrganizationScope, parentFolderId: string | null, name: string) => {
-    let query = db
+export const makeSelectFoldersByParentAndNamesQuery =
+  (db: KyselyDB) => (scope: OrganizationScope, parentFolderId: string | null, names: string[]) => {
+    if (names.length === 0) return Promise.resolve([]);
+    const query = db
       .selectFrom("folder")
       .selectAll()
       .where("organization_id", "=", scope.organizationId)
-      .where(sql`lower(name)`, "=", name.toLowerCase());
+      .where(
+        (eb) => eb.fn<string>("lower", ["name"]),
+        "in",
+        names.map((name) => name.toLowerCase()),
+      );
 
-    query =
+    return (
       parentFolderId === null
         ? query.where("parent_folder_id", "is", null)
-        : query.where("parent_folder_id", "=", parentFolderId);
-
-    return query.executeTakeFirst();
+        : query.where("parent_folder_id", "=", parentFolderId)
+    ).execute();
   };
-
-type FolderIdRow = { id: string };
 
 export const selectFolderAndDescendantIds = async (
   db: KyselyDB,
   scope: OrganizationScope,
   rootId: string,
-): Promise<string[]> => {
-  const result = await sql<FolderIdRow>`
-    WITH RECURSIVE descendants AS (
-      SELECT id FROM folder WHERE id = ${rootId} AND organization_id = ${scope.organizationId}
-      UNION ALL
-      SELECT f.id FROM folder f
-      INNER JOIN descendants d ON f.parent_folder_id = d.id
+) => {
+  const rows = await db
+    .withRecursive("descendant(id)", (db) =>
+      db
+        .selectFrom("folder")
+        .select("id")
+        .where("id", "=", rootId)
+        .where("organization_id", "=", scope.organizationId)
+        .unionAll((db) =>
+          db
+            .selectFrom("folder")
+            .innerJoin("descendant", "descendant.id", "folder.parent_folder_id")
+            .select("folder.id"),
+        ),
     )
-    SELECT id FROM descendants
-  `.execute(db);
+    .selectFrom("descendant")
+    .select("id")
+    .execute();
 
-  return result.rows.map((row) => row.id);
+  return rows.map((row) => row.id);
+};
+
+export const selectFolderPaths = async (
+  db: KyselyDB,
+  scope: OrganizationScope,
+  folderIds: string[],
+) => {
+  const paths = new Map<string, FolderPathSegment[]>();
+  if (folderIds.length === 0) return paths;
+
+  const rows = await db
+    .withRecursive("ancestor(leaf_id, id, name, parent_folder_id, depth)", (db) =>
+      db
+        .selectFrom("folder")
+        .select((eb) => ["id as leaf_id", "id", "name", "parent_folder_id", eb.lit(0).as("depth")])
+        .where("id", "in", folderIds)
+        .where("organization_id", "=", scope.organizationId)
+        .unionAll((db) =>
+          db
+            .selectFrom("folder")
+            .innerJoin("ancestor", "ancestor.parent_folder_id", "folder.id")
+            .select((eb) => [
+              "ancestor.leaf_id",
+              "folder.id",
+              "folder.name",
+              "folder.parent_folder_id",
+              eb("ancestor.depth", "+", eb.lit(1)).as("depth"),
+            ]),
+        ),
+    )
+    .selectFrom("ancestor")
+    .select(["leaf_id", "id", "name"])
+    .orderBy("leaf_id")
+    .orderBy("depth", "desc")
+    .execute();
+
+  for (const row of rows) {
+    const path = paths.get(row.leaf_id) ?? [];
+    path.push({ id: row.id, name: row.name });
+    paths.set(row.leaf_id, path);
+  }
+  return paths;
 };

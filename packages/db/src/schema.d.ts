@@ -62,6 +62,13 @@ export interface Contact {
   updated_at: Generated<Timestamp | null>;
 }
 
+export interface EventFile {
+  event_id: string;
+  file_id: string;
+  linked_at: Generated<Timestamp>;
+  linked_by: string;
+}
+
 export interface Expense {
   amount_minor: number;
   converted_amount_minor: number;
@@ -91,9 +98,7 @@ export interface ExpenseShare {
 export interface File {
   created_at: Generated<Timestamp | null>;
   duration_seconds: number | null;
-  event_id: string | null;
   filename: string;
-  folder_id: string | null;
   has_thumbnail: Generated<boolean>;
   height: number | null;
   id: string;
@@ -116,6 +121,13 @@ export interface Folder {
   organization_id: string;
   parent_folder_id: string | null;
   updated_at: Generated<Timestamp | null>;
+}
+
+export interface FolderFile {
+  file_id: string;
+  folder_id: string | null;
+  placed_at: Generated<Timestamp>;
+  placed_by: string;
 }
 
 export interface Invitation {
@@ -294,10 +306,12 @@ export interface DB {
   account: Account;
   calendar_event: CalendarEvent;
   contact: Contact;
+  event_file: EventFile;
   expense: Expense;
   expense_share: ExpenseShare;
   file: File;
   folder: Folder;
+  folder_file: FolderFile;
   invitation: Invitation;
   member: Member;
   organization: Organization;

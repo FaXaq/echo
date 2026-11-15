@@ -13,8 +13,7 @@ import type {
   FindFolderByParentAndNameQueryPort,
   InsertPendingFileCommandPort,
   InsertPendingFileInput,
-  LinkFileToEventCommandPort,
-  LinkFileToSongCommandPort,
+  EventExistsInOrganizationQueryPort,
   MarkFileUploadedCommandPort,
   SongExistsInOrganizationQueryPort,
 } from "../infrastructure/index.js";
@@ -92,9 +91,6 @@ export function makeFakeInsertPendingFile(
     onInsert?.(scope, input);
     const record: FileRecord = {
       id: input.id,
-      eventId: input.eventId,
-      eventTitle: null,
-      folderId: input.folderId,
       organizationId: scope.organizationId,
       uploadedBy: input.uploadedBy,
       uploadedByName: "Test User",
@@ -116,16 +112,10 @@ export function makeFakeInsertPendingFile(
   };
 }
 
-export function makeFakeLinkFileToSong(
-  onLink?: (songId: string, fileId: string) => void,
-): LinkFileToSongCommandPort {
-  return async (_db, _scope, input) => {
-    onLink?.(input.songId, input.fileId);
-  };
-}
-
-export function makeFakeLinkFileToEvent(linked = true): LinkFileToEventCommandPort {
-  return async () => linked;
+export function makeFakeEventExistsInOrganization(
+  exists = true,
+): EventExistsInOrganizationQueryPort {
+  return async () => exists;
 }
 
 export function makeFakeSongExistsInOrganization(exists = true): SongExistsInOrganizationQueryPort {
@@ -135,9 +125,6 @@ export function makeFakeSongExistsInOrganization(exists = true): SongExistsInOrg
 export function makeFakeFileRecord(overrides: Partial<FileRecord> = {}): FileRecord {
   return {
     id: "file-1",
-    eventId: null,
-    eventTitle: null,
-    folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
     uploadedByName: "Test User",

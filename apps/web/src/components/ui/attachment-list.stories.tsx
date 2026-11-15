@@ -8,9 +8,6 @@ import type { EventFile } from "@/services/resources/drive";
 function makeFile(overrides: Partial<EventFile>): EventFile {
   return {
     id: Math.random().toString(36),
-    eventId: "event-1",
-    eventTitle: null,
-    folderId: null,
     organizationId: "org-1",
     uploadedBy: "user-1",
     uploadedByName: "Jane Doe",
@@ -212,7 +209,7 @@ function WithSelectionDemo() {
           return next;
         })
       }
-      onDeleteSelected={async (deleted) => {
+      onDeleteSelected={(deleted) => {
         setSelectedIds((prev) => {
           const next = new Set(prev);
           deleted.forEach((file) => next.delete(file.id));

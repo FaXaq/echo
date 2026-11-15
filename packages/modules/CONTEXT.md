@@ -24,18 +24,29 @@ An Organization's storage usage against the limit its Plan allows: usage summed 
 _Avoid_: reading storage usage off `plan.overview` (removed; would drift from the quota endpoint, which is the one invalidated on file upload/delete)
 
 **Drive**:
-The Organization-wide view of all of an Organization's files, arranged into Folders. Distinct from an Event's or a Song's file list, each of which shows only files attached to that Event/Song regardless of which Folder (if any) they sit in — a file can be attached to an Event, any number of Songs (see Song File Link), and organized into a Folder all at the same time. Only the Event attachment and Song File Links protect a file from deletion: a file is deleted only once none remain, independent of whether it also sits in a Folder. Folder membership is a location, not a protecting attachment — it follows Folder's own (pre-existing, unrelated) deletion behavior.
+The Organization-wide view of all of an Organization's files, arranged into Folders. Its root always holds two fixed System Folders, **Events** and **Songs**, alongside any user-made Folders. A file can have several Occurrences at once (Event attachments, Song File Links, Folder placements) without ever being duplicated; it is deleted only once it has no Occurrence left.
 _Avoid_: File browser
 
+**Occurrence**:
+One place a file appears in the Drive: a placement in a Folder (or at Drive root), one of its Event attachments, or one of its Song File Links. Every Occurrence protects the file equally — deleting a file from any folder view removes only that Occurrence, and the file itself (row and stored object) is destroyed only when its last Occurrence goes. Created by uploading into a place, or by Copy/Paste of an existing file into another place. Drive root is a place like any Folder: a file uploaded from an Event or Song page appears only in that Event/Song Folder, not at root. No Occurrence is "primary" — the file simply isn't duplicated; where one place is needed (a Drive Search result), the oldest remaining Occurrence is used. A file can be attached to any number of Events, Songs and Folders.
+_Avoid_: Copy, duplicate (no bytes are copied), shortcut, alias
+
+**System Folder**:
+A Drive folder Echo derives rather than the user creates: the two fixed root folders **Events** and **Songs**, and inside them one Event Folder per Event and one Song Folder per Song. Never stored, so it always exists for every Event/Song, is named after it, and cannot be renamed, moved or deleted from the Drive. An Event Folder's contents are exactly that Event's attached files; a Song Folder's are exactly that Song's Song File Links — pasting into one creates that attachment/link. An Event Folder is named `<date> · <title>` (so repeated titles stay distinct and sort by date); a Song Folder by the Song's title. No Folder can be created inside a System Folder, and nothing can be uploaded directly into the Events or Songs root; uploading into an Event/Song Folder attaches the file to that Event/Song, exactly as from its own page. Drag-to-move never applies into, out of, or within System Folders — Copy/Paste is the only way to add a file to one from the Drive, so a file can't be detached from an Event or Song by an accidental drag.
+_Avoid_: Auto-created folder (nothing is created)
+
+**Copy/Paste**:
+Adding new Occurrences of the Selection's files to another place — Cmd/Ctrl+C and Cmd/Ctrl+V, or the row's right-click Copy/Paste actions. Files only: a Selection containing a Folder can't be copied (a Folder exists in exactly one place in the tree). Pasting a file where it already has an Occurrence is a silent no-op. Deleting from a place says which outcome applies: "Remove from <place>" (listing where the file remains, so it can be found) when other Occurrences remain, "Permanently delete" when it is the last. Deleting a user Folder follows the same rule for every file inside it: its placements there go, files with no other Occurrence are permanently deleted, and the confirmation states both counts.
+
 **Folder**:
-A named container for organizing an Organization's Drive files, nestable arbitrarily deep under other Folders. Scoped only to the Organization — a Folder has no Event or Song scoping, unlike `file`. The hierarchy root is implicit: a `null` parent (on a Folder) or a `null` folder (on a file) means "at Drive root," the same nullable-FK convention already used for `file.eventId`/`file.songId`.
+A named container for organizing an Organization's Drive files, nestable arbitrarily deep under other Folders. Scoped only to the Organization — a Folder has no Event or Song scoping, unlike `file`. The hierarchy root is implicit: a `null` parent (on a Folder) means "at Drive root"; for files, Drive root is a place holding Occurrences like any Folder.
 _Avoid_: Directory
 
 **Duration**:
 A File's play length in whole seconds, stored on the file itself and populated only for `FileKind: "audio"` and `"video"` (`null` for image/document, and for audio/video files not yet computed — files uploaded before this existed). Captured client-side from the browser's native media decoding at upload time (`<audio>`/`<video>` element per kind) and trusted the same way `mimeType`/`sizeBytes` already are, not re-verified server-side. Distinct from the audio player's own live `durationchange` value, which is read fresh from whatever file is currently loaded into it and was never stored — Duration exists so a file's length is known before it's ever loaded into a player (e.g. in a file list or Song row).
 
 **Song**:
-An Organization-scoped creative work: title (required), and optional artist, BPM, musical key, markdown lyrics, and `'original' | 'cover'` type. Like an Event, a Song has its own file list, built from its Song File Links; a file can be attached to an Event and any number of Songs at the same time (see Drive), and deleting a Song only removes that Song's link — the file itself is deleted only once every link (Event or Song) is gone.
+An Organization-scoped creative work: title (required), and optional artist, BPM, musical key, markdown lyrics, and `'original' | 'cover'` type. Like an Event, a Song has its own file list, built from its Song File Links; a file can be attached to any number of Events and Songs at the same time (see Drive), and deleting a Song only removes that Song's link — the file itself is deleted only once its last Occurrence is gone.
 _Avoid_: Track
 
 **Song File Link**:
@@ -82,7 +93,7 @@ Dragging files from outside the browser (the OS file system) onto the Drive tabl
 _Avoid_: Drag-and-drop upload (ambiguous with Selection drag-to-move)
 
 **Drive Search**:
-A whole-Organization, cross-folder lookup by file or folder name (plain substring match), surfaced as type-ahead results separate from the folder-browsing table rather than filtering it in place. Distinct from folder navigation and from Selection — neither is affected by searching. A matched file's result navigates to its containing Folder; a matched folder's result navigates directly into it.
+A whole-Organization, cross-folder lookup by file or folder name (plain substring match), surfaced as type-ahead results separate from the folder-browsing table rather than filtering it in place. Distinct from folder navigation and from Selection — neither is affected by searching. A matched file's result navigates to the place of its oldest Occurrence; a matched folder's result — System Folders included — navigates directly into it.
 _Avoid_: Filter (reserve for the future date/size/event facets, not yet built)
 
 **Outreach Board**:

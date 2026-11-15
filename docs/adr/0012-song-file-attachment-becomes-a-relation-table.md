@@ -7,3 +7,7 @@ This generalizes ADR-0009's orphan-protection rule (a file is destroyed only onc
 ## Considered Options
 
 Kept `file.songId` as-is and added a separate table just for demo/final tagging, leaving plain Song attachment untouched. Rejected: two different mechanisms would then decide whether a file is "on" a Song — the FK for plain attachments, a second table for tagged versions — and it still wouldn't solve the actual want, a file reused as a plain attachment across multiple Songs.
+
+## Update
+
+ADR-0016 generalizes the orphan rule: a File is deleted only once it has no Event, Song or Folder Occurrence left.

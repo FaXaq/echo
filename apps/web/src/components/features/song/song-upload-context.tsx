@@ -54,7 +54,8 @@ export function useSongUploadingFiles(songId: string) {
     select: (mutation): UploadingFile | null => {
       if (
         !isUploadFileInput(mutation.state.variables) ||
-        mutation.state.variables.songId !== songId
+        mutation.state.variables.place.kind !== "song" ||
+        mutation.state.variables.place.id !== songId
       )
         return null;
       return {

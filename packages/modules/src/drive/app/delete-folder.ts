@@ -2,9 +2,12 @@ import type { KyselyDB } from "@echo/db";
 import { forbidden, notFound } from "@echo/errors";
 import type { CheckOrganizationPermission } from "@echo/modules/user/infrastructure";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
-import type { DeleteFolderCascadeCommandPort } from "../infrastructure/index.js";
+import type {
+  DeleteFolderCascadeCommandPort,
+  DeleteOrphanedFilesCommandPort,
+} from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
-import { fileObjectKeys } from "../domain/index.js";
+import { purgeOrphanedFiles } from "./purge-orphaned-files.js";
 
 export type DeleteFolderFailure = { fileId: string; error: unknown };
 
@@ -14,6 +17,7 @@ export async function deleteFolder(
     s3Storage: S3StoragePort;
     userHasPermissionInOrganization: CheckOrganizationPermission;
     deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort;
+    deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort;
   },
   input: { id: string; scope: OrganizationScope },
 ): Promise<DeleteFolderFailure[]> {
@@ -26,15 +30,9 @@ export async function deleteFolder(
   const result = await deps.deleteFolderCascadeCommand(deps.db, input.scope, { id: input.id });
   if (!result) throw notFound("Folder");
 
-  const settled = await Promise.allSettled(
-    result.deletedFiles.map((file) =>
-      Promise.all(fileObjectKeys(file).map((key) => deps.s3Storage.deleteObject(key))),
-    ),
-  );
-
-  return settled.flatMap((outcome, index) =>
-    outcome.status === "rejected"
-      ? [{ fileId: result.deletedFiles[index]!.id, error: outcome.reason }]
-      : [],
-  );
+  const { failures } = await purgeOrphanedFiles(deps, {
+    scope: input.scope,
+    fileIds: result.fileIds,
+  });
+  return failures;
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layers, ListMusic, MoreVertical, Play, Plus } from "lucide-react";
+import { Layers, MoreVertical, Play, Plus } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 
 import {
@@ -69,11 +69,6 @@ export function PlaylistDetail({
   return (
     <>
       <EntityDetailLayout
-        icon={
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-[6px] bg-muted">
-            <ListMusic className="size-4" />
-          </span>
-        }
         title={playlist.title}
         actions={
           <div className="flex items-center gap-1.5">

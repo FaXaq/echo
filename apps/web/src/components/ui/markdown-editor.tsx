@@ -51,7 +51,7 @@ export function MarkdownEditor({
   return (
     <div className="relative">
       <ScrollArea className={className}>
-        <EditorContent id={id} editor={editor} />
+        <EditorContent id={id} editor={editor} placeholder={placeholder} />
       </ScrollArea>
       {saveStatus !== "idle" && (
         <span

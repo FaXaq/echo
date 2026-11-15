@@ -6,18 +6,10 @@ import { EntityDetailLayout } from "./entity-detail-layout";
 const noop = <div />;
 
 describe("EntityDetailLayout", () => {
-  it("renders the title and icon slot", () => {
-    render(
-      <EntityDetailLayout
-        icon={<span data-testid="icon" />}
-        title="Empty Road"
-        sidebarItems={[]}
-        attachments={noop}
-      />,
-    );
+  it("renders the title", () => {
+    render(<EntityDetailLayout title="Empty Road" sidebarItems={[]} attachments={noop} />);
 
     expect(screen.getByRole("heading", { name: "Empty Road" })).toBeInTheDocument();
-    expect(screen.getByTestId("icon")).toBeInTheDocument();
   });
 
   it("renders each sidebar item's label and value on the desktop panel", () => {

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@/lib/test-utils";
+import { fireEvent, render, screen } from "@/lib/test-utils";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AttachmentList } from "./attachment-list";
@@ -361,15 +361,9 @@ describe("AttachmentList", () => {
     expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "doc-1" }));
   });
 
-  it("shows a bulk actions menu that deletes the selection with a loader until it completes", async () => {
+  it("shows a bulk actions menu that hands the selection to onDeleteSelected", async () => {
     const user = userEvent.setup();
-    let resolveDelete: () => void = () => {};
-    const onDeleteSelected = vi.fn(
-      () =>
-        new Promise<void>((resolve) => {
-          resolveDelete = resolve;
-        }),
-    );
+    const onDeleteSelected = vi.fn();
 
     render(
       <AttachmentList
@@ -382,17 +376,10 @@ describe("AttachmentList", () => {
     await user.click(screen.getByRole("button", { name: "Actions for selected files" }));
     await user.click(await screen.findByText("Delete"));
 
-    expect(await screen.findByText("Delete 2 files?")).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "Delete" }));
     expect(onDeleteSelected).toHaveBeenCalledWith([
       expect.objectContaining({ id: "doc-1" }),
       expect.objectContaining({ id: "doc-2" }),
     ]);
-    expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
-
-    resolveDelete();
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 
   it("shows duration next to file size when known, and just the size when it isn't", () => {

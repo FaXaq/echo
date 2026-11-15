@@ -1,15 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
-import { Link } from "@tanstack/react-router";
 import { useDraggable } from "@dnd-kit/react";
-import {
-  Calendar as CalendarIcon,
-  CalendarPlus,
-  Download,
-  Info,
-  MoreVertical,
-  Pen,
-  Trash,
-} from "lucide-react";
+import { CalendarPlus, Copy, Download, Info, MoreVertical, Pen, Trash } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   ContextMenu,
@@ -35,9 +26,10 @@ import { type DragData, KIND_ICON, formatDate } from "./drive-item-utils";
 
 export function FileRow({
   file,
-  projectSlug,
   selected,
   selectionCount,
+  onCopy,
+  copyDisabledReason,
   onToggleSelect,
   onContextMenuTrigger,
   onRename,
@@ -52,9 +44,10 @@ export function FileRow({
   isBulkDownloading,
 }: {
   file: OrganizationFile;
-  projectSlug: string;
   selected: boolean;
   selectionCount: number;
+  onCopy: () => void;
+  copyDisabledReason: string | null;
   onToggleSelect: (event: React.MouseEvent) => void;
   onContextMenuTrigger: () => void;
   onRename: () => void;
@@ -121,19 +114,6 @@ export function FileRow({
               </span>
             )}
           </div>
-        </TableCell>
-        <TableCell>
-          {file.eventId && file.eventTitle && (
-            <Link
-              to="/projects/$projectSlug/calendar/$eventId"
-              params={{ projectSlug, eventId: file.eventId }}
-              onClick={(event) => event.stopPropagation()}
-              className="inline-flex max-w-full items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <CalendarIcon className="size-3 shrink-0" />
-              <span className="truncate">{file.eventTitle}</span>
-            </Link>
-          )}
         </TableCell>
         <TableCell>
           <div className="flex items-center gap-2">
@@ -216,24 +196,50 @@ export function FileRow({
       </ContextMenuTrigger>
       <ContextMenuContent>
         {isBulkSelected ? (
-          bulkDownloadDisabledReason ? (
-            <Tooltip>
-              <TooltipTrigger
-                render={<ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />}
-              >
-                <Download />
+          <>
+            {copyDisabledReason ? (
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />
+                  }
+                >
+                  <Copy />
+                  {t`Copy`}
+                </TooltipTrigger>
+                <TooltipContent>{copyDisabledReason}</TooltipContent>
+              </Tooltip>
+            ) : (
+              <ContextMenuItem onClick={onCopy}>
+                <Copy />
+                {t`Copy`}
+              </ContextMenuItem>
+            )}
+            {bulkDownloadDisabledReason ? (
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <ContextMenuItem aria-disabled className="cursor-not-allowed opacity-50" />
+                  }
+                >
+                  <Download />
+                  {t`Download`}
+                </TooltipTrigger>
+                <TooltipContent>{bulkDownloadDisabledReason}</TooltipContent>
+              </Tooltip>
+            ) : (
+              <ContextMenuItem onClick={onBulkDownload} disabled={isBulkDownloading}>
+                {isBulkDownloading ? <Spinner className="size-4" /> : <Download />}
                 {t`Download`}
-              </TooltipTrigger>
-              <TooltipContent>{bulkDownloadDisabledReason}</TooltipContent>
-            </Tooltip>
-          ) : (
-            <ContextMenuItem onClick={onBulkDownload} disabled={isBulkDownloading}>
-              {isBulkDownloading ? <Spinner className="size-4" /> : <Download />}
-              {t`Download`}
-            </ContextMenuItem>
-          )
+              </ContextMenuItem>
+            )}
+          </>
         ) : (
           <>
+            <ContextMenuItem onClick={onCopy}>
+              <Copy />
+              {t`Copy`}
+            </ContextMenuItem>
             <ContextMenuItem onClick={onDownload}>
               <Download />
               {t`Download`}

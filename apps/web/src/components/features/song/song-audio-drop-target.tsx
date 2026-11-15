@@ -42,7 +42,7 @@ export function SongAudioDropTarget({
       .fetchQuery(getSongDefaultAudioQueryOptions({ songId, organizationId }))
       .catch(() => null);
     uploadMutation.mutate({
-      songId,
+      place: { kind: "song", id: songId },
       organizationId,
       file,
       destinationLabel: getDestinationLabel(),
