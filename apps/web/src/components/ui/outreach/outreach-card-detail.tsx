@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Kanban, Mail, MapPin, Megaphone, MoreVertical, Phone, Share2, User } from "lucide-react";
+import { Kanban, Mail, MapPin, MoreVertical, Phone, Share2, User } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 
 import {
@@ -145,11 +145,6 @@ export function OutreachCardDetail({
   return (
     <>
       <EntityDetailLayout
-        icon={
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-[6px] bg-muted">
-            <Megaphone className="size-4" />
-          </span>
-        }
         title={card.title}
         actions={
           <div className="flex items-center gap-1.5">
