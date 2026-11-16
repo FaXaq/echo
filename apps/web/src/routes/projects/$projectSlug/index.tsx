@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { CalendarPlus, Upload } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -23,6 +23,12 @@ function RouteComponent() {
   const { organizationId, organizationName } = Route.useRouteContext();
   const { projectSlug } = Route.useParams();
   const props = { organizationId, projectSlug };
+  const { i18n } = useLingui();
+  const today = new Intl.DateTimeFormat(i18n.locale, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  }).format(new Date());
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-6">
@@ -31,6 +37,7 @@ function RouteComponent() {
           <span className="text-sm text-muted-foreground">{organizationName}</span>
           <h1 className="m-0 font-heading text-3xl font-semibold tracking-tight">
             <Trans>Home</Trans>
+            <span className="font-normal text-muted-foreground"> · {today}</span>
           </h1>
         </div>
         <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">

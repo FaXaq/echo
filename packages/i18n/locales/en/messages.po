@@ -135,7 +135,7 @@ msgstr "{doneCount} of {total} done · {totalPercent}%"
 msgid "{doneCount} of {total} files uploaded"
 msgstr "{doneCount} of {total} files uploaded"
 
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:57
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:52
 msgid "{expenseCount, plural, one {# expense} other {# expenses}}"
 msgstr "{expenseCount, plural, one {# expense} other {# expenses}}"
 
@@ -160,7 +160,7 @@ msgstr "{fileName} uploaded"
 msgid "{label} history"
 msgstr "{label} history"
 
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:80
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:69
 msgid "{settleCount, plural, =0 {Nothing to settle} one {# repayment settles everyone} other {# repayments settle everyone}}"
 msgstr "{settleCount, plural, =0 {Nothing to settle} one {# repayment settles everyone} other {# repayments settle everyone}}"
 
@@ -177,7 +177,7 @@ msgstr "/"
 msgid "+ {amount}"
 msgstr "+ {amount}"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:178
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:182
 msgid "+{others} files"
 msgstr "+{others} files"
 
@@ -296,11 +296,11 @@ msgstr "All day"
 msgid "All files uploaded."
 msgstr "All files uploaded."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:447
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:453
 msgid "All playlists"
 msgstr "All playlists"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:407
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:413
 msgid "All songs"
 msgstr "All songs"
 
@@ -398,7 +398,7 @@ msgstr "At least one uppercase letter"
 msgid "Audio ({0})"
 msgstr "Audio ({0})"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:284
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:290
 msgid "Audio and documents you upload to the drive show up here."
 msgstr "Audio and documents you upload to the drive show up here."
 
@@ -456,7 +456,7 @@ msgstr "BPM must be a whole number"
 msgid "Build a setlist for your next gig or rehearsal."
 msgstr "Build a setlist for your next gig or rehearsal."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:425
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:431
 msgid "Build a setlist from the playlists page."
 msgstr "Build a setlist from the playlists page."
 
@@ -470,7 +470,7 @@ msgid "By exact amounts"
 msgstr "By exact amounts"
 
 #: apps/web/src/components/features/event-calendar/event-upload-context.tsx:30
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:151
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:155
 #: apps/web/src/hooks/use-navigation.ts:66
 #: apps/web/src/lib/dynamic-messages.ts:49
 msgid "Calendar"
@@ -1025,8 +1025,8 @@ msgid "Drag to reorder"
 msgstr "Drag to reorder"
 
 #: apps/web/src/components/features/drive/use-drive-file-transfer.ts:52
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:316
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:356
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:322
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:362
 #: apps/web/src/hooks/use-navigation.ts:71
 #: apps/web/src/lib/dynamic-messages.ts:56
 msgid "Drive"
@@ -1208,7 +1208,7 @@ msgstr "Expense actions"
 #: apps/web/src/components/features/expense/suspended-event-expenses.tsx:26
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:73
 #: apps/web/src/components/features/expense/suspended-expense-ledger.tsx:94
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:261
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:267
 #: apps/web/src/hooks/use-navigation.ts:76
 #: apps/web/src/lib/dynamic-messages.ts:51
 msgid "Expenses"
@@ -1434,7 +1434,7 @@ msgid "Hide — keep uploading"
 msgstr "Hide — keep uploading"
 
 #: apps/web/src/hooks/use-navigation.ts:56
-#: apps/web/src/routes/projects/$projectSlug/index.tsx:33
+#: apps/web/src/routes/projects/$projectSlug/index.tsx:39
 msgid "Home"
 msgstr "Home"
 
@@ -1501,7 +1501,7 @@ msgstr "Key"
 msgid "Language"
 msgstr "Language"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:227
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:231
 msgid "Last event"
 msgstr "Last event"
 
@@ -1513,7 +1513,7 @@ msgstr "Last modified"
 msgid "Latest demo"
 msgstr "Latest demo"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:313
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:319
 msgid "Latest files"
 msgstr "Latest files"
 
@@ -1521,11 +1521,11 @@ msgstr "Latest files"
 msgid "Latest final"
 msgstr "Latest final"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:353
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:359
 msgid "Latest media"
 msgstr "Latest media"
 
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:77
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:66
 msgid "Left to settle"
 msgstr "Left to settle"
 
@@ -1650,7 +1650,7 @@ msgstr "Month"
 msgid "Move or delete this column's cards first"
 msgstr "Move or delete this column's cards first"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:258
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:264
 msgid "My balance"
 msgstr "My balance"
 
@@ -1673,7 +1673,7 @@ msgstr "New card"
 #: apps/web/src/components/ui/event-calendar/event-calendar.tsx:196
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:207
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:209
-#: apps/web/src/routes/projects/$projectSlug/index.tsx:51
+#: apps/web/src/routes/projects/$projectSlug/index.tsx:58
 msgid "New event"
 msgstr "New event"
 
@@ -1702,7 +1702,7 @@ msgstr "New password"
 msgid "New playlist"
 msgstr "New playlist"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:444
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:450
 msgid "New playlists"
 msgstr "New playlists"
 
@@ -1772,7 +1772,7 @@ msgstr "No expenses yet"
 #~ msgstr "No files linked yet."
 
 #: apps/web/src/components/features/drive/drive-explorer.tsx:440
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:283
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:289
 #: apps/web/src/components/ui/attachment-list.tsx:194
 #: apps/web/src/components/ui/attachment-list.tsx:434
 msgid "No files yet"
@@ -1804,11 +1804,11 @@ msgstr "No members yet"
 #~ msgid "No organization"
 #~ msgstr "No organization"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:194
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:198
 msgid "No past events yet"
 msgstr "No past events yet"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:335
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:341
 msgid "No photos or videos yet"
 msgstr "No photos or videos yet"
 
@@ -1820,7 +1820,7 @@ msgstr "No places found"
 msgid "No playlists for this event"
 msgstr "No playlists for this event"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:424
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:430
 #: apps/web/src/components/features/playlist/suspended-playlist-list.tsx:67
 msgid "No playlists yet"
 msgstr "No playlists yet"
@@ -1850,7 +1850,7 @@ msgstr "No songs in this playlist"
 #~ msgid "No songs in this playlist."
 #~ msgstr "No songs in this playlist."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:373
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:379
 #: apps/web/src/components/features/song/suspended-song-list.tsx:62
 msgid "No songs yet"
 msgstr "No songs yet"
@@ -1863,7 +1863,7 @@ msgstr "No songs yet"
 msgid "No thumbnail"
 msgstr "No thumbnail"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:109
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:113
 msgid "No upcoming events"
 msgstr "No upcoming events"
 
@@ -2047,7 +2047,7 @@ msgstr "Plan & usage"
 msgid "Plan limit reached"
 msgstr "Plan limit reached"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:110
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:114
 msgid "Plan rehearsals and gigs from the calendar."
 msgstr "Plan rehearsals and gigs from the calendar."
 
@@ -2151,7 +2151,7 @@ msgstr "Reach"
 msgid "Reading file details…"
 msgstr "Reading file details…"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:404
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:410
 msgid "Recently edited songs"
 msgstr "Recently edited songs"
 
@@ -2454,7 +2454,7 @@ msgstr "Song not found"
 msgid "Songs"
 msgstr "Songs"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:374
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:380
 msgid "Songs you create or edit show up here."
 msgstr "Songs you create or edit show up here."
 
@@ -2474,7 +2474,7 @@ msgstr "Storage"
 #~ msgid "Suggested repayments"
 #~ msgstr "Suggested repayments"
 
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:51
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:46
 msgid "Summary"
 msgstr "Summary"
 
@@ -2668,7 +2668,7 @@ msgstr "Too many attempts, request a new code"
 msgid "Total"
 msgstr "Total"
 
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:55
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:50
 msgid "Total spent"
 msgstr "Total spent"
 
@@ -2721,7 +2721,7 @@ msgstr "Up next"
 msgid "Up next: {0}"
 msgstr "Up next: {0}"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:148
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:152
 msgid "Upcoming events"
 msgstr "Upcoming events"
 
@@ -2738,7 +2738,7 @@ msgstr "Update"
 msgid "Upload"
 msgstr "Upload"
 
-#: apps/web/src/routes/projects/$projectSlug/index.tsx:43
+#: apps/web/src/routes/projects/$projectSlug/index.tsx:50
 msgid "Upload a file"
 msgstr "Upload a file"
 
@@ -2756,7 +2756,7 @@ msgstr "Upload files"
 msgid "Upload files with the button above."
 msgstr "Upload files with the button above."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:336
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:342
 msgid "Upload media to the drive or to an event."
 msgstr "Upload media to the drive or to an event."
 
@@ -2842,12 +2842,12 @@ msgstr "Yes, cancel"
 msgid "Yes, remove"
 msgstr "Yes, remove"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:240
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:66
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:244
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:59
 msgid "You are owed"
 msgstr "You are owed"
 
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:69
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:62
 msgid "You are settled up"
 msgstr "You are settled up"
 
@@ -2855,16 +2855,16 @@ msgstr "You are settled up"
 msgid "You have been invited to join"
 msgstr "You have been invited to join"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:239
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:68
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:243
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:61
 msgid "You owe"
 msgstr "You owe"
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:241
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:245
 msgid "You're all settled"
 msgstr "You're all settled"
 
-#: apps/web/src/components/ui/expense/ledger-stats.tsx:60
+#: apps/web/src/components/ui/expense/ledger-stats.tsx:55
 msgid "Your balance"
 msgstr "Your balance"
 
@@ -2876,7 +2876,7 @@ msgstr "Your current plan and what you have used of it."
 #~ msgid "Your email has been verified. You can now sign in."
 #~ msgstr "Your email has been verified. You can now sign in."
 
-#: apps/web/src/components/features/home/suspended-home-sections.tsx:195
+#: apps/web/src/components/features/home/suspended-home-sections.tsx:199
 msgid "Your latest event will show up here once it's over."
 msgstr "Your latest event will show up here once it's over."
 
