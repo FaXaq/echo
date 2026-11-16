@@ -42,7 +42,7 @@ export function toFileRecord(row: FileRow): FileRecord {
     uploadedByName: row.uploaded_by_name ?? row.uploaded_by,
     kind: toFileKind(row.kind),
     mimeType: row.mime_type,
-    sizeBytes: row.size_bytes,
+    sizeBytes: Number(row.size_bytes),
     durationSeconds: row.duration_seconds,
     width: row.width,
     height: row.height,

@@ -11,7 +11,7 @@ export const markFileUploadedCommandFactory: MarkFileUploadedCommandPortFactory 
           status: "uploaded",
           has_thumbnail: input.hasThumbnail,
           updated_at: new Date(),
-          ...(input.sizeBytes === null ? {} : { size_bytes: input.sizeBytes }),
+          ...(input.sizeBytes === null ? {} : { size_bytes: String(input.sizeBytes) }),
         })
         .where("id", "=", input.id)
         .where("organization_id", "=", scope.organizationId)

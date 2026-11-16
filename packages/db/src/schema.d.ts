@@ -102,7 +102,7 @@ export interface File {
   organization_id: string;
   original_filename: string;
   s3_key: string;
-  size_bytes: number;
+  size_bytes: Int8;
   status: Generated<string>;
   updated_at: Generated<Timestamp | null>;
   uploaded_by: string;
