@@ -64,6 +64,8 @@ export interface EventCalendarProps {
   onEventUpdate?: (event: CalendarEvent) => void | Promise<void>;
   onEventDelete?: (id: string) => void | Promise<void>;
   defaultOrganizationId: string;
+  /** Opens the creation form on mount, for links that land here to create an event. */
+  startCreating?: boolean;
   className?: string;
 }
 
@@ -78,13 +80,18 @@ export function EventCalendar({
   onEventUpdate,
   onEventDelete,
   defaultOrganizationId,
+  startCreating = false,
   className,
 }: EventCalendarProps) {
   const { t } = useLingui();
 
   const [internalView, setInternalView] = useState<CalendarView>("month");
   const [internalDate, setInternalDate] = useState<Date>(() => new Date());
-  const [dialogState, setDialogState] = useState<EventDialogState>(null);
+  const [dialogState, setDialogState] = useState<EventDialogState>(() =>
+    startCreating
+      ? { mode: "create", range: currentHourRange(controlledDate ?? new Date()) }
+      : null,
+  );
   const [dayOverflow, setDayOverflow] = useState<{
     day: Date;
     events: CalendarEvent[];

@@ -45,6 +45,7 @@ function RouteComponent() {
           <Link
             to="/projects/$projectSlug/calendar"
             params={{ projectSlug }}
+            search={{ create: true }}
             className={buttonVariants({ className: "no-underline" })}
           >
             <CalendarPlus />

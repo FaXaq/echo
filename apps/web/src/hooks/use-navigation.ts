@@ -1,5 +1,5 @@
 import type { FileRouteTypes } from "@/routeTree.gen";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useLingui } from "@lingui/react/macro";
 import { organizationRoleSchema } from "@echo/auth";
@@ -43,10 +43,6 @@ export function useNavigation() {
   const orgOptions: OrganizationOption[] = [...(organizations ?? [])].sort(
     (a, b) => Number(b.isPersonal) - Number(a.isPersonal),
   );
-
-  const setActiveOrganization = (org: OrganizationOption) => {
-    navigate({ to: "/projects/$projectSlug", params: { projectSlug: org.slug } });
-  };
 
   const slug = activeOrganization?.slug ?? "";
   const navGroups: NavGroup[] = [
@@ -117,6 +113,20 @@ export function useNavigation() {
         },
       ],
     });
+
+  const pathname = useLocation({ select: (location) => location.pathname });
+  const currentSection = pathname.split("/")[3];
+  const currentItem = navGroups
+    .flatMap((group) => group.items)
+    .find((item) => currentSection && item.to.split("/")[3] === currentSection);
+
+  // Detail pages (a song, an event) don't exist in the other project, so land on their section.
+  const setActiveOrganization = (org: OrganizationOption) => {
+    navigate({
+      to: currentItem?.to ?? "/projects/$projectSlug",
+      params: { projectSlug: org.slug },
+    });
+  };
 
   return { orgOptions, activeOrganization, setActiveOrganization, navGroups };
 }

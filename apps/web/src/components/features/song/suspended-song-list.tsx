@@ -18,13 +18,21 @@ export interface SuspendedSongListProps {
   organizationId: string;
   projectSlug: string;
   onSongCreated: (song: Song) => void;
+  startCreating?: boolean;
 }
 
-function SongListContent({ organizationId, projectSlug, onSongCreated }: SuspendedSongListProps) {
+function SongListContent({
+  organizationId,
+  projectSlug,
+  onSongCreated,
+  startCreating = false,
+}: SuspendedSongListProps) {
   const { t } = useLingui();
   const posthog = usePostHog();
   const { data: songs } = useSuspenseQuery(getSongsQueryOptions({ organizationId }));
-  const [dialogState, setDialogState] = useState<SongDialogState>(null);
+  const [dialogState, setDialogState] = useState<SongDialogState>(
+    startCreating ? { mode: "create" } : null,
+  );
 
   const createSongMutation = useCreateSongMutation({
     onSuccess: (song) => {
@@ -120,19 +128,11 @@ function SongListLoader() {
   );
 }
 
-export function SuspendedSongList({
-  organizationId,
-  projectSlug,
-  onSongCreated,
-}: SuspendedSongListProps) {
+export function SuspendedSongList(props: SuspendedSongListProps) {
   return (
     <ErrorBoundary FallbackComponent={SongListError}>
       <Suspense fallback={<SongListLoader />}>
-        <SongListContent
-          organizationId={organizationId}
-          projectSlug={projectSlug}
-          onSongCreated={onSongCreated}
-        />
+        <SongListContent {...props} />
       </Suspense>
     </ErrorBoundary>
   );
