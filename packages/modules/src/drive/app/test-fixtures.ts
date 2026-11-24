@@ -40,6 +40,13 @@ export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
       keys.add(key);
       return { url: `https://fake-s3.local/${key}` };
     },
+    createMultipartUpload: async ({ key, partSizes }) => ({
+      uploadId: `upload-${key}`,
+      partUrls: partSizes.map((_, index) => `https://fake-s3.local/${key}?part=${index + 1}`),
+    }),
+    completeMultipartUpload: async ({ key }) => {
+      keys.add(key);
+    },
     createDownloadUrl: async (key, options) => ({
       url: `https://fake-s3.local/${key}?download${options?.attachmentFilename ? `&attachment=${options.attachmentFilename}` : ""}`,
     }),
@@ -164,6 +171,8 @@ export function makeFakeHeadObjectS3(result: {
 }): S3StoragePort {
   return {
     createUploadUrl: async () => ({ url: "" }),
+    createMultipartUpload: async () => ({ uploadId: "", partUrls: [] }),
+    completeMultipartUpload: async () => {},
     createDownloadUrl: async () => ({ url: "" }),
     headObject: async () => result,
     deleteObject: async () => {},

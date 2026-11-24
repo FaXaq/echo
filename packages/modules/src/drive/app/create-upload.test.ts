@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ForbiddenError, ConflictError, NotFoundError, QuotaExceededError } from "@echo/errors";
 import { planCatalog } from "@echo/modules/plan/domain";
 import { createOrganizationScope, type OrganizationScope } from "@echo/modules/shared/domain";
-import { MAX_PREVIEW_BYTES } from "../domain/index.js";
+import { MAX_PREVIEW_BYTES, MULTIPART_PART_SIZE_BYTES } from "../domain/index.js";
 import type { InsertPendingFileInput } from "../infrastructure/index.js";
 import { createUpload } from "./create-upload.js";
 import {
@@ -219,7 +219,30 @@ describe("createUpload", () => {
       { ...baseInput, sizeBytes: planCatalog.free.limits.maxFileSizeBytes },
     );
 
+    expect(result.uploadUrl).toBeNull();
+    expect(result.multipart?.partUrls).toHaveLength(
+      Math.ceil(planCatalog.free.limits.maxFileSizeBytes / MULTIPART_PART_SIZE_BYTES),
+    );
+  });
+
+  it("uses a single upload url up to one part size", async () => {
+    const result = await createUpload(
+      {
+        db: makeFakeDb(),
+        findFolderByIdQuery: makeFakeFindFolderById(),
+        s3Storage: makeFakeS3Storage(),
+        insertPendingFileCommand: makeFakeInsertPendingFile(),
+        linkFileToSongCommand: makeFakeLinkFileToSong(),
+        songExistsInOrganizationQuery: makeFakeSongExistsInOrganization(),
+        getPersonalOrganizationId: makeFakePersonalOrganizationId("personal-org-1"),
+        ...makeFakePermissionChecks(),
+        ...makeFakeQuotaPorts(),
+      },
+      { ...baseInput, sizeBytes: MULTIPART_PART_SIZE_BYTES },
+    );
+
     expect(result.uploadUrl).toContain("https://fake-s3.local/");
+    expect(result.multipart).toBeNull();
   });
 
   it("rejects an upload that would exceed the storage quota", async () => {

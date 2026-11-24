@@ -6,6 +6,7 @@ import {
   formatDuration,
   getMediaMetadata,
   thumbnailDimensions,
+  withRetry,
 } from "./file.js";
 
 afterEach(() => {
@@ -296,5 +297,19 @@ describe("findEmbeddedJpegs", () => {
     const bytes = new Uint8Array(preview.slice(0, -2));
 
     expect(findEmbeddedJpegs(bytes).map((jpeg) => [...jpeg])).toEqual([thumbnail]);
+  });
+});
+
+describe("withRetry", () => {
+  it("succeeds once a later attempt works", async () => {
+    const run = vi.fn().mockRejectedValueOnce(new Error("net")).mockResolvedValueOnce("etag");
+    await expect(withRetry(run, 3, 0)).resolves.toBe("etag");
+    expect(run).toHaveBeenCalledTimes(2);
+  });
+
+  it("gives up after the last attempt with the last error", async () => {
+    const run = vi.fn().mockRejectedValue(new Error("net"));
+    await expect(withRetry(run, 3, 0)).rejects.toThrow("net");
+    expect(run).toHaveBeenCalledTimes(3);
   });
 });

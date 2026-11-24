@@ -13,6 +13,7 @@ import {
   downloadFile,
   extractRawPreview,
   getMediaMetadata,
+  putParts,
   putWithProgress,
 } from "@/lib/file";
 import { resetUploadProgress, setUploadDuration, setUploadProgress } from "@/lib/upload-progress";
@@ -262,7 +263,7 @@ export function useUploadFileMutation({
       const thumbnail =
         generated && generated.blob.size <= MAX_THUMBNAIL_BYTES ? generated.blob : null;
 
-      const { fileId, uploadUrl, previewUploadUrl, thumbnailUploadUrl } =
+      const { fileId, uploadUrl, multipart, previewUploadUrl, thumbnailUploadUrl } =
         await apiClient.drive.createUpload.mutate({
           eventId: input.eventId,
           songId: input.songId,
@@ -279,9 +280,9 @@ export function useUploadFileMutation({
         });
 
       setUploadProgress(input.file, 0);
-      await putWithProgress(uploadUrl, input.file, mimeType, (ratio) =>
-        setUploadProgress(input.file, ratio),
-      );
+      const onProgress = (ratio: number) => setUploadProgress(input.file, ratio);
+      if (uploadUrl) await putWithProgress(uploadUrl, input.file, mimeType, onProgress);
+      const parts = multipart ? await putParts(multipart.partUrls, input.file, onProgress) : null;
 
       await Promise.all([
         putDerivedJpeg(previewUploadUrl, preview),
@@ -290,6 +291,7 @@ export function useUploadFileMutation({
 
       return apiClient.drive.confirmUpload.mutate({
         id: fileId,
+        multipart: multipart && parts ? { uploadId: multipart.uploadId, parts } : undefined,
         organizationId: input.organizationId,
       });
     },

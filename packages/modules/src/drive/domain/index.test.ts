@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { fileObjectKeys, kindForMimeType, mimeTypeForFile } from "./index.js";
+import {
+  fileObjectKeys,
+  kindForMimeType,
+  mimeTypeForFile,
+  MULTIPART_PART_SIZE_BYTES,
+  multipartPartSizes,
+} from "./index.js";
 
 describe("kindForMimeType", () => {
   it("maps known audio mime types to the audio kind", () => {
@@ -75,5 +81,20 @@ describe("fileObjectKeys", () => {
 
   it("only includes the original for audio and documents", () => {
     expect(fileObjectKeys({ s3Key: "o/a/s.mp3", mimeType: "audio/mpeg" })).toEqual(["o/a/s.mp3"]);
+  });
+});
+
+describe("multipartPartSizes", () => {
+  it("splits into full parts plus the remainder, summing to the file size", () => {
+    const sizes = multipartPartSizes(2 * MULTIPART_PART_SIZE_BYTES + 5);
+    expect(sizes).toEqual([MULTIPART_PART_SIZE_BYTES, MULTIPART_PART_SIZE_BYTES, 5]);
+  });
+
+  it("adds no empty part for an exact multiple", () => {
+    expect(multipartPartSizes(3 * MULTIPART_PART_SIZE_BYTES)).toHaveLength(3);
+  });
+
+  it("stays under S3's 10,000 part limit at 10 GB", () => {
+    expect(multipartPartSizes(10_000_000_000).length).toBeLessThan(10_000);
   });
 });

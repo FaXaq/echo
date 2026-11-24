@@ -41,6 +41,7 @@ flowchart TD
     O --> P["tRPC drive.confirmUpload<br/>check original exists → status = uploaded"]
 ```
 
+- Files over `MULTIPART_PART_SIZE_BYTES` (64 MiB) use S3 multipart upload, because one signed PUT is capped at 5 GiB. `createUpload` returns an `uploadId` and one signed URL per part. The browser uploads the parts and reads each part's `ETag` (the bucket CORS must expose `ETag`), and `confirmUpload` completes the multipart upload before checking the object.
 - Browsers often report an empty or vendor-specific type for RAW files, so `mimeTypeForFile` falls back to the file extension.
 - RAW extraction runs in the browser (`apps/web/src/lib/file.ts`) because the file is already in memory there. The preview upload is best effort: if it fails, the RAW file still uploads and its tile shows the failed-load icon.
 - Previews are capped at 3 MB and don't count toward quota or stored usage, which comes from the original's size in S3. Over the cap, the RAW file uploads without a preview.

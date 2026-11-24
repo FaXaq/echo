@@ -141,3 +141,12 @@ export type FolderRecord = {
   createdAt: Date | null;
   updatedAt: Date | null;
 };
+
+/* S3 caps a single PUT at 5 GiB; bigger files go through multipart upload in parts of this size */
+export const MULTIPART_PART_SIZE_BYTES = 67_108_864;
+
+export function multipartPartSizes(sizeBytes: number) {
+  const fullParts = Math.floor(sizeBytes / MULTIPART_PART_SIZE_BYTES);
+  const rest = sizeBytes % MULTIPART_PART_SIZE_BYTES;
+  return [...Array<number>(fullParts).fill(MULTIPART_PART_SIZE_BYTES), ...(rest ? [rest] : [])];
+}

@@ -1,9 +1,12 @@
 import {
+  CompleteMultipartUploadCommand,
+  CreateMultipartUploadCommand,
   DeleteObjectCommand,
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
   S3Client,
+  UploadPartCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import type { S3StoragePort } from "./s3-storage.port.js";
@@ -36,6 +39,48 @@ export function makeS3Storage(config: {
       });
       const url = await getSignedUrl(client, command, { expiresIn: 300 });
       return { url };
+    },
+
+    createMultipartUpload: async ({ key, contentType, partSizes }) => {
+      const { UploadId } = await client.send(
+        new CreateMultipartUploadCommand({
+          Bucket: config.bucket,
+          Key: key,
+          ContentType: contentType,
+        }),
+      );
+      if (!UploadId) throw new Error("S3 returned no multipart upload id");
+
+      // ponytail: every part URL is signed upfront for 24h; sign on demand if uploads outlast that
+      const partUrls = await Promise.all(
+        partSizes.map((contentLength, index) =>
+          getSignedUrl(
+            client,
+            new UploadPartCommand({
+              Bucket: config.bucket,
+              Key: key,
+              UploadId,
+              PartNumber: index + 1,
+              ContentLength: contentLength,
+            }),
+            { expiresIn: 86_400 },
+          ),
+        ),
+      );
+      return { uploadId: UploadId, partUrls };
+    },
+
+    completeMultipartUpload: async ({ key, uploadId, parts }) => {
+      await client.send(
+        new CompleteMultipartUploadCommand({
+          Bucket: config.bucket,
+          Key: key,
+          UploadId: uploadId,
+          MultipartUpload: {
+            Parts: parts.map(({ partNumber, etag }) => ({ PartNumber: partNumber, ETag: etag })),
+          },
+        }),
+      );
     },
 
     createDownloadUrl: async (key, options) => {
