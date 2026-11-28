@@ -4,6 +4,7 @@ import {
   kindForMimeType,
   MAX_PREVIEW_BYTES,
   type MediaMetadata,
+  MULTIPART_PART_SIZE_BYTES,
 } from "@echo/modules/drive/domain";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -275,20 +276,75 @@ export function readMediaMetadata(url: string, kind: "audio" | "video"): Promise
 export function putWithProgress(
   url: string,
   body: Blob,
-  contentType: string,
+  contentType: string | null,
   onProgress: (ratio: number) => void,
+  signal?: AbortSignal,
 ) {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<string | null>((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason);
     const xhr = new XMLHttpRequest();
+    signal?.addEventListener("abort", () => xhr.abort(), { once: true });
+    xhr.addEventListener("abort", () => reject(signal?.reason));
     xhr.open("PUT", url);
-    xhr.setRequestHeader("Content-Type", contentType);
+    if (contentType) xhr.setRequestHeader("Content-Type", contentType);
     xhr.upload.addEventListener("progress", (event) => {
       if (event.lengthComputable) onProgress(event.loaded / event.total);
     });
     xhr.addEventListener("load", () =>
-      xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error("Upload failed")),
+      xhr.status >= 200 && xhr.status < 300
+        ? resolve(xhr.getResponseHeader("ETag"))
+        : reject(new Error("Upload failed")),
     );
     xhr.addEventListener("error", () => reject(new Error("Upload failed")));
     xhr.send(body);
   });
+}
+
+async function putPart(
+  url: string,
+  part: Blob,
+  onProgress: (ratio: number) => void,
+  signal?: AbortSignal,
+) {
+  const etag = await withRetry(() => putWithProgress(url, part, null, onProgress, signal), signal);
+  if (!etag) throw new Error("Upload failed: S3 did not expose the part ETag");
+  return etag;
+}
+
+export async function withRetry<T>(
+  run: () => Promise<T>,
+  signal?: AbortSignal,
+  attempts = 3,
+  baseDelayMs = 1000,
+) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await run();
+    } catch (error) {
+      if (attempt >= attempts || signal?.aborted) throw error;
+      await new Promise((resolve) => setTimeout(resolve, baseDelayMs * 2 ** (attempt - 1)));
+    }
+  }
+}
+
+// ponytail: parts go one at a time; upload a few in parallel if large uploads feel slow
+export async function putParts(
+  urls: string[],
+  file: Blob,
+  onProgress: (ratio: number) => void,
+  signal?: AbortSignal,
+) {
+  const parts: { partNumber: number; etag: string }[] = [];
+  for (const [index, url] of urls.entries()) {
+    const start = index * MULTIPART_PART_SIZE_BYTES;
+    const part = file.slice(start, start + MULTIPART_PART_SIZE_BYTES);
+    const etag = await putPart(
+      url,
+      part,
+      (ratio) => onProgress((start + ratio * part.size) / file.size),
+      signal,
+    );
+    parts.push({ partNumber: index + 1, etag });
+  }
+  return parts;
 }

@@ -1,7 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutationState, useQueryClient } from "@tanstack/react-query";
 import { Plural, Trans, useLingui } from "@lingui/react/macro";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,20 +24,30 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
+import { toast } from "@/components/ui/toast";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatDuration, formatSize } from "@/lib/file";
 import { getQuotaError } from "@/lib/quota-error";
 import {
   getUploadDuration,
   getUploadProgress,
+  stopUpload,
   totalUploadRatio,
   useRerenderOnUploadProgress,
 } from "@/lib/upload-progress";
-import { uploadFileMutationKey, type UploadFileInput } from "@/services/resources/drive";
+import {
+  uploadFileMutationKey,
+  useCancelUploadedFilesMutation,
+  type UploadFileInput,
+} from "@/services/resources/drive";
 import { useUploadFile } from "./use-upload-file";
 
 function isUploadFileInput(value: unknown): value is UploadFileInput {
   return typeof value === "object" && value !== null && "file" in value;
+}
+
+function hasFileId(value: unknown): value is { id: string } {
+  return typeof value === "object" && value !== null && "id" in value;
 }
 
 function useUploadRows() {
@@ -39,6 +60,7 @@ function useUploadRows() {
             status: mutation.state.status,
             input: mutation.state.variables,
             error: mutation.state.error,
+            fileId: hasFileId(mutation.state.data) ? mutation.state.data.id : null,
           }
         : null,
   }).filter((row) => row !== null);
@@ -47,8 +69,10 @@ function useUploadRows() {
 type UploadRow = ReturnType<typeof useUploadRows>[number];
 
 export function UploadProgressDialog() {
+  const { t } = useLingui();
   const queryClient = useQueryClient();
   const uploadMutation = useUploadFile();
+  const cancelUploadedFiles = useCancelUploadedFilesMutation();
   useRerenderOnUploadProgress();
   const allRows = useUploadRows();
   const [lastHiddenUploadId, setLastHiddenUploadId] = useState(0);
@@ -57,7 +81,9 @@ export function UploadProgressDialog() {
 
   const isNew = (row: UploadRow) => row.id > lastHiddenUploadId;
   const isUnseenFailure = (row: UploadRow) => row.status === "error" && !seenFailureIds.has(row.id);
-  const open = allRows.some((row) => isNew(row) || isUnseenFailure(row));
+  const [minimized, setMinimized] = useState(false);
+  const progressToastId = useRef<string | null>(null);
+  const open = !minimized && allRows.some((row) => isNew(row) || isUnseenFailure(row));
 
   if (open && heldUploadIds === null) {
     setHeldUploadIds(
@@ -92,16 +118,91 @@ export function UploadProgressDialog() {
     setHeldUploadIds(null);
   };
 
+  const anyPending = allRows.some((row) => row.status === "pending");
+  useEffect(() => {
+    if (!anyPending) return;
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [anyPending]);
+
+  const progressTitle = t`Uploading files · ${totalPercent}%`;
+  const progressDescription = t`${doneCount} of ${total} done`;
+  const detailsLabel = t`Details`;
+
+  useEffect(() => {
+    if (!minimized) return;
+    if (!hasPending) {
+      if (failedCount === 0) dismiss();
+      setMinimized(false);
+      return;
+    }
+    const expand = () => setMinimized(false);
+    const content = {
+      title: progressTitle,
+      description: progressDescription,
+      data: { persistent: true, onClick: expand, progress: totalPercent },
+    };
+    if (progressToastId.current) {
+      toast.update(progressToastId.current, content);
+      return;
+    }
+    progressToastId.current = toast.add({
+      ...content,
+      type: "loading",
+      timeout: 0,
+      actionProps: { children: detailsLabel, onClick: expand },
+    });
+  }, [minimized, hasPending, failedCount, totalPercent, progressTitle, progressDescription]);
+
+  useEffect(() => {
+    if (minimized || !progressToastId.current) return;
+    toast.close(progressToastId.current);
+    progressToastId.current = null;
+  }, [minimized]);
+
+  const stopAll = () => {
+    const uploadedFiles = rows.flatMap((row) =>
+      row.status === "success" && row.fileId
+        ? [{ id: row.fileId, organizationId: row.input.organizationId }]
+        : [],
+    );
+    rows.forEach(stop);
+    dismiss();
+    setMinimized(false);
+    cancelUploadedFiles.mutate(uploadedFiles, {
+      onSuccess: () => toast.add({ type: "success", title: t`Upload stopped and files deleted` }),
+      onError: () =>
+        toast.add({ type: "error", title: t`Some uploaded files could not be deleted` }),
+    });
+  };
+
+  const forget = (row: UploadRow) => {
+    const cache = queryClient.getMutationCache();
+    const mutation = cache.find({ predicate: (mutation) => mutation.mutationId === row.id });
+    if (mutation) cache.remove(mutation);
+  };
+
+  // The upload's own error path deletes whatever it already sent.
+  const stop = (row: UploadRow) => {
+    if (row.status === "pending") stopUpload(row.input.file);
+    forget(row);
+  };
+
   const retry = (row: UploadRow) => {
-    const failed = queryClient
-      .getMutationCache()
-      .find({ predicate: (mutation) => mutation.mutationId === row.id });
-    if (failed) queryClient.getMutationCache().remove(failed);
+    forget(row);
     uploadMutation.mutate(row.input);
   };
 
   return (
-    <Dialog open={open} onOpenChange={(open) => !open && dismiss()}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        if (open) return;
+        if (hasPending) setMinimized(true);
+        else dismiss();
+      }}
+    >
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
@@ -132,10 +233,43 @@ export function UploadProgressDialog() {
         <Progress value={totalPercent} />
         <ul className="flex max-h-80 flex-col overflow-y-auto rounded-lg border">
           {rows.map((row) => (
-            <UploadRowItem key={row.id} row={row} onRetry={() => retry(row)} />
+            <UploadRowItem
+              key={row.id}
+              row={row}
+              onRetry={() => retry(row)}
+              onStop={() => stop(row)}
+            />
           ))}
         </ul>
         <DialogFooter>
+          {hasPending && (
+            <AlertDialog>
+              <AlertDialogTrigger render={<Button variant="outline" />}>
+                <Trans>Stop and delete</Trans>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    <Trans>Stop this upload?</Trans>
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    <Trans>
+                      Files still uploading are stopped, and files from this upload that already
+                      finished are deleted. This cannot be undone.
+                    </Trans>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>
+                    <Trans>Keep uploading</Trans>
+                  </AlertDialogCancel>
+                  <AlertDialogAction variant="destructive" onClick={stopAll}>
+                    <Trans>Stop and delete</Trans>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <DialogClose render={<Button />}>
             {hasPending ? <Trans>Hide — keep uploading</Trans> : <Trans>Close</Trans>}
           </DialogClose>
@@ -145,9 +279,18 @@ export function UploadProgressDialog() {
   );
 }
 
-function UploadRowItem({ row, onRetry }: { row: UploadRow; onRetry: () => void }) {
+function UploadRowItem({
+  row,
+  onRetry,
+  onStop,
+}: {
+  row: UploadRow;
+  onRetry: () => void;
+  onStop: () => void;
+}) {
   const { t } = useLingui();
   const { file } = row.input;
+  const fileName = file.name;
   const durationSeconds = getUploadDuration(file);
   const ratio = getUploadProgress(file);
   const percent = Math.round((ratio ?? 0) * 100);
@@ -198,6 +341,16 @@ function UploadRowItem({ row, onRetry }: { row: UploadRow; onRetry: () => void }
             `${percent}%`
           )}
         </span>
+      )}
+      {row.status === "pending" && (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={onStop}
+          aria-label={t`Stop uploading ${fileName}`}
+        >
+          <X />
+        </Button>
       )}
       {row.status === "success" && (
         <Check className="size-4 shrink-0 text-green-600" aria-label={t`Uploaded`} />

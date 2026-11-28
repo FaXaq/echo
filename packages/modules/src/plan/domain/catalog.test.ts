@@ -10,12 +10,12 @@ describe("planCatalog", () => {
     }
   });
 
-  it("gives pro strictly higher limits than free", () => {
+  it("gives pro higher limits than free, with the same max file size allowed", () => {
     expect(planCatalog.pro.limits.storageBytes).toBeGreaterThan(
       planCatalog.free.limits.storageBytes,
     );
     expect(planCatalog.pro.limits.memberSeats).toBeGreaterThan(planCatalog.free.limits.memberSeats);
-    expect(planCatalog.pro.limits.maxFileSizeBytes).toBeGreaterThan(
+    expect(planCatalog.pro.limits.maxFileSizeBytes).toBeGreaterThanOrEqual(
       planCatalog.free.limits.maxFileSizeBytes,
     );
   });

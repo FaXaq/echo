@@ -13,6 +13,8 @@ import {
   isRawImage,
   kindForMimeType,
   MAX_PREVIEW_BYTES,
+  MULTIPART_PART_SIZE_BYTES,
+  multipartPartSizes,
   previewKeyFor,
   thumbnailKeyFor,
 } from "../domain/index.js";
@@ -55,7 +57,8 @@ export async function createUpload(
   },
 ): Promise<{
   fileId: string;
-  uploadUrl: string;
+  uploadUrl: string | null;
+  multipart: { uploadId: string; partUrls: string[] } | null;
   previewUploadUrl: string | null;
   thumbnailUploadUrl: string | null;
 }> {
@@ -125,11 +128,23 @@ export async function createUpload(
     });
   }
 
-  const { url } = await deps.s3Storage.createUploadUrl({
-    key: s3Key,
-    contentType: input.mimeType,
-    contentLength: input.sizeBytes,
-  });
+  const multipart =
+    input.sizeBytes > MULTIPART_PART_SIZE_BYTES
+      ? await deps.s3Storage.createMultipartUpload({
+          key: s3Key,
+          contentType: input.mimeType,
+          partSizes: multipartPartSizes(input.sizeBytes),
+        })
+      : null;
+  const uploadUrl = multipart
+    ? null
+    : (
+        await deps.s3Storage.createUploadUrl({
+          key: s3Key,
+          contentType: input.mimeType,
+          contentLength: input.sizeBytes,
+        })
+      ).url;
 
   const signJpegUpload = async (key: string, contentLength: number | undefined) =>
     contentLength
@@ -148,5 +163,5 @@ export async function createUpload(
     hasThumbnailKind(input.mimeType) ? input.thumbnailSizeBytes : undefined,
   );
 
-  return { fileId: id, uploadUrl: url, previewUploadUrl, thumbnailUploadUrl };
+  return { fileId: id, uploadUrl, multipart, previewUploadUrl, thumbnailUploadUrl };
 }

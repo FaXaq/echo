@@ -16,10 +16,22 @@ export async function confirmUpload(
     findFileByIdQuery: FindFileByIdQueryPort;
     markFileUploadedCommand: MarkFileUploadedCommandPort;
   },
-  input: { id: string; scope: OrganizationScope },
+  input: {
+    id: string;
+    scope: OrganizationScope;
+    multipart?: { uploadId: string; parts: { partNumber: number; etag: string }[] };
+  },
 ): Promise<FileRecord> {
   const file = await deps.findFileByIdQuery(deps.db, input.scope, { id: input.id });
   if (!file) throw notFound("File");
+
+  if (input.multipart) {
+    await deps.s3Storage
+      .completeMultipartUpload({ key: file.s3Key, ...input.multipart })
+      .catch(() => {
+        throw conflict("Upload was not completed");
+      });
+  }
 
   const { exists, sizeBytes } = await deps.s3Storage.headObject(file.s3Key);
   if (!exists) throw conflict("Upload was not completed");

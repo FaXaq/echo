@@ -63,6 +63,9 @@ function makeFakeDeleteFileByIdCommand(onCall?: (id: string) => void): DeleteFil
 function makeFakeS3Storage(overrides: Partial<S3StoragePort> = {}): S3StoragePort {
   return {
     createUploadUrl: async () => ({ url: "" }),
+    createMultipartUpload: async () => ({ uploadId: "", partUrls: [] }),
+    completeMultipartUpload: async () => {},
+    abortMultipartUpload: async () => {},
     createDownloadUrl: async () => ({ url: "" }),
     headObject: async () => ({ exists: true, sizeBytes: 1 }),
     deleteObject: async () => {},

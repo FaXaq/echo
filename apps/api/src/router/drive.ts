@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  cancelUpload,
   confirmUpload,
   createFolder,
   createUpload,
@@ -154,7 +155,21 @@ export const makeDriveRouter = () =>
       ),
 
     confirmUpload: organizationProcedure
-      .input(z.object({ id: z.string() }))
+      .input(
+        z.object({
+          id: z.string(),
+          multipart: z
+            .object({
+              uploadId: z.string().min(1),
+              parts: z
+                .array(
+                  z.object({ partNumber: z.number().int().positive(), etag: z.string().min(1) }),
+                )
+                .min(1),
+            })
+            .optional(),
+        }),
+      )
       .mutation(({ ctx, input }) =>
         confirmUpload(
           {
@@ -163,7 +178,7 @@ export const makeDriveRouter = () =>
             findFileByIdQuery,
             markFileUploadedCommand,
           },
-          { id: input.id, scope: ctx.organizationScope },
+          { id: input.id, multipart: input.multipart, scope: ctx.organizationScope },
         ),
       ),
 
@@ -216,6 +231,15 @@ export const makeDriveRouter = () =>
             searchDriveQuery,
           },
           { scope: ctx.organizationScope, query: input.query },
+        ),
+      ),
+
+    cancelUpload: organizationProcedure
+      .input(z.object({ id: z.string(), uploadId: z.string().min(1).optional() }))
+      .mutation(({ ctx, input }) =>
+        cancelUpload(
+          { db: ctx.db, s3Storage: ctx.s3Storage, findFileByIdQuery, deleteFileByIdCommand },
+          { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
         ),
       ),
 

@@ -14,6 +14,57 @@ import type { S3StoragePort } from "@echo/adapters/s3-storage";
 const scope = createOrganizationScope("org-1");
 
 describe("confirmUpload", () => {
+  it("completes a multipart upload before checking the object", async () => {
+    const completed: string[] = [];
+    const s3Storage = makeFakeHeadObjectS3({ exists: true, sizeBytes: 4096 });
+
+    await confirmUpload(
+      {
+        db: makeFakeDb(),
+        s3Storage: {
+          ...s3Storage,
+          completeMultipartUpload: async ({ uploadId }) => {
+            completed.push(uploadId);
+          },
+        },
+        findFileByIdQuery: makeFakeFindFileById(),
+        markFileUploadedCommand: makeFakeMarkFileUploaded(),
+      },
+      {
+        id: "file-1",
+        scope,
+        multipart: { uploadId: "u-1", parts: [{ partNumber: 1, etag: "e" }] },
+      },
+    );
+
+    expect(completed).toEqual(["u-1"]);
+  });
+
+  it("rejects a multipart upload S3 refuses to complete", async () => {
+    const s3Storage = makeFakeHeadObjectS3({ exists: true, sizeBytes: 4096 });
+
+    await expect(
+      confirmUpload(
+        {
+          db: makeFakeDb(),
+          s3Storage: {
+            ...s3Storage,
+            completeMultipartUpload: async () => {
+              throw new Error("NoSuchUpload");
+            },
+          },
+          findFileByIdQuery: makeFakeFindFileById(),
+          markFileUploadedCommand: makeFakeMarkFileUploaded(),
+        },
+        {
+          id: "file-1",
+          scope,
+          multipart: { uploadId: "u-1", parts: [{ partNumber: 1, etag: "e" }] },
+        },
+      ),
+    ).rejects.toBeInstanceOf(ConflictError);
+  });
+
   it("persists the size S3 reports, not the declared size", async () => {
     const calls: { id: string; sizeBytes: number | null }[] = [];
 
