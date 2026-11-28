@@ -1,12 +1,9 @@
 import type { KyselyDB } from "@echo/db";
 import { notFound } from "@echo/errors";
-import type {
-  DeleteFileByIdCommandPort,
-  FindOrphanedFilesForSongQueryPort,
-} from "@echo/modules/drive/infrastructure";
+import type { DeleteOrphanedFilesCommandPort } from "@echo/modules/drive/infrastructure";
+import { purgeOrphanedFiles } from "@echo/modules/drive/app";
 import type { OrganizationScope } from "@echo/modules/shared/domain";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
-import { fileObjectKeys } from "@echo/modules/drive/domain";
 import type { DeleteSongCommandPort } from "../infrastructure/delete-song.command.port.js";
 
 export type DeleteSongFileFailure = { fileId: string; error: unknown };
@@ -15,33 +12,17 @@ export async function deleteSong(
   deps: {
     db: KyselyDB;
     deleteSongCommand: DeleteSongCommandPort;
-    findOrphanedFilesForSongQuery: FindOrphanedFilesForSongQueryPort;
-    deleteFileByIdCommand: DeleteFileByIdCommandPort;
+    deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort;
     s3Storage: S3StoragePort;
   },
   input: { id: string; scope: OrganizationScope },
 ): Promise<DeleteSongFileFailure[]> {
-  const orphanedFiles = await deps.findOrphanedFilesForSongQuery(deps.db, input.scope, {
-    songId: input.id,
-  });
-
-  const results = await Promise.allSettled(
-    orphanedFiles.map((file) =>
-      Promise.all(fileObjectKeys(file).map((key) => deps.s3Storage.deleteObject(key))),
-    ),
-  );
-  const failures = results.flatMap((result, index) =>
-    result.status === "rejected"
-      ? [{ fileId: orphanedFiles[index]!.id, error: result.reason }]
-      : [],
-  );
-
-  await Promise.all(
-    orphanedFiles.map((file) => deps.deleteFileByIdCommand(deps.db, input.scope, { id: file.id })),
-  );
-
   const deleted = await deps.deleteSongCommand(deps.db, input.scope, { id: input.id });
   if (!deleted) throw notFound("Song");
 
+  const { failures } = await purgeOrphanedFiles(deps, {
+    scope: input.scope,
+    fileIds: deleted.fileIds,
+  });
   return failures;
 }

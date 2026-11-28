@@ -30,18 +30,6 @@ export function useDriveTableColumns({
         />
       ),
     },
-    {
-      id: "event",
-      header: () => (
-        <SortableHeader
-          label={t`Event`}
-          field="event"
-          activeSort={sort}
-          activeOrder={order}
-          onSortChange={onSortChange}
-        />
-      ),
-    },
     { id: "uploadedBy", header: () => <Trans>Uploaded by</Trans> },
     {
       id: "updatedAt",

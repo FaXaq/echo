@@ -1,12 +1,97 @@
-import { Plural, useLingui } from "@lingui/react/macro";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import type { Folder, OrganizationFile } from "@/services/resources/drive";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Plural, Trans, useLingui } from "@lingui/react/macro";
+import { ConfirmDialog, type ConfirmDialogProps } from "@/components/ui/confirm-dialog";
+import {
+  previewFolderDeleteQueryOptions,
+  type Folder,
+  type OrganizationFile,
+} from "@/services/resources/drive";
 import { FolderNameDialog } from "./folder-name-dialog";
 
+function FolderDeleteCounts({
+  folderId,
+  organizationId,
+  ...dialog
+}: {
+  folderId: string;
+  organizationId: string;
+} & Omit<ConfirmDialogProps, "description">) {
+  const { data } = useSuspenseQuery(
+    previewFolderDeleteQueryOptions({ id: folderId, organizationId }),
+  );
+
+  return (
+    <ConfirmDialog
+      {...dialog}
+      description={
+        <>
+          <Plural
+            value={data.deletedCount}
+            one="# file will be permanently deleted"
+            other="# files will be permanently deleted"
+          />
+          {", "}
+          <Plural
+            value={data.keptCount}
+            one="# stays in other places"
+            other="# stay in other places"
+          />
+          {". "}
+          <Trans>This action cannot be undone.</Trans>
+        </>
+      }
+    />
+  );
+}
+
+function FolderDeleteConfirm({
+  folderId,
+  organizationId,
+  onOpenChange,
+  onConfirm,
+}: {
+  folderId: string;
+  organizationId: string;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  const { t } = useLingui();
+  const dialog = {
+    open: true,
+    onOpenChange,
+    variant: "destructive",
+    title: t`Delete this folder?`,
+    confirmLabel: t`Delete`,
+    onConfirm,
+  } as const;
+
+  return (
+    <ErrorBoundary
+      fallback={
+        <ConfirmDialog
+          {...dialog}
+          confirmDisabled
+          description={
+            <Trans>Couldn't count the files in this folder. Close this and try again.</Trans>
+          }
+        />
+      }
+    >
+      <Suspense
+        fallback={
+          <ConfirmDialog {...dialog} confirmDisabled description={<Trans>Counting files…</Trans>} />
+        }
+      >
+        <FolderDeleteCounts folderId={folderId} organizationId={organizationId} {...dialog} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
 export function DriveExplorerDialogs({
-  creatingFolder,
-  onCreatingFolderChange,
-  onCreateFolder,
+  organizationId,
   renamingFolder,
   onRenamingFolderChange,
   onRenameFolder,
@@ -16,16 +101,8 @@ export function DriveExplorerDialogs({
   renamingFile,
   onRenamingFileChange,
   onRenameFile,
-  deletingFile,
-  onDeletingFileChange,
-  onConfirmDeleteFile,
-  bulkDeleteCount,
-  onBulkDeleteCountChange,
-  onConfirmBulkDeleteFiles,
 }: {
-  creatingFolder: boolean;
-  onCreatingFolderChange: (open: boolean) => void;
-  onCreateFolder: (name: string) => void;
+  organizationId: string;
   renamingFolder: Folder | null;
   onRenamingFolderChange: (open: boolean) => void;
   onRenameFolder: (name: string) => void;
@@ -35,24 +112,11 @@ export function DriveExplorerDialogs({
   renamingFile: OrganizationFile | null;
   onRenamingFileChange: (open: boolean) => void;
   onRenameFile: (filename: string) => void;
-  deletingFile: OrganizationFile | null;
-  onDeletingFileChange: (open: boolean) => void;
-  onConfirmDeleteFile: () => void | Promise<void>;
-  bulkDeleteCount: number;
-  onBulkDeleteCountChange: (open: boolean) => void;
-  onConfirmBulkDeleteFiles: () => Promise<void>;
 }) {
   const { t } = useLingui();
 
   return (
     <>
-      <FolderNameDialog
-        open={creatingFolder}
-        onOpenChange={onCreatingFolderChange}
-        title={t`New folder`}
-        onConfirm={onCreateFolder}
-      />
-
       <FolderNameDialog
         open={renamingFolder !== null}
         onOpenChange={onRenamingFolderChange}
@@ -61,15 +125,14 @@ export function DriveExplorerDialogs({
         onConfirm={onRenameFolder}
       />
 
-      <ConfirmDialog
-        open={deletingFolder !== null}
-        onOpenChange={onDeletingFolderChange}
-        variant="destructive"
-        title={t`Delete this folder?`}
-        description={t`This permanently deletes the folder and any files inside it that aren't attached to an event or song. Files still attached elsewhere are kept and simply removed from this folder. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={onConfirmDeleteFolder}
-      />
+      {deletingFolder && (
+        <FolderDeleteConfirm
+          folderId={deletingFolder.id}
+          organizationId={organizationId}
+          onOpenChange={onDeletingFolderChange}
+          onConfirm={onConfirmDeleteFolder}
+        />
+      )}
 
       <FolderNameDialog
         open={renamingFile !== null}
@@ -77,26 +140,6 @@ export function DriveExplorerDialogs({
         title={t`Rename file`}
         initialName={renamingFile?.filename}
         onConfirm={onRenameFile}
-      />
-
-      <ConfirmDialog
-        open={deletingFile !== null}
-        onOpenChange={onDeletingFileChange}
-        variant="destructive"
-        title={t`Delete this file?`}
-        description={t`This permanently deletes the file, including from any event or song it's attached to. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={onConfirmDeleteFile}
-      />
-
-      <ConfirmDialog
-        open={bulkDeleteCount > 0}
-        onOpenChange={onBulkDeleteCountChange}
-        variant="destructive"
-        title={<Plural value={bulkDeleteCount} one="Delete # file?" other="Delete # files?" />}
-        description={t`This permanently deletes the selected files, including from any event or song they're attached to. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={onConfirmBulkDeleteFiles}
       />
     </>
   );

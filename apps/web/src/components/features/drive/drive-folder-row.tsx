@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useLingui } from "@lingui/react/macro";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
 import {
+  ClipboardPaste,
   Download,
   FolderOpen,
   Folder as FolderIcon,
@@ -27,13 +28,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import type { Folder } from "@/services/resources/drive";
+import { formatSize } from "@/lib/file";
+import type { FolderListItem } from "@/services/resources/drive";
 import { type DragData, formatDate, isFileDrag } from "./drive-item-utils";
 
 export function FolderRow({
   folder,
   selected,
   selectionCount,
+  canPaste,
+  onPasteInto,
   onNavigate,
   onToggleSelect,
   onContextMenuTrigger,
@@ -44,9 +48,11 @@ export function FolderRow({
   isBulkDownloading,
   onOsFilesDropped,
 }: {
-  folder: Folder;
+  folder: FolderListItem;
   selected: boolean;
   selectionCount: number;
+  canPaste: boolean;
+  onPasteInto: () => void;
   onNavigate: () => void;
   onToggleSelect: (event: React.MouseEvent) => void;
   onContextMenuTrigger: () => void;
@@ -154,9 +160,8 @@ export function FolderRow({
           </div>
         </TableCell>
         <TableCell />
-        <TableCell />
         <TableCell className="text-muted-foreground">{formatDate(folder.updatedAt)}</TableCell>
-        <TableCell />
+        <TableCell className="text-muted-foreground">{formatSize(folder.sizeBytes)}</TableCell>
         <TableCell>
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -198,6 +203,10 @@ export function FolderRow({
         </TableCell>
       </ContextMenuTrigger>
       <ContextMenuContent>
+        <ContextMenuItem onClick={onPasteInto} disabled={!canPaste}>
+          <ClipboardPaste />
+          {t`Paste into`}
+        </ContextMenuItem>
         {isBulkSelected ? (
           bulkDownloadDisabledReason ? (
             <Tooltip>

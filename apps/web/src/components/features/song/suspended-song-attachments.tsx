@@ -1,4 +1,9 @@
 import { FileDetailsDialog } from "@/components/features/drive/file-details-dialog";
+import {
+  RemoveManyOccurrencesDialog,
+  RemoveOccurrenceDialog,
+} from "@/components/features/drive/remove-occurrence-dialog";
+import { useRemoveOccurrence } from "@/components/features/drive/use-remove-occurrence";
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -8,7 +13,6 @@ import { Link, useParams } from "@tanstack/react-router";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { getQuotaError } from "@/lib/quota-error";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog,
   DialogClose,
@@ -25,7 +29,6 @@ import { toast } from "@/components/ui/toast";
 import {
   downloadOrganizationFile,
   getSongFilesQueryOptions,
-  useDeleteFileMutation,
   useRenameFileMutation,
   type SongFile,
 } from "@/services/resources/drive";
@@ -145,7 +148,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const uploadMutation = useSongUploadMutation();
   const getDestinationLabel = useSongDestinationLabel(songId, organizationId);
   const pendingFiles = useSongUploadingFiles(songId);
-  const deleteMutation = useDeleteFileMutation();
+  const removal = useRemoveOccurrence({ kind: "song", id: songId }, organizationId, t`this song`);
   const renameMutation = useRenameFileMutation();
   const setAudioVersionMutation = useSetSongAudioVersionMutation({
     songId,
@@ -159,7 +162,6 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   });
   const [renamingFile, setRenamingFile] = useState<SongFile | null>(null);
   const [detailsFile, setDetailsFile] = useState<SongFile | null>(null);
-  const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
   const playingFileId = useAudioPlayerStore((s) =>
@@ -169,7 +171,7 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
       uploadMutation.mutate({
-        songId,
+        place: { kind: "song", id: songId },
         organizationId,
         file,
         destinationLabel: getDestinationLabel(),
@@ -177,12 +179,9 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
     });
   };
 
-  const handleDeleteSelected = async (filesToDelete: SongFile[]) => {
-    await Promise.all(
-      filesToDelete.map((file) => deleteMutation.mutateAsync({ id: file.id, organizationId })),
-    );
+  const handleBulkRemoveConfirm = async () => {
+    await removal.bulkDialogProps.onConfirm();
     setSelectedIds(new Set());
-    toast.add({ title: t`${filesToDelete.length} files deleted`, type: "success" });
   };
 
   return (
@@ -212,8 +211,8 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
             return next;
           })
         }
-        onDeleteSelected={handleDeleteSelected}
-        onDelete={(file) => setDeletingFileId(file.id)}
+        onDeleteSelected={(files) => removal.requestMany(files)}
+        onDelete={(file) => removal.request(file.id)}
         onRename={(file) => setRenamingFile(file)}
         onDownload={(file) => downloadOrganizationFile({ id: file.id, organizationId })}
         onShowDetails={setDetailsFile}
@@ -222,7 +221,6 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
             id: file.id,
             filename: file.filename,
             downloadUrl: file.downloadUrl,
-            contextLabel: file.eventTitle ?? undefined,
           })
         }
         onSetAudioRole={(file, role) => {
@@ -251,18 +249,11 @@ function SongAttachmentsContent({ songId, organizationId }: SuspendedSongAttachm
         onOpenChange={(open) => !open && setDetailsFile(null)}
       />
 
-      <ConfirmDialog
-        open={deletingFileId !== null}
-        onOpenChange={(open) => !open && setDeletingFileId(null)}
-        variant="destructive"
-        title={t`Delete this file?`}
-        description={t`This will permanently delete the file. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={async () => {
-          if (!deletingFileId) return;
-          await deleteMutation.mutateAsync({ id: deletingFileId, organizationId });
-          toast.add({ title: t`File deleted`, type: "success" });
-        }}
+      <RemoveOccurrenceDialog {...removal.dialogProps} />
+
+      <RemoveManyOccurrencesDialog
+        {...removal.bulkDialogProps}
+        onConfirm={handleBulkRemoveConfirm}
       />
 
       <RenameFileDialog

@@ -35,16 +35,10 @@ export type {
 export { listFilesBySongQueryFactory } from "./list-files-by-song.query.kysely.js";
 
 export type {
-  FindOrphanedFilesForEventQueryInput,
-  FindOrphanedFilesForEventQueryPort,
-} from "./find-orphaned-files-for-event.query.port.js";
-export { findOrphanedFilesForEventQueryFactory } from "./find-orphaned-files-for-event.query.kysely.js";
-
-export type {
-  FindOrphanedFilesForSongQueryInput,
-  FindOrphanedFilesForSongQueryPort,
-} from "./find-orphaned-files-for-song.query.port.js";
-export { findOrphanedFilesForSongQueryFactory } from "./find-orphaned-files-for-song.query.kysely.js";
+  DeleteOrphanedFilesInput,
+  DeleteOrphanedFilesCommandPort,
+} from "./delete-orphaned-files.command.port.js";
+export { deleteOrphanedFilesCommandFactory } from "./delete-orphaned-files.command.kysely.js";
 
 export type {
   ListSongAudioVersionsQueryInput,
@@ -53,16 +47,10 @@ export type {
 export { listSongAudioVersionsQueryFactory } from "./list-song-audio-versions.query.kysely.js";
 
 export type {
-  LinkFileToSongInput,
-  LinkFileToSongCommandPort,
-} from "./link-file-to-song.command.port.js";
-export { linkFileToSongCommandFactory } from "./link-file-to-song.command.kysely.js";
-
-export type {
-  LinkFileToEventInput,
-  LinkFileToEventCommandPort,
-} from "./link-file-to-event.command.port.js";
-export { linkFileToEventCommandFactory } from "./link-file-to-event.command.kysely.js";
+  EventExistsInOrganizationInput,
+  EventExistsInOrganizationQueryPort,
+} from "./event-exists-in-organization.query.port.js";
+export { eventExistsInOrganizationQueryFactory } from "./event-exists-in-organization.query.kysely.js";
 
 export type {
   SongExistsInOrganizationInput,
@@ -86,22 +74,16 @@ export type { ListFilesByOrganizationQueryPort } from "./list-files-by-organizat
 export { listFilesByOrganizationQueryFactory } from "./list-files-by-organization.query.kysely.js";
 
 export type {
-  DeleteFileByIdInput,
-  DeleteFileByIdCommandPort,
-} from "./delete-file-by-id.command.port.js";
-export { deleteFileByIdCommandFactory } from "./delete-file-by-id.command.kysely.js";
-
-export type {
   RenameFileByIdInput,
   RenameFileByIdCommandPort,
 } from "./rename-file-by-id.command.port.js";
 export { renameFileByIdCommandFactory } from "./rename-file-by-id.command.kysely.js";
 
 export type {
-  MoveFileToFolderInput,
-  MoveFileToFolderCommandPort,
-} from "./move-file-to-folder.command.port.js";
-export { moveFileToFolderCommandFactory } from "./move-file-to-folder.command.kysely.js";
+  MoveFilesToFolderInput,
+  MoveFilesToFolderCommandPort,
+} from "./move-files-to-folder.command.port.js";
+export { moveFilesToFolderCommandFactory } from "./move-files-to-folder.command.kysely.js";
 
 export type { InsertFolderInput, InsertFolderCommandPort } from "./insert-folder.command.port.js";
 export { insertFolderCommandFactory } from "./insert-folder.command.kysely.js";
@@ -124,14 +106,27 @@ export type {
 } from "./rename-folder-by-id.command.port.js";
 export { renameFolderByIdCommandFactory } from "./rename-folder-by-id.command.kysely.js";
 
-export type { MoveFolderInput, MoveFolderCommandPort } from "./move-folder.command.port.js";
-export { moveFolderCommandFactory } from "./move-folder.command.kysely.js";
+export type { MoveFoldersInput, MoveFoldersCommandPort } from "./move-folders.command.port.js";
+export { moveFoldersCommandFactory } from "./move-folders.command.kysely.js";
 
 export type {
-  FindFolderDescendantIdsQueryInput,
-  FindFolderDescendantIdsQueryPort,
-} from "./find-folder-descendant-ids.query.port.js";
-export { findFolderDescendantIdsQueryFactory } from "./find-folder-descendant-ids.query.kysely.js";
+  FindFoldersByIdsQueryInput,
+  FindFoldersByIdsQueryPort,
+} from "./find-folders-by-ids.query.port.js";
+export { findFoldersByIdsQueryFactory } from "./find-folders-by-ids.query.kysely.js";
+
+export type {
+  FindFoldersByParentAndNamesQueryInput,
+  FindFoldersByParentAndNamesQueryPort,
+} from "./find-folders-by-parent-and-names.query.port.js";
+export { findFoldersByParentAndNamesQueryFactory } from "./find-folders-by-parent-and-names.query.kysely.js";
+
+export type {
+  FolderPathSegment,
+  FindFolderPathQueryInput,
+  FindFolderPathQueryPort,
+} from "./find-folder-path.query.port.js";
+export { findFolderPathQueryFactory } from "./find-folder-path.query.kysely.js";
 
 export type {
   DeleteFolderCascadeInput,
@@ -182,3 +177,28 @@ export type {
   ListRecentFilesQueryPort,
 } from "./list-recent-files.query.port.js";
 export { listRecentFilesQueryFactory } from "./list-recent-files.query.kysely.js";
+
+export type {
+  InsertOccurrencesInput,
+  InsertOccurrencesCommandPort,
+} from "./insert-occurrences.command.port.js";
+export { insertOccurrencesCommandFactory } from "./insert-occurrences.command.kysely.js";
+
+export type {
+  DeleteOccurrencesInput,
+  DeleteOccurrencesCommandPort,
+} from "./delete-occurrences.command.port.js";
+export { deleteOccurrencesCommandFactory } from "./delete-occurrences.command.kysely.js";
+
+export type {
+  ListFileOccurrencesQueryInput,
+  ListFileOccurrencesQueryPort,
+} from "./list-file-occurrences.query.port.js";
+export { listFileOccurrencesQueryFactory } from "./list-file-occurrences.query.kysely.js";
+
+export type {
+  PreviewFolderDeleteQueryInput,
+  PreviewFolderDeleteResult,
+  PreviewFolderDeleteQueryPort,
+} from "./preview-folder-delete.query.port.js";
+export { previewFolderDeleteQueryFactory } from "./preview-folder-delete.query.kysely.js";

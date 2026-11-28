@@ -3,14 +3,19 @@ import { ForbiddenError, NotFoundError } from "@echo/errors";
 import { createOrganizationScope } from "@echo/modules/shared/domain";
 import { deleteFolder } from "./delete-folder.js";
 import { makeFakeDb, makeFakePermissionChecks, makeFakeS3Storage } from "./test-fixtures.js";
-import type { DeleteFolderCascadeCommandPort } from "../infrastructure/index.js";
+import type {
+  DeleteFolderCascadeCommandPort,
+  DeleteOrphanedFilesCommandPort,
+} from "../infrastructure/index.js";
 
 const scope = createOrganizationScope("org-1");
+
+const noOrphans: DeleteOrphanedFilesCommandPort = async () => [];
 
 describe("deleteFolder", () => {
   it("rejects a member without drive:delete permission", async () => {
     const deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort = async () => ({
-      deletedFiles: [],
+      fileIds: [],
     });
 
     await expect(
@@ -19,6 +24,7 @@ describe("deleteFolder", () => {
           db: makeFakeDb(),
           s3Storage: makeFakeS3Storage(),
           deleteFolderCascadeCommand,
+          deleteOrphanedFilesCommand: noOrphans,
           ...makeFakePermissionChecks({
             userHasPermissionInOrganization: async () => ({
               success: false,
@@ -41,6 +47,7 @@ describe("deleteFolder", () => {
           db: makeFakeDb(),
           s3Storage: makeFakeS3Storage(),
           deleteFolderCascadeCommand,
+          deleteOrphanedFilesCommand: noOrphans,
           ...makeFakePermissionChecks(),
         },
         { id: "missing", scope },
@@ -48,45 +55,55 @@ describe("deleteFolder", () => {
     ).rejects.toBeInstanceOf(NotFoundError);
   });
 
-  it("deletes the S3 objects for every hard-deleted file and reports none failed", async () => {
-    const s3Storage = makeFakeS3Storage(["org/org-1/file-1/a.mp3", "org/org-1/file-2/b.mp3"]);
-    const deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort = async () => ({
-      deletedFiles: [
-        { id: "file-1", s3Key: "org/org-1/file-1/a.mp3", mimeType: "audio/mpeg" },
-        { id: "file-2", s3Key: "org/org-1/file-2/b.mp3", mimeType: "audio/mpeg" },
-      ],
-    });
+  it("passes every placed file id from the cascade to purge", async () => {
+    const calls: string[] = [];
+    const purged: string[][] = [];
+    const deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort = async () => {
+      calls.push("cascade");
+      return { fileIds: ["file-1", "file-2"] };
+    };
+    const deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort = async (_db, _s, input) => {
+      calls.push("purge");
+      purged.push(input.fileIds);
+      return [{ id: "file-1", s3Key: "org/org-1/file-1/a.mp3", mimeType: "audio/mpeg" }];
+    };
 
     const failures = await deleteFolder(
       {
         db: makeFakeDb(),
-        s3Storage,
+        s3Storage: makeFakeS3Storage(),
         deleteFolderCascadeCommand,
+        deleteOrphanedFilesCommand,
         ...makeFakePermissionChecks(),
       },
       { id: "folder-1", scope },
     );
 
+    expect(calls).toEqual(["cascade", "purge"]);
+    expect(purged).toEqual([["file-1", "file-2"]]);
     expect(failures).toEqual([]);
   });
 
   it("reports files whose S3 object failed to delete", async () => {
-    const s3Storage = makeFakeS3Storage();
     const failingS3Storage = {
-      ...s3Storage,
+      ...makeFakeS3Storage(),
       deleteObject: async (key: string) => {
         throw new Error(`boom: ${key}`);
       },
     };
     const deleteFolderCascadeCommand: DeleteFolderCascadeCommandPort = async () => ({
-      deletedFiles: [{ id: "file-1", s3Key: "org/org-1/file-1/a.mp3", mimeType: "audio/mpeg" }],
+      fileIds: ["file-1"],
     });
+    const deleteOrphanedFilesCommand: DeleteOrphanedFilesCommandPort = async () => [
+      { id: "file-1", s3Key: "org/org-1/file-1/a.mp3", mimeType: "audio/mpeg" },
+    ];
 
     const failures = await deleteFolder(
       {
         db: makeFakeDb(),
         s3Storage: failingS3Storage,
         deleteFolderCascadeCommand,
+        deleteOrphanedFilesCommand,
         ...makeFakePermissionChecks(),
       },
       { id: "folder-1", scope },

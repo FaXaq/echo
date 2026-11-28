@@ -1,11 +1,15 @@
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { TRPCClientError } from "@trpc/client";
+import type { DriveLocation, Place } from "@echo/modules/drive/domain";
 import { useTable } from "@tanstack/react-table";
+import { plural } from "@lingui/core/macro";
 import { Plural, useLingui } from "@lingui/react/macro";
 import { DragDropProvider } from "@dnd-kit/react";
-import { FolderPlus, Upload } from "lucide-react";
+import { CalendarDays, Folder as FolderIcon, FolderPlus, Music, Upload } from "lucide-react";
 import {
   AttachmentCarouselDialog,
   type CarouselAttachment,
@@ -13,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FilePreviewDialog } from "@/components/ui/file-preview-dialog";
+import { ListEmptyState } from "@/components/ui/list-empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { dataTableFeatures } from "@/components/ui/data-table-features";
 import {
@@ -26,9 +31,9 @@ import {
 import { toast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import {
-  getFolderContentsQueryOptions,
+  listFolderContentsQueryOptions,
+  useAddOccurrencesMutation,
   useCreateFolderMutation,
-  useDeleteFileMutation,
   useDeleteFolderMutation,
   useRenameFileMutation,
   useRenameFolderMutation,
@@ -38,17 +43,25 @@ import {
   type OrganizationFile,
 } from "@/services/resources/drive";
 import { selfListOrganizations } from "@/services/resources/organization";
-import { useFolderPath } from "@/hooks/use-folder-path";
+import { useDriveLocationLabel, useDriveLocationPath } from "@/hooks/use-folder-path";
+import {
+  canCreateFolderAt,
+  driveLocationLink,
+  locationKey,
+  locationPlace,
+} from "@/lib/drive-location";
 import { getFileDownloadUrl, getFilesDownloadUrls } from "@/services/resources/drive";
 import { useAudioPlayerStore } from "@/stores/audio-player-store";
 import { DriveSearchCombobox } from "./drive-search-combobox";
 import { SuspendedDriveQuotaBar } from "./suspended-drive-quota-bar";
 import { DriveBreadcrumbs } from "./drive-breadcrumbs";
 import { DriveExplorerDialogs } from "./drive-explorer-dialogs";
+import { FolderNameDialog } from "./folder-name-dialog";
 import { FileRow } from "./drive-file-row";
 import { FileDetailsDialog } from "./file-details-dialog";
 import { LinkFileToEventDialog } from "./link-file-to-event-dialog";
 import { FolderRow } from "./drive-folder-row";
+import { SystemFolderRow } from "./drive-system-folder-row";
 import {
   type DriveItemKind,
   type DriveRow,
@@ -56,46 +69,48 @@ import {
   isSelectionKey,
   selectionKey,
 } from "./drive-item-utils";
+import { copyFiles, useDriveClipboard } from "./drive-clipboard";
 import { SelectionActionsMenu } from "./drive-selection-actions-menu";
 import { useDriveTableColumns } from "./drive-table-columns";
 import { useDriveFileTransfer } from "./use-drive-file-transfer";
 import { useDrivePendingDeletes } from "./use-drive-pending-deletes";
+import { RemoveManyOccurrencesDialog, RemoveOccurrenceDialog } from "./remove-occurrence-dialog";
 import { useDriveSelection } from "./use-drive-selection";
+import { useRemoveOccurrence } from "./use-remove-occurrence";
 
-function DriveExplorerContent({
+const EDITABLE_SELECTOR = 'input, textarea, [contenteditable=""], [contenteditable="true"]';
+
+function DriveTableContent({
   organizationId,
   projectSlug,
-  folderId,
+  location,
   sort,
   order,
   onSortChange,
-}: {
-  organizationId: string;
-  projectSlug: string;
-  folderId: string | null;
-  sort: DriveSortField;
-  order: DriveSortOrder;
-  onSortChange: (field: DriveSortField) => void;
+  fileInputRef,
+  actionsSlot,
+}: DriveExplorerProps & {
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  actionsSlot: HTMLElement | null;
 }) {
   const { t } = useLingui();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data } = useSuspenseQuery(
-    getFolderContentsQueryOptions({ folderId, organizationId, sort, order }),
+    listFolderContentsQueryOptions({ location, organizationId, sort, order }),
   );
   const { data: organizations } = useSuspenseQuery(selfListOrganizations());
-  const path = useFolderPath({ folderId, organizationId });
+  const path = useDriveLocationPath(location, organizationId);
+  const locationLabel = useDriveLocationLabel();
+  const place = locationPlace(location);
+  const canUpload = place !== null;
   const organizationName = organizations.find((org) => org.id === organizationId)?.name ?? "";
 
-  const [creatingFolder, setCreatingFolder] = useState(false);
   const [renamingFolder, setRenamingFolder] = useState<Folder | null>(null);
   const [deletingFolder, setDeletingFolder] = useState<Folder | null>(null);
   const [renamingFile, setRenamingFile] = useState<OrganizationFile | null>(null);
-  const [deletingFile, setDeletingFile] = useState<OrganizationFile | null>(null);
   const [assigningFiles, setAssigningFiles] = useState<OrganizationFile[]>([]);
   const [detailsFile, setDetailsFile] = useState<OrganizationFile | null>(null);
-  const [confirmingBulkDelete, setConfirmingBulkDelete] = useState(false);
   const [carouselFiles, setCarouselFiles] = useState<CarouselAttachment[]>([]);
   const [carouselIndex, setCarouselIndex] = useState<number | null>(null);
   const [documentPreview, setDocumentPreview] = useState<{
@@ -109,15 +124,22 @@ function DriveExplorerContent({
   const { pendingDeleteIds, scheduleDelete, clearPendingDelete } = useDrivePendingDeletes();
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
 
-  const createFolderMutation = useCreateFolderMutation();
   const renameFolderMutation = useRenameFolderMutation();
   const deleteFolderMutation = useDeleteFolderMutation();
   const renameFileMutation = useRenameFileMutation();
-  const deleteFileMutation = useDeleteFileMutation();
+  const removal = useRemoveOccurrence(
+    place ?? { kind: "root" },
+    organizationId,
+    path.at(-1)?.label ?? t`Drive`,
+  );
+  const addOccurrencesMutation = useAddOccurrencesMutation();
+  const clipboard = useDriveClipboard(organizationId);
 
   const visibleFolders = data.folders.filter((folder) => !pendingDeleteIds.has(folder.id));
   const visibleFiles = data.files.filter((file) => !pendingDeleteIds.has(file.id));
-  const isEmpty = visibleFolders.length === 0 && visibleFiles.length === 0;
+  const isEmpty =
+    data.systemFolders.length === 0 && visibleFolders.length === 0 && visibleFiles.length === 0;
+  const itemCount = data.systemFolders.length + visibleFolders.length + visibleFiles.length;
 
   const openGalleryPreview = (fileId: string) => {
     const galleryFiles = visibleFiles.filter(
@@ -170,7 +192,7 @@ function DriveExplorerContent({
     clearSelection,
     handleDragStart,
     handleDragEnd,
-  } = useDriveSelection({ organizationId, folderId, rows, visibleFolders, visibleFiles });
+  } = useDriveSelection({ organizationId, location, rows });
 
   const columns = useDriveTableColumns({ sort, order, onSortChange });
 
@@ -212,7 +234,7 @@ function DriveExplorerContent({
     handleBulkDownload,
   } = useDriveFileTransfer({
     organizationId,
-    folderId,
+    location,
     organizationName,
     path,
     selectedFiles,
@@ -225,89 +247,127 @@ function DriveExplorerContent({
   const assignDisabledReason =
     selectedFolderCount > 0 ? t`Only files can be assigned to an event` : null;
 
-  const handleBulkDeleteFiles = async () => {
-    const results = await Promise.allSettled(
-      selectedFiles.map((file) => deleteFileMutation.mutateAsync({ id: file.id, organizationId })),
-    );
-    const failedNames = results.flatMap((result, index) =>
-      result.status === "rejected" ? [selectedFiles[index].filename] : [],
-    );
+  const copyDisabledReason = selectedFolderCount > 0 ? t`Only files can be copied` : null;
 
+  const handleCopy = () => {
+    if (copyDisabledReason || selectedFiles.length === 0) return;
+    copyFiles(
+      organizationId,
+      selectedFiles.map((file) => file.id),
+    );
+  };
+
+  const pasteInto = (target: Place | null) => {
+    if (!target || clipboard.fileIds.length === 0) return;
+    const count = clipboard.fileIds.length;
+    addOccurrencesMutation.mutate(
+      { fileIds: clipboard.fileIds, place: target, organizationId },
+      {
+        onSuccess: () =>
+          toast.add({
+            title: plural(count, { one: "Pasted # file", other: "Pasted # files" }),
+            type: "success",
+          }),
+        onError: (error) => {
+          if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
+            clipboard.clear();
+            toast.add({
+              title: t`Some copied files no longer exist — copy them again`,
+              type: "error",
+            });
+          } else {
+            toast.add({ title: t`Couldn't paste files`, type: "error" });
+          }
+        },
+      },
+    );
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return;
+    if (!(event.target instanceof Element) || !event.currentTarget.contains(event.target)) return;
+    if (event.target.closest(EDITABLE_SELECTOR)) return;
+
+    const key = event.key.toLowerCase();
+    const hasTextSelection = window.getSelection()?.isCollapsed === false;
+
+    if (key === "c" && !copyDisabledReason && !hasTextSelection && selectedFiles.length > 0) {
+      event.preventDefault();
+      handleCopy();
+    } else if (key === "v" && place && clipboard.fileIds.length > 0) {
+      event.preventDefault();
+      pasteInto(place);
+    }
+  };
+
+  const handleBulkRemoveConfirm = async () => {
+    await removal.bulkDialogProps.onConfirm();
     clearSelection();
-    if (failedNames.length === 0) {
-      toast.add({ title: t`${selectedFiles.length} files deleted`, type: "success" });
-    } else {
-      toast.add({
-        title: t`${selectedFiles.length - failedNames.length} of ${selectedFiles.length} deleted — failed: ${failedNames.join(", ")}`,
-        type: "error",
-      });
-    }
   };
 
-  const navigateToFolder = (id: string | null) => {
-    if (id === null) {
-      navigate({ to: "/projects/$projectSlug/drive", params: { projectSlug } });
-    } else {
-      navigate({
-        to: "/projects/$projectSlug/drive/$folderId",
-        params: { projectSlug, folderId: id },
-      });
-    }
-  };
+  const emptyState = {
+    events: {
+      icon: <CalendarDays />,
+      title: t`No events yet`,
+      description: t`Events appear here once they are created in the calendar.`,
+    },
+    songs: {
+      icon: <Music />,
+      title: t`No songs yet`,
+      description: t`Songs appear here once they are added to the project.`,
+    },
+    root: {
+      icon: <FolderIcon />,
+      title: t`No files yet`,
+      description: t`Upload files with the Upload button, or drop them here.`,
+    },
+    folder: {
+      icon: <FolderIcon />,
+      title: t`This folder is empty`,
+      description: t`Upload files with the Upload button, or drop them here.`,
+    },
+  }[location.kind === "event" || location.kind === "song" ? "folder" : location.kind];
+
+  const navigateToLocation = (target: DriveLocation) =>
+    navigate(driveLocationLink(projectSlug, target));
 
   return (
-    <div className="flex flex-1 flex-col min-h-0 gap-3">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex flex-col w-full">
-          <DriveBreadcrumbs projectSlug={projectSlug} path={path} />
-          <div className="flex items-center justify-between gap-2 w-full">
-            <DriveSearchCombobox
-              organizationId={organizationId}
-              onSelectFolder={(id) => navigateToFolder(id)}
-              onSelectFile={(file) => navigateToFolder(file.folderId)}
-            />
-            <div className="flex gap-2 items-center">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setCreatingFolder(true)}
-              >
-                <FolderPlus />
-                <span className="hidden md:inline">{t`New Folder`}</span>
-              </Button>
-              <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload />
-                <span className="hidden md:inline">{t`Upload`}</span>
-              </Button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                className="sr-only"
-                aria-label={t`Upload files`}
-                onChange={(event) => {
-                  const files = Array.from(event.target.files ?? []);
-                  files.forEach((file) => uploadFile(file));
-                  event.target.value = "";
-                }}
-              />
-              {selectedKeys.size > 0 && (
-                <SelectionActionsMenu
-                  downloadDisabledReason={downloadDisabledReason}
-                  isDownloading={isDownloading}
-                  onDownload={handleBulkDownload}
-                  deleteDisabledReason={deleteDisabledReason}
-                  onDelete={() => setConfirmingBulkDelete(true)}
-                  assignDisabledReason={assignDisabledReason}
-                  onAssignToEvent={() => setAssigningFiles(selectedFiles)}
-                  onClear={clearSelection}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+    <div
+      className="flex flex-1 flex-col min-h-0 gap-3 outline-none"
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+    >
+      {canUpload && (
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          className="sr-only"
+          aria-label={t`Upload files`}
+          onChange={(event) => {
+            const files = Array.from(event.target.files ?? []);
+            files.forEach((file) => uploadFile(file));
+            event.target.value = "";
+          }}
+        />
+      )}
+      {actionsSlot &&
+        selectedKeys.size > 0 &&
+        createPortal(
+          <SelectionActionsMenu
+            copyDisabledReason={copyDisabledReason}
+            onCopy={handleCopy}
+            downloadDisabledReason={downloadDisabledReason}
+            isDownloading={isDownloading}
+            onDownload={handleBulkDownload}
+            deleteDisabledReason={deleteDisabledReason}
+            onDelete={() => removal.requestMany(selectedFiles)}
+            assignDisabledReason={assignDisabledReason}
+            onAssignToEvent={() => setAssigningFiles(selectedFiles)}
+            onClear={clearSelection}
+          />,
+          actionsSlot,
+        )}
 
       <DragDropProvider onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <Table
@@ -317,7 +377,7 @@ function DriveExplorerContent({
           )}
           className="m-0"
           onDragEnter={(event) => {
-            if (!isFileDrag(event)) return;
+            if (!isFileDrag(event) || !canUpload) return;
             event.preventDefault();
             tableDragDepthRef.current += 1;
             setIsTableDragActive(true);
@@ -327,7 +387,7 @@ function DriveExplorerContent({
             event.preventDefault();
           }}
           onDragLeave={(event) => {
-            if (!isFileDrag(event)) return;
+            if (!isFileDrag(event) || !canUpload) return;
             tableDragDepthRef.current -= 1;
             if (tableDragDepthRef.current <= 0) {
               tableDragDepthRef.current = 0;
@@ -339,7 +399,7 @@ function DriveExplorerContent({
             event.preventDefault();
             tableDragDepthRef.current = 0;
             setIsTableDragActive(false);
-            handleOsDrop(event.dataTransfer, null);
+            if (canUpload) handleOsDrop(event.dataTransfer, null);
           }}
         >
           <TableHeader>
@@ -367,6 +427,20 @@ function DriveExplorerContent({
             ))}
           </TableHeader>
           <TableBody>
+            {data.systemFolders.map((entry) => (
+              <SystemFolderRow
+                key={locationKey(entry.location)}
+                name={locationLabel(entry.location, entry.name)}
+                sizeBytes={entry.sizeBytes}
+                onNavigate={() => navigateToLocation(entry.location)}
+                canPaste={clipboard.fileIds.length > 0}
+                onPasteInto={
+                  locationPlace(entry.location)
+                    ? () => pasteInto(locationPlace(entry.location))
+                    : undefined
+                }
+              />
+            ))}
             {table.getRowModel().rows.map((row) => {
               const original = row.original;
               return original.kind === "folder" ? (
@@ -375,7 +449,7 @@ function DriveExplorerContent({
                   folder={original.data}
                   selected={row.getIsSelected()}
                   selectionCount={selectedKeys.size}
-                  onNavigate={() => navigateToFolder(original.data.id)}
+                  onNavigate={() => navigateToLocation({ kind: "folder", id: original.data.id })}
                   onToggleSelect={(event) =>
                     toggleSelection("folder", original.data.id, { shiftKey: event.shiftKey })
                   }
@@ -384,6 +458,8 @@ function DriveExplorerContent({
                       replaceSelection("folder", original.data.id);
                     }
                   }}
+                  canPaste={clipboard.fileIds.length > 0}
+                  onPasteInto={() => pasteInto({ kind: "folder", id: original.data.id })}
                   onRename={() => setRenamingFolder(original.data)}
                   onDelete={() => setDeletingFolder(original.data)}
                   bulkDownloadDisabledReason={downloadDisabledReason}
@@ -395,7 +471,6 @@ function DriveExplorerContent({
                 <FileRow
                   key={row.id}
                   file={original.data}
-                  projectSlug={projectSlug}
                   selected={row.getIsSelected()}
                   selectionCount={selectedKeys.size}
                   onToggleSelect={(event) =>
@@ -406,10 +481,12 @@ function DriveExplorerContent({
                       replaceSelection("file", original.data.id);
                     }
                   }}
+                  onCopy={handleCopy}
+                  copyDisabledReason={copyDisabledReason}
                   onRename={() => setRenamingFile(original.data)}
                   onAssignToEvent={() => setAssigningFiles([original.data])}
                   onShowDetails={() => setDetailsFile(original.data)}
-                  onDelete={() => setDeletingFile(original.data)}
+                  onDelete={() => removal.request(original.data.id)}
                   onDownload={() => handleDownloadFile(original.data)}
                   onPlay={async () => {
                     const { downloadUrl } = await getFileDownloadUrl({
@@ -420,7 +497,6 @@ function DriveExplorerContent({
                       id: original.data.id,
                       filename: original.data.filename,
                       downloadUrl,
-                      contextLabel: original.data.eventTitle ?? undefined,
                     });
                   }}
                   onOpen={() =>
@@ -436,8 +512,8 @@ function DriveExplorerContent({
             })}
             {isEmpty && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
-                  {folderId === null ? t`No files yet` : t`This folder is empty`}
+                <TableCell colSpan={6}>
+                  <ListEmptyState className="border-0" {...emptyState} />
                 </TableCell>
               </TableRow>
             )}
@@ -447,11 +523,7 @@ function DriveExplorerContent({
 
       <div className="flex items-center justify-between gap-6">
         <p className="text-xs text-muted-foreground">
-          <Plural
-            value={visibleFolders.length + visibleFiles.length}
-            one="# item"
-            other="# items"
-          />
+          <Plural value={itemCount} one="# item" other="# items" />
           {selectedKeys.size > 0 && (
             <>
               {" · "}
@@ -463,11 +535,7 @@ function DriveExplorerContent({
       </div>
 
       <DriveExplorerDialogs
-        creatingFolder={creatingFolder}
-        onCreatingFolderChange={setCreatingFolder}
-        onCreateFolder={(name) =>
-          createFolderMutation.mutate({ organizationId, parentFolderId: folderId, name })
-        }
+        organizationId={organizationId}
         renamingFolder={renamingFolder}
         onRenamingFolderChange={(open) => !open && setRenamingFolder(null)}
         onRenameFolder={(name) => {
@@ -503,20 +571,13 @@ function DriveExplorerContent({
               { onError: () => toast.add({ title: t`Couldn't rename file`, type: "error" }) },
             );
         }}
-        deletingFile={deletingFile}
-        onDeletingFileChange={(open) => !open && setDeletingFile(null)}
-        onConfirmDeleteFile={async () => {
-          if (!deletingFile) return;
-          try {
-            await deleteFileMutation.mutateAsync({ id: deletingFile.id, organizationId });
-            toast.add({ title: t`File deleted`, type: "success" });
-          } catch {
-            toast.add({ title: t`Couldn't delete file`, type: "error" });
-          }
-        }}
-        bulkDeleteCount={confirmingBulkDelete ? selectedFiles.length : 0}
-        onBulkDeleteCountChange={(open) => !open && setConfirmingBulkDelete(false)}
-        onConfirmBulkDeleteFiles={handleBulkDeleteFiles}
+      />
+
+      <RemoveOccurrenceDialog {...removal.dialogProps} />
+
+      <RemoveManyOccurrencesDialog
+        {...removal.bulkDialogProps}
+        onConfirm={handleBulkRemoveConfirm}
       />
 
       <FileDetailsDialog
@@ -560,43 +621,126 @@ function DriveExplorerError() {
   return <p className="text-sm text-destructive">{t`Couldn't load Drive`}</p>;
 }
 
-function DriveExplorerSkeleton() {
+const SKELETON_CELL_WIDTHS = ["w-4", "w-40", "w-24", "w-24", "w-12", "w-6"];
+
+function DriveTableSkeleton() {
   return (
-    <div className="flex flex-1 flex-col gap-3">
-      <Skeleton className="h-64 w-full rounded-xl" />
-    </div>
+    <Table
+      data-testid="drive-table-skeleton"
+      containerClassName="min-h-0 border rounded border-border bg-card"
+      className="m-0"
+    >
+      <TableHeader>
+        <TableRow>
+          {SKELETON_CELL_WIDTHS.map((width, index) => (
+            <TableHead key={index}>
+              <Skeleton className={cn("h-4", width)} />
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 6 }, (_, row) => (
+          <TableRow key={row}>
+            {SKELETON_CELL_WIDTHS.map((width, index) => (
+              <TableCell key={index}>
+                <Skeleton className={cn("h-4", width)} />
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
+}
+
+function LocationBreadcrumbs({
+  organizationId,
+  projectSlug,
+  location,
+}: Pick<DriveExplorerProps, "organizationId" | "projectSlug" | "location">) {
+  const path = useDriveLocationPath(location, organizationId);
+  return <DriveBreadcrumbs projectSlug={projectSlug} path={path} />;
 }
 
 export interface DriveExplorerProps {
   organizationId: string;
   projectSlug: string;
-  folderId: string | null;
+  location: DriveLocation;
   sort: DriveSortField;
   order: DriveSortOrder;
   onSortChange: (field: DriveSortField) => void;
 }
 
-export function DriveExplorer({
-  organizationId,
-  projectSlug,
-  folderId,
-  sort,
-  order,
-  onSortChange,
-}: DriveExplorerProps) {
+export function DriveExplorer(props: DriveExplorerProps) {
+  const { organizationId, projectSlug, location } = props;
+  const { t } = useLingui();
+  const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [actionsSlot, setActionsSlot] = useState<HTMLDivElement | null>(null);
+  const [creatingFolder, setCreatingFolder] = useState(false);
+  const createFolderMutation = useCreateFolderMutation();
+  const folderId = location.kind === "folder" ? location.id : null;
+  const canUpload = locationPlace(location) !== null;
+  const canCreateFolder = canCreateFolderAt(location);
+  const key = locationKey(location);
+
   return (
-    <ErrorBoundary FallbackComponent={DriveExplorerError}>
-      <Suspense fallback={<DriveExplorerSkeleton />}>
-        <DriveExplorerContent
-          organizationId={organizationId}
-          projectSlug={projectSlug}
-          folderId={folderId}
-          sort={sort}
-          order={order}
-          onSortChange={onSortChange}
-        />
-      </Suspense>
-    </ErrorBoundary>
+    <div className="flex flex-1 flex-col min-h-0 gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col w-full">
+          <ErrorBoundary key={key} fallback={null}>
+            <Suspense fallback={<Skeleton className="mb-2 h-5 w-40" />}>
+              <LocationBreadcrumbs
+                organizationId={organizationId}
+                projectSlug={projectSlug}
+                location={location}
+              />
+            </Suspense>
+          </ErrorBoundary>
+          <div className="flex items-center justify-between gap-2 w-full">
+            <DriveSearchCombobox
+              organizationId={organizationId}
+              onSelect={(target) => navigate(driveLocationLink(projectSlug, target))}
+            />
+            <div className="flex gap-2 items-center">
+              {canCreateFolder && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCreatingFolder(true)}
+                >
+                  <FolderPlus />
+                  <span className="hidden md:inline">{t`New Folder`}</span>
+                </Button>
+              )}
+              {canUpload && (
+                <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
+                  <Upload />
+                  <span className="hidden md:inline">{t`Upload`}</span>
+                </Button>
+              )}
+              <div ref={setActionsSlot} className="contents" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ErrorBoundary key={key} FallbackComponent={DriveExplorerError}>
+        <Suspense fallback={<DriveTableSkeleton />}>
+          <DriveTableContent {...props} fileInputRef={fileInputRef} actionsSlot={actionsSlot} />
+        </Suspense>
+      </ErrorBoundary>
+
+      <FolderNameDialog
+        open={creatingFolder}
+        onOpenChange={setCreatingFolder}
+        title={t`New folder`}
+        onConfirm={(name) =>
+          createFolderMutation.mutate({ organizationId, parentFolderId: folderId, name })
+        }
+      />
+    </div>
   );
 }

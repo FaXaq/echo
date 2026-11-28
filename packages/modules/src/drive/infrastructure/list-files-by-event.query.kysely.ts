@@ -6,11 +6,12 @@ export const listFilesByEventQueryFactory: ListFilesByEventQueryPortFactory =
     const rows = await db
       .selectFrom("file")
       .innerJoin("user", "file.uploaded_by", "user.id")
+      .innerJoin("event_file", "event_file.file_id", "file.id")
       .selectAll("file")
       .select("user.name as uploaded_by_name")
-      .where("event_id", "=", input.eventId)
-      .where("organization_id", "=", scope.organizationId)
-      .where("status", "=", "uploaded")
+      .where("event_file.event_id", "=", input.eventId)
+      .where("file.organization_id", "=", scope.organizationId)
+      .where("file.status", "=", "uploaded")
       .execute();
 
     return rows.map((row) => toFileRecord({ ...row, uploaded_by_name: row.uploaded_by_name }));

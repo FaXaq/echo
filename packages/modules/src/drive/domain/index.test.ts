@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fileObjectKeys, kindForMimeType, mimeTypeForFile } from "./index.js";
+import { eventFolderName, fileObjectKeys, kindForMimeType, mimeTypeForFile } from "./index.js";
 
 describe("kindForMimeType", () => {
   it("maps known audio mime types to the audio kind", () => {
@@ -75,5 +75,13 @@ describe("fileObjectKeys", () => {
 
   it("only includes the original for audio and documents", () => {
     expect(fileObjectKeys({ s3Key: "o/a/s.mp3", mimeType: "audio/mpeg" })).toEqual(["o/a/s.mp3"]);
+  });
+});
+
+describe("eventFolderName", () => {
+  it("prefixes the event title with its UTC start date", () => {
+    expect(
+      eventFolderName({ title: "Répétition", startDate: new Date("2026-11-20T19:00:00Z") }),
+    ).toBe("2026-11-20 · Répétition");
   });
 });

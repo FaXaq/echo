@@ -1,61 +1,103 @@
-import { sql } from "kysely";
-import type { SearchDriveQueryPortFactory } from "./search-drive.query.port.js";
-import { toFileRecord, type FileRow } from "./map-file.js";
-import { toFolderRecord, type FolderRow } from "./map-folder.js";
+import type { ExpressionBuilder } from "kysely";
+import type { DB } from "@echo/db";
+import { eventFolderName } from "../domain/index.js";
+import { selectFolderPaths } from "./common.js";
+import { selectFileOccurrences } from "./list-file-occurrences.query.kysely.js";
+import type { SearchDriveQueryPortFactory, SearchDriveResult } from "./search-drive.query.port.js";
+import { toFileRecord } from "./map-file.js";
 
 const SEARCH_RESULT_LIMIT = 10;
 
-// Each query below inlines its own copy of this recursive CTE — it computes
-// every folder's full ancestor path (root-first, including itself) so the
-// file/folder searches can look up a location with one join instead of
-// walking parents per row. Kysely's `sql` tagged template can't share a
-// parameterized fragment across two separate `.execute()` calls without
-// re-binding `scope.organizationId`, so duplicating this small CTE is
-// simpler than fighting that.
+const containing = (query: string) => `%${query.replace(/[\\%_]/g, "\\$&")}%`;
+
+const titleContains = (query: string) => (eb: ExpressionBuilder<DB, "calendar_event" | "song">) =>
+  eb("title", "ilike", containing(query));
+
 export const searchDriveQueryFactory: SearchDriveQueryPortFactory =
   () => async (db, scope, input) => {
-    const folderRows = await sql<FolderRow & { path: string[] }>`
-    WITH RECURSIVE folder_path AS (
-      SELECT id, name, parent_folder_id, ARRAY[name] AS path
-      FROM folder
-      WHERE organization_id = ${scope.organizationId} AND parent_folder_id IS NULL
-      UNION ALL
-      SELECT f.id, f.name, f.parent_folder_id, fp.path || f.name
-      FROM folder f
-      INNER JOIN folder_path fp ON f.parent_folder_id = fp.id
-    )
-    SELECT folder.*, COALESCE(parent_fp.path, ARRAY[]::text[]) AS path
-    FROM folder
-    LEFT JOIN folder_path parent_fp ON parent_fp.id = folder.parent_folder_id
-    WHERE folder.organization_id = ${scope.organizationId}
-      AND strpos(lower(folder.name), lower(${input.query})) > 0
-    ORDER BY folder.name ASC
-    LIMIT ${SEARCH_RESULT_LIMIT}
-  `.execute(db);
+    const [folderRows, eventRows, songRows, fileRows] = await Promise.all([
+      db
+        .selectFrom("folder")
+        .select(["id", "name", "parent_folder_id"])
+        .where("organization_id", "=", scope.organizationId)
+        .where("name", "ilike", containing(input.query))
+        .orderBy("name")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+      db
+        .selectFrom("calendar_event")
+        .select(["id", "title", "start_date"])
+        .where("organization_id", "=", scope.organizationId)
+        .where(titleContains(input.query))
+        .orderBy("title")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+      db
+        .selectFrom("song")
+        .select(["id", "title"])
+        .where("organization_id", "=", scope.organizationId)
+        .where(titleContains(input.query))
+        .orderBy("title")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+      db
+        .selectFrom("file")
+        .innerJoin("user", "user.id", "file.uploaded_by")
+        .selectAll("file")
+        .select("user.name as uploaded_by_name")
+        .where("file.organization_id", "=", scope.organizationId)
+        .where("file.status", "=", "uploaded")
+        .where("file.filename", "ilike", containing(input.query))
+        .orderBy("file.filename")
+        .limit(SEARCH_RESULT_LIMIT)
+        .execute(),
+    ]);
 
-    const fileRows = await sql<FileRow & { path: string[] }>`
-    WITH RECURSIVE folder_path AS (
-      SELECT id, name, parent_folder_id, ARRAY[name] AS path
-      FROM folder
-      WHERE organization_id = ${scope.organizationId} AND parent_folder_id IS NULL
-      UNION ALL
-      SELECT f.id, f.name, f.parent_folder_id, fp.path || f.name
-      FROM folder f
-      INNER JOIN folder_path fp ON f.parent_folder_id = fp.id
-    )
-    SELECT file.*, "user".name AS uploaded_by_name, COALESCE(folder_path.path, ARRAY[]::text[]) AS path
-    FROM file
-    INNER JOIN "user" ON "user".id = file.uploaded_by
-    LEFT JOIN folder_path ON folder_path.id = file.folder_id
-    WHERE file.organization_id = ${scope.organizationId}
-      AND file.status = 'uploaded'
-      AND strpos(lower(file.filename), lower(${input.query})) > 0
-    ORDER BY file.filename ASC
-    LIMIT ${SEARCH_RESULT_LIMIT}
-  `.execute(db);
+    const [parentPaths, occurrences] = await Promise.all([
+      selectFolderPaths(
+        db,
+        scope,
+        folderRows.flatMap((row) => (row.parent_folder_id === null ? [] : [row.parent_folder_id])),
+      ),
+      selectFileOccurrences(
+        db,
+        scope,
+        fileRows.map((row) => row.id),
+      ),
+    ]);
+
+    const folders: SearchDriveResult["folders"] = [
+      ...folderRows.map((row): SearchDriveResult["folders"][number] => ({
+        location: { kind: "folder", id: row.id },
+        name: row.name,
+        path:
+          row.parent_folder_id === null
+            ? []
+            : (parentPaths.get(row.parent_folder_id) ?? []).map((segment) => segment.name),
+      })),
+      ...eventRows.map((row): SearchDriveResult["folders"][number] => ({
+        location: { kind: "event", id: row.id },
+        name: eventFolderName({ title: row.title, startDate: row.start_date }),
+        path: ["Events"],
+      })),
+      ...songRows.map((row): SearchDriveResult["folders"][number] => ({
+        location: { kind: "song", id: row.id },
+        name: row.title,
+        path: ["Songs"],
+      })),
+    ]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .slice(0, SEARCH_RESULT_LIMIT);
 
     return {
-      folders: folderRows.rows.map((row) => ({ ...toFolderRecord(row), path: row.path })),
-      files: fileRows.rows.map((row) => ({ ...toFileRecord(row), path: row.path })),
+      folders,
+      files: fileRows.map((row) => {
+        const [oldest] = occurrences[row.id] ?? [];
+        return {
+          ...toFileRecord(row),
+          location: oldest?.place ?? { kind: "root" },
+          path: oldest?.path ?? [],
+        };
+      }),
     };
   };

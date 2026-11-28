@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { useLingui } from "@lingui/react/macro";
 import { Link } from "@tanstack/react-router";
+import type { DriveLocation } from "@echo/modules/drive/domain";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,9 +10,15 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import type { Folder } from "@/services/resources/drive";
+import { driveLocationLink, locationKey } from "@/lib/drive-location";
 
-export function DriveBreadcrumbs({ projectSlug, path }: { projectSlug: string; path: Folder[] }) {
+export function DriveBreadcrumbs({
+  projectSlug,
+  path,
+}: {
+  projectSlug: string;
+  path: { label: string; location: DriveLocation }[];
+}) {
   const { t } = useLingui();
   const isRoot = path.length === 0;
 
@@ -22,29 +29,22 @@ export function DriveBreadcrumbs({ projectSlug, path }: { projectSlug: string; p
           {isRoot ? (
             <BreadcrumbPage>{t`/`}</BreadcrumbPage>
           ) : (
-            <BreadcrumbLink
-              render={<Link to="/projects/$projectSlug/drive" params={{ projectSlug }} />}
-            >
+            <BreadcrumbLink render={<Link {...driveLocationLink(projectSlug, { kind: "root" })} />}>
               {t`/`}
             </BreadcrumbLink>
           )}
         </BreadcrumbItem>
-        {path.map((folder, index) => (
-          <Fragment key={folder.id}>
+        {path.map((segment, index) => (
+          <Fragment key={locationKey(segment.location)}>
             <BreadcrumbSeparator className="m-0" />
             <BreadcrumbItem className="m-0">
               {index === path.length - 1 ? (
-                <BreadcrumbPage>{folder.name}</BreadcrumbPage>
+                <BreadcrumbPage>{segment.label}</BreadcrumbPage>
               ) : (
                 <BreadcrumbLink
-                  render={
-                    <Link
-                      to="/projects/$projectSlug/drive/$folderId"
-                      params={{ projectSlug, folderId: folder.id }}
-                    />
-                  }
+                  render={<Link {...driveLocationLink(projectSlug, segment.location)} />}
                 >
-                  {folder.name}
+                  {segment.label}
                 </BreadcrumbLink>
               )}
             </BreadcrumbItem>

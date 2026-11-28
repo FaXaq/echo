@@ -1,4 +1,9 @@
 import { FileDetailsDialog } from "@/components/features/drive/file-details-dialog";
+import {
+  RemoveManyOccurrencesDialog,
+  RemoveOccurrenceDialog,
+} from "@/components/features/drive/remove-occurrence-dialog";
+import { useRemoveOccurrence } from "@/components/features/drive/use-remove-occurrence";
 import { Suspense, useState } from "react";
 import type React from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -8,7 +13,6 @@ import { Link, useParams } from "@tanstack/react-router";
 import { translateDynamic } from "@/lib/dynamic-messages";
 import { getQuotaError } from "@/lib/quota-error";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog,
   DialogClose,
@@ -21,11 +25,9 @@ import { AttachmentList } from "@/ui/attachment-list";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/components/ui/toast";
 import {
   downloadOrganizationFile,
   getEventFilesQueryOptions,
-  useDeleteFileMutation,
   useRenameFileMutation,
   type EventFile,
 } from "@/services/resources/drive";
@@ -142,12 +144,15 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const uploadMutation = useEventUploadMutation();
   const getDestinationLabel = useEventDestinationLabel(eventId, organizationId);
   const pendingFiles = useEventUploadingFiles(eventId);
-  const deleteMutation = useDeleteFileMutation();
+  const removal = useRemoveOccurrence(
+    { kind: "event", id: eventId },
+    organizationId,
+    t`this event`,
+  );
   const renameMutation = useRenameFileMutation();
   const [renamingFile, setRenamingFile] = useState<EventFile | null>(null);
   const [detailsFile, setDetailsFile] = useState<EventFile | null>(null);
   const [linkingFile, setLinkingFile] = useState<EventFile | null>(null);
-  const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const requestPlay = useAudioPlayerStore((s) => s.requestPlay);
   const playingFileId = useAudioPlayerStore((s) =>
@@ -157,7 +162,7 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
   const handleFilesSelected = (selected: File[]) => {
     selected.forEach((file) => {
       uploadMutation.mutate({
-        eventId,
+        place: { kind: "event", id: eventId },
         organizationId,
         file,
         destinationLabel: getDestinationLabel(),
@@ -165,12 +170,9 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
     });
   };
 
-  const handleDeleteSelected = async (filesToDelete: EventFile[]) => {
-    await Promise.all(
-      filesToDelete.map((file) => deleteMutation.mutateAsync({ id: file.id, organizationId })),
-    );
+  const handleBulkRemoveConfirm = async () => {
+    await removal.bulkDialogProps.onConfirm();
     setSelectedIds(new Set());
-    toast.add({ title: t`${filesToDelete.length} files deleted`, type: "success" });
   };
 
   return (
@@ -200,8 +202,8 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
             return next;
           })
         }
-        onDeleteSelected={handleDeleteSelected}
-        onDelete={(file) => setDeletingFileId(file.id)}
+        onDeleteSelected={(files) => removal.requestMany(files)}
+        onDelete={(file) => removal.request(file.id)}
         onRename={(file) => setRenamingFile(file)}
         onLinkToSong={(file) => setLinkingFile(file)}
         onDownload={(file) => downloadOrganizationFile({ id: file.id, organizationId })}
@@ -211,7 +213,6 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
             id: file.id,
             filename: file.filename,
             downloadUrl: file.downloadUrl,
-            contextLabel: file.eventTitle ?? undefined,
           })
         }
       />
@@ -222,18 +223,11 @@ function EventAttachmentsContent({ eventId, organizationId }: SuspendedEventAtta
         onOpenChange={(open) => !open && setDetailsFile(null)}
       />
 
-      <ConfirmDialog
-        open={deletingFileId !== null}
-        onOpenChange={(open) => !open && setDeletingFileId(null)}
-        variant="destructive"
-        title={t`Delete this file?`}
-        description={t`This will permanently delete the file. This action cannot be undone.`}
-        confirmLabel={t`Delete`}
-        onConfirm={async () => {
-          if (!deletingFileId) return;
-          await deleteMutation.mutateAsync({ id: deletingFileId, organizationId });
-          toast.add({ title: t`File deleted`, type: "success" });
-        }}
+      <RemoveOccurrenceDialog {...removal.dialogProps} />
+
+      <RemoveManyOccurrencesDialog
+        {...removal.bulkDialogProps}
+        onConfirm={handleBulkRemoveConfirm}
       />
 
       <LinkFileToSongDialog

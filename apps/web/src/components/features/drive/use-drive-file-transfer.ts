@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useLingui } from "@lingui/react/macro";
+import type { DriveLocation } from "@echo/modules/drive/domain";
 import { toast } from "@/components/ui/toast";
 import { formatUploadDestination, useUploadFile } from "./use-upload-file";
-import { evaluateOsFileDrop, resolveDropTargetFolderId } from "@/lib/drive-drop";
+import { evaluateOsFileDrop } from "@/lib/drive-drop";
+import { resolveUploadPlace } from "@/lib/drive-location";
 import { downloadBlob, formatSize } from "@/lib/file";
 import {
   DRIVE_BULK_DOWNLOAD_MAX_BYTES,
@@ -15,13 +17,12 @@ import {
 import {
   downloadOrganizationFile,
   getFileDownloadUrl,
-  type Folder,
   type OrganizationFile,
 } from "@/services/resources/drive";
 
 export function useDriveFileTransfer({
   organizationId,
-  folderId,
+  location,
   organizationName,
   path,
   selectedFiles,
@@ -29,9 +30,9 @@ export function useDriveFileTransfer({
   clearSelection,
 }: {
   organizationId: string;
-  folderId: string | null;
+  location: DriveLocation;
   organizationName: string;
-  path: Folder[];
+  path: { label: string }[];
   selectedFiles: OrganizationFile[];
   selectedFolderCount: number;
   clearSelection: () => void;
@@ -50,14 +51,12 @@ export function useDriveFileTransfer({
   const uploadFile = (file: File, targetFolder: { id: string; name: string } | null = null) => {
     const destinationLabel = formatUploadDestination([
       t`Drive`,
-      ...path.map((folder) => folder.name),
+      ...path.map((segment) => segment.label),
       targetFolder?.name,
     ]);
-    const targetFolderId = resolveDropTargetFolderId({
-      hoveredFolderId: targetFolder?.id ?? null,
-      currentFolderId: folderId,
-    });
-    uploadMutation.mutate({ organizationId, folderId: targetFolderId, file, destinationLabel });
+    const place = resolveUploadPlace(location, targetFolder);
+    if (!place) return;
+    uploadMutation.mutate({ organizationId, place, file, destinationLabel });
   };
 
   const handleOsDrop = (
@@ -116,7 +115,7 @@ export function useDriveFileTransfer({
       const allSkipped = [...skipped, ...fetchSkipped];
 
       const filename = buildDriveZipFilename({
-        folderName: path.length > 0 ? path[path.length - 1].name : null,
+        folderName: path.length > 0 ? path[path.length - 1].label : null,
         organizationName,
         date: new Date(),
       });

@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react/macro";
-import { CalendarPlus, Download, MoreVertical, Trash } from "lucide-react";
+import { CalendarPlus, Copy, Download, MoreVertical, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +12,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function SelectionActionsMenu({
+  copyDisabledReason,
+  onCopy,
   downloadDisabledReason,
   isDownloading,
   onDownload,
@@ -21,6 +23,8 @@ export function SelectionActionsMenu({
   onAssignToEvent,
   onClear,
 }: {
+  copyDisabledReason: string | null;
+  onCopy: () => void;
   downloadDisabledReason: string | null;
   isDownloading: boolean;
   onDownload: () => void;
@@ -47,6 +51,22 @@ export function SelectionActionsMenu({
         <MoreVertical />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {copyDisabledReason ? (
+          <Tooltip>
+            <TooltipTrigger
+              render={<DropdownMenuItem aria-disabled className="cursor-not-allowed opacity-50" />}
+            >
+              <Copy />
+              {t`Copy`}
+            </TooltipTrigger>
+            <TooltipContent>{copyDisabledReason}</TooltipContent>
+          </Tooltip>
+        ) : (
+          <DropdownMenuItem onClick={onCopy}>
+            <Copy />
+            {t`Copy`}
+          </DropdownMenuItem>
+        )}
         {downloadDisabledReason ? (
           <Tooltip>
             <TooltipTrigger

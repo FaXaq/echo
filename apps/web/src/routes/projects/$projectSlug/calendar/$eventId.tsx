@@ -61,7 +61,7 @@ function EventDropZone({
     setIsDragging(false);
     Array.from(event.dataTransfer.files).forEach((file) => {
       uploadMutation.mutate({
-        eventId,
+        place: { kind: "event", id: eventId },
         organizationId,
         file,
         destinationLabel: getDestinationLabel(),

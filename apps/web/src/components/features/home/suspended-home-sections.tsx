@@ -368,7 +368,7 @@ function useDriveUpload(organizationId: string) {
   const upload = useUploadFile();
   return (files: Iterable<File>) => {
     for (const file of files) {
-      upload.mutate({ organizationId, file, folderId: null, destinationLabel: t`Drive` });
+      upload.mutate({ organizationId, file, place: { kind: "root" }, destinationLabel: t`Drive` });
     }
   };
 }

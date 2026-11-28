@@ -5,7 +5,6 @@ import { MapPin, MoreVertical, Plus, Share2, Timer, User } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 import { capitalize } from "remeda";
 
-import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,7 +26,6 @@ import {
 import { EntityDetailLayout, type SidebarItem } from "@/components/ui/entity-detail-layout";
 import { MarkdownEditor, type MarkdownSaveStatus } from "@/components/ui/markdown-editor";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { eventDotClasses } from "./colors";
 import { getEventLabel, EventTypeIcon } from "./event-types";
 import type { CalendarEvent } from "./types";
 import { Blobatar } from "../blobatar";
@@ -152,11 +150,6 @@ export function EventDetail({
   return (
     <>
       <EntityDetailLayout
-        icon={
-          <span
-            className={cn("block size-2.5 shrink-0 rounded-[3px]", eventDotClasses[event.color])}
-          />
-        }
         title={event.title}
         actions={
           <div className="flex items-center gap-1.5">
@@ -196,14 +189,13 @@ export function EventDetail({
         className={className}
       >
         <div className="flex flex-col gap-2">
-          <span className="text-[13px] font-semibold">{t`Description`}</span>
           <MarkdownEditor
             markdown={description}
             onChange={onDescriptionChange}
             onBlur={onDescriptionBlur}
             placeholder={t`Add a description…`}
             saveStatus={descriptionSaveStatus}
-            className="min-h-24 max-h-[32rem] rounded-lg border px-4 py-3 text-sm leading-relaxed [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"
+            className="text-sm leading-relaxed [&_.ProseMirror]:outline-none [&_.ProseMirror_p]:my-1"
           />
         </div>
 

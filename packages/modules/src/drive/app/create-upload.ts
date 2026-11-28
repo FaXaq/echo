@@ -1,5 +1,5 @@
 import type { KyselyDB } from "@echo/db";
-import { conflict, forbidden, notFound, quotaExceeded } from "@echo/errors";
+import { conflict, forbidden, quotaExceeded } from "@echo/errors";
 import type {
   CheckOrganizationPermission,
   CheckUserPermission,
@@ -16,11 +16,12 @@ import {
   previewKeyFor,
   thumbnailKeyFor,
 } from "../domain/index.js";
-import type { MediaMetadata } from "../domain/index.js";
+import type { MediaMetadata, Place } from "../domain/index.js";
+import { assertPlaceExists } from "./assert-place-exists.js";
 import type {
+  EventExistsInOrganizationQueryPort,
   FindFolderByIdQueryPort,
   InsertPendingFileCommandPort,
-  LinkFileToSongCommandPort,
   SongExistsInOrganizationQueryPort,
 } from "../infrastructure/index.js";
 import type { S3StoragePort } from "@echo/adapters/s3-storage";
@@ -35,7 +36,7 @@ export async function createUpload(
     userHasPermissionInOrganization: CheckOrganizationPermission;
     findFolderByIdQuery: FindFolderByIdQueryPort;
     insertPendingFileCommand: InsertPendingFileCommandPort;
-    linkFileToSongCommand: LinkFileToSongCommandPort;
+    eventExistsInOrganizationQuery: EventExistsInOrganizationQueryPort;
     songExistsInOrganizationQuery: SongExistsInOrganizationQueryPort;
     getPersonalOrganizationId: GetPersonalOrganizationIdPort;
     resolveOrganizationEntitlements: ResolveEntitlementsPort;
@@ -43,9 +44,7 @@ export async function createUpload(
   },
   input: Partial<MediaMetadata> & {
     userId: string;
-    eventId?: string;
-    songId?: string;
-    folderId?: string | null;
+    place: Place;
     scope: OrganizationScope;
     mimeType: string;
     sizeBytes: number;
@@ -68,17 +67,7 @@ export async function createUpload(
   });
   if (!success) throw forbidden({ entity: "File", action: "create" });
 
-  if (input.folderId) {
-    const folder = await deps.findFolderByIdQuery(deps.db, input.scope, { id: input.folderId });
-    if (!folder) throw notFound("Folder");
-  }
-
-  if (input.songId) {
-    const songExists = await deps.songExistsInOrganizationQuery(deps.db, input.scope, {
-      songId: input.songId,
-    });
-    if (!songExists) throw notFound("Song");
-  }
+  await assertPlaceExists(deps, input.scope, input.place);
 
   const { limits } = await deps.resolveOrganizationEntitlements(deps.db, input.scope);
 
@@ -104,8 +93,7 @@ export async function createUpload(
 
   await deps.insertPendingFileCommand(deps.db, input.scope, {
     id,
-    eventId: input.eventId ?? null,
-    folderId: input.folderId ?? null,
+    place: input.place,
     uploadedBy: input.userId,
     kind,
     mimeType: input.mimeType,
@@ -116,14 +104,6 @@ export async function createUpload(
     originalFilename: input.filename,
     s3Key,
   });
-
-  if (input.songId) {
-    await deps.linkFileToSongCommand(deps.db, input.scope, {
-      songId: input.songId,
-      fileId: id,
-      linkedBy: input.userId,
-    });
-  }
 
   const { url } = await deps.s3Storage.createUploadUrl({
     key: s3Key,

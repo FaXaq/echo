@@ -9,3 +9,7 @@ Keeping `cascade` and forbidding dual attachment (a file could only ever belong 
 ## Update
 
 `file.songId` itself is superseded by ADR-0012: a File can now attach to any number of Songs via a `song_file` relation table, not just zero-or-one via FK. The `set null`/orphan-protection reasoning here still holds for `file.eventId`, and generalizes (rather than changes) for the Song side.
+
+## Update
+
+Superseded by ADR-0016: the Event attachment is now an `event_file` relation table, and Folder placements protect a file too.

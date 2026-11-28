@@ -3,19 +3,21 @@ import {
   confirmUpload,
   createFolder,
   createUpload,
-  deleteFile,
   deleteFolder,
   getFileDownloadUrl,
   getFilesDownloadUrls,
+  addOccurrences,
   getFolder,
+  getFolderPath,
+  listFileOccurrences,
+  removeOccurrences,
   listEventFiles,
   listFolderContents,
   listOrganizationFiles,
   listSongFiles,
-  moveFile,
-  linkFileToSong,
-  linkFileToEvent,
-  moveFolder,
+  moveFiles,
+  moveFolders,
+  previewFolderDelete,
   renameFile,
   renameFolder,
   searchDrive,
@@ -24,24 +26,29 @@ import {
 } from "@echo/modules/drive/app";
 import { MAX_THUMBNAIL_BYTES } from "@echo/modules/drive/domain";
 import {
-  deleteFileByIdCommandFactory,
   deleteFolderCascadeCommandFactory,
+  deleteOccurrencesCommandFactory,
+  deleteOrphanedFilesCommandFactory,
+  eventExistsInOrganizationQueryFactory,
   findFileByIdQueryFactory,
   findFilesByIdsQueryFactory,
   findFolderByIdQueryFactory,
   findFolderByParentAndNameQueryFactory,
-  findFolderDescendantIdsQueryFactory,
+  findFolderPathQueryFactory,
+  findFoldersByIdsQueryFactory,
+  findFoldersByParentAndNamesQueryFactory,
   insertFolderCommandFactory,
+  insertOccurrencesCommandFactory,
   insertPendingFileCommandFactory,
-  linkFileToSongCommandFactory,
-  linkFileToEventCommandFactory,
+  listFileOccurrencesQueryFactory,
   listFilesByEventQueryFactory,
   listFilesByOrganizationQueryFactory,
   listFilesBySongQueryFactory,
   listFolderContentsQueryFactory,
   markFileUploadedCommandFactory,
-  moveFileToFolderCommandFactory,
-  moveFolderCommandFactory,
+  moveFilesToFolderCommandFactory,
+  moveFoldersCommandFactory,
+  previewFolderDeleteQueryFactory,
   renameFileByIdCommandFactory,
   renameFolderByIdCommandFactory,
   searchDriveQueryFactory,
@@ -56,31 +63,47 @@ import {
 } from "@echo/modules/plan/infrastructure";
 import { organizationProcedure, router } from "../trpc";
 
-const driveSortFieldSchema = z.enum(["name", "event", "updatedAt", "sizeBytes"]);
+const driveSortFieldSchema = z.enum(["name", "updatedAt", "sizeBytes"]);
 const driveSortOrderSchema = z.enum(["asc", "desc"]);
+const placeSchema = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("root") }),
+  z.object({ kind: z.literal("folder"), id: z.string() }),
+  z.object({ kind: z.literal("event"), id: z.string() }),
+  z.object({ kind: z.literal("song"), id: z.string() }),
+]);
+const driveLocationSchema = z.discriminatedUnion("kind", [
+  ...placeSchema.options,
+  z.object({ kind: z.literal("events") }),
+  z.object({ kind: z.literal("songs") }),
+]);
 
 const insertPendingFileCommand = insertPendingFileCommandFactory();
-const linkFileToSongCommand = linkFileToSongCommandFactory();
-const linkFileToEventCommand = linkFileToEventCommandFactory();
 const songExistsInOrganizationQuery = songExistsInOrganizationQueryFactory();
+const eventExistsInOrganizationQuery = eventExistsInOrganizationQueryFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
 const findFilesByIdsQuery = findFilesByIdsQueryFactory();
 const markFileUploadedCommand = markFileUploadedCommandFactory();
 const listFilesByEventQuery = listFilesByEventQueryFactory();
 const listFilesBySongQuery = listFilesBySongQueryFactory();
 const listFilesByOrganizationQuery = listFilesByOrganizationQueryFactory();
-const deleteFileByIdCommand = deleteFileByIdCommandFactory();
 const renameFileByIdCommand = renameFileByIdCommandFactory();
-const moveFileToFolderCommand = moveFileToFolderCommandFactory();
+const moveFilesToFolderCommand = moveFilesToFolderCommandFactory();
 const findFolderByIdQuery = findFolderByIdQueryFactory();
 const findFolderByParentAndNameQuery = findFolderByParentAndNameQueryFactory();
 const insertFolderCommand = insertFolderCommandFactory();
 const renameFolderByIdCommand = renameFolderByIdCommandFactory();
-const moveFolderCommand = moveFolderCommandFactory();
-const findFolderDescendantIdsQuery = findFolderDescendantIdsQueryFactory();
+const moveFoldersCommand = moveFoldersCommandFactory();
+const findFoldersByIdsQuery = findFoldersByIdsQueryFactory();
+const findFoldersByParentAndNamesQuery = findFoldersByParentAndNamesQueryFactory();
+const findFolderPathQuery = findFolderPathQueryFactory();
 const deleteFolderCascadeCommand = deleteFolderCascadeCommandFactory();
+const deleteOrphanedFilesCommand = deleteOrphanedFilesCommandFactory();
+const insertOccurrencesCommand = insertOccurrencesCommandFactory();
+const deleteOccurrencesCommand = deleteOccurrencesCommandFactory();
+const listFileOccurrencesQuery = listFileOccurrencesQueryFactory();
 const listFolderContentsQuery = listFolderContentsQueryFactory();
 const searchDriveQuery = searchDriveQueryFactory();
+const previewFolderDeleteQuery = previewFolderDeleteQueryFactory();
 const resolvePlanQuery = resolvePlanQueryFactory();
 const getOrganizationStorageUsageQuery = getOrganizationStorageUsageQueryFactory();
 
@@ -119,9 +142,7 @@ export const makeDriveRouter = () =>
     createUpload: organizationProcedure
       .input(
         z.object({
-          eventId: z.string().optional(),
-          songId: z.string().optional(),
-          folderId: z.string().nullish(),
+          place: placeSchema,
           mimeType: z.string().min(1),
           sizeBytes: z.number().int().positive(),
           durationSeconds: z.number().int().nonnegative().nullish(),
@@ -141,7 +162,7 @@ export const makeDriveRouter = () =>
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             findFolderByIdQuery,
             insertPendingFileCommand,
-            linkFileToSongCommand,
+            eventExistsInOrganizationQuery,
             songExistsInOrganizationQuery,
             getPersonalOrganizationId: async (userId: string) =>
               (await getPersonalOrganizationQuery(ctx.db, userId))?.id,
@@ -219,21 +240,6 @@ export const makeDriveRouter = () =>
         ),
       ),
 
-    deleteFile: organizationProcedure
-      .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteFile(
-          {
-            db: ctx.db,
-            s3Storage: ctx.s3Storage,
-            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFileByIdQuery,
-            deleteFileByIdCommand,
-          },
-          { id: input.id, scope: ctx.organizationScope },
-        ),
-      ),
-
     renameFile: organizationProcedure
       .input(z.object({ id: z.string(), filename: z.string().min(1) }))
       .mutation(({ ctx, input }) =>
@@ -275,46 +281,75 @@ export const makeDriveRouter = () =>
         ),
       ),
 
-    moveFile: organizationProcedure
-      .input(z.object({ id: z.string(), folderId: z.string().nullable() }))
+    moveFiles: organizationProcedure
+      .input(
+        z.object({
+          ids: z.array(z.string()).min(1),
+          from: z.discriminatedUnion("kind", [placeSchema.options[0], placeSchema.options[1]]),
+          folderId: z.string().nullable(),
+        }),
+      )
       .mutation(({ ctx, input }) =>
-        moveFile(
+        moveFiles(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             findFolderByIdQuery,
-            moveFileToFolderCommand,
+            moveFilesToFolderCommand,
           },
-          { id: input.id, scope: ctx.organizationScope, folderId: input.folderId },
+          { ...input, scope: ctx.organizationScope },
         ),
       ),
 
-    linkFileToSong: organizationProcedure
-      .input(z.object({ fileId: z.string(), songId: z.string() }))
+    addOccurrences: organizationProcedure
+      .input(z.object({ fileIds: z.array(z.string()).min(1), place: placeSchema }))
       .mutation(({ ctx, input }) =>
-        linkFileToSong(
+        addOccurrences(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFileByIdQuery,
+            findFilesByIdsQuery,
+            findFolderByIdQuery,
+            eventExistsInOrganizationQuery,
             songExistsInOrganizationQuery,
-            linkFileToSongCommand,
+            insertOccurrencesCommand,
           },
           { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
         ),
       ),
 
-    linkFileToEvent: organizationProcedure
-      .input(z.object({ fileId: z.string(), eventId: z.string() }))
-      .mutation(({ ctx, input }) =>
-        linkFileToEvent(
+    removeOccurrences: organizationProcedure
+      .input(z.object({ fileIds: z.array(z.string()).min(1), place: placeSchema }))
+      .mutation(async ({ ctx, input }) => {
+        const { removedFileIds, deletedFileIds, failures } = await removeOccurrences(
+          {
+            db: ctx.db,
+            s3Storage: ctx.s3Storage,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            deleteOccurrencesCommand,
+            deleteOrphanedFilesCommand,
+          },
+          { ...input, scope: ctx.organizationScope },
+        );
+        for (const failure of failures) {
+          ctx.logger.error(
+            { error: failure.error, fileId: failure.fileId },
+            "Failed to delete S3 object during occurrence removal",
+          );
+        }
+        return { removedFileIds, deletedFileIds };
+      }),
+
+    listFileOccurrences: organizationProcedure
+      .input(z.object({ fileIds: z.array(z.string()).min(1) }))
+      .query(({ ctx, input }) =>
+        listFileOccurrences(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFileByIdQuery,
-            linkFileToEventCommand,
+            listFileOccurrencesQuery,
           },
-          { ...input, scope: ctx.organizationScope },
+          { fileIds: input.fileIds, scope: ctx.organizationScope },
         ),
       ),
 
@@ -352,31 +387,52 @@ export const makeDriveRouter = () =>
         ),
       ),
 
-    moveFolder: organizationProcedure
-      .input(z.object({ id: z.string(), parentFolderId: z.string().nullable() }))
+    moveFolders: organizationProcedure
+      .input(z.object({ ids: z.array(z.string()).min(1), parentFolderId: z.string().nullable() }))
       .mutation(({ ctx, input }) =>
-        moveFolder(
+        moveFolders(
           {
             db: ctx.db,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
-            findFolderByIdQuery,
-            findFolderByParentAndNameQuery,
-            findFolderDescendantIdsQuery,
-            moveFolderCommand,
+            findFoldersByIdsQuery,
+            findFolderPathQuery,
+            findFoldersByParentAndNamesQuery,
+            moveFoldersCommand,
           },
-          { id: input.id, scope: ctx.organizationScope, parentFolderId: input.parentFolderId },
+          { ...input, scope: ctx.organizationScope },
         ),
       ),
 
     deleteFolder: organizationProcedure
       .input(z.object({ id: z.string() }))
-      .mutation(({ ctx, input }) =>
-        deleteFolder(
+      .mutation(async ({ ctx, input }) => {
+        const failures = await deleteFolder(
           {
             db: ctx.db,
             s3Storage: ctx.s3Storage,
             userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
             deleteFolderCascadeCommand,
+            deleteOrphanedFilesCommand,
+          },
+          { id: input.id, scope: ctx.organizationScope },
+        );
+        for (const failure of failures) {
+          ctx.logger.error(
+            { error: failure.error, fileId: failure.fileId, folderId: input.id },
+            "Failed to delete S3 object during folder deletion",
+          );
+        }
+      }),
+
+    previewFolderDelete: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .query(({ ctx, input }) =>
+        previewFolderDelete(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderByIdQuery,
+            previewFolderDeleteQuery,
           },
           { id: input.id, scope: ctx.organizationScope },
         ),
@@ -385,7 +441,7 @@ export const makeDriveRouter = () =>
     listFolderContents: organizationProcedure
       .input(
         z.object({
-          folderId: z.string().nullable(),
+          location: driveLocationSchema,
           sort: z
             .object({ field: driveSortFieldSchema, order: driveSortOrderSchema })
             .default({ field: "name", order: "asc" }),
@@ -399,7 +455,7 @@ export const makeDriveRouter = () =>
             findFolderByIdQuery,
             listFolderContentsQuery,
           },
-          { scope: ctx.organizationScope, folderId: input.folderId, sort: input.sort },
+          { scope: ctx.organizationScope, location: input.location, sort: input.sort },
         ),
       ),
 
@@ -413,4 +469,17 @@ export const makeDriveRouter = () =>
         { id: input.id, scope: ctx.organizationScope },
       ),
     ),
+
+    getFolderPath: organizationProcedure
+      .input(z.object({ id: z.string() }))
+      .query(({ ctx, input }) =>
+        getFolderPath(
+          {
+            db: ctx.db,
+            userHasPermissionInOrganization: ctx.userHasPermissionInOrganization,
+            findFolderPathQuery,
+          },
+          { id: input.id, scope: ctx.organizationScope },
+        ),
+      ),
   });

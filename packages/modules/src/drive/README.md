@@ -83,10 +83,14 @@ flowchart TD
 
 ## Delete
 
+A file can have several occurrences: `folder_file`, `event_file` and `song_file` rows (see [ADR-0016](../../../../docs/adr/0016-files-have-many-occurrences-system-folders-derived.md)). Removing one only deletes that row. The file's row and S3 objects go only once it has none left.
+
 ```mermaid
 flowchart LR
-    A["deleteFile / deleteFolder / deleteOrganizationFiles<br/>deleteEvent / deleteSong"] --> B["fileObjectKeys(file)"]
-    B --> C["delete s3Key<br/>+ s3Key.preview.jpg for RAW<br/>+ s3Key.thumbnail.jpg for images and videos"]
+    A["removeOccurrences / deleteFolder / deleteEvent / deleteSong"] --> B["purgeOrphanedFiles<br/>files with no folder_file / event_file / song_file row"]
+    C["deleteOrganizationFiles"] --> D
+    B --> D["fileObjectKeys(file)"]
+    D --> E["delete s3Key<br/>+ s3Key.preview.jpg for RAW<br/>+ s3Key.thumbnail.jpg for images and videos"]
 ```
 
 The locations of previews and thumbnails are computed from `s3Key` and the mime type. `file.has_thumbnail` only records whether a thumbnail exists, so the grid doesn't request missing objects. Any code that deletes S3 objects must go through `fileObjectKeys` so these files aren't left behind.

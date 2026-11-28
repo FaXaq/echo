@@ -101,11 +101,23 @@ export type MediaMetadata = {
   height: number | null;
 };
 
+export type Place =
+  | { kind: "root" }
+  | { kind: "folder"; id: string }
+  | { kind: "event"; id: string }
+  | { kind: "song"; id: string };
+export type FolderPlace = Extract<Place, { kind: "root" | "folder" }>;
+export type DriveLocation = Place | { kind: "events" } | { kind: "songs" };
+export type PlaceLabel = { place: Place; path: string[] };
+export type SystemFolderEntry = { location: DriveLocation; name: string; sizeBytes: number };
+
+export const ROOT_SYSTEM_FOLDERS: Omit<SystemFolderEntry, "sizeBytes">[] = [
+  { location: { kind: "events" }, name: "Events" },
+  { location: { kind: "songs" }, name: "Songs" },
+];
+
 export type FileRecord = {
   id: string;
-  eventId: string | null;
-  eventTitle: string | null;
-  folderId: string | null;
   organizationId: string;
   uploadedBy: string;
   uploadedByName: string;
@@ -141,3 +153,8 @@ export type FolderRecord = {
   createdAt: Date | null;
   updatedAt: Date | null;
 };
+
+export type FolderWithSize = FolderRecord & { sizeBytes: number };
+
+export const eventFolderName = (event: { title: string; startDate: Date }) =>
+  `${event.startDate.toISOString().slice(0, 10)} · ${event.title}`;

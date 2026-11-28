@@ -33,6 +33,7 @@ import * as migration_20261004160000 from "./20261004160000_expense-ledger";
 import * as migration_20261101170000 from "./20261101170000_add-dimensions-to-file";
 import * as migration_20261108200000 from "./20261108200000_add-has-thumbnail-to-file";
 import * as migration_20261116180000 from "./20261116180000_file-size-bigint";
+import * as migration_20261128120000 from "./20261128120000_file-occurrences";
 
 type Migration = {
   up: (db: Kysely<any>) => Promise<void>;
@@ -75,4 +76,5 @@ export const migrations: Migrations = {
   "20261101170000_add-dimensions-to-file": migration_20261101170000,
   "20261108200000_add-has-thumbnail-to-file": migration_20261108200000,
   "20261116180000_file-size-bigint": migration_20261116180000,
+  "20261128120000_file-occurrences": migration_20261128120000,
 };

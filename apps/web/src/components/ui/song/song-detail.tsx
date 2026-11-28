@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Music, MoreVertical, Share2 } from "lucide-react";
+import { MoreVertical, Share2 } from "lucide-react";
 import { useLingui } from "@lingui/react/macro";
 
 import {
@@ -63,11 +63,6 @@ export function SongDetail({
   return (
     <>
       <EntityDetailLayout
-        icon={
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-[6px] bg-muted">
-            <Music className="size-4" />
-          </span>
-        }
         title={song.title}
         actions={
           <div className="flex items-center gap-1.5">

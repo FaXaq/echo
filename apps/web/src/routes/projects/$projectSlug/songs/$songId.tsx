@@ -57,7 +57,7 @@ function SongDropZone({
     setIsDragging(false);
     Array.from(event.dataTransfer.files).forEach((file) => {
       uploadMutation.mutate({
-        songId,
+        place: { kind: "song", id: songId },
         organizationId,
         file,
         destinationLabel: getDestinationLabel(),

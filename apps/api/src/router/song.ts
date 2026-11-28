@@ -26,8 +26,7 @@ import {
   listRecentSongsQueryFactory,
 } from "@echo/modules/song/infrastructure";
 import {
-  findOrphanedFilesForSongQueryFactory,
-  deleteFileByIdCommandFactory,
+  deleteOrphanedFilesCommandFactory,
   findFileByIdQueryFactory,
   setSongFileRoleCommandFactory,
   clearSongFileRoleCommandFactory,
@@ -48,8 +47,7 @@ const updateSongLyricsCommand = updateSongLyricsCommandFactory();
 const deleteSongCommand = deleteSongCommandFactory();
 const listSongsQuery = listSongsQueryFactory();
 const getSongByIdQuery = getSongByIdQueryFactory();
-const findOrphanedFilesForSongQuery = findOrphanedFilesForSongQueryFactory();
-const deleteFileByIdCommand = deleteFileByIdCommandFactory();
+const deleteOrphanedFilesCommand = deleteOrphanedFilesCommandFactory();
 const searchSongsQuery = searchSongsQueryFactory();
 const findFileByIdQuery = findFileByIdQueryFactory();
 const setSongFileRoleCommand = setSongFileRoleCommandFactory();
@@ -130,8 +128,7 @@ export const makeSongRouter = () =>
           {
             db: ctx.db,
             deleteSongCommand,
-            findOrphanedFilesForSongQuery,
-            deleteFileByIdCommand,
+            deleteOrphanedFilesCommand,
             s3Storage: ctx.s3Storage,
           },
           { id: input.id, scope: ctx.organizationScope },
