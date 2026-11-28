@@ -278,9 +278,13 @@ export function putWithProgress(
   body: Blob,
   contentType: string | null,
   onProgress: (ratio: number) => void,
+  signal?: AbortSignal,
 ) {
   return new Promise<string | null>((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason);
     const xhr = new XMLHttpRequest();
+    signal?.addEventListener("abort", () => xhr.abort(), { once: true });
+    xhr.addEventListener("abort", () => reject(signal?.reason));
     xhr.open("PUT", url);
     if (contentType) xhr.setRequestHeader("Content-Type", contentType);
     xhr.upload.addEventListener("progress", (event) => {
@@ -296,31 +300,49 @@ export function putWithProgress(
   });
 }
 
-async function putPart(url: string, part: Blob, onProgress: (ratio: number) => void) {
-  const etag = await withRetry(() => putWithProgress(url, part, null, onProgress));
+async function putPart(
+  url: string,
+  part: Blob,
+  onProgress: (ratio: number) => void,
+  signal?: AbortSignal,
+) {
+  const etag = await withRetry(() => putWithProgress(url, part, null, onProgress, signal), signal);
   if (!etag) throw new Error("Upload failed: S3 did not expose the part ETag");
   return etag;
 }
 
-export async function withRetry<T>(run: () => Promise<T>, attempts = 3, baseDelayMs = 1000) {
+export async function withRetry<T>(
+  run: () => Promise<T>,
+  signal?: AbortSignal,
+  attempts = 3,
+  baseDelayMs = 1000,
+) {
   for (let attempt = 1; ; attempt++) {
     try {
       return await run();
     } catch (error) {
-      if (attempt >= attempts) throw error;
+      if (attempt >= attempts || signal?.aborted) throw error;
       await new Promise((resolve) => setTimeout(resolve, baseDelayMs * 2 ** (attempt - 1)));
     }
   }
 }
 
 // ponytail: parts go one at a time; upload a few in parallel if large uploads feel slow
-export async function putParts(urls: string[], file: Blob, onProgress: (ratio: number) => void) {
+export async function putParts(
+  urls: string[],
+  file: Blob,
+  onProgress: (ratio: number) => void,
+  signal?: AbortSignal,
+) {
   const parts: { partNumber: number; etag: string }[] = [];
   for (const [index, url] of urls.entries()) {
     const start = index * MULTIPART_PART_SIZE_BYTES;
     const part = file.slice(start, start + MULTIPART_PART_SIZE_BYTES);
-    const etag = await putPart(url, part, (ratio) =>
-      onProgress((start + ratio * part.size) / file.size),
+    const etag = await putPart(
+      url,
+      part,
+      (ratio) => onProgress((start + ratio * part.size) / file.size),
+      signal,
     );
     parts.push({ partNumber: index + 1, etag });
   }

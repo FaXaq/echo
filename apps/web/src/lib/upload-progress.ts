@@ -15,9 +15,18 @@ export function setUploadProgress(file: File, ratio: number) {
   notify();
 }
 
-export function resetUploadProgress(file: File) {
+const controllers = new WeakMap<File, AbortController>();
+
+export function startUpload(file: File) {
+  const controller = new AbortController();
+  controllers.set(file, controller);
   ratios.delete(file);
   notify();
+  return controller;
+}
+
+export function stopUpload(file: File) {
+  controllers.get(file)?.abort();
 }
 
 export function setUploadDuration(file: File, durationSeconds: number | null) {

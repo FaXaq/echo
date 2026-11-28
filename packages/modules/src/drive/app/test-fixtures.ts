@@ -47,6 +47,7 @@ export function makeFakeS3Storage(existingKeys: string[] = []): S3StoragePort {
     completeMultipartUpload: async ({ key }) => {
       keys.add(key);
     },
+    abortMultipartUpload: async () => {},
     createDownloadUrl: async (key, options) => ({
       url: `https://fake-s3.local/${key}?download${options?.attachmentFilename ? `&attachment=${options.attachmentFilename}` : ""}`,
     }),
@@ -173,6 +174,7 @@ export function makeFakeHeadObjectS3(result: {
     createUploadUrl: async () => ({ url: "" }),
     createMultipartUpload: async () => ({ uploadId: "", partUrls: [] }),
     completeMultipartUpload: async () => {},
+    abortMultipartUpload: async () => {},
     createDownloadUrl: async () => ({ url: "" }),
     headObject: async () => result,
     deleteObject: async () => {},

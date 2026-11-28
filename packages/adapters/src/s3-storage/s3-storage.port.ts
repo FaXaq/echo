@@ -17,6 +17,8 @@ export interface S3StoragePort {
     parts: { partNumber: number; etag: string }[];
   }) => Promise<void>;
 
+  abortMultipartUpload: (input: { key: string; uploadId: string }) => Promise<void>;
+
   createDownloadUrl: (
     key: string,
     options?: { attachmentFilename?: string },

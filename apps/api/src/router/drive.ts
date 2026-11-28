@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  cancelUpload,
   confirmUpload,
   createFolder,
   createUpload,
@@ -230,6 +231,15 @@ export const makeDriveRouter = () =>
             searchDriveQuery,
           },
           { scope: ctx.organizationScope, query: input.query },
+        ),
+      ),
+
+    cancelUpload: organizationProcedure
+      .input(z.object({ id: z.string(), uploadId: z.string().min(1).optional() }))
+      .mutation(({ ctx, input }) =>
+        cancelUpload(
+          { db: ctx.db, s3Storage: ctx.s3Storage, findFileByIdQuery, deleteFileByIdCommand },
+          { ...input, userId: ctx.session.user.id, scope: ctx.organizationScope },
         ),
       ),
 

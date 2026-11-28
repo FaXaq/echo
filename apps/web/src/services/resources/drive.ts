@@ -16,7 +16,7 @@ import {
   putParts,
   putWithProgress,
 } from "@/lib/file";
-import { resetUploadProgress, setUploadDuration, setUploadProgress } from "@/lib/upload-progress";
+import { setUploadDuration, setUploadProgress, startUpload } from "@/lib/upload-progress";
 import { initResourceKey } from "./init-resource-key";
 import { getStorageQuotaQueryOptions } from "./plan";
 
@@ -254,7 +254,7 @@ export function useUploadFileMutation({
   return useMutation({
     mutationKey: uploadFileMutationKey,
     mutationFn: async (input: UploadFileInput) => {
-      resetUploadProgress(input.file);
+      const { signal } = startUpload(input.file);
       const metadata = await getMediaMetadata(input.file);
       setUploadDuration(input.file, metadata.durationSeconds);
       const mimeType = mimeTypeForFile(input.file);
@@ -262,6 +262,7 @@ export function useUploadFileMutation({
       const generated = await createThumbnail(input.file, mimeType, preview);
       const thumbnail =
         generated && generated.blob.size <= MAX_THUMBNAIL_BYTES ? generated.blob : null;
+      signal.throwIfAborted();
 
       const { fileId, uploadUrl, multipart, previewUploadUrl, thumbnailUploadUrl } =
         await apiClient.drive.createUpload.mutate({
@@ -279,22 +280,44 @@ export function useUploadFileMutation({
           thumbnailSizeBytes: thumbnail?.size,
         });
 
-      setUploadProgress(input.file, 0);
-      const onProgress = (ratio: number) => setUploadProgress(input.file, ratio);
-      if (uploadUrl) await putWithProgress(uploadUrl, input.file, mimeType, onProgress);
-      const parts = multipart ? await putParts(multipart.partUrls, input.file, onProgress) : null;
+      try {
+        signal.throwIfAborted();
+        setUploadProgress(input.file, 0);
+        const onProgress = (ratio: number) => setUploadProgress(input.file, ratio);
+        if (uploadUrl) await putWithProgress(uploadUrl, input.file, mimeType, onProgress, signal);
+        const parts = multipart
+          ? await putParts(multipart.partUrls, input.file, onProgress, signal)
+          : null;
 
-      await Promise.all([
-        putDerivedJpeg(previewUploadUrl, preview),
-        putDerivedJpeg(thumbnailUploadUrl, thumbnail),
-      ]);
+        await Promise.all([
+          putDerivedJpeg(previewUploadUrl, preview),
+          putDerivedJpeg(thumbnailUploadUrl, thumbnail),
+        ]);
+        signal.throwIfAborted();
 
-      return apiClient.drive.confirmUpload.mutate({
-        id: fileId,
-        multipart: multipart && parts ? { uploadId: multipart.uploadId, parts } : undefined,
-        organizationId: input.organizationId,
-      });
+        const uploaded = await apiClient.drive.confirmUpload.mutate({
+          id: fileId,
+          multipart: multipart && parts ? { uploadId: multipart.uploadId, parts } : undefined,
+          organizationId: input.organizationId,
+        });
+        signal.throwIfAborted();
+        return uploaded;
+      } catch (error) {
+        // A failed or stopped upload must not leave a pending row counting against the quota.
+        await apiClient.drive.cancelUpload
+          .mutate({
+            id: fileId,
+            uploadId: multipart?.uploadId,
+            organizationId: input.organizationId,
+          })
+          .catch(() => undefined);
+        throw error;
+      }
     },
+    onError: (_error, input) =>
+      queryClient.invalidateQueries({
+        queryKey: getStorageQuotaQueryOptions({ organizationId: input.organizationId }).queryKey,
+      }),
     onSuccess: async (result, input) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: key }),
@@ -303,6 +326,25 @@ export function useUploadFileMutation({
         }),
       ]);
       onSuccess?.(result, input);
+    },
+  });
+}
+
+export function useCancelUploadedFilesMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (files: { id: string; organizationId: string }[]) =>
+      Promise.all(files.map((file) => apiClient.drive.cancelUpload.mutate(file))),
+    onSettled: async (_result, _error, files) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: key }),
+        ...files.map((file) =>
+          queryClient.invalidateQueries({
+            queryKey: getStorageQuotaQueryOptions({ organizationId: file.organizationId }).queryKey,
+          }),
+        ),
+      ]);
     },
   });
 }

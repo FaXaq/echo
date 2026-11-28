@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   getUploadDuration,
   getUploadProgress,
-  resetUploadProgress,
   setUploadDuration,
   setUploadProgress,
+  startUpload,
+  stopUpload,
   totalUploadRatio,
 } from "./upload-progress.js";
 
@@ -17,12 +18,22 @@ describe("upload progress", () => {
     expect(getUploadProgress(file)).toBe(0.4);
   });
 
-  it("forgets progress on reset so a retry starts as not started", () => {
+  it("forgets progress on start so a retry starts as not started", () => {
     const file = new File(["a"], "a.wav");
 
     setUploadProgress(file, 1);
-    resetUploadProgress(file);
+    startUpload(file);
     expect(getUploadProgress(file)).toBeUndefined();
+  });
+
+  it("stops the latest upload of a file", () => {
+    const file = new File(["a"], "a.wav");
+
+    const first = startUpload(file);
+    const retry = startUpload(file);
+    stopUpload(file);
+    expect(first.signal.aborted).toBe(false);
+    expect(retry.signal.aborted).toBe(true);
   });
 
   it("remembers the duration read before the upload, defaulting to null", () => {

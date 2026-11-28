@@ -1,4 +1,5 @@
 import {
+  AbortMultipartUploadCommand,
   CompleteMultipartUploadCommand,
   CreateMultipartUploadCommand,
   DeleteObjectCommand,
@@ -80,6 +81,12 @@ export function makeS3Storage(config: {
             Parts: parts.map(({ partNumber, etag }) => ({ PartNumber: partNumber, ETag: etag })),
           },
         }),
+      );
+    },
+
+    abortMultipartUpload: async ({ key, uploadId }) => {
+      await client.send(
+        new AbortMultipartUploadCommand({ Bucket: config.bucket, Key: key, UploadId: uploadId }),
       );
     },
 

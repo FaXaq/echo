@@ -3,6 +3,7 @@ import { Toast as ToastPrimitive } from "@base-ui/react/toast";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   XIcon,
   CircleCheckIcon,
@@ -169,22 +170,36 @@ function ToastIcon({ type }: { type: string | undefined }) {
   );
 }
 
-function ToastList() {
-  const { toasts } = ToastPrimitive.useToastManager();
+type ToastData = { persistent?: boolean; onClick?: () => void; progress?: number };
 
-  return toasts.map((toastItem) => (
-    <Toast key={toastItem.id} toast={toastItem}>
-      <ToastContent>
-        <ToastIcon type={toastItem.type} />
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <ToastTitle />
-          <ToastDescription />
-        </div>
-        <ToastAction />
-        <ToastClose />
-      </ToastContent>
-    </Toast>
-  ));
+function ToastList() {
+  const { toasts } = ToastPrimitive.useToastManager<ToastData>();
+
+  return toasts.map((toastItem) => {
+    const persistent = toastItem.data?.persistent ?? false;
+    return (
+      <Toast
+        key={toastItem.id}
+        toast={toastItem}
+        swipeDirection={persistent ? [] : undefined}
+        onClick={toastItem.data?.onClick}
+        className={cn(toastItem.data?.onClick && "cursor-pointer")}
+      >
+        <ToastContent>
+          <ToastIcon type={toastItem.type} />
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <ToastTitle />
+            <ToastDescription />
+            {toastItem.data?.progress !== undefined && (
+              <Progress value={toastItem.data.progress} className="mt-1" />
+            )}
+          </div>
+          <ToastAction />
+          {!persistent && <ToastClose />}
+        </ToastContent>
+      </Toast>
+    );
+  });
 }
 
 function Toaster({ children, toastManager = toast, ...props }: ToastPrimitive.Provider.Props) {

@@ -1,4 +1,5 @@
 export { createUpload } from "./create-upload.js";
+export { cancelUpload } from "./cancel-upload.js";
 export { confirmUpload } from "./confirm-upload.js";
 export { listEventFiles } from "./list-event-files.js";
 export { listSongFiles } from "./list-song-files.js";

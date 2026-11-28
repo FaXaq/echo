@@ -127,11 +127,15 @@ msgstr "{count} files assigned to the event"
 #~ msgid "{doneCount} of {0} files uploaded"
 #~ msgstr "{doneCount} of {0} files uploaded"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:118
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:130
+msgid "{doneCount} of {total} done"
+msgstr "{doneCount} of {total} done"
+
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:218
 msgid "{doneCount} of {total} done · {totalPercent}%"
 msgstr "{doneCount} of {total} done · {totalPercent}%"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:111
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:211
 msgid "{doneCount} of {total} files uploaded"
 msgstr "{doneCount} of {total} files uploaded"
 
@@ -139,7 +143,7 @@ msgstr "{doneCount} of {total} files uploaded"
 msgid "{expenseCount, plural, one {# expense} other {# expenses}}"
 msgstr "{expenseCount, plural, one {# expense} other {# expenses}}"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:122
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:222
 msgid "{failedCount, plural, one {# file failed — retry it or close this window.} other {# files failed — retry them or close this window.}}"
 msgstr "{failedCount, plural, one {# file failed — retry it or close this window.} other {# files failed — retry them or close this window.}}"
 
@@ -164,7 +168,7 @@ msgstr "{label} history"
 msgid "{settleCount, plural, =0 {Nothing to settle} one {# repayment settles everyone} other {# repayments settle everyone}}"
 msgstr "{settleCount, plural, =0 {Nothing to settle} one {# repayment settles everyone} other {# repayments settle everyone}}"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:109
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:209
 msgid "{total, plural, one {Uploading # file} other {Uploading # files}}"
 msgstr "{total, plural, one {Uploading # file} other {Uploading # files}}"
 
@@ -292,7 +296,7 @@ msgstr "All day"
 #~ msgid "All files shared across the project"
 #~ msgstr "All files shared across the project"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:128
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:228
 msgid "All files uploaded."
 msgstr "All files uploaded."
 
@@ -574,7 +578,7 @@ msgstr "Clear place"
 msgid "Clear selection"
 msgstr "Clear selection"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:140
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:273
 #: apps/web/src/components/ui/audio-player-dock.tsx:252
 msgid "Close"
 msgstr "Close"
@@ -989,6 +993,7 @@ msgstr "Deselect"
 
 #: apps/web/src/components/features/drive/drive-file-row.tsx:201
 #: apps/web/src/components/features/drive/drive-file-row.tsx:251
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:131
 #: apps/web/src/components/ui/attachment-list.tsx:344
 #: apps/web/src/components/ui/attachment-list.tsx:578
 msgid "Details"
@@ -1333,6 +1338,10 @@ msgstr "File linked to the song"
 msgid "Files"
 msgstr "Files"
 
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:255
+msgid "Files still uploading are stopped, and files from this upload that already finished are deleted. This cannot be undone."
+msgstr "Files still uploading are stopped, and files from this upload that already finished are deleted. This cannot be undone."
+
 #: apps/web/src/components/signup-form.tsx:73
 msgid "Fill in the details below to get started"
 msgstr "Fill in the details below to get started"
@@ -1342,7 +1351,7 @@ msgstr "Fill in the details below to get started"
 msgid "Final"
 msgstr "Final"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:196
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:338
 msgid "Finishing…"
 msgstr "Finishing…"
 
@@ -1438,7 +1447,7 @@ msgstr "Green"
 msgid "Hide"
 msgstr "Hide"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:140
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:273
 msgid "Hide — keep uploading"
 msgstr "Hide — keep uploading"
 
@@ -1500,6 +1509,10 @@ msgstr "It's your personal space."
 #: apps/web/src/components/ui/dirty-guard-dialog.tsx:37
 msgid "Keep editing"
 msgstr "Keep editing"
+
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:263
+msgid "Keep uploading"
+msgstr "Keep uploading"
 
 #: apps/web/src/components/ui/song/song-detail.tsx:58
 #: apps/web/src/components/ui/song/song-dialog.tsx:128
@@ -2054,7 +2067,7 @@ msgstr "Plan"
 msgid "Plan & usage"
 msgstr "Plan & usage"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:178
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:320
 msgid "Plan limit reached"
 msgstr "Plan limit reached"
 
@@ -2106,7 +2119,7 @@ msgstr "Please confirm your password"
 #~ msgid "Practice"
 #~ msgstr "Practice"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:194
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:336
 msgid "Preparing…"
 msgstr "Preparing…"
 
@@ -2259,7 +2272,7 @@ msgstr "Reset password"
 msgid "Resolution"
 msgstr "Resolution"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:207
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:359
 #: apps/web/src/components/ui/audio-player-dock.tsx:75
 msgid "Retry"
 msgstr "Retry"
@@ -2433,6 +2446,10 @@ msgstr "Size"
 msgid "Skipped {0} file(s) that couldn't be downloaded: {1}"
 msgstr "Skipped {0} file(s) that couldn't be downloaded: {1}"
 
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:175
+msgid "Some uploaded files could not be deleted"
+msgstr "Some uploaded files could not be deleted"
+
 #: apps/web/src/components/app-error-page.tsx:42
 #: apps/web/src/components/features/event-calendar/suspended-event-detail.tsx:218
 #: apps/web/src/components/features/organization/suspended-organization-currency.tsx:72
@@ -2476,6 +2493,19 @@ msgstr "Split"
 #: apps/web/src/components/ui/event-calendar/event-dialog.tsx:251
 msgid "Start"
 msgstr "Start"
+
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:247
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:266
+msgid "Stop and delete"
+msgstr "Stop and delete"
+
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:252
+msgid "Stop this upload?"
+msgstr "Stop this upload?"
+
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:349
+msgid "Stop uploading {fileName}"
+msgstr "Stop uploading {fileName}"
 
 #: apps/web/src/components/features/organization/suspended-plan-usage.tsx:44
 msgid "Storage"
@@ -2667,7 +2697,7 @@ msgstr "Today"
 msgid "Toggle columns"
 msgstr "Toggle columns"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:176
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:318
 msgid "Too large for your plan"
 msgstr "Too large for your plan"
 
@@ -2753,7 +2783,7 @@ msgstr "Upload"
 msgid "Upload a file"
 msgstr "Upload a file"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:180
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:322
 #: apps/web/src/lib/dynamic-messages.ts:47
 msgid "Upload failed"
 msgstr "Upload failed"
@@ -2776,7 +2806,11 @@ msgstr "Upload media to the drive or to an event."
 msgid "Upload photos or videos"
 msgstr "Upload photos or videos"
 
-#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:203
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:174
+msgid "Upload stopped and files deleted"
+msgstr "Upload stopped and files deleted"
+
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:355
 msgid "Uploaded"
 msgstr "Uploaded"
 
@@ -2788,6 +2822,10 @@ msgstr "Uploaded by"
 #: apps/web/src/components/features/drive/file-details-dialog.tsx:111
 msgid "Uploaded on"
 msgstr "Uploaded on"
+
+#: apps/web/src/components/features/drive/upload-progress-dialog.tsx:129
+msgid "Uploading files · {totalPercent}%"
+msgstr "Uploading files · {totalPercent}%"
 
 #: apps/web/src/components/ui/attachment-list.tsx:215
 #: apps/web/src/components/ui/attachment-list.tsx:218

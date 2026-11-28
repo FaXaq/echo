@@ -301,15 +301,25 @@ describe("findEmbeddedJpegs", () => {
 });
 
 describe("withRetry", () => {
+  it("stops retrying once the upload is aborted", async () => {
+    const controller = new AbortController();
+    const run = vi.fn(async () => {
+      controller.abort();
+      throw new Error("aborted");
+    });
+    await expect(withRetry(run, controller.signal, 3, 0)).rejects.toThrow("aborted");
+    expect(run).toHaveBeenCalledTimes(1);
+  });
+
   it("succeeds once a later attempt works", async () => {
     const run = vi.fn().mockRejectedValueOnce(new Error("net")).mockResolvedValueOnce("etag");
-    await expect(withRetry(run, 3, 0)).resolves.toBe("etag");
+    await expect(withRetry(run, undefined, 3, 0)).resolves.toBe("etag");
     expect(run).toHaveBeenCalledTimes(2);
   });
 
   it("gives up after the last attempt with the last error", async () => {
     const run = vi.fn().mockRejectedValue(new Error("net"));
-    await expect(withRetry(run, 3, 0)).rejects.toThrow("net");
+    await expect(withRetry(run, undefined, 3, 0)).rejects.toThrow("net");
     expect(run).toHaveBeenCalledTimes(3);
   });
 });
