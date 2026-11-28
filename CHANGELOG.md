@@ -1,3 +1,13 @@
+## [0.31.0](https://github.com/FaXaq/echo/compare/v0.30.0...v0.31.0) (2026-11-16)
+
+### ✨ Features
+
+* **home:** add empty screens & default actions ([#78](https://github.com/FaXaq/echo/issues/78)) ([99f180c](https://github.com/FaXaq/echo/commit/99f180c5260e912ea3d085e26d2d7a7ef4091fc5))
+
+### 🐛 Bug Fixes
+
+* **drive:** store file size as bigint to support files over 2 GB ([#80](https://github.com/FaXaq/echo/issues/80)) ([a18b24f](https://github.com/FaXaq/echo/commit/a18b24fd6aed977ee41858e36892c25760e50174))
+
 ## [0.30.0](https://github.com/FaXaq/echo/compare/v0.29.0...v0.30.0) (2026-11-14)
 
 ### ✨ Features

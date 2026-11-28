@@ -10,7 +10,7 @@ function makeRow(overrides: Partial<FileRow> = {}): FileRow {
     uploaded_by_name: "Test User",
     kind: "audio",
     mime_type: "audio/mpeg",
-    size_bytes: 100,
+    size_bytes: "100",
     duration_seconds: null,
     width: null,
     height: null,

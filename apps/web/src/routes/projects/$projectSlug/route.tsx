@@ -3,6 +3,7 @@ import { selfListOrganizations } from "@/services/resources/organization";
 import { getSessionQueryOptions } from "@/services/resources/session";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AudioPlayerDockContainer } from "@/components/features/audio-player/audio-player-dock-container";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { UserMenu } from "@/components/user-menu";
@@ -51,9 +52,11 @@ function RouteComponent() {
                 />
               </div>
             </header>
-            <div className="relative flex-1 overflow-y-auto typeset typeset-notes">
-              <Outlet />
-            </div>
+            <ScrollArea className="min-h-0 flex-1">
+              <div className="relative typeset typeset-notes">
+                <Outlet />
+              </div>
+            </ScrollArea>
           </SidebarInset>
         </SidebarProvider>
         <AudioPlayerDockContainer />
